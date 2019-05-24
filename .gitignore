@@ -1,0 +1,25 @@
+
+
+# Ignore settings
+settings.php
+settings.js
+config.php
+config.js
+
+# Ignore any custom SOAP xml files.
+*.wsdl.xml
+
+
+
+#  But keep default settings.php and settings.js files
+#  config-default.php
+#  settings-default.php
+
+
+# Ignore vendor libraries (e.g., authorizedotnet)
+/vendor/
+
+# Moduls get their own projects.
+
+# Ignore any logging files.
+phplog*
