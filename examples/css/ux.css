@@ -1,0 +1,120 @@
+
+			.form-item {
+				margin:8px;
+			}
+			
+			#modal {
+				position:fixed;
+				display:none;
+				top:150px;
+				left:150px;
+				z-index:101;
+				background-color:#fff;
+				width:50%;
+				height:50%;
+				border:1px solid #ccc;
+			}
+			
+			.hasModal #modal {
+				display:block;
+			}
+			
+			#modal-content {
+				padding:5%;
+			}
+			
+			#header {
+				padding-left:3%;
+				padding-right:3%;
+				padding-bottom:0px;
+				position:fixed;
+				border-bottom:1px solid #ccc;
+				height:50px;
+				overflow-y:visible;
+				top:0px;
+				z-index:10;
+				background-color:#fff;
+				width:100%;
+			}
+			
+			#banner {
+				display:static;
+				height:60%;
+			}
+			
+			#menu {
+				text-align:justify;
+				width:450px;
+				left:0px;
+				height:40%;
+			}
+			
+			#menu * {
+				margin:0px !important;
+				padding:0px !important;
+			}
+			
+			#menu > ul {
+				display:inline-block;
+				width:125px;
+			}
+			
+			#menu li:hover {
+				background-color:#eee;
+			}
+			
+			#menu li {
+				text-align:left;
+			}
+			
+			#menu > ul {
+				width:125px;
+				margin-right:25px;
+			}
+			
+			#menu ul li {
+				display:inline-block;
+				background-color:inherit;
+				font-weight:bold;
+				vertical-align:top;
+				cursor:pointer;
+				min-width:100px;
+			}
+			
+			#menu li {
+				padding:5px;
+			}
+			
+			#menu li.top {
+				padding-left:0px;
+				padding-right:0px;
+			}
+			
+			#menu li ul {
+				display:none;
+				border-bottom:1px solid #ccc;
+				border-left:1px solid #ccc;
+				border-right:1px solid #ccc;
+			}
+			
+			#menu li:hover ul {
+				display:block;
+			}
+			
+			/**
+			 * sub menus
+			 */
+			
+			#menu li li {
+				display:block;
+				font-weight:normal;
+				float:none;
+			}
+			
+			#menu ul {
+				background-color:#fff;
+			}
+			
+			#page {
+				margin-top:75px;
+			}

@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Using modal cc form</title>
+		<link href="css/ux.css" type="text/css" rel="stylesheet" />
+	
+		</style>
+	</head>
+	<body>
+		<div id="header">
+			<div id="banner">&nbsp;
+			</div>
+		</div>
+		<div id="page">
+		
+			<h1>CC Form Example</h1>
+		
+			<p>Access to this resource requires a paid subscription.</p>
+		
+			<button onclick="showModal();return false;">Purchase subscription - $149.99</button>
+			<div class="stage">
+
+				<div id="modal">
+					<div id="modal-content">&nbsp;</div>
+				</div>
+			
+			</div>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+	
+		document.addEventListener('DOMContentLoaded',function(e){ doMenu(menu); },false);
+	
+		var mockCustomer = {
+		
+			FirstName: 'Jose',
+			
+			LastName: 'Bernal',
+			
+			Email: 'jbernal.web.dev@gmail.com',
+			
+			EmailRender: function(){
+				return 'email.render@gmail.com';
+			},
+		
+			render:function(prop){
+				var rMethod = prop+'Render';
+				return this[rMethod] ? this[rMethod]() : this[prop];
+			},
+			
+		};
+		
+		var menu = [
+		{
+			name: 'file',
+			children: [{name:'save'},{name:'save as...'},{name:'export...'}],
+			classes:['menu-top']
+		},
+		{
+			name: 'salesforce',
+			children: [{name:'authorize'},{name:'authorize-as'}],
+			classes: ['menu-top']
+		},
+		{
+			name: 'about',
+			top: true,
+			classes: ['menu-top']
+		}
+		
+		];
+		
+		
+		function showModal(){
+			// do a fetch of the template
+			
+			// convert the template to a string using the XML.serialize() method
+			var form = fetch('../templates/ccForm.html');
+			form.then(response => response.text())
+			.then((text) => {
+				var xml = (new window.DOMParser()).parseFromString(text, "text/html"); //"text/xml"
+				console.log(xml);
+				document.getElementById('modal-content').innerHTML = parse(text,mockCustomer);
+			})
+			.then(()=>{
+			
+				document.body.setAttribute('class','hasModal');
+			
+				document.getElementById('cc-purchase-form').addEventListener('submit',function(e){return false;},false);
+				document.getElementById('cancel').addEventListener('click',function(e){return cancel();},false);
+				document.getElementById('purchase').addEventListener('click',function(e){return purchase();},false);
+			});
+		}
+		
+		
+		
+		function renderMenu(item){
+			var classes = item.classes && item.classes.length ? 'class="'+item.classes.join(' ')+'"' : '';
+			if(Array.isArray(item)) {
+				return item.map((it) => renderMenu(it)).join('\n');
+			}
+			if(item.children && item.children.length){
+
+				return "<ul><li "+classes+">"+item.name + "<ul>"+item.children.map((item) => renderMenu(item)).join('\n')+"</ul></li></ul>";
+			}
+			
+			else return item.top ? "<ul><li "+classes+">"+item.name+"</li></ul>" : "<li>"+item.name+"</li>";
+		}
+		
+/*
+var menu = domstring = "<li>file<ul><li>save</li>
+<li>save as...</li>
+<li>export...</li></ul></li>
+<li>salesforce<ul><li>authorize</li>
+<li>authorize-as</li></ul></li>
+<li>about</li>
+*/
+		
+		function doMenu(menu){
+			var domstring,
+			
+			xml;
+			
+			domstring = "<html><body><div id='menu'>"+renderMenu(menu)+"</div></body></html>";
+			
+			// console.log(domstring);
+			
+			xml = (new window.DOMParser()).parseFromString(domstring, "text/html");
+			
+			document.getElementById('header').appendChild(xml.body.firstChild);//documentElement.body);
+			return xml;
+		}
+		
+		
+		
+		function purchase(){
+			alert('OK, will charge your card now.');
+				document.getElementById('modal-content').innerHTML = "<h3>Here's the document you requested:</h3><p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from &quote;de Finibus Bonorum et Malorum&quote; by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>";			
+		}
+		
+		function cancel(){
+			document.body.setAttribute('class','');
+				document.getElementById('modal-content').innerHTML = "You don't have access to this resource.";
+		}
+		
+		/**
+		 * @function parseString
+		 *
+		 * @description
+		 *   Parse a given XML string using the renderable object's (o) render() method.
+		 *
+		 */
+		function parse(t,o){	
+			if(o) {	
+				for(var i in o) {
+					t = t.replace(new RegExp('\\{\\{\\s*'+i+'\\s*\\}\\}','gi'),(o.render ? o.render(i) : o.i)||'');
+				}
+				// console.log(tstring);
+			}
+			
+			return t.replace(new RegExp('\\{\\{(.*?)\\}\\}','gi'),'');
+		}
+	</script>
+</html>
