@@ -1,0 +1,7 @@
+{
+    "name": "ocdladefense/appserver",
+    "description": "A PHP application server.",
+    "require": {
+        "php": "^7.2"
+    }
+}
