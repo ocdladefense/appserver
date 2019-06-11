@@ -87,12 +87,12 @@ class AppRouter
         $modules = array();
 
         $files = scandir(".");
-        foreach($files as $file)  
+        foreach($files as $dir)  
         {
-            if(!is_file($file)) continue;
-            $moduleName = explode("Mod", $file)[0];
-            $modules[] = $moduleName;
-            include($file);
+            if(!is_dir($dir) || $dir == ".." || $dir == ".")
+            continue;
+            $modules[] = $dir;
+            require($dir."/module.php");
         }
         chdir($previous);
         //loop through the "$modules" array
