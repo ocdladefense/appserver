@@ -2,6 +2,7 @@
     "name": "ocdladefense/appserver",
     "description": "A PHP application server.",
     "require": {
-        "php": "^5.6"
+        "php": "^7.0",
+        "trevor-uehlin/salesforce":"dev-trunk"
     }
 }
