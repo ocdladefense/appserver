@@ -11,7 +11,7 @@ config.js
 
 #ignore the modules directory
 modules/*
-
+!modules/.gitkeep
 
 
 #  But keep default settings.php and settings.js files
