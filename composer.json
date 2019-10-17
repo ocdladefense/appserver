@@ -1,8 +1,14 @@
 {
     "name": "ocdladefense/appserver",
     "description": "A PHP application server.",
+    "type": "wordpress-theme",
     "require": {
         "php": "^7.0",
         "trevor-uehlin/salesforce":"dev-trunk"
+    },
+    "extra":{
+        "installer-paths":{
+            "modules/salesforce":["trevor-uehlin/salesforce"]
+        }
     }
 }
