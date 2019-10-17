@@ -10,7 +10,7 @@ config.js
 *.wsdl.xml
 
 #ignore the modules directory
-/modules/
+modules/*
 
 
 
