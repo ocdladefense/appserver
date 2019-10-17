@@ -1,5 +1,5 @@
 {
-    "name": "ocdladefense/appserver",
+    "name": "clickpdx/appserver",
     "description": "A PHP application server.",
     "type": "wordpress-theme",
     "require": {
@@ -9,6 +9,11 @@
     "extra":{
         "installer-paths":{
             "modules/salesforce":["trevor-uehlin/salesforce"]
-        }
+        },
+        "comments":[
+            {
+                "note":"type key is currently a workaround to get this to install per clickpdx/devenv."
+            }
+        ]
     }
 }
