@@ -3,7 +3,7 @@
     "description": "A PHP application server.",
     "type": "wordpress-theme",
     "require": {
-        "composer/installers":"~1.o",
+        "composer/installers":"~1.0",
         "trevor-uehlin/salesforce":"dev-master",
         "trevor-uehlin/authorize-net":"dev-master"
     },
