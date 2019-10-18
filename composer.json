@@ -10,7 +10,7 @@
     "extra":{
         "installer-paths":{
             "modules/salesforce":["trevor-uehlin/salesforce"],
-            "modules/authorize-net":["trevor-uehlin/authorize-net"]
+            "modules/authorize-net":["trevor-uehlin/authorizeNet"]
         },
         "comments":[
             {
