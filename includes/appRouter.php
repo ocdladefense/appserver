@@ -112,5 +112,8 @@ class AppRouter
             $this->allRoutes = array_merge($routes, $this->allRoutes);
         }
     }
+    
+    public function getRequestedPath(){
+        return $this->requestedPath;
+    }
 }
-?>
