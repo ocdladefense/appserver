@@ -1,8 +1,7 @@
 <?php
 class AppRouter
 {
-    private $requestedPath = "";
-    private $basePath = "";
+    private $completeRequestedPath = "";
     private $resourceString = "";
     private $pathToRequestedResource = "";
     private $arguments = array();
@@ -11,24 +10,22 @@ class AppRouter
 
     public function __construct($path)
     {
-        $this->requestedPath = $path;
+        $this->completeRequestedPath = $path;
         $this->initializeRoutes();
         $this->parsePath();
     }
 
     public function parsePath()
     {
-        if(strpos($this->requestedPath,"/") == 0)
+        if(strpos($this->completeRequestedPath,"/") == 0)
         {
-            $this->requestedPath = substr($this->requestedPath,1);
+            $this->completeRequestedPath = substr($this->completeRequestedPath,1);
         }
         //isolate the resource string from the requested path
-        $parts = explode("?", $this->requestedPath);
+        $parts = explode("?", $this->completeRequestedPath);
         $this->resourceString = $parts[0];
         $parts = explode("/", $this->resourceString);
-        //remove the base path
-        $basePath = array_shift($parts);
-        //match the requestedPath to a path of a resource
+        //match the completeRequestedPath to a path of a resource
         $this->pathToRequestedResource = array_shift($parts);
         //subtract the matching path you are left with the args
         $this->arguments = $parts;
@@ -113,14 +110,13 @@ class AppRouter
         }
     }
     
-    public function getRequestedPath(){
-        return $this->requestedPath;
+    public function getcompleteRequestedPath(){
+        return $this->completeRequestedPath;
     }
     public function listAllPaths(){
 
         return
-        "requestedPath ====".$this->requestedPath."*********************************************".
-        "basePath ====".$this->basePath."*********************************************".
+        "completeRequestedPath ====".$this->completeRequestedPath."*********************************************".
         "resourceString ====".$this->resourceString."*********************************************".
         "pathToRequestedResource ====".$this->pathToRequestedResource."*********************************************";
     }
