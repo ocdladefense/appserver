@@ -4,11 +4,13 @@
     "type": "wordpress-theme",
     "require": {
         "php": "^7.0",
-        "trevor-uehlin/salesforce":"dev-trunk"
+        "trevor-uehlin/salesforce":"dev-master",
+        "trevor-uehlin/authorize-net":"dev-master"
     },
     "extra":{
         "installer-paths":{
-            "modules/salesforce":["trevor-uehlin/salesforce"]
+            "modules/salesforce":["trevor-uehlin/salesforce"],
+            "modules/authorize-net":["trevor-uehlin/authorize-net"]
         },
         "comments":[
             {
