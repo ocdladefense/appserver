@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "670f40cf9ba686db242123ef67f4252a",
+    "content-hash": "9dbcaf49ff3ef43213ab56a038acb68c",
     "packages": [
         {
             "name": "composer/installers",
@@ -129,17 +129,45 @@
             "time": "2019-08-12T15:00:31+00:00"
         },
         {
+            "name": "trevor-uehlin/authorize-net",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Trevor-Uehlin/authorize-net.git",
+                "reference": "1cd7dc287cedffc27dfd082649bcbf03f69a24e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Trevor-Uehlin/authorize-net/zipball/1cd7dc287cedffc27dfd082649bcbf03f69a24e8",
+                "reference": "1cd7dc287cedffc27dfd082649bcbf03f69a24e8",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-theme",
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Trevor Uehlin",
+                    "email": "uehlin.trevor@gmail.com"
+                }
+            ],
+            "description": "An Authorize.net online billing module",
+            "time": "2019-10-18T17:08:30+00:00"
+        },
+        {
             "name": "trevor-uehlin/salesforce",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Trevor-Uehlin/salesforce.git",
-                "reference": "1fd84cd1716e957c350c30c51457426a8d4e3e87"
+                "reference": "c876ee89170f88804d4fe17c7ed5815c8342313e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Trevor-Uehlin/salesforce/zipball/1fd84cd1716e957c350c30c51457426a8d4e3e87",
-                "reference": "1fd84cd1716e957c350c30c51457426a8d4e3e87",
+                "url": "https://api.github.com/repos/Trevor-Uehlin/salesforce/zipball/c876ee89170f88804d4fe17c7ed5815c8342313e",
+                "reference": "c876ee89170f88804d4fe17c7ed5815c8342313e",
                 "shasum": ""
             },
             "require": {
@@ -154,19 +182,18 @@
                 }
             ],
             "description": "A module designed to handle interactions with a Salesforce customer database.  Uses \"oAuth\" authentication.",
-            "time": "2019-10-16T19:49:32+00:00"
+            "time": "2019-10-17T21:01:03+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "trevor-uehlin/salesforce": 20
+        "trevor-uehlin/salesforce": 20,
+        "trevor-uehlin/authorize-net": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": {
-        "php": "^7.0"
-    },
+    "platform": [],
     "platform-dev": []
 }
