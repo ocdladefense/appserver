@@ -12,18 +12,25 @@ testValidPath();
 
 function testValidPath(){
     $contactId = "999";
-    $validPath = "/customer-profile-id/{$contactId}";
+    $validPath = "/customer-profile-id?{$contactId}";
     $router = new AppRouter($validPath);
 
-    $mods = $router->getModules();
-
+    $modules = $router->getModules();
 
     if(!is_dir("../modules/salesforce")){
         throw new Exception("Not a directory");
     }
 
-    if(!in_array("salesforce",$mods)){
+    if(!in_array("salesforce",$modules) && !in_array("authorizeNet",$modules)){
         throw new Exception("should have loaded salesforce module");
+    }
+
+    $arguments = $router->getArgs();
+
+    print_r ($arguments);
+
+    if(!in_array("999",$arguments)){
+        throw new Exception("The array should contain a parameter of 999");
     }
 
 
