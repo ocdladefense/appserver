@@ -5,12 +5,13 @@
     "require": {
         "composer/installers":"~1.0",
         "trevor-uehlin/salesforce":"dev-master",
-        "trevor-uehlin/authorize-net":"dev-master"
+        "trevor-uehlin/authorize-net":"dev-master",
+        "phpunit/phpunit":"^8.0"
     },
     "extra":{
         "installer-paths":{
             "modules/salesforce":["trevor-uehlin/salesforce"],
-            "modules/authorize-net":["trevor-uehlin/authorizeNet"]
+            "modules/authorizeNet":["trevor-uehlin/authorize-net"]
         },
         "comments":[
             {
