@@ -1,6 +1,9 @@
 <?php
 class AppRouter
 {
+    private static $DEFAULT_HTTP_METHOD = "get";
+    private static $DEFAULT_CONTENT_TYPE = "html";
+
     private $completeRequestedPath = "";
     private $resourceString = "";
     private $pathToRequestedResource = "";
@@ -24,13 +27,15 @@ class AppRouter
         //isolate the resource string from the requested path
         $parts = explode("?", $this->completeRequestedPath);
         $this->resourceString = $parts[0];
+        //subtract the matching path you are left with the args
+        $this->arguments = explode("/",$parts[1]);
+
         $parts = explode("/", $this->resourceString);
         //remove the base path
         array_shift($parts);
         //match the completeRequestedPath to a path of a resource
         $this->pathToRequestedResource = array_shift($parts);
-        //subtract the matching path you are left with the args
-        $this->arguments = $parts;
+
     }
     public function processRoute(){
         $route = $this->getActiveRoute($this->modules);
@@ -41,8 +46,11 @@ class AppRouter
     public function initializeRoutes(){
         $this->modules = $this->getModules();
         $this->loadModules($this->modules);
-        $this->allRoutes = getAllRoutesForModule($this->modules);
+        $this->allRoutes = $this->setRouteDefaults($this->modules);
     }
+
+
+    
     public function getModules(){
         $previous = getcwd();
         chdir("../modules");
@@ -76,14 +84,17 @@ class AppRouter
         }
         return $this->allRoutes[$this->pathToRequestedResource];
     }
-    public function getAllRoutesForModule($modules){
+
+    //Returns all of the routes from all of the modules
+    //setting default values for all routes from all modules
+    public function setRouteDefaults($modules){
         foreach($this->modules as $mod){
-            $functionName = $mod . "ModRoutes";
-            $routes = call_user_func($functionName);
+            $routeFunction = $mod . "ModRoutes";
+            $routes = call_user_func($routeFunction);
             foreach($routes as &$route){
                 $route["module"] = $mod;
-                $route["method"] = !empty($route["method"])?$route["method"]:"get";
-                $route["content-type"] = !empty($route["content-type"])?$route["content-type"]:"html";
+                $route["method"] = !empty($route["method"])?$route["method"]:self::$DEFAULT_HTTP_METHOD;
+                $route["content-type"] = !empty($route["content-type"])?$route["content-type"]:self::$DEFAULT_CONTENT_TYPE;
             }
             return array_merge($routes, $this->allRoutes);
         }
@@ -119,24 +130,24 @@ class AppRouter
 
 
 
-    //Functions that return state data for testing purposes
+    //Functions that return state data for testing purposes ********************************************************
     public function getcompleteRequestedPath(){
         return $this->completeRequestedPath;
     }
     public function getPaths(){
 
-        echo "\n"."\n".
+        return "\n"."\n".
         "completeRequestedPath ====".$this->completeRequestedPath."*********************************************"."\n"."\n".
         "resourceString ====".$this->resourceString."*******************************************"."\n"."\n".
         "pathToRequestedResource ====".$this->pathToRequestedResource."*************************"."\n"."\n";
     }
     public function getRoutes(){
-        print_r($this->allRoutes);
+        return $this->allRoutes;
     }
     public function getArguments(){
-        print_r ($this->arguments);
+        return $this->arguments;
     }
     public function getFilesIncluded(){
-        print_r($this->filesIncluded);
+        return $this->filesIncluded;
     }
 }
