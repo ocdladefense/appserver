@@ -3,6 +3,8 @@ class AppRouter
 {
     private static $DEFAULT_HTTP_METHOD = "get";
     private static $DEFAULT_CONTENT_TYPE = "html";
+    private static $PATH_TO_MODULES = __DIR__ ."/../modules";
+    
 
     private $completeRequestedPath = "";
     private $resourceString = "";
@@ -13,29 +15,37 @@ class AppRouter
     private $allRoutes = array();
     private $modules = array();
 
+    public function __construct(){}
 
-    public function __construct($path){
-        $this->completeRequestedPath = $path;
+    public function recievePath($path){
+        $router = new self();
+        $this->parsePath($path);
         $this->initializeRoutes();
         $this->parsePath();   
     }
 
-    public function parsePath(){
+    public function parsePath($path){
+        $this->completeRequestedPath = $path;
+
+        //Remove prevailing slash
         if(strpos($this->completeRequestedPath,"/") == 0){
             $this->completeRequestedPath = substr($this->completeRequestedPath,1);
         }
-        //isolate the resource string from the requested path
+        //isolate the resource string from the completeRequestedPath
         $parts = explode("?", $this->completeRequestedPath);
         $this->resourceString = $parts[0];
-        //subtract the matching path you are left with the args
+        //isolate the arguments from the completeRequestedPath
         $this->arguments = explode("/",$parts[1]);
 
         $parts = explode("/", $this->resourceString);
-        //remove the base path
-        array_shift($parts);
+
         //match the completeRequestedPath to a path of a resource
         $this->pathToRequestedResource = array_shift($parts);
-
+    }
+    public function initializeRoutes(){
+        $this->modules = $this->getModules();
+        $this->loadModules($this->modules);
+        $this->allRoutes = $this->setRouteDefaults($this->modules);
     }
     public function processRoute(){
         $route = $this->getActiveRoute($this->modules);
@@ -43,17 +53,13 @@ class AppRouter
         $this->setHeaderContentType($route);
         return $this->callCallbackFunction($route);
     }
-    public function initializeRoutes(){
-        $this->modules = $this->getModules();
-        $this->loadModules($this->modules);
-        $this->allRoutes = $this->setRouteDefaults($this->modules);
-    }
+    
 
 
     
     public function getModules(){
         $previous = getcwd();
-        chdir("../modules");
+        chdir(self::$PATH_TO_MODULES);
         $modules = array();
 
         $files = scandir(".");
@@ -68,7 +74,7 @@ class AppRouter
     }
     public function loadModules($modules){
         $previous = getcwd();
-        chdir("../modules");
+        chdir(self::$PATH_TO_MODULES);
 
         $files = scandir(".");
 
@@ -120,34 +126,21 @@ class AppRouter
             return call_user_func_array($route["callback"],$this->getArgs());
         }
     }
+
+    //*****************************Getters*********************************************//
+    public function getCompleteRequestedPath(){
+        return $this->completeRequestedPath;
+    }
+    public function getResourceString(){
+        return $this->resourceString;
+    }
+    public function getPathToRequestedResource(){
+        return $this->pathToRequestedResource;
+    }
     public function getArg($index){
         return $this->arguments[$index];
     }
     public function getArgs(){
         return $this->arguments;
-    }
-    
-
-
-
-    //Functions that return state data for testing purposes ********************************************************
-    public function getcompleteRequestedPath(){
-        return $this->completeRequestedPath;
-    }
-    public function getPaths(){
-
-        return "\n"."\n".
-        "completeRequestedPath ====".$this->completeRequestedPath."*********************************************"."\n"."\n".
-        "resourceString ====".$this->resourceString."*******************************************"."\n"."\n".
-        "pathToRequestedResource ====".$this->pathToRequestedResource."*************************"."\n"."\n";
-    }
-    public function getRoutes(){
-        return $this->allRoutes;
-    }
-    public function getArguments(){
-        return $this->arguments;
-    }
-    public function getFilesIncluded(){
-        return $this->filesIncluded;
     }
 }
