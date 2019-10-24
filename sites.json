@@ -1,0 +1,5 @@
+{ "sites": [
+    { "domain": "times.com"}, 
+    { "domain": "post.com"},
+    { "domain": "politico.com"}
+] }
