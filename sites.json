@@ -1,8 +1,90 @@
 { "sites": [
-    { "domain": "http://www.times.com",
-      "status": 200 }, 
-    { "domain": "http://www.post.com", 
-      "status": 200 },
-    { "domain": "http://www.politico.com",
-      "status": 200 }
+    { "name": "New York Times",
+      "domain": "https://www.nytimes.com",
+      "userName": "",
+      "password": "",
+      "privateKey": "",
+      "currentVersion": "",
+      "expectedStatus": 200,
+      "actualStatus": 1,
+      "comments": "1 = good to go, 2 = trouble",
+      "ipAddress": "", 
+      "localPath": "/wamp64/www/trust/appserver",
+      "repositoryUrl": "https://github.com/ocdladefense/appserver",
+      "urls": [ {
+        "path": "/about",
+        "expectedStatusCode": 200,
+        "actualStatusCode": 200,
+        "statusMessage": ""
+      }, {
+        "path": "/foobar",
+        "expectedStatusCode": 404,
+        "actualStatusCode": 200,
+        "statusMessage": ""
+      }, {
+        "path": "/triggererror",
+        "expectedStatusCode": 500,
+        "actualStatusCode": 200,
+        "statusMessage": ""
+      }] 
+    },
+    { "name": "Google",
+      "domain": "http://www.google.com",
+      "userName": "",
+      "password": "",
+      "privateKey": "",
+      "currentVersion": "",
+      "expectedStatus": 200,
+      "actualStatus": 1,
+      "comments": "1 = good to go, 2 = trouble",
+      "ipAddress": "", 
+      "localPath": "/wamp64/www/trust/appserver",
+      "repositoryUrl": "https://github.com/ocdladefense/appserver",
+      "urls": [ {
+        "path": "/about",
+        "expectedStatusCode": 200,
+        "actualStatusCode": 200,
+        "statusMessage": ""
+      }, {
+        "path": "/foobar",
+        "expectedStatusCode": 404,
+        "actualStatusCode": 200,
+        "statusMessage": ""
+      }, {
+        "path": "/triggererror",
+        "expectedStatusCode": 500,
+        "actualStatusCode": 200,
+        "statusMessage": ""
+      }] 
+    },
+    { "name": "Amazon",
+      "domain": "https://www.amazon.com",
+      "userName": "",
+      "password": "",
+      "privateKey": "",
+      "currentVersion": "",
+      "expectedStatus": 200,
+      "actualStatus": 1,
+      "comments": "1 = good to go, 2 = trouble",
+      "ipAddress": "", 
+      "localPath": "/wamp64/www/trust/appserver",
+      "repositoryUrl": "https://github.com/ocdladefense/appserver",
+      "urls": [ {
+        "path": "/about",
+        "expectedStatusCode": 200,
+        "actualStatusCode": 200,
+        "statusMessage": ""
+      }, {
+        "path": "/foobar",
+        "expectedStatusCode": 404,
+        "actualStatusCode": 200,
+        "statusMessage": ""
+      }, {
+        "path": "/triggererror",
+        "expectedStatusCode": 500,
+        "actualStatusCode": 200,
+        "statusMessage": ""
+      }] 
+    }
 ] }
+
