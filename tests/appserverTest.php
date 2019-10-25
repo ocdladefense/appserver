@@ -17,7 +17,6 @@ final class AppserverTest extends TestCase
     private $resourceString = "customer-profile-id";
     private $pathToRequestedResource = null;
     private $expectedModulesArray = ['authorizeNet','salesforce'];  //Should hold the modules that are available at the time of testing.
-    private $allRoutes = array();
     
     public function testParsePathResults(): void{
         $router = new AppRouter();
@@ -39,20 +38,25 @@ final class AppserverTest extends TestCase
     }
     public function testLoadModules(): void{
         $router = new AppRouter();
-        
-
-        //require "modules/authorizeNet/module.php";
 
         $router->LoadModules($this->expectedModulesArray);
-        $this->assertTrue(function_exists("chargeCard"));
+        //$this->assertTrue(!empty());
+        $this->assertTrue(function_exists("chargeCard")); //from authorizeNet module
+        $this->assertTrue(function_exists("authorize"));  //from salesforce module
+        $allRoutes = $router->getAllRoutes();
+        print_r ($allRoutes);
+        exit;
+        $this->assertTrue(array_key_exists("authorize",$allRoutes));
+        $this->assertTrue(array_key_exists("charge-credit-card",$allRoutes));
     }
-    public function testAllRoutesHasAllAvalilableRoutes(): void{
-        $router = new AppRouter();
-        //$router->initializeRoutes();
-        $this->allRoutes = $router->setRouteDefaults($this->expectedModulesArray);
-    }
+    // public function testAllRoutesHasAllAvalilableRoutes(): void{
+    //     $router = new AppRouter();
 
-
+    //     $router->initializeRoutes();
+    //     $allRoutes = $router->getAllRoutes();
+    //     print_r ($allRoutes);
+    //     exit;
+    // }
 }
 
 
