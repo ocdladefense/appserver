@@ -5,8 +5,14 @@ class AppModules{
 
     public function __construct(){}
 
+    //Execute module class functionality and return the "$this->modules" array
+    public function getModules(){
+        $this->modules = $this->discoverFileSystemModules();
+        $this->loadModules($this->modules);
+        return $this->modules;
+    }
 
-    //Find all of the modules installed in the modules directory and add them to the "this->modules" array.
+    //Find all of the modules installed in the modules directory and add them to the "$this->modules" array.
     public function discoverFileSystemModules(){
         $previous = getcwd();
         chdir(self::$PATH_TO_MODULES);
@@ -23,8 +29,8 @@ class AppModules{
         return $modules;
     }
 
-    //Scan each module directory in the "this->modules" array and require its "module.php" file.
-    public function loadFileSystemModules($modules){
+    //Scan each module directory in the "$this->modules" array and require its "module.php" file.
+    public function loadModules($modules){
         $this->modules = $modules;
         $previous = getcwd();
         chdir(self::$PATH_TO_MODULES);
