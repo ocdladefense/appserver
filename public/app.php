@@ -5,8 +5,14 @@ session_start();
 
 
 //$router = new AppRouter($_SERVER["REQUEST_URI"]);
-$router = new AppRouter();
-$router->recievePath($_SERVER['REQUEST_URI']);
-$responseBody = $router->processRoute();
+$appModules = new AppModules();
+$modules = $appModules->getModules();
 
+
+
+$router = new AppRouter();
+$router->initRoutes($modules);
+$router->setPath($_SERVER['REQUEST_URI']);
+$router->parsePath();
+$responseBody = $router->processRoute();
 print ($responseBody);
