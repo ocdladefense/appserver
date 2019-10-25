@@ -1,5 +1,8 @@
 { "sites": [
-    { "domain": "times.com"}, 
-    { "domain": "post.com"},
-    { "domain": "politico.com"}
+    { "domain": "http://www.times.com",
+      "status": 200 }, 
+    { "domain": "http://www.post.com", 
+      "status": 200 },
+    { "domain": "http://www.politico.com",
+      "status": 200 }
 ] }
