@@ -20,8 +20,7 @@ class AppRouter
     public function recievePath($path){
         $router = new self();
         $this->parsePath($path);
-        $this->initializeRoutes();
-        $this->parsePath();   
+        $this->initializeRoutes();  
     }
 
     public function parsePath($path){
@@ -142,5 +141,9 @@ class AppRouter
     }
     public function getArgs(){
         return $this->arguments;
+    }
+    public function getAllRoutes(){
+        //return $this->allRoutes();
+        //print_r ($this->allRoutes);
     }
 }
