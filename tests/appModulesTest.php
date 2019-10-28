@@ -11,15 +11,14 @@ use PHPUnit\Framework\TestCase;
 
 final class AppModulesTest extends TestCase
 {
-    private $expectedModulesArray = ['authorizeNet','salesforce'];  //Should hold the modules that are available at the time of testing.
+    private $expectedModulesArray = ['authorizeNet','salesforce','testModule'];  //Should hold the modules that are available at the time of testing.
 
     public function testGetModules(): void{
         $appModules = new AppModules();
         $modules = $appModules->getModules();
 
         $this->assertEquals($this->expectedModulesArray,$modules);
-        $this->assertEquals('authorizeNet', $appModules->getModules()[0], "The string 'authorizeNet' is not the element at the index of 0");
-        $this->assertEquals('salesforce', $appModules->getModules()[1], "The string 'salesforce' is not the element at the index of 1");
+        $this->assertEquals('testModule', $appModules->getModules()[2], "The string 'testModule' is not the element at the index of 2");
         $this->assertEquals($this->expectedModulesArray, $appModules->getModules(), "The arrays are not the same");
     }
     public function testDiscoverFileSystemModules(): void{
@@ -27,16 +26,15 @@ final class AppModulesTest extends TestCase
         $modules = $appModules->discoverFileSystemModules();
 
         $this->assertEquals($this->expectedModulesArray,$modules);
-        $this->assertEquals('authorizeNet', $appModules->discoverFileSystemModules()[0], "The string 'authorizeNet' is not the element at the index of 0");
-        $this->assertEquals('salesforce', $appModules->discoverFileSystemModules()[1], "The string 'salesforce' is not the element at the index of 1");
-        $this->assertEquals($this->expectedModulesArray, $appModules->discoverFileSystemModules(), "The arrays are not the same");
+        $this->assertEquals('testModule', $appModules->getModules()[2], "The string 'testModule' is not the element at the index of 2");
+        $this->assertEquals($this->expectedModulesArray, $appModules->getModules(), "The arrays are not the same");
     }
     public function testLoadModules(): void{
         $appModules = new AppModules();
 
         $appModules->LoadModules($this->expectedModulesArray);
 
-        $this->assertTrue(function_exists("chargeCard")); //from authorizeNet module
-        $this->assertTrue(function_exists("authorize"));  //from salesforce module
+        $this->assertTrue(function_exists("testFunctionNumberOne")); //from the testModule
+        $this->assertTrue(function_exists("testFunctionNumberTwo")); //from the testModule
     }
 }
