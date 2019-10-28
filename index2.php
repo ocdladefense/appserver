@@ -8,6 +8,13 @@ define("USER_LEVEL_ADMIN", 1);
 // this is a normal user
 define("USER_LEVEL_PUBLIC", 2);
 
+
+define("USER_ACCESS_GRANTED", 1);
+
+
+define("USER_ACCESS_DENIED", 0);
+
+
 // create a test public user and populate it
 $publicUser = new stdClass();
 
@@ -22,8 +29,7 @@ $adminUser->firstName = "Jane";
 $adminUser->lastName = "Doe";
 $adminUser->accessLevel = USER_LEVEL_ADMIN;
 
-define("USER_ACCESS_GRANTED", 1);
-define("USER_ACCESS_DENIED", 0);
+
 
 function accessDenied() {
     return USER_ACCESS_DENIED;
@@ -49,6 +55,8 @@ $json = fread($handle,filesize($fileName));
 $allSitesHealthy = true;
 
 $sites = json_decode($json);
+
+
 
 $page = new Template("page");
 $content = new Template("site-status");
