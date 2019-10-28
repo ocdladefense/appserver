@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "03de0fbf9f3a224f4fbf77e2babb8b52",
+    "content-hash": "7635f9c3ac6e2ed9599c2c4f04e1f8b6",
     "packages": [
         {
             "name": "composer/installers",
@@ -801,16 +801,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.4.1",
+            "version": "8.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "366a4a0f2b971fd43b7c351d621e8dd7d7131869"
+                "reference": "a142a7e66c0ea7b5b6c04ee27f08d10d1137cd9b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/366a4a0f2b971fd43b7c351d621e8dd7d7131869",
-                "reference": "366a4a0f2b971fd43b7c351d621e8dd7d7131869",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a142a7e66c0ea7b5b6c04ee27f08d10d1137cd9b",
+                "reference": "a142a7e66c0ea7b5b6c04ee27f08d10d1137cd9b",
                 "shasum": ""
             },
             "require": {
@@ -880,7 +880,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-10-07T12:57:41+00:00"
+            "time": "2019-10-28T10:39:51+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1652,6 +1652,34 @@
             "time": "2019-10-17T21:01:03+00:00"
         },
         {
+            "name": "trevor-uehlin/test-module",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Trevor-Uehlin/test-module.git",
+                "reference": "f67ec414aa6eb74df188121e3e29ab130b22b265"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Trevor-Uehlin/test-module/zipball/f67ec414aa6eb74df188121e3e29ab130b22b265",
+                "reference": "f67ec414aa6eb74df188121e3e29ab130b22b265",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-theme",
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Trevor Uehlin",
+                    "email": "uehlin.trevor@gmail.com"
+                }
+            ],
+            "description": "A module for testing the appserver functionality",
+            "time": "2019-10-28T19:41:23+00:00"
+        },
+        {
             "name": "webmozart/assert",
             "version": "1.5.0",
             "source": {
@@ -1706,6 +1734,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "trevor-uehlin/test-module": 20,
         "trevor-uehlin/salesforce": 20,
         "trevor-uehlin/authorize-net": 20
     },
