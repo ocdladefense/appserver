@@ -24,7 +24,7 @@ class Template
     	return $content;
     }
     
-		public function pathToTemplate($name){
+		public static function pathToTemplate($name){
 			return get_theme_path() ."/".$name.self::$TEMPLATE_EXTENSION;
 		}
     
