@@ -10,6 +10,7 @@ class AppRouter
     private $filesIncluded = array();
     private $arguments = array();
     private $allRoutes = array();
+    private $headers = array();
     
 
     public function __construct(){}
@@ -85,7 +86,12 @@ class AppRouter
     }
     public function setHeaderContentType($route){
         if($route["content-type"] == "json"){
-            header("Content-type: application/json; charset=utf-8");
+            $this->headers["Content-type"] = "application/json; charset=utf-8";
+        }
+    }
+    public function sendHeaders(){
+        foreach($this->headers as $headerName => $headerValue){
+            header($headerName.": ".$headerValue);
         }
     }
     public function callCallbackFunction($route){
@@ -112,5 +118,8 @@ class AppRouter
     }
     public function getFilesIncluded(){
         return $this->filesIncluded;
+    }
+    public function getHeaders(){
+        return $this->headers;
     }
 }

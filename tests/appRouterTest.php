@@ -70,21 +70,21 @@ final class AppRouterTest extends TestCase
         $router->requireRouteFiles($activeRoute);
         $this->assertTrue(method_exists("TestClass","testMethodNumberOne"));
     }
-    // public function testSetHeaderContentType(): void{
-    //     $appModules = new AppModules();
-    //     $router = new AppRouter();
-    //     $expectedContentType = "Content-type: application/json; charset=utf-8";
-    //     $pathWithContentTypeOfJson = "get-customer-payment-profile";
+    public function testSetHeaderContentType(): void{
+        $appModules = new AppModules();
+        $router = new AppRouter();
+        $expectedContentType = "application/json; charset=utf-8";
+        $pathWithContentTypeOfJson = "get-customer-payment-profile";
         
-    //     $router->initRoutes($appModules->getModules());
-    //     $router->setPath($pathWithContentTypeOfJson);
-    //     $router->parsePath();
-    //     $activeRoute = $router->getActiveRoute();
-    //     $router->requireRouteFiles($activeRoute);
-    //     //$router->setHeaderContentType($activeRoute);
+        $router->initRoutes($appModules->getModules());
+        $router->setPath($pathWithContentTypeOfJson);
+        $router->parsePath();
+        $activeRoute = $router->getActiveRoute();
+        $router->requireRouteFiles($activeRoute);
+        $router->setHeaderContentType($activeRoute);
         
-    //     //$this->assertEquals($activeRoute["content-type"],$expectedContentType);
-    // }
+        $this->assertEquals($activeRoute["content-type"],$expectedContentType);
+    }
     public function testCallCallBackFunction(): void{
         $appModules = new AppModules();
         $router = new AppRouter();
