@@ -1,5 +1,6 @@
 <?php
 // Unit tests for the appRouter class.
+//Tests require that the test-module is in the modules directory: https://github.com/Trevor-Uehlin/test-module
 
 //EXECUTION OF TESTS IS './vendor/bin/phpunit  tests'
 
