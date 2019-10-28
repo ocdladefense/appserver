@@ -50,17 +50,17 @@ function hasAccess($user) {
 // 5. Get the status code of each website and save it
 $fileName = "sites.json";
 $handle = fopen ($fileName, "r");
-$json = fread($handle,filesize($fileName));
+$fc = fread($handle,filesize($fileName));
 
 $allSitesHealthy = true;
 
-$sites = json_decode($json);
+$json = json_decode($fc);
 
 
 
 $page = new Template("page");
-$content = new Template("site-status");
+$content = (new Template("site-status"))->render(array("sites"=>$json));
 
 
 
-echo $page->render(array('content' => $content->render(array('sites'=>$sites))));
+echo $page->render(array('content' => $content));

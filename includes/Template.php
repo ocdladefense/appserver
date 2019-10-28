@@ -19,7 +19,9 @@ class Template
     	extract($context);
     	ob_start();
     	include self::pathToTemplate($this->name);
-    	return ob_end_flush();
+    	$content = ob_get_contents();
+    	ob_end_clean();
+    	return $content;
     }
     
 		public function pathToTemplate($name){
