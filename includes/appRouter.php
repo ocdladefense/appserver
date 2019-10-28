@@ -79,7 +79,7 @@ class AppRouter
     public function requireRouteFiles($route){
         foreach($route["files"] as $file){
             $file = getPathToModules()."/{$route['module']}/src/".$file;
-            require($file);
+            require_once($file);
             array_push($this->filesIncluded,$file);
         }
     }
@@ -110,7 +110,7 @@ class AppRouter
     public function getArgs(){
         return $this->arguments;
     }
-    public function getFileIncluded(){
+    public function getFilesIncluded(){
         return $this->filesIncluded;
     }
 }

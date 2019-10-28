@@ -63,11 +63,45 @@ final class AppRouterTest extends TestCase
         $router->initRoutes($appModules->getModules());
         $router->setPath($this->validPathThatRequiresFiles);
         $router->parsePath();
-        $this->assertEquals($router->getCompleteRequestedPath(),$this->validPathThatRequiresFiles);
+        $activeRoute = $router->getActiveRoute();
+
+
+        $this->assertFalse(method_exists("Charge","payWith"));
+        $router->requireRouteFiles($activeRoute);
+        $this->assertTrue(method_exists("Charge","payWith"));
+    }
+    public function testSetHeaderContentType(): void{
+        $appModules = new AppModules();
+        $router = new AppRouter();
+        $expectedContentType = "Content-type: application/json; charset=utf-8";
+        $pathWithContentTypeOfJson = "get-customer-payment-profile";
+        
+        $router->initRoutes($appModules->getModules());
+        $router->setPath($pathWithContentTypeOfJson);
+        $router->parsePath();
         $activeRoute = $router->getActiveRoute();
         $router->requireRouteFiles($activeRoute);
+        //$router->setHeaderContentType($activeRoute);
 
-        //MUST FINISH ASSERTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        print_r ($activeRoute);
+        exit;
+        
+        $this->assertEquals($activeRoute["content-type"],$expectedContentType);
+    }
+    public function testCallCallBackFunction(): void{
+        $appModules = new AppModules();
+        $router = new AppRouter();
+
+        //a path pointing to a function specificaly for testing.
+        $testingFunctionPath = "testing-function";
+        
+        $router->initRoutes($appModules->getModules());
+        $router->setPath($testingFunctionPath);
+        $router->parsePath();
+        $activeRoute = $router->getActiveRoute();
+        $router->requireRouteFiles($activeRoute);
+        
+        $this->assertEquals($router->callCallBackFunction($activeRoute),"testing function");
     }
 }
 
