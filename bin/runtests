@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /var/www/trust
+phpunit --bootstrap bootstrap.php tests/
