@@ -1,6 +1,6 @@
 {
 	"name": "OCDLA",
-	"domain": "https://www.ocdla.org",
+	"domain": "https://trust.ocdla.org/",
 	"userName": "",
 	"password": "",
 	"privateKey": "",
@@ -10,7 +10,7 @@
 	"localPath": "/wamp64/www/trust/appserver",
 	"repositoryUrl": "https://github.com/ocdladefense/appserver",
 	"probes": [ {
-		"path": "/about",
+		"pah": "/about",
 		"expectedStatusCode": 200
 	},
 	{
