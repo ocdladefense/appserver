@@ -1,0 +1,30 @@
+#!/usr/bin/php
+<?php
+
+$cur = getcwd();//."\n";
+
+$appPath = __DIR__.'/..';
+
+print $appPath."\n";
+
+chdir($appPath);
+
+
+# Currently provides some formatting options.
+require "bootstrap.php";
+require "includes/cli.inc";
+
+
+$appModules = new AppModules();
+
+$router = new AppRouter();
+
+
+var_dump($argv);
+
+
+
+chdir($cur);
+
+exit;
+$resource = $router->runRouter($appModules->getModules(), $argv[1]);

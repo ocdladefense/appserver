@@ -1,0 +1,107 @@
+// URLs that we say are "representative" of the site's health
+{
+	"deployments":[
+		{
+			"domain": "wc19.ocdla.org",
+			"urls":[
+				"home":"/",
+				"materials":"/materials"
+			],
+			"repo": "https://github.com/nicholasglesmann?tab=repositories",
+			"comment":"Assume that each url should return a HTTP 200 response code."
+		},
+		{
+			"domain":"wp.oadp.org",
+			"urls":[
+				"home":"/",
+				"contact":"/contact"
+			]
+		}
+	]
+}
+
+
+
+// Define status codes
+200 - Ok
+404 - Not found
+301 - Permanent redirect
+302 - Temporary redirect
+500 - Internal Server Error
+
+
+// An array to store out test results
+$statuses = array();
+$statuses["wc19.ocdla.org"] = array("url-1"=>"200 Ok","url-2"=>"404 Not Found");
+
+<?php
+
+$deployments = json_decode("list-o'-sites.json");
+
+
+function getStatusCodes(){
+	foreach($deployments as $site){
+
+		$domain = $site["domain"];
+	
+		$statuses[$domain] = array();
+	
+		foreach($domain["urls"] as $urlToTest){
+			// Navigate to URL
+			$endpoint = $domain . $urlToTest;
+			$request = new HttpRequest($endpoint);
+			$response = $request->makeHttpRequest();
+			$statusCode = $request->status;
+			$statuses[$domain][$urlToTest] = $code;
+		}
+	}
+
+	return $statuses;
+}
+
+
+// The more sensitive the more alerts; the least sensitive would be 500
+$sensitivity 
+$alertLevel = array("low" => array("500"), "medium" => array("301","302"), "high" => array("404"));
+
+
+function sendAlert($statuses,$sensitivity = "low"){ // by default tell me about massive failures
+	$filtered = filterStatuses($statuses,$sensitivity);
+	email("admin@oclda.org", renderStatuses($filtered));
+}
+
+// --> return value is: $statuses
+
+function renderStatuses($statuses){
+	foreach($statuses as $domain){
+		$output = "<h2>$domain</h2><ul class="statuses">";
+		foreach($domain as $url => $code){
+			$output .= "<li>{$url}: {$code}</li>";
+		}
+		$output .= "</ul>";
+	}
+	return $output;
+}
+
+
+
+
+<?php // some template file in WordPress
+  
+  $results = getStatusCodes();
+   
+<html>
+....
+<body>
+
+	<?php echo renderStatuses($results); ?>
+
+  
+</body>
+
+</html>
+
+
+
+
+
