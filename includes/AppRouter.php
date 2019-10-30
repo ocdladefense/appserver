@@ -16,7 +16,7 @@ class AppRouter
     public function __construct(){}
 
     public function runRouter($modules, $path){
-        //$this->modules = $modules;
+        $this->modules = $modules;
         $this->initRoutes($this->modules);
         $this->setPath($path);
         $this->parsePath();

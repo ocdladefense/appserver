@@ -74,16 +74,16 @@ final class AppRouterTest extends TestCase
         $appModules = new AppModules();
         $router = new AppRouter();
         $expectedContentType = "application/json; charset=utf-8";
-        $pathWithContentTypeOfJson = "get-customer-payment-profile";
         
         $router->initRoutes($appModules->getModules());
-        $router->setPath($pathWithContentTypeOfJson);
+        $router->setPath($this->validPathWithArgs);
         $router->parsePath();
         $activeRoute = $router->getActiveRoute();
         $router->requireRouteFiles($activeRoute);
         $router->setHeaderContentType($activeRoute);
-        
-        $this->assertEquals($activeRoute["content-type"],$expectedContentType);
+        $headers = $router->getHeaders();
+
+        $this->assertEquals($headers["Content-type"],$expectedContentType);
     }
     public function testCallCallBackFunction(): void{
         $appModules = new AppModules();
