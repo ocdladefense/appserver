@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "67e28d5080b54537ea1f738250e39bef",
+    "content-hash": "93c827b1b3a59c2a6619f45197235f96",
     "packages": [
         {
             "name": "composer/installers",
@@ -1652,17 +1652,17 @@
             "time": "2019-10-17T21:01:03+00:00"
         },
         {
-            "name": "trevor-uehlin/salesforce-event",
+            "name": "trevor-uehlin/salesforce-event-module",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Trevor-Uehlin/salesforce-event.git",
-                "reference": "62445c2509f27670dcfc2e773483e7e2075998fd"
+                "url": "https://github.com/Trevor-Uehlin/salesforce-event-module.git",
+                "reference": "d07fff07bb3760e939e9f9b09082d07ea334df52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Trevor-Uehlin/salesforce-event/zipball/62445c2509f27670dcfc2e773483e7e2075998fd",
-                "reference": "62445c2509f27670dcfc2e773483e7e2075998fd",
+                "url": "https://api.github.com/repos/Trevor-Uehlin/salesforce-event-module/zipball/d07fff07bb3760e939e9f9b09082d07ea334df52",
+                "reference": "d07fff07bb3760e939e9f9b09082d07ea334df52",
                 "shasum": ""
             },
             "require": {
@@ -1677,7 +1677,7 @@
                 }
             ],
             "description": "A module for retrieving event materials from a salesforce database",
-            "time": "2019-10-30T19:30:43+00:00"
+            "time": "2019-10-30T19:41:36+00:00"
         },
         {
             "name": "trevor-uehlin/test-module",
@@ -1765,7 +1765,7 @@
         "trevor-uehlin/test-module": 20,
         "trevor-uehlin/salesforce": 20,
         "trevor-uehlin/authorize-net": 20,
-        "trevor-uehlin/salesforce-event": 20
+        "trevor-uehlin/salesforce-event-module": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

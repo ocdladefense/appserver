@@ -5,16 +5,16 @@
     "require": {
         "composer/installers":"~1.0",
         "trevor-uehlin/test-module":"dev-master",
-        "trevor-uehlin/salesforce":"dev-master",
-        "trevor-uehlin/authorize-net":"dev-master",
+        "trevor-uehlin/salesforce-module":"dev-master",
+        "trevor-uehlin/authorize-net-module":"dev-master",
         "trevor-uehlin/salesforce-event-module":"dev-master",
         "phpunit/phpunit":"^8.0"
     },
     "extra":{
         "installer-paths":{
             "modules/testModule":["trevor-uehlin/test-module"],
-            "modules/salesforce":["trevor-uehlin/salesforce"],
-            "modules/authorizeNet":["trevor-uehlin/authorize-net"],
+            "modules/salesforce":["trevor-uehlin/salesforce-module"],
+            "modules/authorizeNet":["trevor-uehlin/authorize-net-module"],
             "modules/salesforceEvent":["trevor-uehlin/salesforce-event-module"]
         },
         "comments":[
