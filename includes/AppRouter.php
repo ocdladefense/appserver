@@ -84,11 +84,13 @@ class AppRouter
             array_push($this->filesIncluded,$file);
         }
     }
+    //Add the preferred content type to the headers array
     public function setHeaderContentType($route){
         if($route["content-type"] == "json"){
             $this->headers["Content-type"] = "application/json; charset=utf-8";
         }
     }
+    //Send the value of the headers array at the key of content-type 
     public function sendHeaders(){
         foreach($this->headers as $headerName => $headerValue){
             header($headerName.": ".$headerValue);
