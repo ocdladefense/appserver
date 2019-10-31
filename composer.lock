@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "03de0fbf9f3a224f4fbf77e2babb8b52",
+    "content-hash": "700e666948d06e19cf3044dc5c04ae02",
     "packages": [
         {
             "name": "composer/installers",
@@ -801,16 +801,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.4.1",
+            "version": "8.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "366a4a0f2b971fd43b7c351d621e8dd7d7131869"
+                "reference": "a142a7e66c0ea7b5b6c04ee27f08d10d1137cd9b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/366a4a0f2b971fd43b7c351d621e8dd7d7131869",
-                "reference": "366a4a0f2b971fd43b7c351d621e8dd7d7131869",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a142a7e66c0ea7b5b6c04ee27f08d10d1137cd9b",
+                "reference": "a142a7e66c0ea7b5b6c04ee27f08d10d1137cd9b",
                 "shasum": ""
             },
             "require": {
@@ -880,7 +880,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-10-07T12:57:41+00:00"
+            "time": "2019-10-28T10:39:51+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1596,17 +1596,17 @@
             "time": "2019-06-13T22:48:21+00:00"
         },
         {
-            "name": "trevor-uehlin/authorize-net",
+            "name": "trevor-uehlin/authorize-net-module",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Trevor-Uehlin/authorize-net.git",
-                "reference": "1cd7dc287cedffc27dfd082649bcbf03f69a24e8"
+                "url": "https://github.com/Trevor-Uehlin/authorize-net-module.git",
+                "reference": "95f93e499c3f128948599ebd47c9fdddab5d1aa2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Trevor-Uehlin/authorize-net/zipball/1cd7dc287cedffc27dfd082649bcbf03f69a24e8",
-                "reference": "1cd7dc287cedffc27dfd082649bcbf03f69a24e8",
+                "url": "https://api.github.com/repos/Trevor-Uehlin/authorize-net-module/zipball/95f93e499c3f128948599ebd47c9fdddab5d1aa2",
+                "reference": "95f93e499c3f128948599ebd47c9fdddab5d1aa2",
                 "shasum": ""
             },
             "require": {
@@ -1621,20 +1621,48 @@
                 }
             ],
             "description": "An Authorize.net online billing module",
-            "time": "2019-10-18T17:08:30+00:00"
+            "time": "2019-10-30T19:52:41+00:00"
         },
         {
-            "name": "trevor-uehlin/salesforce",
+            "name": "trevor-uehlin/salesforce-event-module",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Trevor-Uehlin/salesforce.git",
-                "reference": "c876ee89170f88804d4fe17c7ed5815c8342313e"
+                "url": "https://github.com/Trevor-Uehlin/salesforce-event-module.git",
+                "reference": "d07fff07bb3760e939e9f9b09082d07ea334df52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Trevor-Uehlin/salesforce/zipball/c876ee89170f88804d4fe17c7ed5815c8342313e",
-                "reference": "c876ee89170f88804d4fe17c7ed5815c8342313e",
+                "url": "https://api.github.com/repos/Trevor-Uehlin/salesforce-event-module/zipball/d07fff07bb3760e939e9f9b09082d07ea334df52",
+                "reference": "d07fff07bb3760e939e9f9b09082d07ea334df52",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-theme",
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Trevor Uehlin",
+                    "email": "uehlin.trevor@gmail.com"
+                }
+            ],
+            "description": "A module for retrieving event materials from a salesforce database",
+            "time": "2019-10-30T19:41:36+00:00"
+        },
+        {
+            "name": "trevor-uehlin/salesforce-module",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Trevor-Uehlin/salesforce-module.git",
+                "reference": "b49dc31f1db34fd52a4d5f89a958400020d9cf41"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Trevor-Uehlin/salesforce-module/zipball/b49dc31f1db34fd52a4d5f89a958400020d9cf41",
+                "reference": "b49dc31f1db34fd52a4d5f89a958400020d9cf41",
                 "shasum": ""
             },
             "require": {
@@ -1649,7 +1677,35 @@
                 }
             ],
             "description": "A module designed to handle interactions with a Salesforce customer database.  Uses \"oAuth\" authentication.",
-            "time": "2019-10-17T21:01:03+00:00"
+            "time": "2019-10-30T19:50:41+00:00"
+        },
+        {
+            "name": "trevor-uehlin/test-module",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Trevor-Uehlin/test-module.git",
+                "reference": "af73fbdf7a71d63ddffa5cdbd6d6e2e79722ec1d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Trevor-Uehlin/test-module/zipball/af73fbdf7a71d63ddffa5cdbd6d6e2e79722ec1d",
+                "reference": "af73fbdf7a71d63ddffa5cdbd6d6e2e79722ec1d",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-theme",
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Trevor Uehlin",
+                    "email": "uehlin.trevor@gmail.com"
+                }
+            ],
+            "description": "A module for testing the appserver functionality",
+            "time": "2019-10-30T17:01:09+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -1706,8 +1762,10 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "trevor-uehlin/salesforce": 20,
-        "trevor-uehlin/authorize-net": 20
+        "trevor-uehlin/test-module": 20,
+        "trevor-uehlin/salesforce-module": 20,
+        "trevor-uehlin/authorize-net-module": 20,
+        "trevor-uehlin/salesforce-event-module": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

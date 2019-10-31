@@ -3,10 +3,11 @@ require '../bootstrap.php';
 
 session_start();
 
+$appModules = new AppModules();
 
-//$router = new AppRouter($_SERVER["REQUEST_URI"]);
+
+
 $router = new AppRouter();
-$router->recievePath($_SERVER['REQUEST_URI']);
-$responseBody = $router->processRoute();
-
+$responseBody = $router->runRouter($appModules->getModules(),$_SERVER['REQUEST_URI']);
+$router->sendHeaders();
 print ($responseBody);

@@ -3,96 +3,31 @@ class AppRouter
 {
     private static $DEFAULT_HTTP_METHOD = "get";
     private static $DEFAULT_CONTENT_TYPE = "html";
-    private static $PATH_TO_MODULES = __DIR__ ."/../modules";
     
-
     private $completeRequestedPath = "";
     private $resourceString = "";
-    private $pathToRequestedResource = "";
     
     private $filesIncluded = array();
     private $arguments = array();
     private $allRoutes = array();
-    private $modules = array();
+    private $headers = array();
+    
 
     public function __construct(){}
 
-    public function recievePath($path){
-        $router = new self();
-        $this->parsePath($path);
-        $this->initializeRoutes();  
+    public function runRouter($modules, $path){
+        $this->modules = $modules;
+        $this->initRoutes($this->modules);
+        $this->setPath($path);
+        $this->parsePath();
+        return $this->processRoute();
     }
 
-    public function parsePath($path){
-        $this->completeRequestedPath = $path;
+    //Initialize and return all available routes from all available modules.  Set the routes http method and content type to the default
+    //if it is not already defined by the module.
+    public function initRoutes($modules){
+        $this->modules = $modules;
 
-        //Remove prevailing slash
-        if(strpos($this->completeRequestedPath,"/") == 0){
-            $this->completeRequestedPath = substr($this->completeRequestedPath,1);
-        }
-        //isolate the resource string from the completeRequestedPath
-        $parts = explode("?", $this->completeRequestedPath);
-        $this->resourceString = $parts[0];
-        //isolate the arguments from the completeRequestedPath
-        $this->arguments = explode("/",$parts[1]);
-
-        $parts = explode("/", $this->resourceString);
-
-        //match the completeRequestedPath to a path of a resource
-        $this->pathToRequestedResource = array_shift($parts);
-    }
-    public function initializeRoutes(){
-        $this->modules = $this->getModules();
-        $this->loadModules($this->modules);
-        $this->allRoutes = $this->setRouteDefaults($this->modules);
-    }
-    public function processRoute(){
-        $route = $this->getActiveRoute($this->modules);
-        $this->requireRouteFiles($route);
-        $this->setHeaderContentType($route);
-        return $this->callCallbackFunction($route);
-    }
-    
-
-
-    
-    public function getModules(){
-        $previous = getcwd();
-        chdir(self::$PATH_TO_MODULES);
-        $modules = array();
-
-        $files = scandir(".");
-
-        foreach($files as $dir)  {
-            if(!is_dir($dir) || $dir == ".." || $dir == ".")
-            continue;
-            $modules[] = $dir;
-        }
-        chdir($previous);
-        return $modules;
-    }
-    public function loadModules($modules){
-        $previous = getcwd();
-        chdir(self::$PATH_TO_MODULES);
-
-        $files = scandir(".");
-
-        foreach($modules as $mod)  {
-            require($mod."/module.php");
-        }
-        chdir($previous);
-    }
-    public function getActiveRoute($modules){
-
-        if(!array_key_exists($this->pathToRequestedResource,$this->allRoutes)){
-            throw new exception($this->pathToRequestedResource." could not be found");
-        }
-        return $this->allRoutes[$this->pathToRequestedResource];
-    }
-
-    //Returns all of the routes from all of the modules
-    //setting default values for all routes from all modules
-    public function setRouteDefaults($modules){
         foreach($this->modules as $mod){
             $routeFunction = $mod . "ModRoutes";
             $routes = call_user_func($routeFunction);
@@ -101,19 +36,64 @@ class AppRouter
                 $route["method"] = !empty($route["method"])?$route["method"]:self::$DEFAULT_HTTP_METHOD;
                 $route["content-type"] = !empty($route["content-type"])?$route["content-type"]:self::$DEFAULT_CONTENT_TYPE;
             }
-            return array_merge($routes, $this->allRoutes);
+                $this->allRoutes = array_merge($this->allRoutes,$routes);
         }
+        return $this->allRoutes;
     }
+
+    //Set the complete requested path to the given path
+    public function setPath($path){
+        $this->completeRequestedPath = $path;
+    }
+
+    //Break the complete requested path into parts that can be consumed by the router.
+    public function parsePath(){      
+        //Remove prevailing slash if there is one
+        if(strpos($this->completeRequestedPath,"/") === 0){
+            $this->completeRequestedPath = substr($this->completeRequestedPath,1);
+        }
+        //isolate the resource string from the completeRequestedPath
+        $parts = explode("?", $this->completeRequestedPath);
+        $this->resourceString = $parts[0];
+        //isolate the arguments from the completeRequestedPath
+        if(array_key_exists(1,$parts))
+            $this->arguments = explode("/",$parts[1]);
+    }
+
+    //Call all functions required to process the route
+    public function processRoute(){
+        $route = $this->getActiveRoute();
+        $this->requireRouteFiles($route);
+        $this->setHeaderContentType($route);
+        return $this->callCallbackFunction($route);
+    }
+    
+    //Return the route at the index of the requested resource.
+    public function getActiveRoute(){
+        if(!array_key_exists($this->resourceString,$this->allRoutes)){
+            throw new exception($this->resourceString." could not be found");
+        }
+        return $this->allRoutes[$this->resourceString];
+    }
+
+    //require all of the necessary file in the route at the key of 'files'
     public function requireRouteFiles($route){
         foreach($route["files"] as $file){
-            $file = "../modules/{$route['module']}/".$file;
-            require($file);
+            $file = getPathToModules()."/{$route['module']}/src/".$file;
+            require_once($file);
             array_push($this->filesIncluded,$file);
         }
     }
+    //Add the preferred content type to the headers array
     public function setHeaderContentType($route){
         if($route["content-type"] == "json"){
-            header("Content-type: application/json; charset=utf-8");
+            $this->headers["Content-type"] = "application/json; charset=utf-8";
+        }
+    }
+    //Send the value of the headers array at the key of content-type 
+    public function sendHeaders(){
+        foreach($this->headers as $headerName => $headerValue){
+            header($headerName.": ".$headerValue);
         }
     }
     public function callCallbackFunction($route){
@@ -125,7 +105,6 @@ class AppRouter
             return call_user_func_array($route["callback"],$this->getArgs());
         }
     }
-
     //*****************************Getters*********************************************//
     public function getCompleteRequestedPath(){
         return $this->completeRequestedPath;
@@ -133,17 +112,16 @@ class AppRouter
     public function getResourceString(){
         return $this->resourceString;
     }
-    public function getPathToRequestedResource(){
-        return $this->pathToRequestedResource;
-    }
     public function getArg($index){
         return $this->arguments[$index];
     }
     public function getArgs(){
         return $this->arguments;
     }
-    public function getAllRoutes(){
-        //return $this->allRoutes();
-        //print_r ($this->allRoutes);
+    public function getFilesIncluded(){
+        return $this->filesIncluded;
+    }
+    public function getHeaders(){
+        return $this->headers;
     }
 }
