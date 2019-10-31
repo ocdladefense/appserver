@@ -1,0 +1,12 @@
+{
+    "domain": "",
+    "url": "",
+    "expectedResponse": "",
+    "actualResponse": "",
+    "contentType": "",
+    "responseTime": "",
+    "requestMethod": "",
+    "startDate": "",
+    "endDate": "",
+    "requestedBy": ""
+}

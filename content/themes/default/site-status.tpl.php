@@ -23,16 +23,14 @@
 <!-- Loop through every site in the sites.json and print a new row with all info for that site-->
 <?php foreach ($sites->sites as $site): ?>
 		
-		<!-- make a new request object for the site -->
-		<?php $request = new HTTPRequest($site->domain);
-					$response = $request->makeHTTPRequest(); ?>
+		<!-- there will be a new local variable here called $result -->
 		
 		
 		<div class="row m-2">
 
 				<!-- print the domain of the site -->
 				<div class="col">
-						<strong><?php echo "$site->domain" ?></strong>
+						<strong><?php echo "$result->domain" ?></strong>
 				</div>
 
 				<!-- print the current status of the site -->
