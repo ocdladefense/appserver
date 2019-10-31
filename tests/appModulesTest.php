@@ -12,14 +12,14 @@ use PHPUnit\Framework\TestCase;
 
 final class AppModulesTest extends TestCase
 {
-    private $expectedModulesArray = ['authorizeNet','salesforce','testModule'];  //Should hold the modules that are available at the time of testing.
+    private $expectedModulesArray = ['authorizeNet','salesforce','salesforceEvent','testModule'];  //Should hold the modules that are available at the time of testing.
 
     public function testGetModules(): void{
         $appModules = new AppModules();
         $modules = $appModules->getModules();
 
         $this->assertEquals($this->expectedModulesArray,$modules);
-        $this->assertEquals('testModule', $appModules->getModules()[2], "The string 'testModule' is not the element at the index of 2");
+        $this->assertEquals('testModule', $appModules->getModules()[3], "The string 'testModule' is not the element at the index of 3");
         $this->assertEquals($this->expectedModulesArray, $appModules->getModules(), "The arrays are not the same");
     }
     public function testDiscoverFileSystemModules(): void{
@@ -27,7 +27,7 @@ final class AppModulesTest extends TestCase
         $modules = $appModules->discoverFileSystemModules();
 
         $this->assertEquals($this->expectedModulesArray,$modules);
-        $this->assertEquals('testModule', $appModules->getModules()[2], "The string 'testModule' is not the element at the index of 2");
+        $this->assertEquals('testModule', $appModules->getModules()[3], "The string 'testModule' is not the element at the index of 3");
         $this->assertEquals($this->expectedModulesArray, $appModules->getModules(), "The arrays are not the same");
     }
     public function testLoadModules(): void{
