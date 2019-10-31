@@ -10,7 +10,7 @@
 	"localPath": "/wamp64/www/trust/appserver",
 	"repositoryUrl": "https://github.com/ocdladefense/appserver",
 	"probes": [ {
-		"pah": "/about",
+		"path": "/about",
 		"expectedStatusCode": 200
 	},
 	{
