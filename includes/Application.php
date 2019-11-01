@@ -51,5 +51,18 @@ class Application {
         }
         chdir($previous);
     }
+    public function requireDependencies($moduleName){
+        $module = new $moduleName."Module"();
 
+        $dependencies = $module->getDependencies();
+        $hasDependencies = $module->hasDependencies();
+
+
+        //require the files for each dependency
+        foreach($dependencies as $d){
+            $d->requireFiles();
+        }
+        //require the files for the module
+        $module->requireFiles();
+    }
 }
