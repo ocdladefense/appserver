@@ -1,3 +1,7 @@
+<IfModule mod_alias.c>
+    RedirectMatch 403 /xmlrpc.php
+</IfModule>
+
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
