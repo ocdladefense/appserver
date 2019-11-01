@@ -1,20 +1,21 @@
 {
 	"name": "OCDLA",
 	"domain": "https://www.ocdla.org",
-	"date": null,
+	"startDate": null,
+	"endDate": null,
 	"currentVersion": "",
-	"expectedStatus": 200,
-	"actualStatus": null,
+	"expectedStatusCode": 200,
+	"actualStatusCode": null,
 	"results":[
 		{
 			"url": "/foobar",
-			"statusCode": 404,
-			"date": ""
+			"expectedStatusCode": 404,
+			"actualStatusCode": null
 		},
 		{
 			"url": "/contact-us/",
-			"statusCode": 200,
-			"data":""
+			"expectedstatusCode": 200,
+			"actualStatusCode": null
 		}
 	]
 }

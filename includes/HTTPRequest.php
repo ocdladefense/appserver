@@ -9,6 +9,7 @@ class HTTPRequest
 	private $errorNum = null;
 	private $headers = array();
 	private $requestType = "GET";
+	private $info;
 	 
 	public function __construct($endpoint) 
 	{
@@ -104,6 +105,7 @@ class HTTPRequest
 		$this->response = curl_exec($this->handle);
 		$hResponse = new HTTPResponse($this->response);
 		$this->status = curl_getinfo($this->handle, CURLINFO_HTTP_CODE);
+		$this->info = curl_getinfo($this->handle);
 
 		if($this->status != 200)
 		{
@@ -120,6 +122,10 @@ class HTTPRequest
 		// Returns the status, e.g., 404 Not Found, 500 Internal Server Error of our HTTP Response.
 
 		return $this->status;
+	}
+
+	public function getInfo() {
+		return $this->info;
 	}
 	public function closeHTTPConnection()
 	{

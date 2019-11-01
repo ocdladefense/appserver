@@ -1,6 +1,6 @@
 {
 	"name": "OCDLA",
-	"domain": "https://www.ocdla.org",
+	"domain": "https:/www.ocdla.org",
 	"userName": "",
 	"password": "",
 	"privateKey": "",
@@ -11,7 +11,7 @@
 	"repositoryUrl": "https://github.com/ocdladefense/appserver",
 	"probes": [ {
 		"path": "/about",
-		"expectedStatusCode": 200
+		"expectedStatusCode": 301
 	},
 	{
 		"path": "/foobar",
