@@ -10,4 +10,4 @@ $appModules = new AppModules();
 $router = new AppRouter();
 $responseBody = $router->runRouter($appModules->getModules(),$_SERVER['REQUEST_URI']);
 $router->sendHeaders();
-print ($responseBody);
+print_r ($responseBody);
