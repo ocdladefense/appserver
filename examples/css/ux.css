@@ -54,10 +54,7 @@
 				padding:0px !important;
 			}
 			
-			#menu > ul {
-				display:inline-block;
-				width:125px;
-			}
+
 			
 			#menu li:hover {
 				background-color:#eee;
@@ -67,11 +64,7 @@
 				text-align:left;
 			}
 			
-			#menu > ul {
-				width:125px;
-				margin-right:25px;
-			}
-			
+
 			#menu ul li {
 				display:inline-block;
 				background-color:inherit;
