@@ -9,10 +9,6 @@ config.js
 # Ignore any custom SOAP xml files.
 *.wsdl.xml
 
-#ignore the modules directory
-modules/*
-!modules/.gitkeep
-
 
 #  But keep default settings.php and settings.js files
 #  config-default.php
