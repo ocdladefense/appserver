@@ -8,6 +8,7 @@ class AppRouter
     private $resourceString = "";
     
     private $filesIncluded = array();
+    private $additionalModules = array();
     private $arguments = array();
     private $allRoutes = array();
     private $headers = array();
@@ -64,6 +65,7 @@ class AppRouter
     public function processRoute(){
         $route = $this->getActiveRoute();
         $this->requireRouteFiles($route);
+        $this->requireRouteModules($route);
         $this->setHeaderContentType($route);
         return $this->callCallbackFunction($route);
     }
@@ -84,6 +86,27 @@ class AppRouter
             array_push($this->filesIncluded,$file);
         }
     }
+    
+    //if the route requires the use of methods from another module, require the module
+    public function requireRouteModules($route){
+        foreach($route["modules"] as $additionaModule){
+            var_dump($route["modules"]);
+
+            $installedModules = scandir(getPathToModules());
+            
+            if(!in_array($additionaModule,$installedModules)){
+                throw new Exception("$additionaModule is required for the given route, but it is not installed in the modules directory");
+            }
+            
+            $additionalModuleFile = getPathToModules()."/$additionaModule/module.php";
+            require_once($additionaModule);
+            array_push($this->additionalModules,$additionaModule);
+            print_r ($this->additionalModules);
+            var_dump($installedModules);
+            exit;
+        }
+    } 
+
     //Add the preferred content type to the headers array
     public function setHeaderContentType($route){
         if($route["content-type"] == "json"){
