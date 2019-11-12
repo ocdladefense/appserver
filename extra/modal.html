@@ -1,0 +1,132 @@
+<!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">  -->
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Credit Card Form</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+        </div>
+        
+        <div class="modal-body">
+          <form class="needs-validation" novalidate id="addCardForm">
+          <div role="tabpanel">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+              <li role="presentation" class="active"><a href="#paymentDetails" aria-controls="paymentDetails" role="tab" data-toggle="tab">Payment Details</a>
+              </li>
+              <li role="presentation"><a href="#newCard" aria-controls="newCard" role="tab" data-toggle="tab">Add a New Card</a>
+              </li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+              <div role="tabpanel" class="tab-pane active" id="paymentDetails">
+                                              
+                      <div>
+                         <label for="Cards">Cards On File</label>
+                         <select class="form-control" name= "Cards" id="cardInfo" pattern="[0-9.]+" size="1"></select>                         
+                      </div>
+                     </br>
+                 
+              </div>
+              <div role="tabpanel" class="tab-pane" id="newCard">
+                
+                  
+                     <div>
+                      <label for="FirstName">First Name</label> 
+                      <input type ="text" class="form-control" name="firstName" id="firstName" placeholder="First Name" >
+                      <div class="invalid-feedback">
+                       Please provide a valid first name.
+                      </div>
+                     </div>
+                     <div>
+                      <label for="LastName">Last Name</label> 
+                      <input type ="text" class="form-control" name="lastName" id="lastName" placeholder="Last Name" >
+                      <div class="invalid-feedback">
+                       Please provide a valid last name.
+                     </div>
+                     </div>
+                 
+                     <div>
+                      <label for="Card Number">Card Number</label> 
+                      <input type="text" class="form-control" name="cardNumber" id="cardNumber" placeholder="Card Number" pattern="[0-9.]+" required> 
+                      <div class="invalid-feedback">
+                        Please provide the card number.
+                      </div>
+                     </div>
+
+                     
+                    <label >Credit Card Type:</label> 
+                    <br> 
+
+                    <div >
+                     <input type="radio" name="cardType" value="Visa" checked> Visa
+                    </div>
+
+                    <div >
+                     <input type="radio" name="cardType" value="Master Card"> Master Card
+                    </div>
+
+                    <div >
+                     <input type="radio" name="cardType" value="American Express"> American Express
+                    </div>
+
+                     <div>
+                       <label for="SecurityCode">CVV</label> 
+                       <input type ="text" class="form-control" name="cardCode" id="cardCode" placeholder="CVV" style="width: 3" size="3" maxlength="3" required>
+                       <div class="invalid-feedback">
+                        Please provide a valid credit card security code.
+                       </div>
+                     </div>
+              
+                     <div>
+                       <label for="ExpirationDate">Expiration Date</label>
+                       <input type ="text" class= "form-control"name="expirationDate" placeholder="Expiration Date" id="expirationDate" size="5" maxlength="5" required >
+                       <div class="invalid-feedback">
+                        Please provide a valid expriation date.
+                       </div>
+                     </div>
+              
+              
+                     <div>
+                       <label for="MailingStreet">Mailing Street</label>
+                       <input type ="text" class="form-control" name= "address" id="address" placeholder="Mailing Street" required>
+                       <div class="invalid-feedback">
+                        Please provide a valid address.
+                       </div>
+                     </div>
+              
+                     <div>
+                       <label for="MailingState">Mailing State</label>
+                       <input type ="text" class="form-control" name= "state" id="state" placeholder="Mailing State" required>
+                       <div class="invalid-feedback">
+                        Please provide a valid state.
+                       </div>
+                     </div>
+                     <div>
+                      <label for="MailingCity">Mailing City</label>
+                      <input type ="text" class="form-control" name= "city" id="city" placeholder="Mailing City" required>
+                      <div class="invalid-feedback">
+                       Please provide a valid address.
+                      </div>
+                     </div>
+              
+                     <div >
+                       <label for="Postal Code">Zip Code</label>
+                       <input type ="text" class="form-control" name= "zip" id="zip" placeholder="Zip Code" size="5" maxlength="5" required>
+                       <div class="invalid-feedback">
+                        Please provide a valid zip.
+                       </div>
+                     </div>
+                     </br>
+                     <button type="submit" id="addNewCard" class="btn btn-primary">Add New Card</button> 
+                   </div>
+                  
+                   
+                </form>
+                  
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+     <!-- </div>  -->

@@ -14,7 +14,7 @@
 		</div>
 		<div id="page">
 		
-			<h1>CC Form Example</h1>
+			<h1>AppServer GUI</h1>
 		
 			<p>Access to this resource requires a paid subscription.</p>
 		
@@ -102,10 +102,10 @@
 			}
 			if(item.children && item.children.length){
 
-				return "<ul><li "+classes+">"+item.name + "<ul>"+item.children.map((item) => renderMenu(item)).join('\n')+"</ul></li></ul>";
+				return "<li "+classes+">"+item.name + "<ul>"+item.children.map((item) => renderMenu(item)).join('\n')+"</ul></li>";
 			}
 			
-			else return item.top ? "<ul><li "+classes+">"+item.name+"</li></ul>" : "<li>"+item.name+"</li>";
+			else return "<ul>" + (item.top ? "<li "+classes+">"+item.name+"</li>" : "<li>"+item.name+"</li>") + "</ul>";
 		}
 		
 /*

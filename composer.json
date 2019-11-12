@@ -2,7 +2,7 @@
     "name": "clickpdx/appserver",
     "description": "A PHP application server.",
     "type": "wordpress-theme",
-    "require": {
+    "require-dev": {
         "composer/installers":"~1.0",
         "trevor-uehlin/test-module":"dev-master",
         "trevor-uehlin/salesforce-module":"dev-master",
