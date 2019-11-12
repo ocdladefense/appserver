@@ -1,6 +1,8 @@
 			
-.sub-menu {
-	display:none;
+
+
+li:hover .sub-menu {
+	display:block;
 }
 
 ul.main-menu {
@@ -11,6 +13,7 @@ ul.main-menu {
 	display:inline-block;
 	padding-left:1.0em;
 	padding-right:1.0em;
+	position:relative;
 }
 
 li a {
@@ -19,6 +22,31 @@ li a {
 	margin:0;
 	text-decoration:none;
 }
+
+.sub-menu {
+	display:none;
+	position: absolute;
+	margin-left:0px;
+	padding-left:0px;
+	min-width:150px;
+	height:200px;
+	background-color:#fff;
+	z-index:10;
+}
+
+.sub-menu li {
+	display:block;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
