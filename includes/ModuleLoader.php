@@ -1,5 +1,5 @@
 <?php
-class AppModules{
+class ModuleLoader{
     private static $PATH_TO_MODULES = __DIR__ ."/../modules";
     private $modules = array();
 
@@ -42,5 +42,19 @@ class AppModules{
         }
         chdir($previous);
     }
+    //create a new instance of the subclass of the module
+    public function getInstance($moduleName){
+        $className = $moduleName."Module";
+        $moduleClass = new $className();
+        return $moduleClass;
+    }
+    //require each of the dependencies for the module
+    public function getModuleDependencies($moduleName){
+        $modInstance = $this->getModule($moduleName);
+        $dependencies = $modInstance->getDependencies();
 
+        foreach($dependencies as $d){
+            $this->getInstance($d);
+        }
+    }
 }
