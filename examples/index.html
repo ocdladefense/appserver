@@ -4,8 +4,14 @@
 		<meta charset="utf-8" />
 		<title>Using modal cc form</title>
 		<link href="css/ux.css" type="text/css" rel="stylesheet" />
-	
-		</style>
+		<script type="text/javascript">
+			window.appModules = {};
+			function define(deps,mod){
+				appModules['view'] = mod();
+			}
+		</script>
+		<script src="//membertest.ocdla.org/sites/all/libraries/library/view-core.js">
+		</script>
 	</head>
 	<body>
 		<div id="header">
@@ -31,7 +37,7 @@
 	
 	<script type="text/javascript">
 	
-		document.addEventListener('DOMContentLoaded',function(e){ doMenu(menu); },false);
+		// document.addEventListener('DOMContentLoaded',function(e){ doMenu(menu); },false);
 	
 		var mockCustomer = {
 		
@@ -52,24 +58,41 @@
 			
 		};
 		
-		var menu = [
-		{
-			name: 'file',
-			children: [{name:'save'},{name:'save as...'},{name:'export...'}],
-			classes:['menu-top']
-		},
-		{
-			name: 'salesforce',
-			children: [{name:'authorize'},{name:'authorize-as'}],
-			classes: ['menu-top']
-		},
-		{
-			name: 'about',
-			top: true,
-			classes: ['menu-top']
-		}
 		
-		];
+	function renderMenu() {
+		var vnode = createMenu();
+		var node = appModules["view"].createElement( vnode );
+		document.getElementById("header").appendChild(node);
+	}
+	
+	function menuItem(name){
+		var name = h("a",{href:"#"},name);
+		return h("li",{},[name]);
+	}
+	
+	function subMenu(name,submenu){
+
+		var children = submenu.map(menuItem);
+		var sub = h("ul",{className:"sub-menu"},children);
+		var top = h("li",{},[h("a",{href:"#"},name)]);
+		top.children.push(sub);
+		return top;
+	}
+		
+		function createMenu() {
+			var subs = [
+				menuItem("save"),
+				menuItem("save as"),
+				menuItem("export")
+			];
+			var children = [
+				subMenu("file",["save","save-as","export"]),
+				menuItem("salesforce"),
+				menuItem("about")
+			];
+			
+			return h("ul",{className:"main-menu"},children);
+		}
 		
 		
 		function showModal(){
@@ -93,31 +116,12 @@
 			});
 		}
 		
-		
-		
-		function renderMenu(item){
-			var classes = item.classes && item.classes.length ? 'class="'+item.classes.join(' ')+'"' : '';
-			if(Array.isArray(item)) {
-				return item.map((it) => renderMenu(it)).join('\n');
-			}
-			if(item.children && item.children.length){
 
-				return "<li "+classes+">"+item.name + "<ul>"+item.children.map((item) => renderMenu(item)).join('\n')+"</ul></li>";
-			}
-			
-			else return "<ul>" + (item.top ? "<li "+classes+">"+item.name+"</li>" : "<li>"+item.name+"</li>") + "</ul>";
-		}
+
+
+
 		
-/*
-var menu = domstring = "<li>file<ul><li>save</li>
-<li>save as...</li>
-<li>export...</li></ul></li>
-<li>salesforce<ul><li>authorize</li>
-<li>authorize-as</li></ul></li>
-<li>about</li>
-*/
-		
-		function doMenu(menu){
+		function doXml(menu){
 			var domstring,
 			
 			xml;
@@ -143,23 +147,6 @@ var menu = domstring = "<li>file<ul><li>save</li>
 			document.body.setAttribute('class','');
 				document.getElementById('modal-content').innerHTML = "You don't have access to this resource.";
 		}
-		
-		/**
-		 * @function parseString
-		 *
-		 * @description
-		 *   Parse a given XML string using the renderable object's (o) render() method.
-		 *
-		 */
-		function parse(t,o){	
-			if(o) {	
-				for(var i in o) {
-					t = t.replace(new RegExp('\\{\\{\\s*'+i+'\\s*\\}\\}','gi'),(o.render ? o.render(i) : o.i)||'');
-				}
-				// console.log(tstring);
-			}
-			
-			return t.replace(new RegExp('\\{\\{(.*?)\\}\\}','gi'),'');
-		}
+
 	</script>
 </html>
