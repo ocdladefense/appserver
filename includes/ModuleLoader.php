@@ -49,12 +49,13 @@ class ModuleLoader{
         return $moduleClass;
     }
     //require each of the dependencies for the module
-    public function getModuleDependencies($moduleName){
+    public function getInstances($moduleName){
         $modInstance = $this->getModule($moduleName);
         $dependencies = $modInstance->getDependencies();
 
         foreach($dependencies as $d){
-            $this->getInstance($d);
+            $instances = $this->getInstance($d);
         }
+        return $instances;
     }
 }

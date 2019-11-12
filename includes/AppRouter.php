@@ -18,6 +18,7 @@ class AppRouter
     public function __construct($application){
         $this->application = $application;
         $this->modules = $this->application->getModules();
+        //$this->allRoutes = $this->application->getAllRoutes();
     }
 
     public function run($path){
