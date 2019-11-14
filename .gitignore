@@ -27,5 +27,8 @@ node_modules/*
 # Ignore vendor libraries (e.g., authorizedotnet)
 /vendor/
 
+#ignore content directory
+/content/
+
 # Ignore any logging files.
 phplog*
