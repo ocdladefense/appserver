@@ -42,20 +42,16 @@ class ModuleLoader{
         }
         chdir($previous);
     }
-    //create a new instance of the subclass of the module
-    public function getInstance($moduleName){
+    //require each of the dependencies for each module
+    public static function getInstance($moduleName){
         $className = $moduleName."Module";
         $moduleClass = new $className();
-        return $moduleClass;
-    }
-    //require each of the dependencies for the module
-    public function getInstances($moduleName){
-        $modInstance = $this->getModule($moduleName);
-        $dependencies = $modInstance->getDependencies();
+        $dependencies = $moduleClass->getDependencies();
 
         foreach($dependencies as $d){
-            $instances = $this->getInstance($d);
+            $instance = self::getInstance($d);
+            $instance->loadFiles();
         }
-        return $instances;
+        return $moduleClass;
     }
 }
