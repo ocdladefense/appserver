@@ -24,6 +24,9 @@ modules/*
 # Ignore composer.lock
 composer.lock
 
+# Ignore results directory
+/results/
+
 # Ignore node modules
 node_modules/*
 
