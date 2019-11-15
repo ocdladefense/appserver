@@ -18,6 +18,9 @@ config.js
 # Ignore vendor libraries (e.g., authorizedotnet)
 /vendor/
 
+# Ignore modules
+/modules/
+
 # Moduls get their own projects.
 
 # Ignore any logging files.
