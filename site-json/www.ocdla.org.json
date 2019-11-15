@@ -1,6 +1,6 @@
 {
 	"name": "OCDLA",
-	"domain": "https://www.ocdla.org",
+	"domain": "https:/www.ocdla.org",
 	"userName": "",
 	"password": "",
 	"privateKey": "",
@@ -9,12 +9,18 @@
 	"ipAddress": "", 
 	"localPath": "/wamp64/www/trust/appserver",
 	"repositoryUrl": "https://github.com/ocdladefense/appserver",
-	"probes": [ {
-		"path": "/about",
-		"expectedStatusCode": 200
-	},
-	{
-		"path": "/foobar",
-		"expectedStatusCode": 404
-	}]
+	"probes": [
+		{
+			"path": "/",
+			"expectedStatusCode": 200
+		},
+		{
+			"path": "/about",
+			"expectedStatusCode": 301
+		},
+		{
+			"path": "/foobar",
+			"expectedStatusCode": 404
+		}
+	]
 }
