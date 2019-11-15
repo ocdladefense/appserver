@@ -21,7 +21,8 @@ config.js
 modules/*
 !modules/.gitkeep
 
-
+# Ignore composer.lock
+composer.lock
 
 # Ignore node modules
 node_modules/*
