@@ -127,6 +127,7 @@ class HTTPRequest
 	public function getInfo() {
 		return $this->info;
 	}
+	
 	public function closeHTTPConnection()
 	{
 		// Closing the HTTP connection.
