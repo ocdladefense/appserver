@@ -2,12 +2,14 @@
 require '../bootstrap.php';           
 
 session_start();
+$application = new Application();
+$loader = new ModuleLoader();
+$application->setModuleLoader($loader);
+//$application->setFileSystem(new FileSystem());
 
-$appModules = new AppModules();
 
 
-
-$router = new AppRouter();
-$responseBody = $router->runRouter($appModules->getModules(),$_SERVER['REQUEST_URI']);
+$router = new Router($application);
+$responseBody = $router->run($_SERVER['REQUEST_URI']);
 $router->sendHeaders();
-print ($responseBody);
+print_r ($responseBody);

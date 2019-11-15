@@ -21,5 +21,6 @@
 	
 	require_once BASE_PATH.'/includes/Template.php';
     require_once BASE_PATH.'/includes/Application.php';
-    require_once BASE_PATH.'/includes/AppModules.php';
-	require_once BASE_PATH.'/includes/AppRouter.php';
+    require_once BASE_PATH.'/includes/ModuleLoader.php';
+	require_once BASE_PATH.'/includes/Router.php';
+	require_once BASE_PATH.'/includes/Module.php';

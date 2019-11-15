@@ -1,25 +1,33 @@
 <?php
-class AppRouter
+class Router
 {
     private static $DEFAULT_HTTP_METHOD = "get";
     private static $DEFAULT_CONTENT_TYPE = "html";
     
+    private $application;
     private $completeRequestedPath = "";
     private $resourceString = "";
+    private $activeRoute;
+    private $activeModule;
     
     private $filesIncluded = array();
+    private $additionalModules = array();
     private $arguments = array();
     private $allRoutes = array();
     private $headers = array();
     
 
-    public function __construct(){}
+    public function __construct($application){
+        $this->application = $application;
+        $this->modules = $this->application->getModules();
+    }
 
-    public function runRouter($modules, $path){
-        $this->modules = $modules;
+    public function run($path){
         $this->initRoutes($this->modules);
         $this->setPath($path);
         $this->parsePath();
+        $this->activeRoute = $this->getActiveRoute();
+        $this->activeModule = ModuleLoader::getInstance($this->activeRoute["module"]);
         return $this->processRoute();
     }
 
@@ -29,8 +37,8 @@ class AppRouter
         $this->modules = $modules;
 
         foreach($this->modules as $mod){
-            $routeFunction = $mod . "ModRoutes";
-            $routes = call_user_func($routeFunction);
+            $module = ModuleLoader::getInstance($mod);
+            $routes = $module->getRoutes();
             foreach($routes as &$route){
                 $route["module"] = $mod;
                 $route["method"] = !empty($route["method"])?$route["method"]:self::$DEFAULT_HTTP_METHOD;
@@ -62,10 +70,9 @@ class AppRouter
 
     //Call all functions required to process the route
     public function processRoute(){
-        $route = $this->getActiveRoute();
-        $this->requireRouteFiles($route);
-        $this->setHeaderContentType($route);
-        return $this->callCallbackFunction($route);
+        $this->requireRouteFiles($this->activeRoute);
+        $this->setHeaderContentType($this->activeRoute);
+        return $this->callCallbackFunction($this->activeRoute);
     }
     
     //Return the route at the index of the requested resource.
@@ -79,10 +86,13 @@ class AppRouter
     //require all of the necessary file in the route at the key of 'files'
     public function requireRouteFiles($route){
         foreach($route["files"] as $file){
-            $file = getPathToModules()."/{$route['module']}/src/".$file;
-            require_once($file);
+            $this->requireModuleFile($file);
             array_push($this->filesIncluded,$file);
         }
+    }
+    public function requireModuleFile($file){
+        $path = getPathToModules()."/{$this->activeRoute['module']}/src/".$file;
+            require_once($path);
     }
     //Add the preferred content type to the headers array
     public function setHeaderContentType($route){

@@ -1,5 +1,5 @@
 <?php
-class AppModules{
+class ModuleLoader{
     private static $PATH_TO_MODULES = __DIR__ ."/../modules";
     private $modules = array();
 
@@ -42,5 +42,16 @@ class AppModules{
         }
         chdir($previous);
     }
+    //require each of the dependencies for each module
+    public static function getInstance($moduleName){
+        $className = $moduleName."Module";
+        $moduleClass = new $className();
+        $dependencies = $moduleClass->getDependencies();
 
+        foreach($dependencies as $d){
+            $instance = self::getInstance($d);
+            $instance->loadFiles();
+        }
+        return $moduleClass;
+    }
 }

@@ -2,12 +2,12 @@
     "name": "clickpdx/appserver",
     "description": "A PHP application server.",
     "type": "wordpress-theme",
-    "require": {
+    "require-dev": {
         "composer/installers":"~1.0",
         "trevor-uehlin/test-module":"dev-master",
         "trevor-uehlin/salesforce-module":"dev-master",
         "trevor-uehlin/authorize-net-module":"dev-master",
-        "trevor-uehlin/salesforce-event-module":"dev-master",
+        "trevor-uehlin/event-module":"dev-master",
         "phpunit/phpunit":"^8.0"
     },
     "extra":{
@@ -15,7 +15,7 @@
             "modules/testModule":["trevor-uehlin/test-module"],
             "modules/salesforce":["trevor-uehlin/salesforce-module"],
             "modules/authorizeNet":["trevor-uehlin/authorize-net-module"],
-            "modules/salesforceEvent":["trevor-uehlin/salesforce-event-module"]
+            "modules/event":["trevor-uehlin/event-module"]
         },
         "comments":[
             {
