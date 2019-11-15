@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9573ba4202ec5bc580834df732c22ced",
+    "content-hash": "1dbb05aad343cec339b86bfa794ef3ad",
     "packages": [],
     "packages-dev": [
         {
@@ -52,6 +52,53 @@
                 "payment"
             ],
             "time": "2018-12-05T10:34:25+00:00"
+        },
+        {
+            "name": "clickpdx/sitestatus",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/sitestatus.git",
+                "reference": "66226bef6d494c119831eb12a61bfb0ea49fb4f2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/sitestatus/zipball/66226bef6d494c119831eb12a61bfb0ea49fb4f2",
+                "reference": "66226bef6d494c119831eb12a61bfb0ea49fb4f2",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Nicholas Glesmann",
+                    "email": "nicholasglesmann@gmail.com"
+                }
+            ],
+            "description": "Checks the status of sites.",
+            "time": "2019-11-15T20:25:22+00:00"
+        },
+        {
+            "name": "clickpdx/webconsole",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/webconsole.git",
+                "reference": "477ca06593b8a821165daaf826d20f5c7dd2ae07"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/webconsole/zipball/477ca06593b8a821165daaf826d20f5c7dd2ae07",
+                "reference": "477ca06593b8a821165daaf826d20f5c7dd2ae07",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Front-end GUI for an AppServer.",
+            "time": "2019-11-15T18:22:04+00:00"
         },
         {
             "name": "composer/installers",
@@ -2846,12 +2893,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Trevor-Uehlin/event-module.git",
-                "reference": "f176f548744964a16f6b5db482998c0116c87600"
+                "reference": "872e2af5889f6825d379495e05eb03c971381b0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Trevor-Uehlin/event-module/zipball/f176f548744964a16f6b5db482998c0116c87600",
-                "reference": "f176f548744964a16f6b5db482998c0116c87600",
+                "url": "https://api.github.com/repos/Trevor-Uehlin/event-module/zipball/872e2af5889f6825d379495e05eb03c971381b0b",
+                "reference": "872e2af5889f6825d379495e05eb03c971381b0b",
                 "shasum": ""
             },
             "require": {
@@ -2866,7 +2913,7 @@
                 }
             ],
             "description": "A module for retrieving event materials from a database or a local file system",
-            "time": "2019-11-12T19:05:22+00:00"
+            "time": "2019-11-14T21:31:50+00:00"
         },
         {
             "name": "trevor-uehlin/salesforce-module",
@@ -2874,12 +2921,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Trevor-Uehlin/salesforce-module.git",
-                "reference": "6e5924987342e5ae91e0fe3d50b050102590bdc5"
+                "reference": "46a507d17470a16457c7d3e62726ce9649d2923f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Trevor-Uehlin/salesforce-module/zipball/6e5924987342e5ae91e0fe3d50b050102590bdc5",
-                "reference": "6e5924987342e5ae91e0fe3d50b050102590bdc5",
+                "url": "https://api.github.com/repos/Trevor-Uehlin/salesforce-module/zipball/46a507d17470a16457c7d3e62726ce9649d2923f",
+                "reference": "46a507d17470a16457c7d3e62726ce9649d2923f",
                 "shasum": ""
             },
             "require": {
@@ -2894,7 +2941,7 @@
                 }
             ],
             "description": "A module designed to handle interactions with a Salesforce customer database.  Uses \"oAuth\" authentication.",
-            "time": "2019-11-12T17:42:33+00:00"
+            "time": "2019-11-14T21:35:35+00:00"
         },
         {
             "name": "trevor-uehlin/test-module",
@@ -2902,12 +2949,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Trevor-Uehlin/test-module.git",
-                "reference": "af73fbdf7a71d63ddffa5cdbd6d6e2e79722ec1d"
+                "reference": "f8df1d12a0ea7095770008325b1c2c4c335b1621"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Trevor-Uehlin/test-module/zipball/af73fbdf7a71d63ddffa5cdbd6d6e2e79722ec1d",
-                "reference": "af73fbdf7a71d63ddffa5cdbd6d6e2e79722ec1d",
+                "url": "https://api.github.com/repos/Trevor-Uehlin/test-module/zipball/f8df1d12a0ea7095770008325b1c2c4c335b1621",
+                "reference": "f8df1d12a0ea7095770008325b1c2c4c335b1621",
                 "shasum": ""
             },
             "require": {
@@ -2922,7 +2969,7 @@
                 }
             ],
             "description": "A module for testing the appserver functionality",
-            "time": "2019-10-30T17:01:09+00:00"
+            "time": "2019-11-14T20:47:41+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -2981,7 +3028,9 @@
         "trevor-uehlin/test-module": 20,
         "trevor-uehlin/salesforce-module": 20,
         "trevor-uehlin/authorize-net-module": 20,
-        "trevor-uehlin/event-module": 20
+        "trevor-uehlin/event-module": 20,
+        "clickpdx/sitestatus": 20,
+        "clickpdx/webconsole": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
