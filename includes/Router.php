@@ -57,6 +57,7 @@ class Router
     //Break the complete requested path into parts that can be consumed by the router.
     public function parsePath(){      
         //Remove prevailing slash if there is one
+
         if(strpos($this->completeRequestedPath,"/") === 0){
             $this->completeRequestedPath = substr($this->completeRequestedPath,1);
         }
@@ -108,6 +109,7 @@ class Router
     }
     public function callCallbackFunction($route){
         if($route["method"] == "post"){
+            //should be set to request->getBody();
             $entityBody = file_get_contents('php://input');
             return call_user_func_array($route["callback"],array($entityBody));   
         }

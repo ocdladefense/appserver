@@ -84,7 +84,7 @@ class HTTPRequest
 			curl_setopt($this->handle, CURLOPT_HTTPHEADER, $this->headers);
 		}
 	}
-	public function addHeaders($header)
+	public function addHeader($header)
 	{
 		$this->headers[] = $header; 
 	}
@@ -146,5 +146,22 @@ class HTTPRequest
 	public function success()
 	{
 		return $this->status == 200;
+	}
+	public function setHeaders($headers){
+		$this->headers = $headers;
+	}
+
+	public function getHeaders(){
+		return $this->headers;
+	}
+	public function getRequestUri(){
+		return $this->headers["Request-URI"];
+	}
+	public static function newFromEnvironment(){
+		$request = new self($_SERVER["REQUEST_URI"]);
+		
+		$request->headers = apache_request_headers();
+		$request->headers["Request-URI"] = $_SERVER["REQUEST_URI"];
+		return $request;
 	}
 }// end HTTPRequest class
