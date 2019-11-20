@@ -150,7 +150,16 @@ class HTTPRequest
 	public function setHeaders($headers){
 		$this->headers = $headers;
 	}
-
+	public function isSupportedContentType($contentType){
+		if($this->getHeader("Accept") == $contentType || stringContains($this->headers["Accept"], "*/*")){
+			return true;
+		}
+		return false;
+	}
+	public function getHeader($headerName){
+		//throw an exception
+		return $this->headers[$headerName];
+	}
 	public function getHeaders(){
 		return $this->headers;
 	}

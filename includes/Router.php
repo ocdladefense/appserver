@@ -133,6 +133,9 @@ class Router
     public function getFilesIncluded(){
         return $this->filesIncluded;
     }
+    public function getHeader($headerName){
+        return $this->headers[$headerName];
+    }
     public function getHeaders(){
         return $this->headers;
     }
