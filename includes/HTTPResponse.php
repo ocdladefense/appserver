@@ -8,6 +8,10 @@ class HTTPResponse
     {
          $this->body = $html;
     }
+    //Setters
+    public function setContentType($route){
+        
+    }
     public function getBody()
     {
         return $this->body;

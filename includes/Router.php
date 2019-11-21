@@ -5,6 +5,7 @@ class Router
     private static $DEFAULT_CONTENT_TYPE = "html";
     
     private $application;
+    private $response;
     private $completeRequestedPath = "";
     private $resourceString = "";
     private $activeRoute;
@@ -20,6 +21,7 @@ class Router
     public function __construct($application){
         $this->application = $application;
         $this->modules = $this->application->getModules();
+        $this->response = new HttpResponse();
     }
 
     public function run($path){
@@ -28,6 +30,8 @@ class Router
         $this->parsePath();
         $this->activeRoute = $this->getActiveRoute();
         $this->activeModule = ModuleLoader::getInstance($this->activeRoute["module"]);
+        //retrun a new httpResponse object  all in class setContenttype and setHeaders and setBody(value of this->processRoute)
+        //return an array for all errror messages
         return $this->processRoute();
     }
 
@@ -95,12 +99,16 @@ class Router
         $path = getPathToModules()."/{$this->activeRoute['module']}/src/".$file;
             require_once($path);
     }
-    //Add the preferred content type to the headers array
-    public function setHeaderContentType($route){
-        if($route["content-type"] == "json"){
-            $this->headers["Content-type"] = "application/json; charset=utf-8";
-        }
-    }
+
+
+    // //Add the preferred content type to the headers array
+    // public function setHeaderContentType($route){
+    //     if($route["content-type"] == "json"){
+    //         $this->headers["Content-type"] = "application/json; charset=utf-8";
+    //     }
+    // }
+
+    
     //Send the value of the headers array at the key of content-type 
     public function sendHeaders(){
         foreach($this->headers as $headerName => $headerValue){
