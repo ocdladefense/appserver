@@ -17,7 +17,7 @@ class HTTPResponse
         if($route["content-type"] == "json"){
             $this->headers["Content-type"] = "application/json; charset=utf-8";
         }
-        if($route["content-type"] == "text"){
+        else{
             $this->headers["Content-type"] = "text/html; charset=utf-8";
         }
     }
