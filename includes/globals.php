@@ -21,3 +21,10 @@ function filterScanResults($results){
     }
     return $filteredResults;
 }
+function stringContains($haystack, $needle){
+    if(strpos($haystack, $needle) !== false){
+        return true;
+    }
+    return false;
+
+}

@@ -11,8 +11,7 @@ class HTTPRequest
 	private $requestType = "GET";
 	private $info;
 	 
-	public function __construct($endpoint) 
-	{
+	public function __construct($endpoint){
 		// Return a handle to a process that can make an HTTP Request.
 		$this->handle = curl_init($endpoint);
 	}
@@ -21,45 +20,38 @@ class HTTPRequest
 	// Set our HTTP Request parameters.
 	// $params = "code=" . $code . "&grant_type = authorization_code&client_id=" 
 	//. CLIENT_ID. "&client_secret=" . CLIENT_SECRET. "&redirect_uri=" .urlencode(REDIRECT_URI);
-	public function setParams($p) 
-	{
+	public function setParams($p){
 	  // name/value pairs
 	  // each name/value pair is separate by ampersand
 	  // each name/value pair is set by an `=` sign
-	  if(is_array($p))
-	  {
+	  if(is_array($p)){
 		$_params = array();
-		foreach($p as $key=>$value)
-		{
+		foreach($p as $key=>$value){
 			$_params[] = $key ."=".$value;
 		}		
 		$this->params = implode('&',$_params);
 	  }
-	  else
-	  {
+	  else{
 		  $this->params = $p;
 	  }
 
 	}
-	public function setPost()
-	{
-		$this->requestType = "POST";
-
+	public function setHeader($headerName,$value){
+		$this->headers[$headerName] = $value;
 	}
-	public function setPatch()
-	{
+	public function setPost(){
+		$this->requestType = "POST";
+	}
+	public function setPatch(){
 		$this->requestType = "PATCH";
 	}
-	public function setDelete()
-	{
+	public function setDelete(){
 		$this->requestType = "DELETE";
 	}
-	public function getRequestType()
-	{
+	public function getRequestType(){
 		return $this->requestType;
 	}
-	public function setOptions($params)
-	{
+	public function setOptions($params){
 		// Set various options for our HTTP Request.
 		curl_setopt($this->handle, CURLOPT_HEADER, false);
 		curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, true);
@@ -84,20 +76,17 @@ class HTTPRequest
 			curl_setopt($this->handle, CURLOPT_HTTPHEADER, $this->headers);
 		}
 	}
-	public function addHeaders($header)
-	{
+	public function addHeader($header){
 		$this->headers[] = $header; 
 	}
-	public function ignoreSSLVerification()
-	{
+	public function ignoreSSLVerification(){
 		//Ignore the SSL vaification
 		// https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html
 		curl_setopt($this->handle,CURLOPT_SSL_VERIFYHOST, false); 
 		curl_setopt($this->handle,CURLOPT_SSL_VERIFYPEER, false);
 	}
 
-	public function makeHTTPRequest()
-	{
+	public function makeHTTPRequest(){
 		$this->setOptions($this->params);
 		$this->ignoreSSLVerification();
 		// Make the actual HTTP Request AND it returns a HTTP Response.
@@ -117,10 +106,8 @@ class HTTPRequest
 		return $hResponse;	
 	}
 
-	public function getStatus()
-	{
+	public function getStatus(){
 		// Returns the status, e.g., 404 Not Found, 500 Internal Server Error of our HTTP Response.
-
 		return $this->status;
 	}
 
@@ -128,23 +115,45 @@ class HTTPRequest
 		return $this->info;
 	}
 	
-	public function closeHTTPConnection()
-	{
+	public function closeHTTPConnection(){
 		// Closing the HTTP connection.
 		curl_close($this->handle);
 	}
-	public function getError()
-	{
+	public function getError(){
 		return $this->errorString;
 	}
 
-	public function getErrorNum()
-	{
+	public function getErrorNum(){
 		return $this->errorNum;
 	}
 
-	public function success()
-	{
+	public function success(){
 		return $this->status == 200;
+	}
+	public function setHeaders($headers){
+		$this->headers = $headers;
+	}
+	public function isSupportedContentType($contentType){
+		if($this->getHeader("Accept") == $contentType || stringContains($this->headers["Accept"], "*/*")){
+			return true;
+		}
+		return false;
+	}
+	public function getHeader($headerName){
+		//throw an exception
+		return $this->headers[$headerName];
+	}
+	public function getHeaders(){
+		return $this->headers;
+	}
+	public function getRequestUri(){
+		return $this->headers["Request-URI"];
+	}
+	public static function newFromEnvironment(){
+		$request = new self($_SERVER["REQUEST_URI"]);
+		
+		$request->headers = apache_request_headers();
+		$request->headers["Request-URI"] = $_SERVER["REQUEST_URI"];
+		return $request;
 	}
 }// end HTTPRequest class
