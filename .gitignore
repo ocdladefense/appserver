@@ -28,7 +28,7 @@ node_modules/*
 /vendor/
 
 #ignore content directory
-/content/
+
 
 # Ignore any logging files.
 phplog*

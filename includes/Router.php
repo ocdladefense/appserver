@@ -85,6 +85,8 @@ class Router
 
     //require all of the necessary file in the route at the key of 'files'
     public function requireRouteFiles($route){
+        if(!isset($route["files"]))
+            return;
         foreach($route["files"] as $file){
             $this->requireModuleFile($file);
             array_push($this->filesIncluded,$file);

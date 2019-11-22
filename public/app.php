@@ -12,4 +12,4 @@ $application->setModuleLoader($loader);
 $router = new Router($application);
 $responseBody = $router->run($_SERVER['REQUEST_URI']);
 $router->sendHeaders();
-print_r ($responseBody);
+print $responseBody;
