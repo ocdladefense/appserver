@@ -38,7 +38,7 @@ node_modules/*
 # Moduls get their own projects.
 
 #ignore content directory
-/content/
+
 
 
 # Ignore any logging files.

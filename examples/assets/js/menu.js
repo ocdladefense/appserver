@@ -1,6 +1,9 @@
 
-function menuItem(name){
-	var name = v("a",{href:"#"},name);
+function menuItem(name,routeName){
+	if(routeName == null){
+		routeName ="";
+	}
+	var name = v("a",{href:"#",id:name,"data-route":routeName},name);
 	return v("li",{},[name]);
 }
 
@@ -18,7 +21,9 @@ function createMenu() {
 	var children = [
 		subMenu("file",["save","save-as","export"]),
 		menuItem("salesforce"),
-		menuItem("about")
+		menuItem("about"),
+		menuItem("materials", "materials"),
+		menuItem("testStage")
 	];
 	
 	return v("ul",{className:"main-menu"},children);

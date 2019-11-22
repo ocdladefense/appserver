@@ -10,3 +10,10 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /public/app.php [L]
 </IfModule>
+
+<IfModule mod_headers.c>
+	Header set Access-Control-Allow-Origin "*"
+	Header set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
+	Header set Access-Control-Max-Age "1000"
+	Header set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
+</IfModule>

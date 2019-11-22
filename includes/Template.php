@@ -6,11 +6,18 @@ class Template
     
     private $name;
     
-    private $path;
+	private $path;
+	
+	private $scripts;
+
+	private $styles;
+
+	private $footerscripts;
     
     public function __construct($name){
     	$this->name = $name;
-    }
+	}
+	
     
     public function render($context = array()){
     	if(!self::exists($this->name)){
