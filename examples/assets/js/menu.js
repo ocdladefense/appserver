@@ -23,7 +23,9 @@ function createMenu() {
 		menuItem("salesforce"),
 		menuItem("about"),
 		menuItem("materials", "materials"),
-		menuItem("testStage")
+		menuItem("testStage"),
+		menuItem("foobar","foobar"),
+		subMenu("SiteStatus",["show-all","checksite..."])
 	];
 	
 	return v("ul",{className:"main-menu"},children);

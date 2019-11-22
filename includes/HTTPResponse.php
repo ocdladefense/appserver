@@ -17,9 +17,10 @@ class HTTPResponse
         if($route["content-type"] == "json"){
             $this->headers["Content-type"] = "application/json; charset=utf-8";
         }
-        if($route["content-type"] == "text"){
+        else{
             $this->headers["Content-type"] = "text/html; charset=utf-8";
         }
+
     }
     public function setHeaders($headers){
         $this->headers = $headers;
@@ -54,7 +55,7 @@ class HTTPResponse
     public static function formatResponseBody($content, $contentType){
 
         if(strpos($contentType,"json")){
-            if(is_array($content)){
+            if(is_array($content) || is_object($content)){
                 $out = json_encode($content);
             }
             else{

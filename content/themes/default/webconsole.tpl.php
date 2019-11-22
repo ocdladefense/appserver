@@ -27,7 +27,9 @@
 		<script src="//membertest.ocdla.org/sites/all/libraries/library/view-core.js">
 		</script>
 		<script src="/examples/assets/js/menu.js">
-        </script>
+		</script>
+		<script src=/modules/webconsole/assets/user-routes.js>
+		</script>
 		<script src=/modules/webconsole/assets/viewLibrary.js>
 		</script>
 		<script src=/modules/webconsole/assets/components/materials.js>
@@ -36,6 +38,7 @@
 		</script>
 		<script src=/modules/webconsole/assets/app.js>
 		</script>
+
     	 <?php /* echo $scripts*/ ?> 
 	</head>
 	<body>
