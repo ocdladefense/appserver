@@ -8,6 +8,8 @@
         "trevor-uehlin/salesforce-module":"dev-master",
         "trevor-uehlin/authorize-net-module":"dev-master",
         "trevor-uehlin/event-module":"dev-master",
+        "clickpdx/sitestatus":"dev-master",
+        "clickpdx/webconsole":"dev-master",
         "phpunit/phpunit":"^8.0"
     },
     "extra":{
@@ -15,7 +17,9 @@
             "modules/testModule":["trevor-uehlin/test-module"],
             "modules/salesforce":["trevor-uehlin/salesforce-module"],
             "modules/authorizeNet":["trevor-uehlin/authorize-net-module"],
-            "modules/event":["trevor-uehlin/event-module"]
+            "modules/event":["trevor-uehlin/event-module"],
+            "modules/sitestatus":["clickpdx/sitestatus"],
+            "modules/webconsole":["clickpdx/webconsole"]
         },
         "comments":[
             {

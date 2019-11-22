@@ -15,10 +15,14 @@ config.js
 *.wsdl.xml
 *.wsdl*
 
+
 # Ignore the modules directory
 # Moduls get their own projects.
 modules/*
 !modules/.gitkeep
+
+# Ignore composer.lock
+composer.lock
 
 
 # Ignore node modules
@@ -27,7 +31,14 @@ node_modules/*
 # Ignore vendor libraries (e.g., authorizedotnet)
 /vendor/
 
+
+# Ignore modules
+/modules/
+
+# Moduls get their own projects.
+
 #ignore content directory
+
 
 
 # Ignore any logging files.

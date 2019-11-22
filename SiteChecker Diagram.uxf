@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>13</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>130</x>
+      <y>364</y>
+      <w>377</w>
+      <h>364</h>
+    </coordinates>
+    <panel_attributes>DomainRecord
+--
+-name: string
+-domain: string 
+-probes[]: Probe
+--
++makeDomainRecord($filePath_or_url)
++addName($name)
++addDomain($url)
++addProbe($path, $expectedStatusCode)
++getProbes()
++getState()
++validate()
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>468</x>
+      <y>832</y>
+      <w>377</w>
+      <h>247</h>
+    </coordinates>
+    <panel_attributes>DomainRecordResult
+--
+-name: string
+-domain: string 
+-probeResults[]: ProbeResult
+--
++package()
++save()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1014</x>
+      <y>416</y>
+      <w>377</w>
+      <h>156</h>
+    </coordinates>
+    <panel_attributes>Probe
+--
+-path: string
+-expectedStatusCode: int
+--
++run()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1066</x>
+      <y>858</y>
+      <w>377</w>
+      <h>260</h>
+    </coordinates>
+    <panel_attributes>ProbeResult
+--
+-path: string
+-expectedStatusCode: int
+-actualStatusCode: int
+-responseTime: float
+--
++package()
++save()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>832</x>
+      <y>936</y>
+      <w>260</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;180.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1157</x>
+      <y>559</y>
+      <w>182</w>
+      <h>325</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=1
+m2=0..*
+creates &gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0;100.0;120.0;100.0;230.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1807</x>
+      <y>26</y>
+      <w>273</w>
+      <h>247</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Stereotype&gt;&gt;
+Package::FatClass
+{Some Properties}
+--
+-id: Long {composite}
+_-ClassAttribute: Long_
+--
+#Operation(i: int): int
+/+AbstractOperation()/
+--
+Responsibilities
+-- Resp1
+-- Resp2</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>351</x>
+      <y>0</y>
+      <w>416</w>
+      <h>221</h>
+    </coordinates>
+    <panel_attributes>ProbeManager
+--
+-domainRecords[]: DomainRecord
+--
++newFromFileSystem($folderPath_or_filePath)
++getRecords()
++doValidation()
++doProbes()
++probe()</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
