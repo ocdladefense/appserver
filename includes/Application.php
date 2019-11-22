@@ -36,10 +36,15 @@ class Application {
         $routeContentType = $this->router->getHeader("Content-type");
         $requestAcceptType = $this->request->getHeader("Accept");
 
-
         if(!$this->request->isSupportedContentType($routeContentType)){
             throw new Exception("The content type of the requested resource '$routeContentType' does not match the accepted
             content type '$requestAcceptType', which is set by the requesting entity.  Exception thrown");
         }
+    }
+    public function send($response){
+        $response->sendHeaders();
+        $content = $response->getBody();
+        
+        print $content;
     }
 }

@@ -30,9 +30,14 @@ class Router
         $this->parsePath();
         $this->activeRoute = $this->getActiveRoute();
         $this->activeModule = ModuleLoader::getInstance($this->activeRoute["module"]);
-        //retrun a new httpResponse object  all in class setContenttype and setHeaders and setBody(value of this->processRoute)
-        //return an array for all errror messages
-        return $this->processRoute();
+        $this->requireRouteFiles($this->activeRoute);
+
+        //set up the response object
+        $this->response->setHeaders = $this->headers;
+        $this->response->setContentType($this->activeRoute);
+        $out = HTTPResponse::formatResponseBody($this->callCallbackFunction($this->activeRoute), $this->response->getHeader("Content-type"));
+        $this->response->setBody($out);
+        return $this->response;
     }
 
     //Initialize and return all available routes from all available modules.  Set the routes http method and content type to the default
@@ -73,13 +78,6 @@ class Router
             $this->arguments = explode("/",$parts[1]);
     }
 
-    //Call all functions required to process the route
-    public function processRoute(){
-        $this->requireRouteFiles($this->activeRoute);
-        $this->setHeaderContentType($this->activeRoute);
-        return $this->callCallbackFunction($this->activeRoute);
-    }
-    
     //Return the route at the index of the requested resource.
     public function getActiveRoute(){
         if(!array_key_exists($this->resourceString,$this->allRoutes)){
@@ -100,21 +98,6 @@ class Router
             require_once($path);
     }
 
-
-    // //Add the preferred content type to the headers array
-    // public function setHeaderContentType($route){
-    //     if($route["content-type"] == "json"){
-    //         $this->headers["Content-type"] = "application/json; charset=utf-8";
-    //     }
-    // }
-
-    
-    //Send the value of the headers array at the key of content-type 
-    public function sendHeaders(){
-        foreach($this->headers as $headerName => $headerValue){
-            header($headerName.": ".$headerValue);
-        }
-    }
     public function callCallbackFunction($route){
         if($route["method"] == "post"){
             //should be set to request->getBody();
@@ -142,9 +125,9 @@ class Router
         return $this->filesIncluded;
     }
     public function getHeader($headerName){
-        return $this->headers[$headerName];
+        return $this->response->getHeaders()[$headerName];
     }
     public function getHeaders(){
-        return $this->headers;
+        return $this->response->getHeaders();
     }
 }
