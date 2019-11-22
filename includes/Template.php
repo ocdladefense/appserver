@@ -16,7 +16,7 @@ class Template
     	if(!self::exists($this->name)){
     		throw new \Exception("TEMPLATE_ERROR: Template {$this->pathToTemplate()} could not be found.");
     	}
-    	extract($context);
+		extract($context);
     	ob_start();
     	include self::pathToTemplate($this->name);
     	$content = ob_get_contents();
