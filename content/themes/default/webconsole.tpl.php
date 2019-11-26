@@ -14,6 +14,7 @@
 		<title>Using modal cc form</title>
 		<link href="/examples/assets/css/ux.css" type="text/css" rel="stylesheet" />
 		<link href="/modules/webconsole/assets/css/materials.css" type="text/css" rel="stylesheet" />
+		<link href="/modules/webconsole/assets/css/keyboardManager.css" type="text/css" rel="stylesheet" />
 		<script type="text/javascript">
 			window.appModules = {};
 			function define(deps,mod){
@@ -27,6 +28,8 @@
 		<script src="//membertest.ocdla.org/sites/all/libraries/library/view-core.js">
 		</script>
 		<script src="/examples/assets/js/menu.js">
+		</script>
+		<script src="/modules/webconsole/assets/keyboardManager.js">
 		</script>
 		<script src=/modules/webconsole/assets/user-routes.js>
 		</script>
