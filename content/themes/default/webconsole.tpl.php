@@ -11,7 +11,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>Using modal cc form</title>
+		<title>AppServer Client</title>
 		<link href="/modules/webconsole/assets/css/ux.css" type="text/css" rel="stylesheet" />
 		<link href="/modules/webconsole/assets/css/materials.css" type="text/css" rel="stylesheet" />
 		<link href="/modules/webconsole/assets/css/keyboardManager.css" type="text/css" rel="stylesheet" />
@@ -22,28 +22,29 @@
 			}
 
 		</script>
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script src=/modules/webconsole/assets/components/materials.js>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
+		</script>
+		<script src="/modules/webconsole/assets/components/materials.js">
 		</script>
 		<script src="//membertest.ocdla.org/sites/all/libraries/library/event.js">
 		</script>
 		<script src="//membertest.ocdla.org/sites/all/libraries/library/view-core.js">
 		</script>
-		<script src="/examples/assets/js/menu.js">
+		<script src="/modules/webconsole/assets/menu.js">
 		</script>
 		<script src="/modules/webconsole/assets/keyboardManager.js">
 		</script>
-		<script src=/modules/webconsole/assets/user-routes.js>
+		<script src="/modules/webconsole/assets/user-routes.js">
 		</script>
-		<script src=/modules/webconsole/assets/ui.js>
+		<script src="/modules/webconsole/assets/ui.js">
 		</script>
-		<script src=/modules/webconsole/assets/modal.js>
+		<script src="/modules/webconsole/assets/modal.js">
 		</script>
-		<script src=/modules/webconsole/assets/viewLibrary.js>
+		<script src="/modules/webconsole/assets/viewLibrary.js">
 		</script>
-		<script src=/modules/webconsole/assets/fetch.js>
+		<script src="/modules/webconsole/assets/fetch.js">
 		</script>
-		<script src=/modules/webconsole/assets/app.js>
+		<script src="/modules/webconsole/assets/app.js">
 		</script>
 
     	 <?php /* echo $scripts*/ ?> 
