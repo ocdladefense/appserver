@@ -34,7 +34,7 @@
 		</script>
 		<script src="/modules/webconsole/assets/keyboardManager.js">
 		</script>
-		<script src="/modules/webconsole/assets/user-routes.js">
+		<script src="/modules/webconsole/assets/default-routes.js">
 		</script>
 		<script src="/modules/webconsole/assets/ui.js">
 		</script>
@@ -42,7 +42,9 @@
 		</script>
 		<script src="/modules/webconsole/assets/viewLibrary.js">
 		</script>
-		<script src="/modules/webconsole/assets/fetch.js">
+		<script src="/modules/webconsole/assets/http.js">
+		</script>
+		<script src="/modules/webconsole/assets/settings.js">
 		</script>
 		<script src="/modules/webconsole/assets/app.js">
 		</script>
@@ -81,16 +83,22 @@
 	<script type="text/javascript">
 	
     // domReady(renderMenu);
+    var app;
     
-    
+		jQuery(function(){
+			app = new App();
+			app.addRoutes(clientSettings["routes-enabled"]);
+			app.init();
+			// app.setKeyboardManager(kbd);
+		});
 	
-	function renderMenu() {
-		var vnode = createMenu();
-		var node = createElement( vnode );
-		document.getElementById("header").appendChild(node);
-	}
+		function renderMenu() {
+			var vnode = createMenu();
+			var node = createElement( vnode );
+			document.getElementById("header").appendChild(node);
+		}
 	
-	renderMenu();
+		renderMenu();
 
 	</script>
 </html>
