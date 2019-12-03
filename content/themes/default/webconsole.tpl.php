@@ -63,9 +63,10 @@
 				<div id="menu-left">&nbsp;this is the menu-left</div>
 					
 				<div id="stage">
-					<h1><?php echo $content  ?></h1>
+					<h1>Console loaded</h1>
+					<div id="stage-content"><?php echo $content; ?></div>
 					<div id="modal">
-						<div id="content">
+						<div id="modal-content"></div>
 					</div>
 				</div>
 			</div> <!--end container-->
