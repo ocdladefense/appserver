@@ -10,6 +10,7 @@ class HTTPRequest
 	private $headers = array();
 	private $requestType = "GET";
 	private $info;
+	private $body;
 	 
 	public function __construct($endpoint){
 		// Return a handle to a process that can make an HTTP Request.
@@ -115,6 +116,10 @@ class HTTPRequest
 		return $this->info;
 	}
 	
+	public function getBody() {
+		return $this->body;
+	}
+
 	public function closeHTTPConnection(){
 		// Closing the HTTP connection.
 		curl_close($this->handle);
@@ -154,6 +159,8 @@ class HTTPRequest
 		
 		$request->headers = apache_request_headers();
 		$request->headers["Request-URI"] = $_SERVER["REQUEST_URI"];
+            
+		$request->body = file_get_contents('php://input');
 		return $request;
 	}
 }// end HTTPRequest class
