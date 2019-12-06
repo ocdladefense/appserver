@@ -1,0 +1,498 @@
+<div class="devsite-article-body clearfix">
+
+              
+
+
+<!-- wf_template: src/templates/contributors/include.html -->
+
+<style>
+.wf-byline {display: inline-flex; margin: 16px 32px 16px 0;}
+.wf-byline .attempt-left {margin: 0 16px 0 0;}
+.wf-byline img {border-radius: 100%; min-width: 64px; height: 64px;}
+.wf-byline .wf-byline-desc {font-size: smaller; word-break: break-word;}
+.wf-byline .wf-byline-social {font-size: smaller;}
+</style>
+
+<section class="wf-byline" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  <div class="attempt-left">
+    <figure>
+      <img itemprop="image" src="/web/images/contributors/mattgaunt.jpg" alt="Matt Gaunt">
+    </figure>
+  </div>
+  <section class="wf-byline-meta">
+    <div class="wf-byline-name">
+      <strong>By</strong>
+      <span itemprop="name">
+        <a href="/web/resources/contributors/mattgaunt">
+          <span itemprop="givenName">Matt</span>
+          <span itemprop="familyName">Gaunt</span>
+        </a>
+      </span>
+    </div>
+    <div class="wf-byline-desc">
+        John is a contributor to Web<b>Fundamentals</b>
+    </div>
+  </section>
+</section>
+
+<p>Rich offline experiences, periodic background syncs, push
+notifications—functionality that would normally require a native
+application—are coming to the web. Service workers provide the technical
+foundation that all these features rely on.</p>
+
+<devsite-heading text="What is a service worker" for="what_is_a_service_worker" level="h2" link="" toc="" back-to-top=""><h2 id="what_is_a_service_worker" is-upgraded="">What is a service worker<a href="#top_of_page" class="devsite-back-to-top-link material-icons" data-title="Back to top"></a></h2></devsite-heading>
+
+<p>A service worker is a script that your browser runs in the background,
+separate from a web page, opening the door to features that don't need a web
+page or user interaction. Today, they already include features like
+<a href="/web/updates/2015/03/push-notifications-on-the-open-web">push notifications</a>
+and <a href="/web/updates/2015/12/background-sync">background sync</a>. In the future,
+service workers might support other things like periodic sync or geofencing.
+The core feature discussed in this tutorial is the ability to intercept and
+handle network requests, including programmatically managing a cache of
+responses.</p>
+
+<p>The reason this is such an exciting API is that it allows you to support offline
+experiences, giving developers complete control over the
+experience.</p>
+
+<p>Before service worker, there was one other API that gave users an offline
+experience on the web called
+<a href="//www.html5rocks.com/en/tutorials/appcache/beginner/" class="external">AppCache</a>.
+There are a number of issues with the AppCache API that service workers
+were designed to avoid.</p>
+
+<p>Things to note about a service worker:</p>
+
+<ul>
+<li>It's a <a href="//www.html5rocks.com/en/tutorials/workers/basics/" class="external">JavaScript Worker</a>,
+so it can't access the DOM directly. Instead, a service worker can
+communicate with the pages it controls by responding to messages sent via
+the <a href="https://html.spec.whatwg.org/multipage/workers.html#dom-worker-postmessage">postMessage</a>
+interface, and those pages can manipulate the DOM if needed.</li>
+<li>Service worker is a programmable network proxy, allowing you to control how
+network requests from your page are handled.</li>
+<li>It's terminated when not in use, and restarted when it's next needed,
+so you cannot rely on global state within a service worker's <code translate="no" dir="ltr">onfetch</code> and
+<code translate="no" dir="ltr">onmessage</code> handlers. If there is information that you need to persist and
+reuse across restarts, service workers do have access to the
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">IndexedDB API</a>.</li>
+<li>Service workers make extensive use of promises, so if you're new to promises,
+then you should stop reading this and check out
+<a href="/web/fundamentals/getting-started/primers/promises">Promises, an introduction</a>.</li>
+</ul>
+
+<devsite-heading text="The service worker life cycle" for="the_service_worker_life_cycle" level="h2" link="" toc="" back-to-top=""><h2 id="the_service_worker_life_cycle" is-upgraded="">The service worker life cycle<a href="#top_of_page" class="devsite-back-to-top-link material-icons" data-title="Back to top"></a></h2></devsite-heading>
+
+<p>A service worker has a lifecycle that is completely separate from your web page.</p>
+
+<p>To install a service worker for your site, you need to register it, which you do
+in your page's JavaScript. Registering a service worker will cause the browser
+to start the service worker install step in the background.</p>
+
+<p>Typically during the install step, you'll want to cache some static assets. If
+all the files are cached successfully, then the service worker becomes
+installed. If any of the files fail to download and cache, then the install step
+will fail and the service worker won't activate (i.e. won't be installed). If
+that happens, don't worry, it'll try again next time. But that means if it does
+install, you know you've got those static assets in the cache.</p>
+
+<p>When installed, the activation step will follow and this is a great
+opportunity for handling any management of old caches, which we'll cover during
+the service worker update section.</p>
+
+<p>After the activation step, the service worker will control all pages that fall
+under its scope, though the page that registered the service worker for the
+first time won't be controlled until it's loaded again. Once a service worker is
+in control, it will be in one of two states: either the service worker will be
+terminated to save memory, or it will handle fetch and message events that
+occur when a network request or message is made from your page.</p>
+
+<p>Below is an overly simplified version of the service worker lifecycle on its
+first installation.</p>
+
+<p><img src="/web/fundamentals/primers/service-workers/images/sw-lifecycle.png" alt="service worker lifecycle"></p>
+
+<devsite-heading text="Prerequisites" for="prerequisites" level="h2" link="" toc="" back-to-top=""><h2 id="prerequisites" is-upgraded="">Prerequisites<a href="#top_of_page" class="devsite-back-to-top-link material-icons" data-title="Back to top"></a></h2></devsite-heading>
+
+<devsite-heading text="Browser support" for="browser_support" level="h3" link="" toc=""><h3 id="browser_support" is-upgraded="">Browser support</h3></devsite-heading>
+
+<p>Browser options are growing. Service workers are supported by Chrome, Firefox and
+Opera. Microsoft Edge is now
+<a href="https://developer.microsoft.com/en-us/microsoft-edge/platform/status/serviceworker/">showing public support</a>.
+Even Safari has dropped <a href="https://trac.webkit.org/wiki/FiveYearPlanFall2015">hints of future development</a>.
+You can follow the progress of all the browsers at Jake Archibald's
+<a href="https://jakearchibald.github.io/isserviceworkerready/" class="external">is Serviceworker ready</a> 
+site.</p>
+
+<devsite-heading text="You need HTTPS" for="you_need_https" level="h3" link="" toc=""><h3 id="you_need_https" is-upgraded="">You need HTTPS</h3></devsite-heading>
+
+<p>During development you'll be able to use service worker through <code translate="no" dir="ltr">localhost</code>, but
+to deploy it on a site you'll need to have HTTPS setup on your server.</p>
+
+<p>Using service worker you can hijack connections, fabricate, and filter
+responses. Powerful stuff. While you would use these powers for good, a
+man-in-the-middle might not. To avoid this, you can only register service
+workers on pages served over HTTPS, so we know the service worker the browser
+receives hasn't been tampered with during its journey through the network.</p>
+
+<p><a href="https://pages.github.com/" class="external">GitHub Pages</a> are served over HTTPS, so they're a
+great place to host demos.</p>
+
+<p>If you want to add HTTPS to your server then you'll need to get a TLS
+certificate and set it up for your server. This varies depending on your setup,
+so check your server's documentation and be sure to check out
+<a href="https://mozilla.github.io/server-side-tls/ssl-config-generator/">Mozilla's SSL config generator</a>
+for best practices.</p>
+
+<devsite-heading text="Register a service worker" for="register_a_service_worker" level="h2" link="" toc="" back-to-top=""><h2 id="register_a_service_worker" is-upgraded="">Register a service worker<a href="#top_of_page" class="devsite-back-to-top-link material-icons" data-title="Back to top"></a></h2></devsite-heading>
+
+<p>To install a service worker you need to kick start the process by
+<strong>registering</strong> it in your page. This tells the browser where your
+service worker JavaScript file lives.</p>
+<devsite-code><pre class="" translate="no" dir="ltr" is-upgraded=""><code dir="ltr"><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="str">'serviceWorker'</span><span class="pln"> </span><span class="kwd">in</span><span class="pln"> navigator</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; window</span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'load'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; navigator</span><span class="pun">.</span><span class="pln">serviceWorker</span><span class="pun">.</span><span class="kwd">register</span><span class="pun">(</span><span class="str">'/sw.js'</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">registration</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="com">// Registration was successful</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'ServiceWorker registration successful with scope: '</span><span class="pun">,</span><span class="pln"> registration</span><span class="pun">.</span><span class="pln">scope</span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="pun">},</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="com">// registration failed :(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'ServiceWorker registration failed: '</span><span class="pun">,</span><span class="pln"> err</span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="pun">});</span><span class="pln"><br>&nbsp; </span><span class="pun">});</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span></code></pre><div class="devsite-code-buttons-container"><button class="gc-analytics-event material-icons devsite-icon-code-dark devsite-toggle-dark" data-category="Site-Wide Custom Events" data-label="Dark Code Toggle" track-type="exampleCode" track-name="darkCodeToggle" data-title="Dark code theme"></button><button class="gc-analytics-event material-icons devsite-icon-code-light devsite-toggle-light" data-category="Site-Wide Custom Events" data-label="Light Code Toggle" track-type="exampleCode" track-name="lightCodeToggle" data-title="Light code theme"></button><button class="gc-analytics-event material-icons devsite-icon-copy" data-category="Site-Wide Custom Events" data-label="Click To Copy" track-type="exampleCode" track-name="clickToCopy" data-title="Copy"></button></div></devsite-code>
+<p>This code checks to see if the service worker API is available, and if it is,
+the service worker at <code translate="no" dir="ltr">/sw.js</code> is registered
+<a href="/web/fundamentals/instant-and-offline/service-worker/registration">once the page is loaded</a>.</p>
+
+<p>You can call <code translate="no" dir="ltr">register()</code> every time a page loads without concern; the browser will
+figure out if the service worker is already registered or not and handle it
+accordingly.</p>
+
+<p>One subtlety with the <code translate="no" dir="ltr">register()</code> method is the location of the service worker
+file. You'll notice in this case that the service worker file is at the root of
+the domain. This means that the service worker's scope will be the entire
+origin. In other words, this service worker will receive <code translate="no" dir="ltr">fetch</code> events for
+everything on this domain. If we register the service worker file at
+<code translate="no" dir="ltr">/example/sw.js</code>, then the service worker would only see <code translate="no" dir="ltr">fetch</code> events for pages
+whose URL starts with <code translate="no" dir="ltr">/example/</code> (i.e. <code translate="no" dir="ltr">/example/page1/</code>, <code translate="no" dir="ltr">/example/page2/</code>).</p>
+
+<p>Now you can check that a service worker is enabled by going to
+<code translate="no" dir="ltr">chrome://inspect/#service-workers</code> and looking for your site.</p>
+
+<p><img src="/web/fundamentals/primers/service-workers/images/sw-chrome-inspect.png" alt="Inspect service workers"></p>
+
+<p>When service worker was first being implemented, you could also view your service
+worker details through <code translate="no" dir="ltr">chrome://serviceworker-internals</code>. This may still be
+useful, if for nothing more than learning about the life cycle of service
+workers, but don't be surprised if it gets replaced completely by
+<code translate="no" dir="ltr">chrome://inspect/#service-workers</code> at a later date.</p>
+
+<p>You may find it useful to test your service worker in an Incognito window so
+that you can close and reopen knowing that the previous service worker won't
+affect the new window. Any registrations and caches created from within an
+Incognito window will be cleared out once that window is closed.</p>
+
+<devsite-heading text="Install a service worker" for="install_a_service_worker" level="h2" link="" toc="" back-to-top=""><h2 id="install_a_service_worker" is-upgraded="">Install a service worker<a href="#top_of_page" class="devsite-back-to-top-link material-icons" data-title="Back to top"></a></h2></devsite-heading>
+
+<p>After a controlled page kicks off the registration process, let's shift to the
+point of view of the service worker script, which handles the <code translate="no" dir="ltr">install</code> event.</p>
+
+<p>For the most basic example, you need to define a callback for the install event
+and decide which files you want to cache.</p>
+<devsite-code><pre class="" translate="no" dir="ltr" is-upgraded=""><code dir="ltr"><span class="kwd">self</span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'install'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; </span><span class="com">// Perform install steps</span><span class="pln"><br></span><span class="pun">});</span><span class="pln"><br></span></code></pre><div class="devsite-code-buttons-container"><button class="gc-analytics-event material-icons devsite-icon-code-dark devsite-toggle-dark" data-category="Site-Wide Custom Events" data-label="Dark Code Toggle" track-type="exampleCode" track-name="darkCodeToggle" data-title="Dark code theme"></button><button class="gc-analytics-event material-icons devsite-icon-code-light devsite-toggle-light" data-category="Site-Wide Custom Events" data-label="Light Code Toggle" track-type="exampleCode" track-name="lightCodeToggle" data-title="Light code theme"></button><button class="gc-analytics-event material-icons devsite-icon-copy" data-category="Site-Wide Custom Events" data-label="Click To Copy" track-type="exampleCode" track-name="clickToCopy" data-title="Copy"></button></div></devsite-code>
+<p>Inside of our <code translate="no" dir="ltr">install</code> callback, we need to take the following steps:</p>
+
+<ol>
+<li>Open a cache.</li>
+<li>Cache our files.</li>
+<li>Confirm whether all the required assets are cached or not.</li>
+</ol>
+
+<div style="clear:both;"></div>
+<devsite-code><pre class="" translate="no" dir="ltr" is-upgraded=""><code dir="ltr"><span class="kwd">var</span><span class="pln"> CACHE_NAME </span><span class="pun">=</span><span class="pln"> </span><span class="str">'my-site-cache-v1'</span><span class="pun">;</span><span class="pln"><br></span><span class="kwd">var</span><span class="pln"> urlsToCache </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="pln"><br>&nbsp; </span><span class="str">'/'</span><span class="pun">,</span><span class="pln"><br>&nbsp; </span><span class="str">'/styles/main.css'</span><span class="pun">,</span><span class="pln"><br>&nbsp; </span><span class="str">'/script/main.js'</span><span class="pln"><br></span><span class="pun">];</span><span class="pln"><br><br></span><span class="kwd">self</span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'install'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; </span><span class="com">// Perform install steps</span><span class="pln"><br>&nbsp; </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">waitUntil</span><span class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; caches</span><span class="pun">.</span><span class="pln">open</span><span class="pun">(</span><span class="pln">CACHE_NAME</span><span class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">cache</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'Opened cache'</span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> cache</span><span class="pun">.</span><span class="pln">addAll</span><span class="pun">(</span><span class="pln">urlsToCache</span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="pun">})</span><span class="pln"><br>&nbsp; </span><span class="pun">);</span><span class="pln"><br></span><span class="pun">});</span><span class="pln"><br></span></code></pre><div class="devsite-code-buttons-container"><button class="gc-analytics-event material-icons devsite-icon-code-dark devsite-toggle-dark" data-category="Site-Wide Custom Events" data-label="Dark Code Toggle" track-type="exampleCode" track-name="darkCodeToggle" data-title="Dark code theme"></button><button class="gc-analytics-event material-icons devsite-icon-code-light devsite-toggle-light" data-category="Site-Wide Custom Events" data-label="Light Code Toggle" track-type="exampleCode" track-name="lightCodeToggle" data-title="Light code theme"></button><button class="gc-analytics-event material-icons devsite-icon-copy" data-category="Site-Wide Custom Events" data-label="Click To Copy" track-type="exampleCode" track-name="clickToCopy" data-title="Copy"></button></div></devsite-code>
+<p>Here you can see we call <code translate="no" dir="ltr">caches.open()</code> with our desired cache name, after which
+we call <code translate="no" dir="ltr">cache.addAll()</code> and pass in our array of files. This is a chain of
+promises (<code translate="no" dir="ltr">caches.open()</code> and <code translate="no" dir="ltr">cache.addAll()</code>). The <code translate="no" dir="ltr">event.waitUntil()</code> method
+takes a promise and uses it to know how long installation takes, and whether it
+succeeded or not.</p>
+
+<p>If all the files are successfully cached, then the service worker will be
+installed. If <strong>any</strong> of the files fail to download, then the install step will
+fail. This allows you to rely on having all the assets that you defined, but
+does mean you need to be careful with the list of files you decide to cache in
+the install step. Defining a long list of files will increase the chance that
+one file may fail to cache, leading to your service worker not getting
+installed.</p>
+
+<p>This is just one example, you can perform other tasks in the <code translate="no" dir="ltr">install</code> event or
+avoid setting an <code translate="no" dir="ltr">install</code> event listener altogether.</p>
+
+<devsite-heading text="Cache and return requests" for="cache_and_return_requests" level="h2" link="" toc="" back-to-top=""><h2 id="cache_and_return_requests" is-upgraded="">Cache and return requests<a href="#top_of_page" class="devsite-back-to-top-link material-icons" data-title="Back to top"></a></h2></devsite-heading>
+
+<p>Now that you've installed a service worker, you probably want to
+  return one of your cached responses, right?</p>
+
+<p>After a service worker is installed and the user navigates to a different page
+or refreshes, the service worker will begin to receive <code translate="no" dir="ltr">fetch</code> events, an example
+of which is below.</p>
+<devsite-code><pre class="" translate="no" dir="ltr" is-upgraded=""><code dir="ltr"><span class="kwd">self</span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'fetch'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">respondWith</span><span class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; caches</span><span class="pun">.</span><span class="pln">match</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">.</span><span class="pln">request</span><span class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">response</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// Cache hit - return response</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">response</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> response</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> fetch</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">.</span><span class="pln">request</span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="pun">)</span><span class="pln"><br>&nbsp; </span><span class="pun">);</span><span class="pln"><br></span><span class="pun">});</span><span class="pln"><br></span></code></pre><div class="devsite-code-buttons-container"><button class="gc-analytics-event material-icons devsite-icon-code-dark devsite-toggle-dark" data-category="Site-Wide Custom Events" data-label="Dark Code Toggle" track-type="exampleCode" track-name="darkCodeToggle" data-title="Dark code theme"></button><button class="gc-analytics-event material-icons devsite-icon-code-light devsite-toggle-light" data-category="Site-Wide Custom Events" data-label="Light Code Toggle" track-type="exampleCode" track-name="lightCodeToggle" data-title="Light code theme"></button><button class="gc-analytics-event material-icons devsite-icon-copy" data-category="Site-Wide Custom Events" data-label="Click To Copy" track-type="exampleCode" track-name="clickToCopy" data-title="Copy"></button></div></devsite-code>
+<p>Here we've defined our <code translate="no" dir="ltr">fetch</code> event and within <code translate="no" dir="ltr">event.respondWith()</code>, we
+pass in a promise from <code translate="no" dir="ltr">caches.match()</code>. This method looks at the request and
+finds any cached results from any of the caches your service worker created.</p>
+
+<p>If we have a matching response, we return the cached value, otherwise we return
+the result of a call to <code translate="no" dir="ltr">fetch</code>, which will make a network request and return
+the data if anything can be retrieved from the network. This is a simple example
+and uses any cached assets we cached during the install step.</p>
+
+<p>If we want to cache new requests cumulatively, we can do so by handling the
+response of the fetch request and then adding it to the cache, like below.</p>
+<devsite-code><pre class="" translate="no" dir="ltr" is-upgraded=""><code dir="ltr"><span class="kwd">self</span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'fetch'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">respondWith</span><span class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; caches</span><span class="pun">.</span><span class="pln">match</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">.</span><span class="pln">request</span><span class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">response</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// Cache hit - return response</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">response</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> response</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> fetch</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">.</span><span class="pln">request</span><span class="pun">).</span><span class="kwd">then</span><span class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">response</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// Check if we received a valid response</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">response </span><span class="pun">||</span><span class="pln"> response</span><span class="pun">.</span><span class="pln">status </span><span class="pun">!==</span><span class="pln"> </span><span class="lit">200</span><span class="pln"> </span><span class="pun">||</span><span class="pln"> response</span><span class="pun">.</span><span class="pln">type </span><span class="pun">!==</span><span class="pln"> </span><span class="str">'basic'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> response</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// IMPORTANT: Clone the response. A response is a stream</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// and because we want the browser to consume the response</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// as well as the cache consuming the response, we need</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="com">// to clone it so we have two streams.</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">var</span><span class="pln"> responseToCache </span><span class="pun">=</span><span class="pln"> response</span><span class="pun">.</span><span class="pln">clone</span><span class="pun">();</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; caches</span><span class="pun">.</span><span class="pln">open</span><span class="pun">(</span><span class="pln">CACHE_NAME</span><span class="pun">)</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">.</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">cache</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cache</span><span class="pun">.</span><span class="pln">put</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">.</span><span class="pln">request</span><span class="pun">,</span><span class="pln"> responseToCache</span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">});</span><span class="pln"><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> response</span><span class="pun">;</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="pun">})</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="pun">);</span><span class="pln"><br></span><span class="pun">});</span><span class="pln"><br></span></code></pre><div class="devsite-code-buttons-container"><button class="gc-analytics-event material-icons devsite-icon-code-dark devsite-toggle-dark" data-category="Site-Wide Custom Events" data-label="Dark Code Toggle" track-type="exampleCode" track-name="darkCodeToggle" data-title="Dark code theme"></button><button class="gc-analytics-event material-icons devsite-icon-code-light devsite-toggle-light" data-category="Site-Wide Custom Events" data-label="Light Code Toggle" track-type="exampleCode" track-name="lightCodeToggle" data-title="Light code theme"></button><button class="gc-analytics-event material-icons devsite-icon-copy" data-category="Site-Wide Custom Events" data-label="Click To Copy" track-type="exampleCode" track-name="clickToCopy" data-title="Copy"></button></div></devsite-code>
+<p>What we are doing is this:</p>
+
+<ol>
+<li>Add a callback to <code translate="no" dir="ltr">.then()</code> on the <code translate="no" dir="ltr">fetch</code> request.</li>
+<li>Once we get a response, we perform the following checks:
+<ol>
+<li>Ensure the response is valid.</li>
+<li>Check the status is <code translate="no" dir="ltr">200</code> on the response.</li>
+<li>Make sure the response type is <strong>basic</strong>, which indicates that it's a
+request from our origin. This means that requests to third party assets
+aren't cached as well.</li>
+</ol></li>
+<li>If we pass the checks, we <a href="https://fetch.spec.whatwg.org/#dom-response-clone">clone</a>
+the response. The reason for this is that because the response is a
+<a href="https://streams.spec.whatwg.org/" class="external">Stream</a>, the body can only be consumed
+once. Since we want to return the response for the browser to use, as well
+as pass it to the cache to use, we need to clone it so we can send one to
+the browser and one to the cache.</li>
+</ol>
+
+<devsite-heading text="Update a service worker" for="update-a-service-worker" level="h2" link="" toc="" back-to-top=""><h2 id="update-a-service-worker" is-upgraded="">Update a service worker<a href="#top_of_page" class="devsite-back-to-top-link material-icons" data-title="Back to top"></a></h2></devsite-heading>
+
+<p>There will be a point in time where your service worker will
+need updating. When that time comes, you'll need to follow these steps:</p>
+
+<ol>
+<li>Update your service worker JavaScript file. When the user navigates to
+your site, the browser tries to redownload the script file that defined the
+service worker in the background. If there is even a byte's difference in
+the service worker file compared to what it currently has, it considers it
+<em>new</em>.</li>
+<li>Your new service worker will be started and the <code translate="no" dir="ltr">install</code> event will be fired.</li>
+<li>At this point the old service worker is still controlling the current pages
+so the new service worker will enter a <code translate="no" dir="ltr">waiting</code> state.</li>
+<li>When the currently open pages of your site are closed, the old service
+worker will be killed and the new service worker will take control.</li>
+<li>Once your new service worker takes control, its <code translate="no" dir="ltr">activate</code> event will be
+fired.</li>
+</ol>
+
+<p>One common task that will occur in the <code translate="no" dir="ltr">activate</code> callback is cache management.
+The reason you'll want to do this in the <code translate="no" dir="ltr">activate</code> callback is because if you
+were to wipe out any old caches in the install step, any old service worker,
+which keeps control of all the current pages, will suddenly stop being able to
+serve files from that cache.</p>
+
+<p>Let's say we have one cache called <code translate="no" dir="ltr">'my-site-cache-v1'</code>, and we find that we
+want to split this out into one cache for pages and one cache for blog posts.
+This means in the install step we'd create two caches, <code translate="no" dir="ltr">'pages-cache-v1'</code> and
+<code translate="no" dir="ltr">'blog-posts-cache-v1'</code> and in the activate step we'd want to delete our older
+<code translate="no" dir="ltr">'my-site-cache-v1'</code>.</p>
+
+<p>The following code would do this by looping through all of the caches in the
+service worker and deleting any caches that aren't defined in the cache
+whitelist.</p>
+<devsite-code><pre class="" translate="no" dir="ltr" is-upgraded=""><code dir="ltr"><span class="kwd">self</span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'activate'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br><br>&nbsp; </span><span class="kwd">var</span><span class="pln"> cacheWhitelist </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="str">'pages-cache-v1'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'blog-posts-cache-v1'</span><span class="pun">];</span><span class="pln"><br><br>&nbsp; </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">waitUntil</span><span class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; caches</span><span class="pun">.</span><span class="pln">keys</span><span class="pun">().</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">cacheNames</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> </span><span class="typ">Promise</span><span class="pun">.</span><span class="pln">all</span><span class="pun">(</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; cacheNames</span><span class="pun">.</span><span class="pln">map</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">cacheName</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">cacheWhitelist</span><span class="pun">.</span><span class="pln">indexOf</span><span class="pun">(</span><span class="pln">cacheName</span><span class="pun">)</span><span class="pln"> </span><span class="pun">===</span><span class="pln"> </span><span class="pun">-</span><span class="lit">1</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="kwd">return</span><span class="pln"> caches</span><span class="pun">.</span><span class="kwd">delete</span><span class="pun">(</span><span class="pln">cacheName</span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">}</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span class="pun">})</span><span class="pln"><br>&nbsp; &nbsp; &nbsp; </span><span class="pun">);</span><span class="pln"><br>&nbsp; &nbsp; </span><span class="pun">})</span><span class="pln"><br>&nbsp; </span><span class="pun">);</span><span class="pln"><br></span><span class="pun">});</span><span class="pln"><br></span></code></pre><div class="devsite-code-buttons-container"><button class="gc-analytics-event material-icons devsite-icon-code-dark devsite-toggle-dark" data-category="Site-Wide Custom Events" data-label="Dark Code Toggle" track-type="exampleCode" track-name="darkCodeToggle" data-title="Dark code theme"></button><button class="gc-analytics-event material-icons devsite-icon-code-light devsite-toggle-light" data-category="Site-Wide Custom Events" data-label="Light Code Toggle" track-type="exampleCode" track-name="lightCodeToggle" data-title="Light code theme"></button><button class="gc-analytics-event material-icons devsite-icon-copy" data-category="Site-Wide Custom Events" data-label="Click To Copy" track-type="exampleCode" track-name="clickToCopy" data-title="Copy"></button></div></devsite-code>
+<devsite-heading text="Rough edges and gotchas" for="rough_edges_and_gotchas" level="h2" link="" toc="" back-to-top=""><h2 id="rough_edges_and_gotchas" is-upgraded="">Rough edges and gotchas<a href="#top_of_page" class="devsite-back-to-top-link material-icons" data-title="Back to top"></a></h2></devsite-heading>
+
+<p>This stuff is really new. Here's a collection of issues that
+get in the way. Hopefully this section can be deleted soon, but for now
+these are worth being mindful of.</p>
+
+<devsite-heading text="If installation fails, we're not so good at telling you about it" for="if_installation_fails_were_not_so_good_at_telling_you_about_it" level="h3" link="" toc=""><h3 id="if_installation_fails_were_not_so_good_at_telling_you_about_it" is-upgraded="">If installation fails, we're not so good at telling you about it</h3></devsite-heading>
+
+<p>If a worker registers, but then doesn't appear in <code translate="no" dir="ltr">chrome://inspect/#service-workers</code>
+or <code translate="no" dir="ltr">chrome://serviceworker-internals</code>, it's likely failed to
+install due to an error being thrown, or a rejected promise being passed to
+<code translate="no" dir="ltr">event.waitUntil()</code>.</p>
+
+<p>To work around this, go to <code translate="no" dir="ltr">chrome://serviceworker-internals</code> and check "Open
+DevTools window and pause JavaScript execution on service worker startup for
+debugging", and put a debugger statement at the start of your install event.
+This, along with
+<a href="/web/tools/chrome-devtools/javascript/breakpoints">Pause on uncaught exceptions</a>,
+should reveal the issue.</p>
+
+<devsite-heading text="The defaults of fetch()" for="the_defaults_of_fetch" level="h3" link="" toc=""><h3 id="the_defaults_of_fetch" is-upgraded="">The defaults of fetch()</h3></devsite-heading>
+
+<devsite-heading text="No credentials by default" for="no_credentials_by_default" level="h4" link=""><h4 id="no_credentials_by_default" is-upgraded="">No credentials by default</h4></devsite-heading>
+
+<p>When you use <code translate="no" dir="ltr">fetch</code>, by default, requests won't contain credentials such as
+cookies. If you want credentials, instead call:</p>
+<devsite-code><pre class="" translate="no" dir="ltr" is-upgraded=""><code dir="ltr"><span class="pln">fetch</span><span class="pun">(</span><span class="pln">url</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; credentials</span><span class="pun">:</span><span class="pln"> </span><span class="str">'include'</span><span class="pln"><br></span><span class="pun">})</span><span class="pln"><br></span></code></pre><div class="devsite-code-buttons-container"><button class="gc-analytics-event material-icons devsite-icon-code-dark devsite-toggle-dark" data-category="Site-Wide Custom Events" data-label="Dark Code Toggle" track-type="exampleCode" track-name="darkCodeToggle" data-title="Dark code theme"></button><button class="gc-analytics-event material-icons devsite-icon-code-light devsite-toggle-light" data-category="Site-Wide Custom Events" data-label="Light Code Toggle" track-type="exampleCode" track-name="lightCodeToggle" data-title="Light code theme"></button><button class="gc-analytics-event material-icons devsite-icon-copy" data-category="Site-Wide Custom Events" data-label="Click To Copy" track-type="exampleCode" track-name="clickToCopy" data-title="Copy"></button></div></devsite-code>
+<p>This behaviour is on purpose, and is arguably better than XHR's more complex
+default of sending credentials if the URL is same-origin, but omitting them
+otherwise. Fetch's behaviour is more like other CORS requests, such as <code translate="no" dir="ltr">&lt;img
+crossorigin&gt;</code>, which never sends cookies unless you opt-in with <code translate="no" dir="ltr">&lt;img
+crossorigin="use-credentials"&gt;</code>.</p>
+
+<devsite-heading text="Non-CORS fail by default" for="non-cors_fail_by_default" level="h4" link=""><h4 id="non-cors_fail_by_default" is-upgraded="">Non-CORS fail by default</h4></devsite-heading>
+
+<p>By default, fetching a resource from a third party URL will fail if it doesn't
+support CORS. You can add a <code translate="no" dir="ltr">no-CORS</code> option to the Request to overcome this,
+although this will cause an 'opaque' response, which means you won't be able to
+tell if the response was successful or not.</p>
+<devsite-code><pre class="" translate="no" dir="ltr" is-upgraded=""><code dir="ltr"><span class="pln">cache</span><span class="pun">.</span><span class="pln">addAll</span><span class="pun">(</span><span class="pln">urlsToPrefetch</span><span class="pun">.</span><span class="pln">map</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">urlToPrefetch</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Request</span><span class="pun">(</span><span class="pln">urlToPrefetch</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> mode</span><span class="pun">:</span><span class="pln"> </span><span class="str">'no-cors'</span><span class="pln"> </span><span class="pun">});</span><span class="pln"><br></span><span class="pun">})).</span><span class="kwd">then</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln"><br>&nbsp; console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'All resources have been fetched and cached.'</span><span class="pun">);</span><span class="pln"><br></span><span class="pun">});</span><span class="pln"><br></span></code></pre><div class="devsite-code-buttons-container"><button class="gc-analytics-event material-icons devsite-icon-code-dark devsite-toggle-dark" data-category="Site-Wide Custom Events" data-label="Dark Code Toggle" track-type="exampleCode" track-name="darkCodeToggle" data-title="Dark code theme"></button><button class="gc-analytics-event material-icons devsite-icon-code-light devsite-toggle-light" data-category="Site-Wide Custom Events" data-label="Light Code Toggle" track-type="exampleCode" track-name="lightCodeToggle" data-title="Light code theme"></button><button class="gc-analytics-event material-icons devsite-icon-copy" data-category="Site-Wide Custom Events" data-label="Click To Copy" track-type="exampleCode" track-name="clickToCopy" data-title="Copy"></button></div></devsite-code>
+<devsite-heading text="Handling responsive images" for="handling_responsive_images" level="h3" link="" toc=""><h3 id="handling_responsive_images" is-upgraded="">Handling responsive images</h3></devsite-heading>
+
+<p>The <code translate="no" dir="ltr">srcset</code> attribute or the <code translate="no" dir="ltr">&lt;picture&gt;</code> element will select the most
+appropriate image asset at run time and make a network request.</p>
+
+<p>For service worker, if you wanted to cache an image during the install step, you
+have a few options:</p>
+
+<ol>
+<li>Install all the images that the  <code translate="no" dir="ltr">&lt;picture&gt;</code> element and the <code translate="no" dir="ltr">srcset</code>
+attribute will request.</li>
+<li>Install a single low-res version of the image.</li>
+<li>Install a single high-res version of the image.</li>
+</ol>
+
+<p>Realistically you should be picking option 2 or 3 since downloading all of the
+images would be a waste of storage space.</p>
+
+<p>Let's assume you go for the low res version at install time and you want to try
+and retrieve higher res images from the network when the page is loaded, but if
+the high res images fail, fallback to the low res version. This is fine and
+dandy to do but there is one problem.</p>
+
+<p>If we have the following two images:</p>
+
+<div class="devsite-table-wrapper"><table>
+<thead>
+<tr>
+<th>Screen Density</th>
+<th>Width</th>
+<th>Height</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1x</td>
+<td>400</td>
+<td>400</td>
+</tr>
+<tr>
+<td>2x</td>
+<td>800</td>
+<td>800</td>
+</tr>
+</tbody>
+</table></div>
+
+<p>In a <code translate="no" dir="ltr">srcset</code> image, we'd have some markup like this:</p>
+<devsite-code><pre class="" translate="no" dir="ltr" is-upgraded=""><code dir="ltr"><span class="tag">&lt;img</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"image-src.png"</span><span class="pln"> </span><span class="atn">srcset</span><span class="pun">=</span><span class="atv">"image-src.png 1x, image-2x.png 2x"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln"><br></span></code></pre><div class="devsite-code-buttons-container"><button class="gc-analytics-event material-icons devsite-icon-code-dark devsite-toggle-dark" data-category="Site-Wide Custom Events" data-label="Dark Code Toggle" track-type="exampleCode" track-name="darkCodeToggle" data-title="Dark code theme"></button><button class="gc-analytics-event material-icons devsite-icon-code-light devsite-toggle-light" data-category="Site-Wide Custom Events" data-label="Light Code Toggle" track-type="exampleCode" track-name="lightCodeToggle" data-title="Light code theme"></button><button class="gc-analytics-event material-icons devsite-icon-copy" data-category="Site-Wide Custom Events" data-label="Click To Copy" track-type="exampleCode" track-name="clickToCopy" data-title="Copy"></button></div></devsite-code>
+<p>If we are on a 2x display, then the browser will opt to download <code translate="no" dir="ltr">image-2x.png</code>,
+if we are offline you could <code translate="no" dir="ltr">.catch()</code> this request and return <code translate="no" dir="ltr">image-src.png</code>
+instead if it's cached, however the browser will expect an image that takes
+into account the extra pixels on a 2x screen, so the image will appear as
+200x200 CSS pixels instead of 400x400 CSS pixels. The only way around this is to
+set a fixed height and width on the image.</p>
+<devsite-code><pre class="" translate="no" dir="ltr" is-upgraded=""><code dir="ltr"><span class="tag">&lt;img</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"image-src.png"</span><span class="pln"> </span><span class="atn">srcset</span><span class="pun">=</span><span class="atv">"image-src.png 1x, image-2x.png 2x"</span><span class="pln"><br>&nbsp;</span><span class="atn">style</span><span class="pun">=</span><span class="atv">"</span><span class="kwd">width</span><span class="pun">:</span><span class="lit">400px</span><span class="pun">;</span><span class="pln"> </span><span class="kwd">height</span><span class="pun">:</span><span class="pln"> </span><span class="lit">400px</span><span class="pun">;</span><span class="atv">"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln"><br></span></code></pre><div class="devsite-code-buttons-container"><button class="gc-analytics-event material-icons devsite-icon-code-dark devsite-toggle-dark" data-category="Site-Wide Custom Events" data-label="Dark Code Toggle" track-type="exampleCode" track-name="darkCodeToggle" data-title="Dark code theme"></button><button class="gc-analytics-event material-icons devsite-icon-code-light devsite-toggle-light" data-category="Site-Wide Custom Events" data-label="Light Code Toggle" track-type="exampleCode" track-name="lightCodeToggle" data-title="Light code theme"></button><button class="gc-analytics-event material-icons devsite-icon-copy" data-category="Site-Wide Custom Events" data-label="Click To Copy" track-type="exampleCode" track-name="clickToCopy" data-title="Copy"></button></div></devsite-code>
+<p>For <code translate="no" dir="ltr">&lt;picture&gt;</code> elements being used for art direction, this becomes considerably
+more difficult and will depend heavily on how your images are created and used,
+but you may be able to use a similar approach to srcset.</p>
+
+<devsite-heading text="Learn more" for="learn_more" level="h2" link="" toc="" back-to-top=""><h2 id="learn_more" is-upgraded="">Learn more<a href="#top_of_page" class="devsite-back-to-top-link material-icons" data-title="Back to top"></a></h2></devsite-heading>
+
+<p>There is a list of documentation on service worker being maintained at
+<a href="https://jakearchibald.github.io/isserviceworkerready/resources.html">https://jakearchibald.github.io/isserviceworkerready/resources</a>
+that you may find useful.</p>
+
+<devsite-heading text="Get help" for="get_help" level="h2" link="" toc="" back-to-top=""><h2 id="get_help" is-upgraded="">Get help<a href="#top_of_page" class="devsite-back-to-top-link material-icons" data-title="Back to top"></a></h2></devsite-heading>
+
+<p>If you get stuck then please post your questions on StackOverflow and use the
+'<a href="http://stackoverflow.com/questions/tagged/service-worker">service-worker</a>'
+tag so that we can keep a track of issues and try and help as much as possible.</p>
+
+<devsite-heading text="Feedback" for="feedback" level="h2" link="" toc="" back-to-top=""><h2 id="feedback" is-upgraded="">Feedback<a href="#top_of_page" class="devsite-back-to-top-link material-icons" data-title="Back to top"></a></h2></devsite-heading>
+
+<devsite-tracking-question><div class="devsite-tracking-question" is-upgraded="">
+  <div class="devsite-tracking-question-text">Was this page helpful?</div>
+  <div class="gc-analytics-event" data-category="Helpful" data-value="1" data-label="/web/fundamentals/primers/service-workers">
+    <div class="devsite-tracking-question-choice-button" role="button">Yes</div>
+    <devsite-tracking-question class="devsite-tracking-question-hidden"><div class="devsite-tracking-question" is-upgraded="">
+      <div class="devsite-tracking-question-text">What was the best thing about this page?</div>
+      <div class="gc-analytics-event" data-category="Goals" data-value="1" data-label="/web/fundamentals/primers/service-workers">
+        <div class="devsite-tracking-question-choice-button" role="button">It helped me complete my goal(s)</div>
+        <div class="devsite-tracking-question-hidden">
+          Thank you for the feedback. If you have specific ideas on how to improve this page, please
+          <a href="https://github.com/google/webfundamentals/issues/new">create an issue</a>.
+        </div>
+      </div>
+      <div class="gc-analytics-event" data-category="Completeness" data-value="1" data-label="/web/fundamentals/primers/service-workers">
+        <div class="devsite-tracking-question-choice-button" role="button">It had the information I needed</div>
+        <div class="devsite-tracking-question-hidden">
+          Thank you for the feedback. If you have specific ideas on how to improve this page, please
+          <a href="https://github.com/google/webfundamentals/issues/new">create an issue</a>.
+        </div>
+      </div>
+      <div class="gc-analytics-event" data-category="Accuracy" data-value="1" data-label="/web/fundamentals/primers/service-workers">
+        <div class="devsite-tracking-question-choice-button" role="button">It had accurate information</div>
+        <div class="devsite-tracking-question-hidden">
+          Thank you for the feedback. If you have specific ideas on how to improve this page, please
+          <a href="https://github.com/google/webfundamentals/issues/new">create an issue</a>.
+        </div>
+      </div>
+      <div class="gc-analytics-event" data-category="Writing" data-value="1" data-label="/web/fundamentals/primers/service-workers">
+        <div class="devsite-tracking-question-choice-button" role="button">It was easy to read</div>
+        <div class="devsite-tracking-question-hidden">
+          Thank you for the feedback. If you have specific ideas on how to improve this page, please
+          <a href="https://github.com/google/webfundamentals/issues/new">create an issue</a>.
+        </div>
+      </div>
+      <div class="gc-analytics-event" data-category="Other" data-value="1" data-label="/web/fundamentals/primers/service-workers">
+        <div class="devsite-tracking-question-choice-button" role="button">Something else</div>
+        <div class="devsite-tracking-question-hidden">
+          Thank you for the feedback. If you have specific ideas on how to improve this page, please
+          <a href="https://github.com/google/webfundamentals/issues/new">create an issue</a>.
+        </div>
+      </div>
+    </div></devsite-tracking-question>
+  </div>
+  <div class="gc-analytics-event" data-category="Helpful" data-value="0" data-label="/web/fundamentals/primers/service-workers">
+    <div class="devsite-tracking-question-choice-button" role="button">No</div>
+    <devsite-tracking-question class="devsite-tracking-question-hidden"><div class="devsite-tracking-question" is-upgraded="">
+      <div class="devsite-tracking-question-text">What was the worst thing about this page?</div>
+      <div class="gc-analytics-event" data-category="Goals" data-value="0" data-label="/web/fundamentals/primers/service-workers">
+        <div class="devsite-tracking-question-choice-button" role="button">It didn't help me complete my goal(s)</div>
+        <div class="devsite-tracking-question-hidden">
+          Thank you for the feedback. If you have specific ideas on how to improve this page, please
+          <a href="https://github.com/google/webfundamentals/issues/new">create an issue</a>.
+        </div>
+      </div>
+      <div class="gc-analytics-event" data-category="Completeness" data-value="0" data-label="/web/fundamentals/primers/service-workers">
+        <div class="devsite-tracking-question-choice-button" role="button">It was missing information I needed</div>
+        <div class="devsite-tracking-question-hidden">
+          Thank you for the feedback. If you have specific ideas on how to improve this page, please
+          <a href="https://github.com/google/webfundamentals/issues/new">create an issue</a>.
+        </div>
+      </div>
+      <div class="gc-analytics-event" data-category="Accuracy" data-value="0" data-label="/web/fundamentals/primers/service-workers">
+        <div class="devsite-tracking-question-choice-button" role="button">It had inaccurate information</div>
+        <div class="devsite-tracking-question-hidden">
+          Thank you for the feedback. If you have specific ideas on how to improve this page, please
+          <a href="https://github.com/google/webfundamentals/issues/new">create an issue</a>.
+        </div>
+      </div>
+      <div class="gc-analytics-event" data-category="Writing" data-value="0" data-label="/web/fundamentals/primers/service-workers">
+        <div class="devsite-tracking-question-choice-button" role="button">It was hard to read</div>
+        <div class="devsite-tracking-question-hidden">
+          Thank you for the feedback. If you have specific ideas on how to improve this page, please
+          <a href="https://github.com/google/webfundamentals/issues/new">create an issue</a>.
+        </div>
+      </div>
+      <div class="gc-analytics-event" data-category="Other" data-value="0" data-label="/web/fundamentals/primers/service-workers">
+        <div class="devsite-tracking-question-choice-button" role="button">Something else</div>
+        <div class="devsite-tracking-question-hidden">
+          Thank you for the feedback. If you have specific ideas on how to improve this page, please
+          <a href="https://github.com/google/webfundamentals/issues/new">create an issue</a>.
+        </div>
+      </div>
+    </div></devsite-tracking-question>
+  </div>
+</div></devsite-tracking-question>
+          </div>

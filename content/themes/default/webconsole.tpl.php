@@ -34,6 +34,10 @@
 		</script>
 		<script src="/modules/webconsole/assets/keyboardManager.js">
 		</script>
+		<script src="/modules/webconsole/assets/modules/editable/editable.js">
+		</script>
+		<script src="/modules/webconsole/assets/modules/note/note.js">
+		</script>
 		<script src="/modules/webconsole/assets/default-routes.js">
 		</script>
 		<script src="/modules/webconsole/assets/ui.js">
@@ -65,9 +69,6 @@
 				<div id="stage">
 					<h1>Console loaded</h1>
 					<div id="stage-content"><?php echo $content; ?></div>
-					<div id="modal">
-						<div id="modal-content"></div>
-					</div>
 				</div>
 			</div> <!--end container-->
 						
@@ -79,6 +80,12 @@
 		</div> <!--end page -->
 
 		</div>
+		
+		<div id="modal-backdrop">
+					<div id="modal">
+						<div id="modal-content"></div>
+					</div>
+					</div>
 	</body>
 	
 	<script type="text/javascript">
