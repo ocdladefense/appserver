@@ -17,43 +17,25 @@
 		<link href="/modules/webconsole/assets/css/keyboardManager.css" type="text/css" rel="stylesheet" />
 		<script type="text/javascript">
 			window.appModules = {};
-			function define(deps,mod){
-				mod();
+			
+			function define(name,mod){
+				appModules[name] = mod();
+			}
+			
+			function getModule(name){
+				return appModules[name];
 			}
 
 		</script>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
 		</script>
-		<script src="/modules/webconsole/assets/components/materials.js">
-		</script>
 		<script src="//membertest.ocdla.org/sites/all/libraries/library/event.js">
 		</script>
 		<script src="//membertest.ocdla.org/sites/all/libraries/library/view-core.js">
 		</script>
-		<script src="/modules/webconsole/assets/menu.js">
-		</script>
-		<script src="/modules/webconsole/assets/keyboardManager.js">
-		</script>
-		<script src="/modules/webconsole/assets/modules/editable/editable.js">
-		</script>
-		<script src="/modules/webconsole/assets/modules/note/note.js">
-		</script>
-		<script src="/modules/webconsole/assets/default-routes.js">
-		</script>
-		<script src="/modules/webconsole/assets/ui.js">
-		</script>
-		<script src="/modules/webconsole/assets/modal.js">
-		</script>
-		<script src="/modules/webconsole/assets/viewLibrary.js">
-		</script>
-		<script src="/modules/webconsole/assets/http.js">
-		</script>
-		<script src="/modules/webconsole/assets/settings.js">
-		</script>
-		<script src="/modules/webconsole/assets/app.js">
-		</script>
 
-    	 <?php /* echo $scripts*/ ?> 
+
+    	 <?php echo $scripts; ?> 
 	</head>
 	<body>
 
