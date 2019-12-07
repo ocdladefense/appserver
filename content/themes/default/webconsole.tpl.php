@@ -14,18 +14,20 @@
 		<title>AppServer Client</title>
 		<link href="/modules/webconsole/assets/css/ux.css" type="text/css" rel="stylesheet" />
 		<link href="/modules/webconsole/assets/css/materials.css" type="text/css" rel="stylesheet" />
-		<link href="/modules/webconsole/assets/css/keyboardManager.css" type="text/css" rel="stylesheet" />
+		<link href="/modules/webconsole/assets/css/KeyboardManager.css" type="text/css" rel="stylesheet" />
+		<link href="/modules/webconsole/assets/modules/note/styles.css" type="text/css" rel="stylesheet" />
 		<script type="text/javascript">
 			window.appModules = {};
 			
 			function define(name,mod){
-				appModules[name] = mod();
+				if(typeof name == "string")
+					appModules[name] = mod();
+				else mod();
 			}
 			
 			function getModule(name){
 				return appModules[name];
 			}
-
 		</script>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
 		</script>
