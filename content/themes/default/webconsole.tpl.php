@@ -79,8 +79,8 @@
     
 		jQuery(function(){
 			app = new App();
-			app.addRoutes(clientSettings["routes-enabled"]);
-			app.init();
+			// app.addRoutes(clientSettings["routes-enabled"]);
+			app.init(clientSettings);
 			// app.setKeyboardManager(kbd);
 		});
 	
