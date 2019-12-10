@@ -49,17 +49,17 @@
 			
 			<div id="container">
 				<div id="menu-left">
-					&nbsp;this is the menu-left
+					<ul id="sex-cases-menu">
+						<li>foobar</li>
+						<li>baz</li>
+						<li>pow</li>
+					</ul>
 					
-					<div id="context-menu-container">
-						<div id="context-menu" style="height:200px; width:90%; background-color:teal;">
 
-						</div>
-					</div>
 				</div>
 					
 				<div id="stage">
-					<h1>Console loaded</h1>
+
 					<div id="stage-content"><?php echo $content; ?></div>
 					
 					<div class="has-context" style="height:200px; width:40%; background-color:blue;"></div>
@@ -77,10 +77,14 @@
 		</div>
 		
 		<div id="modal-backdrop">
-					<div id="modal">
-						<div id="modal-content"></div>
-					</div>
-					</div>
+			<div id="modal">
+				<div id="modal-content"></div>
+			</div>
+		</div>
+		
+		<div id="context-menu-container">
+			<div id="context-menu" style="height:200px; width:90%; background-color:teal;"></div>
+		</div>
 	</body>
 	
 	<script type="text/javascript">
