@@ -1,5 +1,8 @@
 
 
+# Ignore .htaccess; prefer .htaccess-example
+.htaccess
+
 # Ignore settings
 settings.php
 settings.js
