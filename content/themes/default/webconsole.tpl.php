@@ -15,47 +15,31 @@
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 		<link href="/modules/webconsole/assets/css/ux.css" type="text/css" rel="stylesheet" />
 		<link href="/modules/webconsole/assets/css/materials.css" type="text/css" rel="stylesheet" />
-		<link href="/modules/webconsole/assets/css/keyboardManager.css" type="text/css" rel="stylesheet" />
+		<link href="/modules/webconsole/assets/css/KeyboardManager.css" type="text/css" rel="stylesheet" />
+		<link href="/modules/webconsole/assets/modules/note/styles.css" type="text/css" rel="stylesheet" />
 		<link href="/modules/webconsole/assets/css/siteStatus.css" type="text/css" rel="stylesheet" />
 		<script type="text/javascript">
 			window.appModules = {};
-			function define(deps,mod){
-				mod();
+			
+			function define(name,mod){
+				if(typeof name == "string")
+					appModules[name] = mod();
+				else mod();
 			}
-
+			
+			function getModule(name){
+				return appModules[name];
+			}
 		</script>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
-		</script>
-		<script src="/modules/webconsole/assets/components/materials.js">
 		</script>
 		<script src="//membertest.ocdla.org/sites/all/libraries/library/event.js">
 		</script>
 		<script src="//membertest.ocdla.org/sites/all/libraries/library/view-core.js">
 		</script>
-		<script src="/modules/webconsole/assets/menu.js">
-		</script>
-		<script src="/modules/webconsole/assets/keyboardManager.js">
-		</script>
-		<script src="/modules/webconsole/assets/modules/editable/editable.js">
-		</script>
-		<script src="/modules/webconsole/assets/modules/note/note.js">
-		</script>
-		<script src="/modules/webconsole/assets/default-routes.js">
-		</script>
-		<script src="/modules/webconsole/assets/ui.js">
-		</script>
-		<script src="/modules/webconsole/assets/modal.js">
-		</script>
-		<script src="/modules/webconsole/assets/viewLibrary.js">
-		</script>
-		<script src="/modules/webconsole/assets/http.js">
-		</script>
-		<script src="/modules/webconsole/assets/settings.js">
-		</script>
-		<script src="/modules/webconsole/assets/app.js">
-		</script>
 
-    	 <?php /* echo $scripts*/ ?> 
+
+    	 <?php echo $scripts; ?> 
 	</head>
 	<body>
 
@@ -66,11 +50,22 @@
 			</div> <!--end header-->
 			
 			<div id="container">
-				<div id="menu-left">&nbsp;this is the menu-left</div>
+				<div id="menu-left">
+					&nbsp;this is the menu-left
+					
+					<div id="context-menu-container">
+						<div id="context-menu" style="height:200px; width:90%; background-color:teal;">
+
+						</div>
+					</div>
+				</div>
 					
 				<div id="stage">
 					<h1>Console loaded</h1>
 					<div id="stage-content"><?php echo $content; ?></div>
+					
+					<div class="has-context" style="height:200px; width:40%; background-color:blue;"></div>
+
 				</div>
 			</div> <!--end container-->
 						
@@ -97,8 +92,8 @@
     
 		jQuery(function(){
 			app = new App();
-			app.addRoutes(clientSettings["routes-enabled"]);
-			app.init();
+			// app.addRoutes(clientSettings["routes-enabled"]);
+			app.init(clientSettings);
 			// app.setKeyboardManager(kbd);
 		});
 	
