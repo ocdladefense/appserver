@@ -1,1 +1,23 @@
-{"name":"OCDLA MEMBERS","domain":"https:/trust.ocdla.org","date":"11-22-2019-12-26","timestamp":1574454416,"totalResponseTime":0.7856810000000001,"overallSiteStatus":1,"comments":"1 = good to go, 2 = trouble","probeResults":[{"path":"/","expectedStatusCode":200,"actualStatusCode":200,"responseTime":0.622125},{"path":"/foobars","expectedStatusCode":404,"actualStatusCode":404,"responseTime":0.163556}]}
+{
+    "name": "OCDLA MEMBERS",
+    "domain": "https:/trust.ocdla.org",
+    "date": "11-22-2019-12-26",
+    "timestamp": 1574454416,
+    "totalResponseTime": 0.7856810000000001,
+    "overallSiteStatus": 1,
+    "comments": "1 = good to go, 2 = trouble",
+    "probeResults": [
+        {
+            "path": "/",
+            "expectedStatusCode": 200,
+            "actualStatusCode": 200,
+            "responseTime": 0.622125
+        },
+        {
+            "path": "/foobars",
+            "expectedStatusCode": 404,
+            "actualStatusCode": 404,
+            "responseTime": 0.163556
+        }
+    ]
+}
