@@ -56,6 +56,7 @@ class HTTPRequest
 		// Set various options for our HTTP Request.
 		curl_setopt($this->handle, CURLOPT_HEADER, false);
 		curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($this->handle, CURLOPT_FOLLOWLOCATION, true);
 		if($this->getRequestType() == "POST")
 		{
 			curl_setopt($this->handle, CURLOPT_POST, true);
