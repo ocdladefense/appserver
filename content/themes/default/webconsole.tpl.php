@@ -50,14 +50,8 @@
 			</div> <!--end header-->
 			
 			<div id="container">
-				<div id="menu-left">
-					<ul id="sex-cases-menu">
-						<li>foobar</li>
-						<li>baz</li>
-						<li>pow</li>
-					</ul>
-					
-
+				<div id="container-left">
+					<div id="menu-left">&nbsp;</div>
 				</div>
 					
 				<div id="stage">
@@ -86,6 +80,9 @@
 		
 		<div id="context-menu-container">
 			<div id="context-menu" style="height:200px; width:90%; background-color:teal;"></div>
+		</div>
+		<div id="positioned-context-container">
+		
 		</div>
 	</body>
 	
