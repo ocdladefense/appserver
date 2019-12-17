@@ -35,8 +35,6 @@
 		</script>
 		<script src="//membertest.ocdla.org/sites/all/libraries/library/event.js">
 		</script>
-		<script src="//membertest.ocdla.org/sites/all/libraries/library/view-core.js">
-		</script>
 
 
     	 <?php echo $scripts; ?> 
@@ -54,7 +52,7 @@
 					<div id="menu-left">&nbsp;</div>
 				</div>
 					
-				<div id="stage">
+				<div id="stage" class="home">
 
 					<div id="stage-content"><?php echo $content; ?></div>
 					
