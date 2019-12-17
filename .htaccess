@@ -1,3 +1,4 @@
+
 <IfModule mod_alias.c>
     RedirectMatch 403 /xmlrpc.php
 </IfModule>
