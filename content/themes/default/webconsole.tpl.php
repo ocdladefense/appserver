@@ -90,7 +90,7 @@
     // domReady(renderMenu);
     var app;
     
-		var domReady(function(){
+		domReady(function(){
 			app = new App();
 			// app.addRoutes(clientSettings["routes-enabled"]);
 			app.init(clientSettings);
