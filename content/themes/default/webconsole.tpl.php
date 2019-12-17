@@ -51,18 +51,16 @@
 				<div id="menu-left">
 					&nbsp;this is the menu-left
 					
-					<div id="context-menu-container">
-						<div id="context-menu" style="height:200px; width:90%; background-color:teal;">
 
-						</div>
-					</div>
 				</div>
+				
 					
 				<div id="stage">
 					<h1>Console loaded</h1>
+					<div class="has-context" style="height:200px; width:40%; background-color:blue;"></div>
 					<div id="stage-content"><?php echo $content; ?></div>
 					
-					<div class="has-context" style="height:200px; width:40%; background-color:blue;"></div>
+					
 
 				</div>
 			</div> <!--end container-->
