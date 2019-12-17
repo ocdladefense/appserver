@@ -6,6 +6,8 @@
 RewriteEngine On
 RewriteBase /
 RewriteRule ^index.php$ - [L]
+# NEW RULE HERE FOR THE PATH OF OUR APPLICATION SERVER (SERVICE WORKER)
+RewriteRule sw modules/webconsole/assets/worker/sw.js [END]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /public/app.php [L]
