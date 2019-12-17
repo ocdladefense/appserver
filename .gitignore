@@ -1,7 +1,7 @@
 
 
 # Ignore .htaccess; prefer .htaccess-example
-# .htaccess
+.htaccess
 
 # Ignore settings
 settings.php
