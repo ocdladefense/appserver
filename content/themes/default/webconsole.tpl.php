@@ -48,26 +48,13 @@
 			</div> <!--end header-->
 			
 			<div id="container">
-<<<<<<< HEAD
-				<div id="menu-left">
-					&nbsp;this is the menu-left
-					
-
-=======
 				<div id="container-left">
 					<div id="menu-left">&nbsp;</div>
->>>>>>> 4438c2da459a012a66c98a08806c75343938a949
 				</div>
 				
 					
-<<<<<<< HEAD
-				<div id="stage">
-					<h1>Console loaded</h1>
-					<div class="has-context" style="height:200px; width:40%; background-color:blue;"></div>
-=======
 				<div id="stage" class="home">
 
->>>>>>> 4438c2da459a012a66c98a08806c75343938a949
 					<div id="stage-content"><?php echo $content; ?></div>
 					
 					
