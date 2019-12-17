@@ -12,10 +12,12 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>AppServer Client</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 		<link href="/modules/webconsole/assets/css/ux.css" type="text/css" rel="stylesheet" />
 		<link href="/modules/webconsole/assets/css/materials.css" type="text/css" rel="stylesheet" />
 		<link href="/modules/webconsole/assets/css/KeyboardManager.css" type="text/css" rel="stylesheet" />
 		<link href="/modules/webconsole/assets/modules/note/styles.css" type="text/css" rel="stylesheet" />
+		<link href="/modules/webconsole/assets/css/siteStatus.css" type="text/css" rel="stylesheet" />
 		<script type="text/javascript">
 			window.appModules = {};
 			
@@ -33,8 +35,6 @@
 		</script>
 		<script src="//membertest.ocdla.org/sites/all/libraries/library/event.js">
 		</script>
-		<script src="//membertest.ocdla.org/sites/all/libraries/library/view-core.js">
-		</script>
 
 
     	 <?php echo $scripts; ?> 
@@ -48,16 +48,26 @@
 			</div> <!--end header-->
 			
 			<div id="container">
+<<<<<<< HEAD
 				<div id="menu-left">
 					&nbsp;this is the menu-left
 					
 
+=======
+				<div id="container-left">
+					<div id="menu-left">&nbsp;</div>
+>>>>>>> 4438c2da459a012a66c98a08806c75343938a949
 				</div>
 				
 					
+<<<<<<< HEAD
 				<div id="stage">
 					<h1>Console loaded</h1>
 					<div class="has-context" style="height:200px; width:40%; background-color:blue;"></div>
+=======
+				<div id="stage" class="home">
+
+>>>>>>> 4438c2da459a012a66c98a08806c75343938a949
 					<div id="stage-content"><?php echo $content; ?></div>
 					
 					
@@ -75,10 +85,17 @@
 		</div>
 		
 		<div id="modal-backdrop">
-					<div id="modal">
-						<div id="modal-content"></div>
-					</div>
-					</div>
+			<div id="modal">
+				<div id="modal-content"></div>
+			</div>
+		</div>
+		
+		<div id="context-menu-container">
+			<div id="context-menu" style="height:200px; width:90%; background-color:teal;"></div>
+		</div>
+		<div id="positioned-context-container">
+		
+		</div>
 	</body>
 	
 	<script type="text/javascript">
@@ -102,4 +119,8 @@
 		renderMenu();
 
 	</script>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 </html>

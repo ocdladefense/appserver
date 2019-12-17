@@ -73,6 +73,7 @@ class Router
         //isolate the resource string from the completeRequestedPath
         $parts = explode("?", $this->completeRequestedPath);
         $this->resourceString = $parts[0];
+        
         //isolate the arguments from the completeRequestedPath
         if(array_key_exists(1,$parts))
             $this->arguments = explode("/",$parts[1]);
@@ -80,6 +81,7 @@ class Router
 
     //Return the route at the index of the requested resource.
     public function getActiveRoute(){
+
         if(!array_key_exists($this->resourceString,$this->allRoutes)){
             throw new exception($this->resourceString." could not be found");
         }
