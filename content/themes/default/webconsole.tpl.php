@@ -51,12 +51,13 @@
 				<div id="container-left">
 					<div id="menu-left">&nbsp;</div>
 				</div>
+				
 					
 				<div id="stage" class="home">
 
 					<div id="stage-content"><?php echo $content; ?></div>
 					
-					<div class="has-context" style="height:200px; width:40%; background-color:blue;"></div>
+					
 
 				</div>
 			</div> <!--end container-->
