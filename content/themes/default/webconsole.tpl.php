@@ -82,6 +82,10 @@
 						</doc>
 						<?php /*echo $content;*/ ?></div>
 				</div>
+
+				<div id="container-right" class="container-right">
+
+				</div>
 			</div> <!--end container-->
 						
 			<div id="footer">
