@@ -4,12 +4,12 @@ class HTTPResponse
     private $body;
     
     private $headers = array();
-    
-    private $content;
 
 		private $statusCode;
 
-    public function __construct(){}
+    public function __construct($body = null){
+    	$this->body = $body;
+    }
 
 
     //Setters

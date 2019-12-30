@@ -2,6 +2,8 @@
 require '../bootstrap.php';           
 
 session_start();
+
+
 //$cient = new Client();
 //$cient->machineName;
 //#client->deviceName;
@@ -12,14 +14,20 @@ session_start();
 //client2->hasFeatureScreen = false;
 $request = HTTPRequest::newFromEnvironment();
 
-$request->setHeader("Accept","*/*");
+// $request->setHeader("Accept","*/*");
 
 $application = new Application();
-$loader = new ModuleLoader();
-$application->setModuleLoader($loader);
+
+$application->setModuleLoader(new ModuleLoader());
 $router = new Router($application);
+
+
+
 $application->setRouter($router);
+
 $application->setRequest($request);
+
+
 
 try {
 	$resp = $router->run($application->getRequestHeader("Request-URI"));
@@ -33,6 +41,12 @@ try {
 	$resp->setBody($e->getMessage());
 }
 
+
 $application->setResponse($resp);
+
+
 $application->secure();
-$application->send($resp);
+
+
+
+$application->send();
