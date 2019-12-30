@@ -35,7 +35,7 @@ class Router
         //set up the response object
         $this->response->setHeaders = $this->headers;
         $this->response->setContentType($this->activeRoute);
-        $out = HTTPResponse::formatResponseBody($this->callCallbackFunction($this->activeRoute), $this->response->getHeader("Content-type"));
+        $out = HTTPResponse::formatResponseBody($this->callCallbackFunction($this->activeRoute), $this->response->getHeader("Content-Type"));
         $this->response->setBody($out);
         return $this->response;
     }
@@ -51,7 +51,7 @@ class Router
             foreach($routes as &$route){
                 $route["module"] = $mod;
                 $route["method"] = !empty($route["method"])?$route["method"]:self::$DEFAULT_HTTP_METHOD;
-                $route["content-type"] = !empty($route["content-type"])?$route["content-type"]:self::$DEFAULT_CONTENT_TYPE;
+                $route["Content-Type"] = !empty($route["Content-Type"])?$route["Content-Type"]:self::$DEFAULT_CONTENT_TYPE;
             }
                 $this->allRoutes = array_merge($this->allRoutes,$routes);
         }
@@ -127,11 +127,5 @@ class Router
     }
     public function getFilesIncluded(){
         return $this->filesIncluded;
-    }
-    public function getHeader($headerName){
-        return $this->response->getHeaders()[$headerName];
-    }
-    public function getHeaders(){
-        return $this->response->getHeaders();
     }
 }

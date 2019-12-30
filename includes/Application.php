@@ -4,8 +4,12 @@
 class Application {
     
     private $moduleLoader;
+    
     private $fileSystemService;
+    
     private $request;
+    
+    private $resp;
 
     public function __construct(){}
 
@@ -15,6 +19,10 @@ class Application {
     }
     public function setRequest($request){
         $this->request = $request;
+    }
+    
+    public function setResponse($resp) {
+    	$this->resp = $resp;
     }
     public function setRouter($router){
         $this->router = $router;
@@ -33,7 +41,7 @@ class Application {
 
     //Other Methods
     public function secure(){ 
-        $routeContentType = $this->router->getHeader("Content-type");
+        $routeContentType = $this->resp->getHeader("Content-Type");
         $requestAcceptType = $this->request->getHeader("Accept");
 
         if(!$this->request->isSupportedContentType($routeContentType)){
@@ -41,9 +49,9 @@ class Application {
             content type '$requestAcceptType', which is set by the requesting entity.  Exception thrown");
         }
     }
-    public function send($response){
-        $response->sendHeaders();
-        $content = $response->getBody();
+    public function send(){
+        $this->resp->sendHeaders();
+        $content = $this->resp->getBody();
         
         print $content;
     }

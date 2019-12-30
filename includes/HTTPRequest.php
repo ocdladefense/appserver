@@ -91,7 +91,7 @@ class HTTPRequest
 	public function makeHTTPRequest(){
 		$this->setOptions($this->params);
 		$this->ignoreSSLVerification();
-		// Make the actual HTTP Request AND it returns a HTTP Response.
+		// Make the actual HTTP Request AND it returns an HTTP Response.
 
 		$this->response = curl_exec($this->handle);
 		$hResponse = new HTTPResponse($this->response);
@@ -106,6 +106,10 @@ class HTTPRequest
 		$this->closeHTTPConnection();
 
 		return $hResponse;	
+	}
+	
+	public function send() {
+		return $this->makeHTTPRequest();
 	}
 
 	public function getStatus(){

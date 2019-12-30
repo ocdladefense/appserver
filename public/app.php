@@ -21,7 +21,18 @@ $router = new Router($application);
 $application->setRouter($router);
 $application->setRequest($request);
 
-$response = $router->run($application->getRequestHeader("Request-URI"));
+try {
+	$resp = $router->run($application->getRequestHeader("Request-URI"));
+} catch(PageNotFoundException $e) {
+	$resp = new HTTPResponse();
+	$resp->setNotFoundStatus();
+	$resp->setBody($e->getMessage());
+} catch(Exception $e) {
+	$resp = new HTTPResponse();
+	$resp->setErrorStatus();
+	$resp->setBody($e->getMessage());
+}
 
+$application->setResponse($resp);
 $application->secure();
-$application->send($response);
+$application->send($resp);

@@ -2,8 +2,12 @@
 class HTTPResponse
 {
     private $body;
+    
     private $headers = array();
+    
     private $content;
+
+		private $statusCode;
 
     public function __construct(){}
 
@@ -14,40 +18,69 @@ class HTTPResponse
     }
     public function setContentType($route){
         //Add the preferred content type to the headers array
-        if($route["content-type"] == "json"){
-            $this->headers["Content-type"] = "application/json; charset=utf-8";
+        if(isset($route["Content-Type"]) && $route["Content-Type"] == "json"){
+            $this->headers["Content-Type"] = "application/json; charset=utf-8";
         }
         else{
-            $this->headers["Content-type"] = "text/html; charset=utf-8";
+            $this->headers["Content-Type"] = "text/html; charset=utf-8";
         }
 
     }
     public function setHeaders($headers){
         $this->headers = $headers;
     }
+    
+    public function setHeader($name,$value) {
+    	$this->headers[$name] = $value;
+    }
+    
+    public function setStatusCode($code) {
+    	$this->statusCode = $code;
+    }
+    
+    public function setErrorStatus(){
+    	$this->statusCode = "HTTP/1.1 500 Internal Server Error";
+    }
+    
+    public function setNotFoundStatus(){
+    	$this->statusCode = "HTTP/1.1 400 Page Not Found";
+    }
 
     //Getters
     public function getBody(){
         return $this->body;
     }
+    
     public function getHeader($headerName){
-        return $this->headers[$headerName];
+    	if(!isset($this->headers[$headerName])) {
+    		return null;
+    	}
+    	
+			return $this->headers[$headerName];
     }
+    
+    
     public function getHeaders(){
         return $this->headers;
     }
+    
+    
     public function getPhpArray(){
         // Parsing the HTTP Response; by parsing we just mean the data has a known format and we can retrieve certain things from the Response.
-		return json_decode($this->body, true);
+			return json_decode($this->body, true);
     }
 
     //other methods
 
     //Send the value of the headers array at the key of content-type 
     public function sendHeaders(){
-        foreach($this->headers as $headerName => $headerValue){
-            header($headerName.": ".$headerValue);
-        }
+
+			foreach($this->headers as $headerName => $headerValue){
+				header($headerName.": ".$headerValue);
+			}
+			if($this->statusCode != null){
+				header($this->statusCode);
+			}
     }
     public function __toString(){
         return $this->body;

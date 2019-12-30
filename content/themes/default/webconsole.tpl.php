@@ -53,10 +53,7 @@
 				
 					<div class="doc-nav" id="doc-nav-content">
 						<span id="doc-nave-open" data-controller-for="doc-nav" class="collapsible-controller arrow-right"></span>
-						<div class="doc-title active"><a href="#" data-doc-id="1" data-route="load-doc">Chapter 1: Precharge Represenation</a></div>
-						<div class="doc-title"><a href="#" data-doc-id="2" data-route="load-doc">Chapter 2: Getting Your Client Out: Bail and Release</a></div>
-						<div class="doc-title"><a href="#" data-doc-id="3" data-route="load-doc">Chapter 3: Themes in Sex Crime Defense: Developing, Polishing and Preserving the Stories of Your Defense at Every Stage of Your Case</a></div>
-						<div class="doc-title"><a href="#" data-doc-id="4" data-route="load-doc">Chapter 4: Preparing the Case: Discovery, Investigation and Obtaining Evidence</a></div>
+
 					</div>
 
 					<div class="doc-nav" id="doc-nav-right">
