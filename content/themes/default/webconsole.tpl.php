@@ -52,7 +52,9 @@
 					</div>
 				
 					<div class="doc-nav" id="doc-nav-content">
-						<span id="doc-nave-open" data-controller-for="doc-nav" class="collapsible-controller arrow-right"></span>
+						<span id="doc-nav-open" data-controller-for="doc-nav" class="collapsible-controller">
+							<span class="arrow-right">&nbsp;</span>
+						</span>
 
 					</div>
 
@@ -78,7 +80,11 @@
 							<author>Steve Eberlein</author>
 							<author>Seth White</author>
 						</doc>
-						<?php echo $content; ?></div>
+						<?php /*echo $content;*/ ?></div>
+				</div>
+
+				<div id="container-right" class="container-right">
+
 				</div>
 			</div> <!--end container-->
 						
