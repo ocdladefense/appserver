@@ -70,13 +70,48 @@ class Router
         if(strpos($this->completeRequestedPath,"/") === 0){
             $this->completeRequestedPath = substr($this->completeRequestedPath,1);
         }
-        //isolate the resource string from the completeRequestedPath
-        $parts = explode("?", $this->completeRequestedPath);
-        $this->resourceString = $parts[0];
+                //isolate the resource string from the completeRequestedPath
+                $parts = explode("?", $this->completeRequestedPath);
+                $this->resourceString = $parts[0];
+                
+                //isolate the arguments from the completeRequestedPath
+                if(array_key_exists(1,$parts))
+                    $this->arguments = explode("/",$parts[1]);
+
+                    print_r($this->getCompleteRequestedPath());
+                    //print_r($this->getArgs());
+                    print $this->resourceString;
+                    exit;
+
+
         
-        //isolate the arguments from the completeRequestedPath
-        if(array_key_exists(1,$parts))
-            $this->arguments = explode("/",$parts[1]);
+        // if(strpos($this->completeRequestedPath,"?") == false){
+        //     //isolate the resource string from the completeRequestedPath
+        //     $parts = explode("/", $this->completeRequestedPath);
+        //     $this->resourceString = $parts[0];
+            
+        //     //isolate the arguments from the completeRequestedPath
+        //     if(array_key_exists(1,$parts)){
+        //         for($i = 1; $i < count($parts); $i++){
+        //             $this->arguments[$i-1] = $parts[$i];
+        //         }
+        //     }
+        // }
+        // else{
+        //     $parts = explode("?", $this->completeRequestedPath);
+        //     $this->resourceString = $parts[0];
+        //     $vp = explode("&",$parts[1]);
+
+        //     //isolate the arguments from the completeRequestedPath
+        //     if(array_key_exists(0,$vp)){
+        //         for($i = 0; $i < count($vp); $i++){
+        //             $arg = explode("=",$vp[$i]);
+        //             $this->arguments[$arg[0]] = $arg[1];
+        //         }
+        //     }
+        // }
+            // print_r($this->getArgs());
+            // exit;
     }
 
     //Return the route at the index of the requested resource.
@@ -109,6 +144,10 @@ class Router
             return call_user_func_array($route["callback"],array($entityBody));   
         }
         else{
+            print_r($this->getCompleteRequestedPath());
+            print_r($this->getArgs());
+            print $this->resourceString;
+            exit;
             return call_user_func_array($route["callback"],$this->getArgs());
         }
     }
