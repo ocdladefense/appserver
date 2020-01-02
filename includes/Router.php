@@ -78,13 +78,7 @@ class Router
                 if(array_key_exists(1,$parts))
                     $this->arguments = explode("/",$parts[1]);
 
-                    print_r($this->getCompleteRequestedPath());
-                    //print_r($this->getArgs());
-                    print $this->resourceString;
-                    exit;
 
-
-        
         // if(strpos($this->completeRequestedPath,"?") == false){
         //     //isolate the resource string from the completeRequestedPath
         //     $parts = explode("/", $this->completeRequestedPath);
@@ -110,8 +104,6 @@ class Router
         //         }
         //     }
         // }
-            // print_r($this->getArgs());
-            // exit;
     }
 
     //Return the route at the index of the requested resource.
@@ -144,10 +136,6 @@ class Router
             return call_user_func_array($route["callback"],array($entityBody));   
         }
         else{
-            print_r($this->getCompleteRequestedPath());
-            print_r($this->getArgs());
-            print $this->resourceString;
-            exit;
             return call_user_func_array($route["callback"],$this->getArgs());
         }
     }
