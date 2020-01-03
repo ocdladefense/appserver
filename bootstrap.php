@@ -18,6 +18,7 @@
 		
 	require_once BASE_PATH.'/includes/HTTPRequest.php';
 	require_once BASE_PATH.'/includes/HTTPResponse.php';
+	require_once BASE_PATH.'/includes/Url.php';
 	
 	require_once BASE_PATH.'/includes/Template.php';
     require_once BASE_PATH.'/includes/Application.php';

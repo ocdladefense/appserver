@@ -16,6 +16,8 @@ class Router
     private $arguments = array();
     private $allRoutes = array();
     private $headers = array();
+    private $url;
+
     
 
     public function __construct($application){
@@ -27,8 +29,9 @@ class Router
     public function run($path){
         $this->initRoutes($this->modules);
         $this->setPath($path);
-        $url = new Url($path);
-        $this->resourceString = $url->getResourceString();
+        $this->url = new Url($path);
+        //var_dump($this->url);
+        $this->resourceString = $this->url->getResourceString();
         $this->activeRoute = $this->getActiveRoute();
         $this->activeModule = ModuleLoader::getInstance($this->activeRoute["module"]);
         $this->requireRouteFiles($this->activeRoute);
@@ -94,7 +97,14 @@ class Router
             return call_user_func_array($route["callback"],array($entityBody));   
         }
         else{
-            return call_user_func_array($route["callback"],$this->getArgs());
+            if($this->url->getArguments() == null)
+            {
+            return call_user_func($route["callback"],$this->url->getNamedParameters());
+            }
+            else{
+                return call_user_func_array($route["callback"],$this->url->getArguments());
+
+            }
         }
     }
     //*****************************Getters*********************************************//

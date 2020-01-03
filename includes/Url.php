@@ -1,9 +1,19 @@
 <?php
 class Url{
-    public __construct($path){
-        
+    private $protocol;
+    private $domain;
+    private $basepath;
+    private $path;
+    private $queryString;
+    private $arguments = [];
+    private $namedParameters = [];
+    private $resourceString;
+    private $url;
+    private $_url;
+
+    public function __construct($url){
     
-    
+
 
     // Format 1: absolute URL
           //  https://appserver/some/path/to/resource/with/1/or/2/additonal-params?and=some&additonanl=params&here=!
@@ -26,39 +36,31 @@ class Url{
             // /path/to/app.php/is/somewhere/else/like/here/(app.php)
             // https://appserver/path/to/app.php/
 
-          $namedParameters = array();
           // class UrlParser($url){
-              $firstThing = explode("   ?", $url);
+           $this->_url = $url;
+           $url = $this->url = self::normalize($url);
+           
+
             if($this->hasQueryString($url)){
                 $this->queryString = explode("?",$url)[1];
+                $this->namedParameters = self::parseQueryString($this->queryString);
             }
 
-            $this->everyThingNotPartOfQueryString = explode("?",$url)[0];
+            $this->everythingElse = explode("?",$url)[0];
 
             //even this has two possible outcomes 4 works with no further processing
-            if($this->hasProtocol()){
+            if($this->hasProtocol($this->everythingElse)){
                 $this->protocol = explode("//", $this->everythingElse)[0];
                 $this->path = explode("//", $this->everythingElse)[1];
-                $this->hostName = explode("/", $this->path)[0];
+                $this->domain = explode("/", $this->path)[0];
             }
             else{
                 $this->path = explode("//", $this->everythingElse)[0];
             }
-            
-
-            
-
-
-
-              // global $PATH_TO_APP_DOT_PHP --> need to strip this off is present
-
-
-              $path = $firstThing[0];
-              $this->queryString = $firstThing[1];
-            if($queryString != null){
-                $this->parseQueryString();
-            }
               /// Now further processing:
+              $parts = explode("/", $this->path);
+              $this->resourceString = $parts[0];
+              $this->arguments=self::parseArguments($parts);
           }
           // close constructor
 
@@ -66,55 +68,55 @@ class Url{
               return $this->resourceString;
           }
 
-          public function hasProtocol($everyThingElse){
-              return count(explode("//",$everyThingElse)) > 1;
+          public function hasProtocol($everythingElse){
+              return count(explode("//",$everythingElse)) > 1;
           }
 
 
-          public function /* boolean */ hasQueryString($path){
+          public function /* boolean */ hasQueryString($url){
               return count(explode("?",$url)) > 1;
           }
 
-          public function speacialKindOfCheck(){
-            if(strpos($this->completeRequestedPath,"/") === 0){
-                $this->completeRequestedPath = substr($this->completeRequestedPath,1);
+          public static function normalize($path){
+            if(strpos($path,"//") === 0 ){
+                return $path;
             }
+            if(strpos($path,"/") === 0 ){
+                $path = substr($path,1);
+            }
+            return $path;
           }
 
-          public function parseArguments(){
-            if(strpos($this->completeRequestedPath,"?") == false){
+          public static function parseArguments($parts){
+              $arguments = [];
+           
                 //isolate the resource string from the completeRequestedPath
-                $parts = explode("/", $this->completeRequestedPath);
-                $this->resourceString = $parts[0];
-                
                 //isolate the arguments from the completeRequestedPath
-                if(array_key_exists(1,$parts)){
-                    for($i = 1; $i < count($parts); $i++){
-                        $this->arguments[$i-1] = $parts[$i];
+                    for($i = 1, $arg = 0; $i < count($parts); $i++, $arg++){
+                        $arguments[$arg] = $parts[$i];
                     }
-                }
-            }
+                    return $arguments;
+        }
+
+        public function getArguments(){
+            return $this->arguments;
+        }
+
+        public function getNamedParameters(){
+            return $this->namedParameters;
         }
 
           
 
-          public function parseQueryString(){
-
-
-
-            else{
-                $parts = explode("?", $this->completeRequestedPath);
-                $this->resourceString = $parts[0];
-                $vp = explode("&",$parts[1]);
-    
+          public static function parseQueryString($queryString){
+              $namedParameters = [];
+                $kvp = explode("&",$queryString);
                 //isolate the arguments from the completeRequestedPath
-                if(array_key_exists(0,$vp)){
-                    for($i = 0; $i < count($vp); $i++){
-                        $arg = explode("=",$vp[$i]);
-                        $this->arguments[$arg[0]] = $arg[1];
+                    for($i = 0; $i < count($kvp); $i++){
+                        $arg = explode("=",$kvp[$i]);
+                        
+                        $namedParameters[$arg[0]] = $arg[1];
                     }
-                }
-            }
+                    return $namedParameters;
           }
     }
-}
