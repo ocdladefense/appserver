@@ -27,7 +27,8 @@ class Router
     public function run($path){
         $this->initRoutes($this->modules);
         $this->setPath($path);
-        $this->parsePath();
+        $url = new Url($path);
+        $this->resourceString = $url->getResourceString();
         $this->activeRoute = $this->getActiveRoute();
         $this->activeModule = ModuleLoader::getInstance($this->activeRoute["module"]);
         $this->requireRouteFiles($this->activeRoute);
@@ -61,49 +62,6 @@ class Router
     //Set the complete requested path to the given path
     public function setPath($path){
         $this->completeRequestedPath = $path;
-    }
-
-    //Break the complete requested path into parts that can be consumed by the router.
-    public function parsePath(){      
-        //Remove prevailing slash if there is one
-
-        if(strpos($this->completeRequestedPath,"/") === 0){
-            $this->completeRequestedPath = substr($this->completeRequestedPath,1);
-        }
-                //isolate the resource string from the completeRequestedPath
-                $parts = explode("?", $this->completeRequestedPath);
-                $this->resourceString = $parts[0];
-                
-                //isolate the arguments from the completeRequestedPath
-                if(array_key_exists(1,$parts))
-                    $this->arguments = explode("/",$parts[1]);
-
-
-        // if(strpos($this->completeRequestedPath,"?") == false){
-        //     //isolate the resource string from the completeRequestedPath
-        //     $parts = explode("/", $this->completeRequestedPath);
-        //     $this->resourceString = $parts[0];
-            
-        //     //isolate the arguments from the completeRequestedPath
-        //     if(array_key_exists(1,$parts)){
-        //         for($i = 1; $i < count($parts); $i++){
-        //             $this->arguments[$i-1] = $parts[$i];
-        //         }
-        //     }
-        // }
-        // else{
-        //     $parts = explode("?", $this->completeRequestedPath);
-        //     $this->resourceString = $parts[0];
-        //     $vp = explode("&",$parts[1]);
-
-        //     //isolate the arguments from the completeRequestedPath
-        //     if(array_key_exists(0,$vp)){
-        //         for($i = 0; $i < count($vp); $i++){
-        //             $arg = explode("=",$vp[$i]);
-        //             $this->arguments[$arg[0]] = $arg[1];
-        //         }
-        //     }
-        // }
     }
 
     //Return the route at the index of the requested resource.
