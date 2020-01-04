@@ -15,9 +15,10 @@
 	    require_once BASE_PATH.'/config/config.php';
 	    require_once BASE_PATH.'/includes/theme.inc';
 	}
-		
-	require_once BASE_PATH.'/includes/HTTPRequest.php';
-	require_once BASE_PATH.'/includes/HTTPResponse.php';
+
+	require_once BASE_PATH.'/includes/http/Http.php';		
+	require_once BASE_PATH.'/includes/http/HttpRequest.php';
+	require_once BASE_PATH.'/includes/http/HttpResponse.php';
 	
 	require_once BASE_PATH.'/includes/Template.php';
     require_once BASE_PATH.'/includes/Application.php';
