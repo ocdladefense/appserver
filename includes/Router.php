@@ -1,20 +1,30 @@
 <?php
 class Router
 {
-    private static $DEFAULT_HTTP_METHOD = "get";
-    private static $DEFAULT_CONTENT_TYPE = "html";
+    private static $DEFAULT_HTTP_METHOD = "get"; // Http::HTTP_METHOD_GET
+    
+    private static $DEFAULT_CONTENT_TYPE = "html"; // Http::MIME_TEXT_HTML
     
     private $application;
+    
     private $response;
+    
     private $completeRequestedPath = "";
+    
     private $resourceString = "";
+    
     private $activeRoute;
+    
     private $activeModule;
     
     private $filesIncluded = array();
+    
     private $additionalModules = array();
+    
     private $arguments = array();
+    
     private $allRoutes = array();
+    
     private $headers = array();
     
 
