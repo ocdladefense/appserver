@@ -1,5 +1,4 @@
 <?php
-	// phpinfo();
 
 
 	if(!defined("BASE_PATH")) {
@@ -21,6 +20,8 @@
 	require_once BASE_PATH.'/includes/Http/Http.php';
 	require_once BASE_PATH.'/includes/Http/HttpRequest.php';
 	require_once BASE_PATH.'/includes/Http/HttpResponse.php';
+
+	require_once BASE_PATH.'/includes/Html/Html.php';
 		
 	require_once BASE_PATH.'/includes/Exception/PageNotFoundException.php';		
 	

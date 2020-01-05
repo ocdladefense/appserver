@@ -1,11 +1,9 @@
 <?php
-
-//// test code for HTTPRequest
-// foreach($sites->sites as $website) {
-//     $test = new HTTPRequest($website->domain);
-//     $newResponse = $test->makeHTTPRequest();
-//     print_r($test->getStatus());
-// }
+/**
+ * This is the webconsole template file.
+ * Reference it like so: 
+ *   $template = new Template("webconsole");
+ */
 ?>
 <!doctype html>
 <html>
@@ -29,11 +27,7 @@
 				return appModules[name];
 			}
 		</script>
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
-		</script>
-		<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-  		<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-		
+
 		<?php echo $scripts; ?> 
 	</head>
 	<body>

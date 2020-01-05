@@ -1,8 +1,8 @@
 <?php
 
 
-require "includes/HTTPRequest.php";
-require "includes/HTTPResponse.php";
+require "includes/Http/HttpRequest.php";
+require "includes/Http/HttpResponse.php";
 
 // this is an admin user
 define("USER_LEVEL_ADMIN", 1);
