@@ -5,32 +5,32 @@ session_start();
 
 $request = HTTPRequest::newFromEnvironment();
 
-$application = new Application();
+$app = new Application();
 
-$application->setModuleLoader(new ModuleLoader());
-$router = new Router($application);
+$app->setModuleLoader(new ModuleLoader());
+$router = new Router($app);
 
-$application->setRouter($router);
+$app->setRouter($router);
 
-$application->setRequest($request);
+$app->setRequest($request);
 
 
 
 try {
-	$resp = $router->run($application->getRequestHeader("Request-URI"));
+	$resp = $router->run($app->getRequestHeader("Request-URI"));
 } catch(PageNotFoundException $e) {
-	$resp = new HTTPResponse();
+	$resp = new HttpResponse();
 	$resp->setNotFoundStatus();
 	$resp->setBody($e->getMessage());
 } catch(Exception $e) {
-	$resp = new HTTPResponse();
+	$resp = new HttpResponse();
 	$resp->setErrorStatus();
 	$resp->setBody($e->getMessage());
 }
 
 
-$application->setResponse($resp);
+$app->setResponse($resp);
 
-$application->secure();
+$app->secure();
 
-$application->send();
+$app->send();
