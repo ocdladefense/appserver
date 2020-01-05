@@ -43,7 +43,7 @@ class HTTPResponse
     }
     
     public function setNotFoundStatus(){
-    	$this->statusCode = "HTTP/1.1 400 Page Not Found";
+    	$this->statusCode = "HTTP/1.1 404 Page Not Found";
     }
 
     //Getters
