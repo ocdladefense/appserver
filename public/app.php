@@ -17,7 +17,14 @@ $app->setRequest($request);
 try {
 
 	$out = $app->doRoute($request->getRequestUri());
-	$resp = $app->getAsHttpResponse($out);
+	
+	if(gettype($out) === "string") {
+		$resp = $app->getAsHttpResponse($out);
+	} else if(get_class($out) == "HttpRedirect") {
+		$app->setResponse($out);
+		// $app->secure();
+		$app->send();
+	}
 	
 } catch(PageNotFoundException $e) {
 

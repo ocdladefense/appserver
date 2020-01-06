@@ -42,7 +42,7 @@ class HttpResponse
     }
     
     public function setRedirect($url){
-    	$this->statusCode = "HTTP/1.1 301 Redirect";
+    	$this->statusCode = "HTTP/1.1 301 Moved Permanently";
     	$this->headers["Location"] = $url;
     }
 
