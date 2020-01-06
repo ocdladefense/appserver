@@ -12,8 +12,6 @@ class Router
     
     private $application;
     
-    private $response;
-    
     private $completeRequestedPath = "";
     
     private $resourceString = "";
@@ -34,12 +32,15 @@ class Router
     
     private $url;
     
-
-    public function __construct($application){
-      $this->application = $application;
-      $this->modules = $this->application->getModules();
-      $this->response = new HttpResponse();
+    
+    
+    /**
+     * New instances need an array of modules from which to gather routes from.
+     */
+    public function __construct($mods = array()){
+      $this->modules = $mods;
     }
+
 
     public function run($path){
         $this->initRoutes($this->modules);
@@ -58,25 +59,13 @@ class Router
         
         $this->requireRouteFiles($this->activeRoute);
 
-        // Set up the HttpResponse object
-        // Should be in Application or another class.
-        $this->response->setHeaders = $this->headers;
-        
-        $this->response->setContentType($this->activeRoute);
-        
-        $out = HTTPResponse::formatResponseBody($this->callCallbackFunction($this->activeRoute), $this->response->getHeader("Content-Type"));
-        
-        $this->response->setBody($out);
-        
-        
-        return $this->response;
+				return $this->doCallback($this->activeRoute);
     }
 
 
     //Initialize and return all available routes from all available modules.  Set the routes http method and content type to the default
     //if it is not already defined by the module.
-    public function initRoutes($modules){
-        $this->modules = $modules;
+    public function initRoutes(){
 
         foreach($this->modules as $mod){
             $module = ModuleLoader::getInstance($mod);
@@ -132,7 +121,7 @@ class Router
 
 
 
-    public function callCallbackFunction($route){
+    public function doCallback($route){
         if($route["method"] == "post"){
             //should be set to request->getBody();
             $entityBody = file_get_contents('php://input');

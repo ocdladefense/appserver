@@ -1,5 +1,5 @@
 <?php
-class HTTPResponse
+class HttpResponse
 {
     private $body;
     
@@ -16,16 +16,11 @@ class HTTPResponse
     public function setBody($content){
         $this->body = $content;
     }
-    public function setContentType($route){
-        //Add the preferred content type to the headers array
-        if(isset($route["Content-Type"]) && $route["Content-Type"] == "json"){
-            $this->headers["Content-Type"] = "application/json; charset=utf-8";
-        }
-        else{
-            $this->headers["Content-Type"] = "text/html; charset=utf-8";
-        }
-
+    
+    public function setContentType($contentType){
+			$this->headers["Content-Type"] = $contentType;
     }
+    
     public function setHeaders($headers){
         $this->headers = $headers;
     }
@@ -44,6 +39,11 @@ class HTTPResponse
     
     public function setNotFoundStatus(){
     	$this->statusCode = "HTTP/1.1 404 Page Not Found";
+    }
+    
+    public function setRedirect($url){
+    	$this->statusCode = "HTTP/1.1 301 Redirect";
+    	$this->headers["Location"] = $url;
     }
 
     //Getters
@@ -85,20 +85,5 @@ class HTTPResponse
     public function __toString(){
         return $this->body;
     }
-    public static function formatResponseBody($content, $contentType){
 
-        if(strpos($contentType,"json")){
-            if(is_array($content) || is_object($content)){
-                $out = json_encode($content);
-            }
-            else{
-                $out = json_encode(array("content" => $content));
-            }  
-        }
-        else{
-            $out = $content;
-        }
-        return $out;
-    }
 }
-?>

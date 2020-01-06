@@ -140,25 +140,31 @@ class HTTPRequest
 	public function success(){
 		return $this->status == 200;
 	}
+	
 	public function setHeaders($headers){
 		$this->headers = $headers;
 	}
+	
 	public function isSupportedContentType($contentType){
 		if($this->getHeader("Accept") == $contentType || stringContains($this->headers["Accept"], "*/*")){
 			return true;
 		}
 		return false;
 	}
+	
 	public function getHeader($headerName){
 		//throw an exception
 		return $this->headers[$headerName];
 	}
+	
 	public function getHeaders(){
 		return $this->headers;
 	}
+	
 	public function getRequestUri(){
 		return $this->headers["Request-URI"];
 	}
+	
 	public static function newFromEnvironment(){
 		$request = new self($_SERVER["REQUEST_URI"]);
 		
@@ -168,4 +174,4 @@ class HTTPRequest
 		$request->body = file_get_contents('php://input');
 		return $request;
 	}
-}// end HTTPRequest class
+}

@@ -1,5 +1,7 @@
 <?php
 
+use \Http as Http;
+
 
 class Application {
     
@@ -17,6 +19,7 @@ class Application {
     public function setModuleLoader($loader){
         $this->moduleLoader = $loader;
     }
+    
     public function setRequest($request){
         $this->request = $request;
     }
@@ -24,6 +27,7 @@ class Application {
     public function setResponse($resp) {
     	$this->resp = $resp;
     }
+    
     public function setRouter($router){
         $this->router = $router;
     }
@@ -32,11 +36,49 @@ class Application {
     public function getInstance($moduleName){
         return $this->moduleLoader->getInstance($moduleName);
     }
+    
     public function getModules(){
         return $this->moduleLoader->getModules();
     }
+    
     public function getRequestHeader($headerName){
         return $this->request->getHeader($headerName);
+    }
+    
+    public function run() {
+    	// Perform all application logic here.
+    }
+    
+    public function doRoute($path) {
+    	return $this->router->run($path);
+    }
+    
+    public function getAsHttpResponse($data) {
+			$resp = new HttpResponse();
+			
+			// Set up the HttpResponse object
+			// Should be in Application or another class.
+			// $resp->setHeaders($this->activeRoute->headers);
+			
+			//Add the preferred content type to the headers array
+			if(strpos($this->activeRoute["Content-Type"],"json") !== false)
+			{
+					$contentType = Http\MIME_APPLICATION_JSON;
+			}
+			else
+			{
+					$contentType = Http\MIME_TEXT_HTML;
+			}
+
+			
+			$resp->setContentType($contentType);
+			
+			$out = Http\formatResponseBody($data, $contentType);
+			
+			$resp->setBody($out);
+			
+			
+			return $resp;
     }
 
     //Other Methods
