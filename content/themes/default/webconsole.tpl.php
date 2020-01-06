@@ -32,6 +32,18 @@
 	</head>
 	<body>
 
+		
+		<div id="babel-foo" style="position:absolute;top:0px;right:0px;background-color:#fff;z-index:101;max-width:325px;padding:10px;">&nbsp;</div>
+		<script type="text/babel">
+
+			ReactDOM.render(
+				<div><h1>Hello, JSX!</h1><p>You can find this additional JSX component in <em>webconsole.tpl.php</em>.  Comment me out once it's working in the external file.</p></div>,
+				document.getElementById('babel-foo')
+			);
+
+		</script>
+	
+
 		<div id="page">
 			<div id="header">
 				<div class="header-content">
@@ -42,7 +54,7 @@
 			
 			<div id="doc-header">
 				<div id="doc-nav">
-			
+
 					<div class="doc-nav" id="doc-nav-left">
 					 Some content here
 					</div>
