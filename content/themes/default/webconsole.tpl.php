@@ -77,7 +77,6 @@
 				<div id="container-left">
 					<div id="menu-left">&nbsp;</div>
 				</div>
-				
 					
 				<div id="stage" class="<?php echo $defaultStageClass; ?>">
 
@@ -91,9 +90,7 @@
 						<?php /*echo $content;*/ ?></div>
 				</div>
 
-				<div id="container-right" class="container-right">
-
-				</div>
+				<div id="container-right" class="container-right"></div>
 			</div> <!--end container-->
 						
 			<div id="footer">
@@ -101,9 +98,9 @@
 					<span style="font-size:smaller;">&copy;&nbsp;2019</span>
 				</div> <!--end content-->
 			</div> <!--end footer-->
+			
 		</div> <!--end page -->
 
-		</div>
 		
 		<div id="modal-backdrop">
 			<div id="modal">
@@ -114,9 +111,8 @@
 		<div id="context-menu-container">
 			<div id="context-menu" style="height:200px; width:90%; background-color:teal;"></div>
 		</div>
-		<div id="positioned-context-container">
 		
-		</div>
+		<div id="positioned-context-container"></div>
 
 	
 		<script type="text/javascript">
