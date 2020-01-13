@@ -31,3 +31,4 @@
 	require_once BASE_PATH.'/includes/ModuleLoader.php';
 	require_once BASE_PATH.'/includes/Router.php';
 	require_once BASE_PATH.'/includes/Module.php';
+	require_once BASE_PATH.'/includes/ExternalHTMLDocument.php';
