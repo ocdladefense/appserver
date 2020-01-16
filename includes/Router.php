@@ -10,21 +10,9 @@ class Router
     
     private static $DEFAULT_CONTENT_TYPE = Http\MIME_TEXT_HTML;
     
-    private $application;
-    
     private $completeRequestedPath = "";
     
     private $resourceString = "";
-    
-    private $activeRoute;
-    
-    private $activeModule;
-    
-    private $filesIncluded = array();
-    
-    private $additionalModules = array();
-    
-    private $arguments = array();
     
     private $allRoutes = array();
     
@@ -42,24 +30,20 @@ class Router
     }
 
 
-    public function run($path){
-        $this->initRoutes($this->modules);
-        
-        $this->url = new Url($path);
-        
+    public function match($path){
+    
 				$this->completeRequestedPath = $path;
-			
-				$this->resourceString = $this->url->getResourceString();
+				
+				
+        $this->initRoutes($this->modules);
 
-				$this->arguments = $this->url->getArguments();
-
-        $this->activeRoute = $this->getActiveRoute();
         
-        $this->activeModule = ModuleLoader::getInstance($this->activeRoute["module"]);
-        
-        $this->requireRouteFiles($this->activeRoute);
+        $url = new Url($path);
 
-				return $this->doCallback($this->activeRoute);
+				$this->resourceString = $url->getResourceString();
+
+
+				return new Route($this->getFoundRoute(), $url->getArguments());
     }
 
 
@@ -86,7 +70,7 @@ class Router
 
 
     //Return the route at the index of the requested resource.
-    public function getActiveRoute(){
+    public function getFoundRoute(){
 
         if(!array_key_exists($this->resourceString,$this->allRoutes)){
             throw new PageNotFoundException($this->resourceString." could not be found");
@@ -95,61 +79,15 @@ class Router
         return $this->allRoutes[$this->resourceString];
     }
 
-
-
-
-
-
-    //require all of the necessary file in the route at the key of 'files'
-    public function requireRouteFiles($route){
-        if(!isset($route["files"]))
-            return;
-            
-        foreach($route["files"] as $file){
-            $this->requireModuleFile($file);
-            array_push($this->filesIncluded,$file);
-        }
-    }
-    
-    
-    
-    public function requireModuleFile($file){
-        $path = getPathToModules()."/{$this->activeRoute['module']}/src/".$file;
-				require_once($path);
-    }
-
-
-
-
-    public function doCallback($route){
-        if($route["method"] == "post"){
-            //should be set to request->getBody();
-            $entityBody = file_get_contents('php://input');
-            return call_user_func_array($route["callback"],array($entityBody));   
-        }
-        else{
-            return call_user_func_array($route["callback"],$this->getArgs());
-        }
-    }
-    
-    
     
     //*****************************Getters*********************************************//
     public function getCompleteRequestedPath(){
         return $this->completeRequestedPath;
     }
+    
+    
     public function getResourceString(){
         return $this->resourceString;
     }
-    
-    
-    public function getArg($index){
-        return $this->arguments[$index];
-    }
-    public function getArgs(){
-        return $this->arguments;
-    }
-    public function getFilesIncluded(){
-        return $this->filesIncluded;
-    }
+
 }

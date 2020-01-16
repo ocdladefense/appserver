@@ -13,6 +13,10 @@ class Application {
     
     private $resp;
 
+		private $activeRoute; 
+		
+		
+		
     public function __construct(){}
 
     //Setters
@@ -45,13 +49,54 @@ class Application {
         return $this->request->getHeader($headerName);
     }
     
-    public function run() {
-    	// Perform all application logic here.
+
+    
+    public function run($path) {
+    	$this->activeRoute = $this->router->match($path);
+    	
+      $this->activeModule = ModuleLoader::getInstance($this->activeRoute->getModule());
+        
+      $this->requireRouteFiles($this->activeRoute);
+
+			return $this->doCallback($this->activeRoute);
     }
     
-    public function doRoute($path) {
-    	return $this->router->run($path);
+    
+    
+    
+    //require all of the necessary file in the route at the key of 'files'
+    public function requireRouteFiles($route){
+        if(null == $route->getFiles())
+            return;
+            
+        foreach($route->getFiles() as $file){
+            $this->requireModuleFile($file);
+        }
     }
+    
+    
+    
+    public function requireModuleFile($file){
+        $path = getPathToModules()."/{$this->activeRoute['module']}/src/".$file;
+				require_once($path);
+    }
+
+
+
+
+    public function doCallback($route){
+        if($route->getMethod() == "post") {
+            //should be set to request->getBody();
+            $entityBody = file_get_contents('php://input');
+            return call_user_func_array($route->getCallback(),array($entityBody));   
+        }
+        else {
+            return call_user_func_array($route->getCallback(),$route->getArgs());
+        }
+    }
+    
+    
+    
     
     public function getAsHttpResponse($data) {
 			$resp = new HttpResponse();
@@ -61,13 +106,15 @@ class Application {
 			// $resp->setHeaders($this->activeRoute->headers);
 			
 			//Add the preferred content type to the headers array
-			if(strpos($this->activeRoute["Content-Type"],"json") !== false)
+			if(strpos($this->activeRoute->getContentType(),"json") !== false)
 			{
+	//	print			$this->activeRoute->getContentType();exit;
 					$contentType = Http\MIME_APPLICATION_JSON;
 			}
 			else
 			{
-					$contentType = Http\MIME_TEXT_HTML;
+				// $contentType = Http\MIME_APPLICATION_JSON;
+				$contentType = Http\MIME_TEXT_HTML;
 			}
 
 			

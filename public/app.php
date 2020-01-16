@@ -16,7 +16,7 @@ $app->setRequest($request);
 
 try {
 
-	$out = $app->doRoute($request->getRequestUri());
+	$out = $app->run($request->getRequestUri());
 	
 	if(gettype($out) === "string") {
 		$resp = $app->getAsHttpResponse($out);
