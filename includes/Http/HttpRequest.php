@@ -95,7 +95,7 @@ class HTTPRequest
 
 		$this->response = curl_exec($this->handle);
 		$hResponse = new HTTPResponse($this->response);
-		$this->status = curl_getinfo($this->handle, CURLINFO_HTTP_CODE);
+		$hResponse->setStatusCode(curl_getinfo($this->handle, CURLINFO_HTTP_CODE));
 		$this->info = curl_getinfo($this->handle);
 
 		if($this->status != 200)

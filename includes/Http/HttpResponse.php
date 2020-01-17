@@ -50,6 +50,10 @@ class HttpResponse
     public function getBody(){
         return $this->body;
     }
+
+    public function getStatusCode(){
+        return $this->statusCode;
+    }
     
     public function getHeader($headerName){
     	if(!isset($this->headers[$headerName])) {
