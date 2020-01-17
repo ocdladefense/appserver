@@ -1,8 +1,8 @@
 <?php
-class HTTPRequest
+class HttpRequest
 {
 	private $handle = null;
-	private $response = null;
+
 	private $params = array();
 	private $status; 
 	private $errorString = null;
@@ -88,28 +88,29 @@ class HTTPRequest
 		curl_setopt($this->handle,CURLOPT_SSL_VERIFYPEER, false);
 	}
 
-	public function makeHTTPRequest(){
+	public function makeHttpRequest(){
 		$this->setOptions($this->params);
 		$this->ignoreSSLVerification();
 		// Make the actual HTTP Request AND it returns an HTTP Response.
 
-		$this->response = curl_exec($this->handle);
-		$hResponse = new HTTPResponse($this->response);
-		$hResponse->setStatusCode(curl_getinfo($this->handle, CURLINFO_HTTP_CODE));
+		$_response = curl_exec($this->handle);
+		
+		$resp = new HttpResponse($_response);
+		$resp->setStatusCode(curl_getinfo($this->handle, CURLINFO_HTTP_CODE));
+		$resp->setContentType(curl_getinfo($this->handle, CURLINFO_CONTENT_TYPE));
+		$resp->setCurlInfo(curl_getinfo($this->handle));
+		
+		
 		$this->info = curl_getinfo($this->handle);
 
-		if($this->status != 200)
-		{
-			$this->errorString = curl_error($this->handle);
-			$this->errorNum = curl_errno($this->handle);
-		}
-		$this->closeHTTPConnection();
+		
+		$this->close();
 
-		return $hResponse;	
+		return $resp;	
 	}
 	
 	public function send() {
-		return $this->makeHTTPRequest();
+		return $this->makeHttpRequest();
 	}
 
 	public function getStatus(){
@@ -125,7 +126,7 @@ class HTTPRequest
 		return $this->body;
 	}
 
-	public function closeHTTPConnection(){
+	public function close(){
 		// Closing the HTTP connection.
 		curl_close($this->handle);
 	}

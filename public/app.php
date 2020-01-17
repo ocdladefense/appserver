@@ -18,7 +18,9 @@ try {
 
 	$out = $app->run($request->getRequestUri());
 	
-	if(gettype($out) === "string") {
+	if(gettype($out) == "object" && get_class($out) == "HttpResponse") {
+		$resp = $out;
+	} else if(gettype($out) === "string") {
 		$resp = $app->getAsHttpResponse($out);
 	} else if(get_class($out) == "HttpRedirect") {
 		$app->setResponse($out);

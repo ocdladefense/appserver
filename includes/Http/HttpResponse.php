@@ -6,12 +6,16 @@ class HttpResponse
     private $headers = array();
 
 		private $statusCode;
+		
+		
 
     public function __construct($body = null){
     	$this->body = $body;
     }
 
-
+		public function setCurlInfo($info) {
+			$this->info = $info;
+		}
     //Setters
     public function setBody($content){
         $this->body = $content;

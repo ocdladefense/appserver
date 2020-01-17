@@ -16,17 +16,17 @@ namespace Http;
 	
 	const MIME_TEXT_JAVASCRIPT = "text/javascript";
 	
-	function formatResponseBody($content, $contentType){
+	function formatResponseBody($content, $contentType) {
 
-		if(strpos($contentType,"json")){
-				if(is_array($content) || is_object($content)){
+		if(strpos($contentType,"json")) {
+				if(is_array($content) || is_object($content)) {
 						$out = json_encode($content);
 				}
-				else{
+				else {
 						$out = json_encode(array("content" => $content));
 				}  
 		}
-		else{
+		else {
 				$out = $content;
 		}
 		
