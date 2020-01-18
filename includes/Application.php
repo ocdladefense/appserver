@@ -55,7 +55,9 @@ class Application {
     	$this->activeRoute = $this->router->match($path);
     	
       $this->activeModule = ModuleLoader::getInstance($this->activeRoute->getModule());
-        
+      
+      $this->activeModule->loadFiles();
+
       $this->requireRouteFiles($this->activeRoute);
 
 			return $this->doCallback($this->activeRoute);
@@ -73,11 +75,11 @@ class Application {
             $this->requireModuleFile($file);
         }
     }
-    
-    
+
+
     
     public function requireModuleFile($file){
-        $path = getPathToModules()."/{$this->activeRoute['module']}/src/".$file;
+        $path = getPathToModules()."/{$this->activeRoute->getModule()}/src/".$file;
 				require_once($path);
     }
 
