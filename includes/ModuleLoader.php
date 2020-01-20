@@ -42,9 +42,10 @@ class ModuleLoader{
         }
         chdir($previous);
     }
+    
     //require each of the dependencies for each module
     public static function getInstance($moduleName){
-        $className = $moduleName."Module";
+        $className = ucwords($moduleName)."Module";
         $moduleClass = new $className();
         $dependencies = $moduleClass->getDependencies();
 

@@ -8,9 +8,6 @@ class DocumentParser extends DomDocument {
     private $targets = array();
     
     
-    private $original;
-    
-    
     private $filtered;
     
     
@@ -19,10 +16,12 @@ class DocumentParser extends DomDocument {
 
     public function __construct($body){
         parent::__construct();
-				$encoded = mb_convert_encoding($body, 'HTML-ENTITIES', 'UTF-8');
-        $this->original = $encoded;
+
+				// $encoded = mb_convert_encoding($body, 'HTML-ENTITIES', 'UTF-8');
+
         libxml_use_internal_errors(true);
-        $this->loadHTML($encoded);
+        
+        $this->loadHTML($body);
         
         $bodies = $this->getElementsByTagName("body");
         
@@ -46,7 +45,8 @@ class DocumentParser extends DomDocument {
 				$target = $this->getElementById($selector);
 				if(null == $target) {
 					// throw new Exception("ELEM_NOT_FOUND_ERROR: No nodes found for <em>{$selector}</em>");
-					$html = $this->saveHTML($target);
+				} else {
+					$html = $this->saveHTML($target);				
 				}
 
 				
@@ -116,8 +116,14 @@ class DocumentParser extends DomDocument {
 			$req = new HttpRequest($url);
 	
 			$resp = $req->send();
+			$body = $resp->getBody();
+			
 
-			return $resp->getStatusCode() != 200 ? null : new DocumentParser($resp->getBody());
+			return $resp->getStatusCode() != 200 || self::isEmpty($body) ? null : new DocumentParser($body);
+    }
+    
+    private static function isEmpty($str) {
+			return "" == trim($str);
     }
 
 }
