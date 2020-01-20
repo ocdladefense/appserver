@@ -21,6 +21,7 @@
 	require_once BASE_PATH.'/includes/Http/HttpRequest.php';
 	require_once BASE_PATH.'/includes/Http/HttpResponse.php';
 	require_once BASE_PATH.'/includes/Http/HttpRedirect.php';
+	require_once BASE_PATH.'/includes/Http/IHttpCache.php';
 
 	require_once BASE_PATH.'/includes/Html/Html.php';
 		

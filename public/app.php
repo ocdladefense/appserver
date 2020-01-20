@@ -34,13 +34,14 @@ try {
 	$resp->setNotFoundStatus();
 	$resp->setBody($e->getMessage());
 	
-} catch(Exception $e) {
+} /* catch(Exception $e) {
 
 	$resp = new HttpResponse();
 	$resp->setErrorStatus();
 	$resp->setBody($e->getMessage());
 	
 }
+*/
 
 
 $app->setResponse($resp);

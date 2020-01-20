@@ -14,6 +14,8 @@ class DocumentParser extends DomDocument {
     private $filtered;
     
     
+    private $xpath;
+    
 
     public function __construct($body){
         parent::__construct();
@@ -35,17 +37,45 @@ class DocumentParser extends DomDocument {
 				$this->loadHTML($html);
 				
         libxml_clear_errors();
+        
+				$this->xpath = new DomXPath($this);
     }
 
 
 		public function fromTarget($selector) {
 				$target = $this->getElementById($selector);
 				if(null == $target) {
-					throw new Exception("ELEM_NOT_FOUND_ERROR: {$target} not found.");
+					// throw new Exception("ELEM_NOT_FOUND_ERROR: No nodes found for <em>{$selector}</em>");
+					$html = $this->saveHTML($target);
 				}
-				$html = $this->saveHTML($target);
+
 				
-				return new DocumentParser($html);
+				return null == $target ? null : new DocumentParser($html);
+		}
+
+
+
+		public function getValue($selector) {
+			$elems = $this->getElementsByClassName($selector);
+		
+			return $elems->length > 0 ? $elems->item(0)->nodeValue : null;
+		}
+		
+		
+		public function getText($selector) {
+			$elems = $this->getElementsByClassName($selector);
+		
+			return $elems->length > 0 ? $elems->item(0)->textContent : "";
+		}
+	
+	
+	
+		// https://www.webperformance.com/
+			// load-testing-tools/blog/articles/real-browser-manual/
+				// building-a-testcase/how-locate-element-the-page/xpath-locator-examples/
+		public function getElementsByClassName($name) {
+			$selector = "//div[contains(@class,'{$name}')]";
+			return $this->xpath->query($selector);
 		}
 
 
