@@ -9,6 +9,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
+		<link rel="manifest" href="/webconsole/manifest/manifest.json"
 		<title>AppServer Client</title>
 
 		<?php echo $styles; ?>
