@@ -9,7 +9,8 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<link rel="manifest" href="/webconsole/manifest/manifest.json"
+		<link rel="manifest" href="/manifest.webmanifest">
+		<link rel="icons" type="image/png" sizes="169x169"  href="/images/icon.png">
 		<title>AppServer Client</title>
 
 		<?php echo $styles; ?>
