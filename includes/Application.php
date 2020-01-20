@@ -55,10 +55,12 @@ class Application {
     	$this->activeRoute = $this->router->match($path);
     	
       $this->activeModule = ModuleLoader::getInstance($this->activeRoute->getModule());
-        
+      
+      $this->activeModule->loadFiles();
+
       $this->requireRouteFiles($this->activeRoute);
 
-			return $this->doCallback($this->activeRoute);
+			return $this->doCallback($this->activeModule,$this->activeRoute);
     }
     
     
@@ -73,24 +75,27 @@ class Application {
             $this->requireModuleFile($file);
         }
     }
-    
-    
+
+
     
     public function requireModuleFile($file){
-        $path = getPathToModules()."/{$this->activeRoute['module']}/src/".$file;
+        $path = getPathToModules()."/{$this->activeRoute->getModule()}/src/".$file;
 				require_once($path);
     }
 
 
 
 
-    public function doCallback($route){
+    public function doCallback($module,$route){
+    		if(method_exists($module,$route->getCallback())) {
+    			return call_user_func_array(array($module,$route->getCallback()),$route->getArgs());
+    		}
+    		
         if($route->getMethod() == "post") {
             //should be set to request->getBody();
             $entityBody = file_get_contents('php://input');
             return call_user_func_array($route->getCallback(),array($entityBody));   
-        }
-        else {
+        } else {
             return call_user_func_array($route->getCallback(),$route->getArgs());
         }
     }
@@ -108,12 +113,10 @@ class Application {
 			//Add the preferred content type to the headers array
 			if(strpos($this->activeRoute->getContentType(),"json") !== false)
 			{
-	//	print			$this->activeRoute->getContentType();exit;
 					$contentType = Http\MIME_APPLICATION_JSON;
 			}
 			else
 			{
-				// $contentType = Http\MIME_APPLICATION_JSON;
 				$contentType = Http\MIME_TEXT_HTML;
 			}
 
