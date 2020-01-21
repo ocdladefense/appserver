@@ -9,11 +9,24 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<link rel="manifest" href="/webconsole/manifest/manifest.json" />
-		<meta name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=yes"/>
-		<meta http-equiv="X-UA-Compatible", content="IE=Edge" />
-		<link rel="manifest" href="/manifest.webmanifest">
-		<link rel="icons" type="image/png" sizes="169x169"  href="/images/icon.png">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=yes" />
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+		
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="OCDLA" />
+
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+		<!--
+		<link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-ipad.png" type="image/png" />
+		<link rel="apple-touch-icon" sizes="167x167" href="/apple-touch-icon-ipad-retina.png" type="image/png" />
+		-->
+		<link rel="apple-touch-icon" sizes="180x180" href="/pwa-icons-180.png" type="image/png" />
+		<link rel="manifest" href="/manifest.json" />
+		<link rel="icons" type="image/png" sizes="192x192"  href="/pwa-icons-192.png" />
+		
 		<title>AppServer Client</title>
 
 		<?php echo $styles; ?>

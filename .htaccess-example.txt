@@ -2,6 +2,14 @@
 	RewriteEngine On
 	RewriteBase /
 	# RewriteRule ^index.php$ - [L]
+	
+	# Enables the service worker to operate on the root scope.
+	RewriteRule sw modules/webconsole/assets/worker/sw.js [END]
+
+	# Enables PWA related files to be served from document root.
+	RewriteRule manifest modules/pwa/manifest.json [END]
+	RewriteRule icons-192 modules/pwa/images/icons-192.png [END]
+	
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteRule . /public/app.php [L]
