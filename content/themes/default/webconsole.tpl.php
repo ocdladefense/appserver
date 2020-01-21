@@ -9,9 +9,14 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
+<<<<<<< HEAD
 		<link rel="manifest" href="/webconsole/manifest/manifest.json" />
 		<meta name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=yes"/>
 		<meta http-equiv="X-UA-Compatible", content="IE=Edge" />
+=======
+		<link rel="manifest" href="/manifest.webmanifest">
+		<link rel="icons" type="image/png" sizes="169x169"  href="/images/icon.png">
+>>>>>>> 8ae2f6e999741cf21f44b60bafbbab42b8a7502a
 		<title>AppServer Client</title>
 
 		<?php echo $styles; ?>
