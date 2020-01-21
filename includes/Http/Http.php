@@ -28,7 +28,8 @@ namespace Http;
 		}
 		else {
 				$out = $content;
+
 		}
-		
+
 		return $out;
 	}

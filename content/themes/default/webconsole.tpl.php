@@ -9,7 +9,9 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<link rel="manifest" href="/webconsole/manifest/manifest.json"
+		<link rel="manifest" href="/webconsole/manifest/manifest.json" />
+		<meta name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=yes"/>
+		<meta http-equiv="X-UA-Compatible", content="IE=Edge" />
 		<title>AppServer Client</title>
 
 		<?php echo $styles; ?>
@@ -33,7 +35,7 @@
 	</head>
 	<body>
 
-		
+		<!--
 		<div id="babel-foo" style="position:absolute;top:0px;right:0px;background-color:#fff;z-index:101;max-width:325px;padding:10px;">&nbsp;</div>
 		<script type="text/babel">
 
@@ -43,13 +45,14 @@
 			);
 
 		</script>
-	
+		-->
 
 		<div id="page">
 			<div id="header">
-				<div class="header-content">
+				<div id="header-content" class="header-content">
 					<div id="logo">AppServer GUI</div>
 					<div id="banner">&nbsp;</div>
+					<div class="icon" id="mobile-icon">&#9776;</div>
 				</div>
 			</div> <!--end header-->
 			

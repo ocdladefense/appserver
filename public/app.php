@@ -17,7 +17,7 @@ $app->setRequest($request);
 try {
 
 	$out = $app->run($request->getRequestUri());
-	
+
 	if(gettype($out) == "object" && get_class($out) == "HttpResponse") {
 		$resp = $out;
 	} else if(gettype($out) === "string") {
