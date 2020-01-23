@@ -8,7 +8,8 @@
 
 	# Enables PWA related files to be served from document root.
 	RewriteRule manifest modules/pwa/manifest.json [END]
-	RewriteRule icons-192 modules/pwa/images/icons-192.png [END]
+	RewriteRule pwa modules/pwa/images/pwa-icons-180.png [END]
+	RewriteRule homescreen modules/pwa/homescreen.js [END]
 	
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d

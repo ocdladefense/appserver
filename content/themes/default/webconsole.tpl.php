@@ -26,7 +26,7 @@
 		<link rel="apple-touch-icon" sizes="180x180" href="/pwa-icons-180.png" type="image/png" />
 		<link rel="manifest" href="/manifest.json" />
 		<link rel="icons" type="image/png" sizes="192x192"  href="/pwa-icons-192.png" />
-		
+		<script src="/homescreen.js"></script>
 		<title>AppServer Client</title>
 
 		<?php echo $styles; ?>
@@ -63,7 +63,13 @@
 		-->
 
 		<div id="page">
-			<div id="header">
+			
+			<div id="header"><div id="installBanner">
+				<button id="btnAdd">Add to home screen</button>
+
+
+			</div>
+
 				<div id="header-content" class="header-content">
 					<div id="logo">AppServer GUI</div>
 					<div id="banner">&nbsp;</div>
