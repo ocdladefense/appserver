@@ -17,8 +17,9 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-title" content="OCDLA" />
 
-		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
+		<meta name="format-detection" content="telephone=no" />
 		<!--
 		<link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-ipad.png" type="image/png" />
 		<link rel="apple-touch-icon" sizes="167x167" href="/apple-touch-icon-ipad-retina.png" type="image/png" />
@@ -26,8 +27,11 @@
 		<link rel="apple-touch-icon" sizes="180x180" href="/pwa-icons-180.png" type="image/png" />
 		<link rel="manifest" href="/manifest.json" />
 		<link rel="icons" type="image/png" sizes="192x192"  href="/pwa-icons-192.png" />
-		<script src="/homescreen.js"></script>
-		<title>AppServer Client</title>
+		<link rel="apple-touch-startup-image" href="/apple-launch-750x1334.png" />
+		<meta name="theme-color" content="#c4a12e" />
+		<script src="/pwa-homescreen.js">
+		</script>
+		<title>OCDLA - Legal Tools & Research</title>
 
 		<?php echo $styles; ?>
 		
@@ -48,7 +52,7 @@
 
 		<?php echo $scripts; ?> 
 	</head>
-	<body>
+	<body style="background-color: rgba(191,161,46,1.0);">
 
 		<!--
 		<div id="babel-foo" style="position:absolute;top:0px;right:0px;background-color:#fff;z-index:101;max-width:325px;padding:10px;">&nbsp;</div>
@@ -148,7 +152,11 @@
 			domReady(function(){
 				app = new App();
 				// app.addRoutes(clientSettings["routes-enabled"]);
-				app.init(clientSettings);
+				try {
+					app.init(clientSettings);
+				} catch(e) {
+					console.log(e);
+				}	
 				// app.setKeyboardManager(kbd);
 			});
 	

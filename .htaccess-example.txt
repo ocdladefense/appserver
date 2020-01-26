@@ -8,8 +8,18 @@
 
 	# Enables PWA related files to be served from document root.
 	RewriteRule manifest modules/pwa/manifest.json [END]
-	RewriteRule pwa modules/pwa/images/pwa-icons-180.png [END]
-	RewriteRule homescreen modules/pwa/homescreen.js [END]
+
+	# Load apple launch icons.
+	RewriteRule apple-launch-(.*) modules/pwa/splash/apple-launch-$1 [END]
+
+	# Load splash screen icons.
+	RewriteRule pwa-startup-(.*) modules/pwa/splash/pwa-startup-$1 [END]
+
+	# Load home screen icons.
+	RewriteRule pwa-icons-(.*) modules/pwa/images/pwa-icons-$1 [END]
+
+	# Load other css/scripts with the special "pwa-" prefix.
+	RewriteRule pwa-(.*) modules/pwa/$1 [END]
 	
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
