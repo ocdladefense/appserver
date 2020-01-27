@@ -29,6 +29,7 @@
 		<link rel="icons" type="image/png" sizes="192x192"  href="/pwa-icons-192.png" />
 		<link rel="apple-touch-startup-image" href="/apple-launch-750x1334.png" />
 		<meta name="theme-color" content="#c4a12e" />
+		<link type="text/css" href="/pwa-install.css" rel="stylesheet" />
 		<script src="/pwa-homescreen.js">
 		</script>
 		<title>OCDLA - Legal Tools & Research</title>
@@ -67,12 +68,12 @@
 		-->
 
 		<div id="page">
-			
-			<div id="header"><div id="installBanner">
+			<div id="installBanner">
 				<button id="btnAdd">Add to home screen</button>
 
 
 			</div>
+			<div id="header">
 
 				<div id="header-content" class="header-content">
 					<div id="logo">AppServer GUI</div>
