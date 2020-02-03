@@ -104,23 +104,23 @@
 			</div>
 			
 			<div id="container">
-				<div id="container-left">
+			
+				<div id="container-left" class="column column-left">
 					<div id="menu-left">&nbsp;</div>
 				</div>
 					
-				<div id="stage" class="<?php echo $defaultStageClass; ?>">
+				<div id="stage" class="<?php echo $defaultStageClass; ?>" class="column column-middle">
 
 					<div id="stage-content">
-						<author>Steve Sherlag</author>
-						<doc>
-							<title>Chapter 4</title>
-							<author>Steve Eberlein</author>
-							<author>Seth White</author>
-						</doc>
-						<?php /*echo $content;*/ ?></div>
+						<?php echo $content; ?>
+					</div>
+					
 				</div>
 
-				<div id="container-right" class="container-right"></div>
+				<div id="container-right" class="column column-right">
+					&nbsp;
+				</div>
+				
 			</div> <!--end container-->
 						
 			<div id="footer">
@@ -144,7 +144,7 @@
 		
 		<div id="positioned-context-container"></div>
 
-	
+		<?php if(false !== $doInit): ?>
 		<script type="text/javascript">
 	
 			// domReady(renderMenu);
@@ -170,7 +170,7 @@
 			renderMenu();
 
 		</script>
-		
+		<?php endif; ?>
 		<!--<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>-->
 		<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 		-->

@@ -4,13 +4,25 @@ class HttpRequest
 	private $handle = null;
 
 	private $params = array();
+	
 	private $status; 
+	
 	private $errorString = null;
+	
 	private $errorNum = null;
+	
 	private $headers = array();
+	
 	private $requestType = "GET";
+	
 	private $info;
+	
 	private $body;
+	
+	private $port;
+	
+	
+	
 	 
 	public function __construct($endpoint){
 		// Return a handle to a process that can make an HTTP Request.
@@ -37,21 +49,38 @@ class HttpRequest
 	  }
 
 	}
-	public function setHeader($headerName,$value){
-		$this->headers[$headerName] = $value;
-	}
+	
+
+	
+	
 	public function setPost(){
 		$this->requestType = "POST";
 	}
+	
+	
 	public function setPatch(){
 		$this->requestType = "PATCH";
 	}
+	
+	
 	public function setDelete(){
 		$this->requestType = "DELETE";
 	}
+	
+	
 	public function getRequestType(){
 		return $this->requestType;
 	}
+	
+	
+	public function setPort($port) {
+		$this->port = $port;
+	}
+	
+	public function setOpt($opt,$value) {
+		curl_setopt($this->handle, $opt, $value);
+	}
+	
 	public function setOptions($params){
 		// Set various options for our HTTP Request.
 		curl_setopt($this->handle, CURLOPT_HEADER, false);
@@ -75,23 +104,25 @@ class HttpRequest
 
 		if(count($this->headers)>0)
 		{
-			curl_setopt($this->handle, CURLOPT_HTTPHEADER, $this->headers);
+			foreach($this->headers as $key => $value) {
+				$header = $key . ": ".$value;
+				curl_setopt($this->handle, CURLOPT_HTTPHEADER, array($header));			
+			}
+
 		}
+		
+		curl_setopt($this->handle, CURLOPT_TIMEOUT, 10);
 	}
-	public function addHeader($header){
-		$this->headers[] = $header; 
-	}
-	public function ignoreSSLVerification(){
-		//Ignore the SSL vaification
-		// https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html
-		curl_setopt($this->handle,CURLOPT_SSL_VERIFYHOST, false); 
-		curl_setopt($this->handle,CURLOPT_SSL_VERIFYPEER, false);
-	}
+	
+	
 
 	public function makeHttpRequest(){
 		$this->setOptions($this->params);
 		$this->ignoreSSLVerification();
 		// Make the actual HTTP Request AND it returns an HTTP Response.
+		if(null != $this->port) {
+			curl_setopt($this->handle,CURLOPT_PORT,$this->port);
+		}
 
 		$_response = curl_exec($this->handle);
 		
@@ -109,27 +140,37 @@ class HttpRequest
 		return $resp;	
 	}
 	
+	
+	/**
+	 * Alias for makeHttpRequest.
+	 */
 	public function send() {
 		return $this->makeHttpRequest();
 	}
+	
 
 	public function getStatus(){
 		// Returns the status, e.g., 404 Not Found, 500 Internal Server Error of our HTTP Response.
 		return $this->status;
 	}
 
+
 	public function getInfo() {
 		return $this->info;
 	}
+
 	
 	public function getBody() {
 		return $this->body;
 	}
 
+
 	public function close(){
 		// Closing the HTTP connection.
 		curl_close($this->handle);
 	}
+	
+	
 	public function getError(){
 		return $this->errorString;
 	}
@@ -142,9 +183,7 @@ class HttpRequest
 		return $this->status == 200;
 	}
 	
-	public function setHeaders($headers){
-		$this->headers = $headers;
-	}
+
 	
 	public function isSupportedContentType($contentType){
 		if($this->getHeader("Accept") == $contentType || stringContains($this->headers["Accept"], "*/*")){
@@ -153,18 +192,43 @@ class HttpRequest
 		return false;
 	}
 	
+	
 	public function getHeader($headerName){
 		//throw an exception
 		return $this->headers[$headerName];
 	}
 	
+	
 	public function getHeaders(){
 		return $this->headers;
 	}
 	
+	
+	public function setHeader($name,$value) {
+		$this->headers[$name] = $value;
+	}
+	
+	
+	public function setHeaders($headers){
+		$this->headers = $headers;
+	}
+	
+
+	
 	public function getRequestUri(){
 		return $this->headers["Request-URI"];
 	}
+
+
+	public function ignoreSSLVerification(){
+		//Ignore the SSL vaification
+		// https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html
+		curl_setopt($this->handle,CURLOPT_SSL_VERIFYHOST, false); 
+		curl_setopt($this->handle,CURLOPT_SSL_VERIFYPEER, false);
+	}
+
+
+
 	
 	public static function newFromEnvironment(){
 		$request = new self($_SERVER["REQUEST_URI"]);
@@ -174,5 +238,17 @@ class HttpRequest
             
 		$request->body = file_get_contents('php://input');
 		return $request;
+	}
+	
+	
+	public static function newAuthorization($url,$user,$pass) {
+		$req = new HttpRequest($url);
+		$req->setPost();
+		$req->setOpt(CURLOPT_HTTPAUTH,CURLAUTH_BASIC);
+		// curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		$base64 = base64_encode($user.":".$pass);
+		$req->setOpt(CURLOPT_USERPWD, $user.":".$pass);// credentials goes here
+		
+		return $req;
 	}
 }
