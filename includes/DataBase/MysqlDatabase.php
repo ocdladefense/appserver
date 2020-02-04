@@ -1,9 +1,57 @@
 <?php
 class MysqlDatabase{
 
+    private $obj;
+    private $tableName;
+    private $connection;
+
+    function __construct($obj,$tableName){
+        $this->obj = $obj;
+        $this->tableName = $tableName;
+    }
+
+    function connect(){
+                // Create connection
+        $this->connection = new mysqli(SERVER_NAME,USER_NAME,PASSWORD);
+
+        // Check connection
+        if ($this->connection->connect_error) {
+            die("Connection failed: " . $this->connection->connect_error);
+        }
+    }
+
+    function insert(){
+        $fieldsAndValues = get_object_vars($this->obj);
+        $addSlashedValues = array();
+        
+        foreach($fieldsAndValues as $value){
+            $addSlashedValues[] = addslashes($value);
+        }
+
+        $columns = implode(", ",array_keys($fieldsAndValues));
+        $values = implode("','",$addSlashedValues);
+
+        echo "Connected successfully";
+        $this->connection = new mysqli(SERVER_NAME, USER_NAME, PASSWORD, $this->tableName);
+        $query = "INSERT INTO cars ($columns)
+        VALUES ('$values')";
+
+        if ($this->connection->query($query) === TRUE) {
+            echo "<br><strong>New record created successfully<br></strong>";
+        } else {
+            echo "<br><strong>ERROR CREATING RECORD: <br>" . $query . "<br>" . $this->connection->error . "<br></strong>";
+        }
+    }
+    
+    function close(){
+        $this->connection->close();
+    }
 }
-function mysqlDatabaseInsert($obj){
-    print("Hello");exit;
+function mysqlDatabaseInsert($obj,$tableName){
+    $db = new mysqlDatabase($obj,$tableName);
+	$db->connect();
+	$db->insert();
+	$db->close();
 }
 
 
