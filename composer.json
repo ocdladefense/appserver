@@ -10,6 +10,7 @@
         "trevor-uehlin/event-module":"dev-master",
         "clickpdx/sitestatus":"dev-master",
         "clickpdx/webconsole":"dev-master",
+        "clickpdx/appserver-car":"~0.1",
         "phpunit/phpunit":"^8.0"
     },
     "extra":{
