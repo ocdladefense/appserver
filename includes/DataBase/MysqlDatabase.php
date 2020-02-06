@@ -1,57 +1,67 @@
 <?php
 class MysqlDatabase{
 
-    private $obj;
-    private $tableName;
     private $connection;
 
-    function __construct($obj,$tableName){
-        $this->obj = $obj;
-        $this->tableName = $tableName;
+    function __construct(){
+        $this->connect();
+    }
+
+    function prepareData($data){
+
+        $addSlashedValues = array();
+        
+        foreach($data as $value){
+            $addSlashedValues[] = addslashes($value);
+        }
+
+        return $addSlashedValues;
     }
 
     function connect(){
                 // Create connection
-        $this->connection = new mysqli(SERVER_NAME,USER_NAME,PASSWORD);
+        $this->connection = new mysqli(HOST_NAME,USER_NAME,USER_PASSWORD, DATABASE_NAME);
 
         // Check connection
         if ($this->connection->connect_error) {
+            //SHOULD THROW A DBCONNECTION ERROR
             die("Connection failed: " . $this->connection->connect_error);
         }
     }
 
-    function insert(){
-        $fieldsAndValues = get_object_vars($this->obj);
-        $addSlashedValues = array();
-        
-        foreach($fieldsAndValues as $value){
-            $addSlashedValues[] = addslashes($value);
-        }
+    function insert($tableName,$columns,$values){
+        $escaped = $this->prepareData($values);
+        $formatted = implode("','",$escaped);
+        $columnNames = implode(", ",$columns);
+        $query = "INSERT INTO $tableName ($columnNames) VALUES ('$formatted')";
 
-        $columns = implode(", ",array_keys($fieldsAndValues));
-        $values = implode("','",$addSlashedValues);
+        $this->doQuery($query);
+    }
 
-        echo "Connected successfully";
-        $this->connection = new mysqli(SERVER_NAME, USER_NAME, PASSWORD, $this->tableName);
-        $query = "INSERT INTO cars ($columns)
-        VALUES ('$values')";
-
+    function doQuery($query){
         if ($this->connection->query($query) === TRUE) {
             echo "<br><strong>New record created successfully<br></strong>";
         } else {
             echo "<br><strong>ERROR CREATING RECORD: <br>" . $query . "<br>" . $this->connection->error . "<br></strong>";
         }
     }
+
+    function update(){}
+    function delete(){}
     
     function close(){
         $this->connection->close();
     }
 }
-function mysqlDatabaseInsert($obj,$tableName){
-    $db = new mysqlDatabase($obj,$tableName);
-	$db->connect();
-	$db->insert();
-	$db->close();
+function insert($obj){
+    $values = get_object_vars($obj);
+    
+    $columns = array_keys($values);
+
+    $tableName = get_class($obj);
+
+    $db = new MysqlDatabase();
+	$db->insert($tableName,$columns,$values);
 }
 
 
