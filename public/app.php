@@ -20,7 +20,7 @@ try {
 
 	if(gettype($out) == "object" && get_class($out) == "HttpResponse") {
 		$resp = $out;
-	} else if(gettype($out) === "string") {
+	} else if(gettype($out) === "string" || gettype($out) === "array") {
 		$resp = $app->getAsHttpResponse($out);
 	} else if(get_class($out) == "HttpRedirect") {
 		$app->setResponse($out);
