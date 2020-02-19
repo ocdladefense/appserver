@@ -93,6 +93,8 @@ class Application {
     		
         if($route->getMethod() == "post") {
             //should be set to request->getBody();
+
+            //check the content type of the request if json decode it and pass json to the callback
             $entityBody = file_get_contents('php://input');
             return call_user_func_array($route->getCallback(),array($entityBody));   
         } else {
