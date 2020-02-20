@@ -1,28 +1,50 @@
 
 
+# Ignore .htaccess; prefer .htaccess-example
+.htaccess
+
 # Ignore settings
 settings.php
 settings.js
 config.php
 config.js
 
-# Ignore any custom SOAP xml files.
-*.wsdl.xml
-
-#ignore the modules directory
-modules/*
-!modules/.gitkeep
-
+.vscode/
 
 #  But keep default settings.php and settings.js files
 #  config-default.php
 #  settings-default.php
 
 
+# Ignore SOAP xml files for now; maybe add them in later on?
+*.wsdl.xml
+*.wsdl*
+
+
+# Ignore the modules directory
+# Moduls get their own projects.
+modules/*
+!modules/.gitkeep
+
+# Ignore composer.lock
+composer.lock
+
+
+# Ignore node modules
+node_modules/*
+
 # Ignore vendor libraries (e.g., authorizedotnet)
 /vendor/
 
+
+# Ignore modules
+/modules/
+
 # Moduls get their own projects.
+
+#ignore content directory
+content/*
+
 
 # Ignore any logging files.
 phplog*

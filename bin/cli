@@ -1,0 +1,51 @@
+#!/usr/bin/php
+# How to execute me?
+#  $> cli force object some-event-id
+#			--> print to the console the key/value pairs associated with the Event object.
+#
+#  $> cli probe www.ocdla.org
+#			--> print to the console the key/value pairs associated with the probes for the specified domain.
+#		
+# This file may need to be made executable.
+# 
+<?php
+ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
+
+# Load the specified module; execute command.
+$mod = $argv[1]; // The "shortname" of the target module
+$cmd = $argv[2]; // The "shortname" of the target path (per routes)
+$arg = $argv[3]; // An argument to pass to the route callback
+# var_dump($argv); // testing...
+
+$startd = getcwd();
+
+$appPath = __DIR__.'/..';
+
+// Place us in the appropriate directory.
+chdir($appPath);
+
+
+# Currently provides some formatting options.
+require "bootstrap.php";
+require "includes/cli.inc";
+
+
+$app = new Application();
+
+
+$router = new AppRouter();
+
+
+$module = $app->loadModule($mod);
+$output = $module->execute($cmd);
+
+// Back to original directory; don't leave the user stranded somewhere they shouldn't be.
+chdir($startd);
+
+
+// Finally, display output.
+// Per our discussion, format $output appropriately for the CLI with tabs and line-breaks
+echo cli_format($output);
+
+
+exit; 

@@ -2,16 +2,25 @@
     "name": "clickpdx/appserver",
     "description": "A PHP application server.",
     "type": "wordpress-theme",
-    "require": {
+    "require-dev": {
         "composer/installers":"~1.0",
-        "trevor-uehlin/salesforce":"dev-master",
-        "trevor-uehlin/authorize-net":"dev-master",
+        "trevor-uehlin/test-module":"dev-master",
+        "trevor-uehlin/salesforce-module":"dev-master",
+        "trevor-uehlin/authorize-net-module":"dev-master",
+        "trevor-uehlin/event-module":"dev-master",
+        "clickpdx/sitestatus":"dev-master",
+        "clickpdx/webconsole":"dev-master",
+        "clickpdx/appserver-car":"~0.1",
         "phpunit/phpunit":"^8.0"
     },
     "extra":{
         "installer-paths":{
-            "modules/salesforce":["trevor-uehlin/salesforce"],
-            "modules/authorizeNet":["trevor-uehlin/authorize-net"]
+            "modules/testModule":["trevor-uehlin/test-module"],
+            "modules/salesforce":["trevor-uehlin/salesforce-module"],
+            "modules/authorizeNet":["trevor-uehlin/authorize-net-module"],
+            "modules/event":["trevor-uehlin/event-module"],
+            "modules/sitestatus":["clickpdx/sitestatus"],
+            "modules/webconsole":["clickpdx/webconsole"]
         },
         "comments":[
             {
