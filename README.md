@@ -8,6 +8,34 @@ NOTE: ccapp requires php version >=5.6 and the php-curl extension
 Apache config:
 sudo a2enmod headers
 
+
+
+
+
+# Instructions
+# Using HTTP
+Appserver has built-in classes to send HTTP Requests and receive HTTP Responses.
+
+<code>
+use Http\HttpRequest;
+use Http\HttpResponse;
+
+
+// Fetch the New York Times homepage.
+$url = "https://nytimes.com";
+
+$req = new HttpRequest($url);
+
+$resp = $req->send();
+
+echo $resp->getBody();
+</code>
+
+
+
+
+
+
 INSTALLATION NOTES
 
 Install composer
