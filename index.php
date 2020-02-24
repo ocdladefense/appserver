@@ -1,5 +1,7 @@
 <?php
 
+phpinfo();
+
 
 require "includes/Http/HttpRequest.php";
 require "includes/Http/HttpResponse.php";
