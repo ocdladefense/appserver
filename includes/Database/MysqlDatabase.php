@@ -38,6 +38,31 @@ class MysqlDatabase{
         $this->doQuery($query);
     }
 
+    function doSelect($json){
+        $rows = array();
+
+        $sql = selectClause().whereClause($json);
+        //print($queryObj);exit;
+        $result = $this->connection->query($sql);
+    
+        if ($result != null) {
+            print_r("NUMBER OF ROWS ".$result->num_rows."<br>");
+            if($result->num_rows > 0){
+                while($row = $result->fetch_assoc()){
+                    $rows[] = $row;
+                }
+                print("NUMBER OF ROWS ".count($rows));
+            }
+            return $rows;
+        } else {
+            echo "<br><strong>ERROR RETRIEVING RECORD: <br>" . $queryObj . "<br>" . $this->connection->error . "<br></strong>";
+        }
+    }
+
+    //move select and where into the class
+    //doquery should return a result
+    //save the echos to a status
+    //if therer when running the query set hasError to true
     function doQuery($query){
         if ($this->connection->query($query) === TRUE) {
             echo "<br><strong>New record created successfully<br></strong>";
@@ -62,8 +87,9 @@ function insert($obj){
 	$db->insert($tableName,$columns,$values);
 }
 
-function select(){
-
+function select($json){
+    $db = new MysqlDatabase();
+    return $db->doSelect($json);
 }
 
 function selectClause(){
