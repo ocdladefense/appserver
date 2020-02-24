@@ -20,7 +20,8 @@ class MysqlDatabase{
 
     function connect(){
                 // Create connection
-        $this->connection = new mysqli(HOST_NAME,USER_NAME,USER_PASSWORD, DATABASE_NAME);
+                //dbhost,dnuser,dbpassword,dbname
+        $this->connection = new mysqli(HOST_NAME,USER_NAME,USER_PASSWORD,DATABASE_NAME);
 
         // Check connection
         if ($this->connection->connect_error) {
@@ -42,16 +43,13 @@ class MysqlDatabase{
         $rows = array();
 
         $sql = selectClause().whereClause($json);
-        //print($queryObj);exit;
         $result = $this->connection->query($sql);
     
         if ($result != null) {
-            print_r("NUMBER OF ROWS ".$result->num_rows."<br>");
             if($result->num_rows > 0){
                 while($row = $result->fetch_assoc()){
                     $rows[] = $row;
                 }
-                print("NUMBER OF ROWS ".count($rows));
             }
             return $rows;
         } else {
