@@ -1,6 +1,6 @@
 <?php
-class HttpRequest
-{
+class HttpRequest {
+
 	private $handle = null;
 
 	private $params = array();
@@ -21,6 +21,7 @@ class HttpRequest
 	
 	private $port;
 	
+	private $ua;
 	
 	
 	 
@@ -124,6 +125,11 @@ class HttpRequest
 			curl_setopt($this->handle,CURLOPT_PORT,$this->port);
 		}
 
+		if(null != $this->ua) {
+			curl_setopt($this->handle,CURLOPT_USERAGENT,$this->ua);
+		}
+		
+		
 		$_response = curl_exec($this->handle);
 		
 		$resp = new HttpResponse($_response);
@@ -227,6 +233,10 @@ class HttpRequest
 		curl_setopt($this->handle,CURLOPT_SSL_VERIFYPEER, false);
 	}
 
+
+	public function userAgent($ua) {
+		$this->ua = $ua;
+	}
 
 
 	
