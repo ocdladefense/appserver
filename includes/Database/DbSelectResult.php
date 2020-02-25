@@ -1,6 +1,7 @@
 <?php
-class DbSelectResult implements IDbResult, IteratorAggregate{
+class DbSelectResult extends DbResult implements IDbResult, IteratorAggregate{
     //class DbSelectResult extends DbResult implements IDbResult, IteratorAggregate{
+        //call the parent
 
     private $result;
 
@@ -25,3 +26,5 @@ class DbSelectResult implements IDbResult, IteratorAggregate{
 }
 
 //the DbInsertResult class returns the id of the rows inserted
+//retrun the number of rows count
+//

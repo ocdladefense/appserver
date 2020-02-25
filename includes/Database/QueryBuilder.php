@@ -47,6 +47,13 @@ class QueryBuilder{
     }
 
     function compile(){
+        //if statement to determine the type of query
         return $this->selectClause().$this->whereClause();
     }
+
+    function someFunct()
+    $escaped = $this->prepareData($values);
+    $formatted = implode("','",$escaped);
+    $columnNames = implode(", ",$columns);
+    $sql = "INSERT INTO $tableName ($columnNames) VALUES ('$formatted')";
 }
