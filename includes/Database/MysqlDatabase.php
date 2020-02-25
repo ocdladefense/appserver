@@ -20,7 +20,7 @@ class MysqlDatabase{
 
     function connect(){
         //Create connection
-        $this->connection = new mysqli(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
+        $this->connection = new Mysqli(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
 
         // Check connection
         if ($this->connection->connect_error) {
@@ -39,24 +39,12 @@ class MysqlDatabase{
         return $result->status;
     }
 
-    function doSelect($json){
-        $rows = array();
-
-        $sql = $this->selectClause().$this->whereClause($json);
-        //$sql = "SELECT * FROM over there";
-        $result = $this->doQuery($sql);
-    
-        if ($result->data != null) {
-            if($result->data->num_rows > 0){
-                while($row = $result->data->fetch_assoc()){
-                    $rows[] = $row;
-                }
-            }
-            return $rows;
-        } else if($result->hasError) {
-            return $result->status;
+    function select($sql){
+        $result = $this->connection->query($sql);
+        if($result == false){
+            throw new DbException("The error message ". $this->connection->error);
         }
-        throw new DbException("Something unexpected happened....not quite sure what it is yet though.");
+        return $result;
     }
 
     function doQuery($query){
@@ -90,36 +78,14 @@ class MysqlDatabase{
         $this->connection->close();
     }
 
-    //Additional Methods
+    public static function query($sql){
+        $db = new MysqlDatabase();
 
-    function selectClause(){
-        $tableName = "car";
-        $selectFields = array();
-        return "SELECT * FROM $tableName";
+        $result = $db->select($sql);
+
+        return new DbSelectResult($result);
+
     }
-    
-    function whereClause($conditions){
-        $where = "";  // Prepare to build a SQL WHERE clause
-        $tmp = array();
-        
-         foreach($conditions as $c){
-             $field = $c->field;
-             $op = $c->op;
-             $value = $c->value;
-     
-             if(is_int($value)){
-                 $tmp []= sprintf("%s %s %d",$field,$op,$value);
-             } else if($op == 'LIKE'){
-                 $tmp [] = sprintf("%s %s '%%%s%%'",$field,$op,$value);
-             } else {
-                 $tmp [] = sprintf("%s %s '%s'",$field,$op,$value);
-             }
-         }
-     
-         $where .= " WHERE ".implode(' AND ',$tmp);
-     
-         return $where;
-     }
 }
 
 function insert($obj){
@@ -133,9 +99,9 @@ function insert($obj){
 	return $db->insert($tableName,$columns,$values);
 }
 
-function select($json){
+function select($sql){
     $db = new MysqlDatabase();
-    return $db->doSelect($json);
+    return $db->select($sql);
 }
 
 
