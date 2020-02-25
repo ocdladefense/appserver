@@ -44,45 +44,54 @@ class MysqlDatabase{
 
         return $db->select($sql);
     }
-
-    function prepareData($data){
-
-        $addSlashedValues = array();
-        
-        foreach($data as $value){
-            $addSlashedValues[] = addslashes($value);
-        }
-
-        return $addSlashedValues;
-    }
     
     function close(){
         $this->connection->close();
     }
 }
 
-function insert($obj){
+function insert($objs = array()){
+
     //array_map
     //docs for multiple inserts
     //INSERT INTO car(case,summary) VALUES('escaped1','escaped2'),('escaped3','escaped4');
 
-    $values = get_object_vars($obj);
-    
-    $columns = array_keys($values);
+    $values = parseValues($objs);
 
-    $tableName = get_class($obj);
+    $columns = parseColumns($values);
+
+    $tableName = get_class($objs[0]);
+
 
     //use the querybuilder to build insert statement
     $builder = new QueryBuilder();
-    $bulder->setTable("car");
+    $builder->setTable($tableName);
     $builder->setColumns($columns);
-    $builder->prepare($values);
+    $builder->setValues($values);
+    $builder->prepareInsertColumns();
+    $builder->prepareInsertValues();exit;
     $sql = $builder->compile();
 
     $db = new MysqlDatabase();
 	return $db->insert($sql);
 }
 
+function parseValues($objs){
+
+    $values = array();
+    foreach($objs as $obj){
+        $values[] = get_object_vars($obj);
+    }
+    return $values;
+}
+function parseColumns($values){
+
+    $columns = array();
+    foreach($values as $val){
+        $columns[] = array_keys($val);
+    }
+    return $columns;
+}
 
 
 //doQyery

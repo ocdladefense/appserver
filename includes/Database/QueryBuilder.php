@@ -3,7 +3,9 @@
 class QueryBuilder{
     private $tableName;
     private $selectFields;
-    private $conditions;
+    private $selectConditions = array();
+    private $insertColumns = array();
+    private $insertValues = array();
 
     function __construct(){
 
@@ -14,7 +16,15 @@ class QueryBuilder{
     }
 
     function setConditions($conds){
-        $this->conditions = $conds;
+        $this->selectConditions = $conds;
+    }
+
+    function setColumns($columns){
+        $this->insertColumns = $columns;
+    }
+
+    function setValues($values){
+        $this->insertValues = $values;
     }
     //Additional Methods
 
@@ -27,7 +37,7 @@ class QueryBuilder{
         $where = "";  // Prepare to build a SQL WHERE clause
         $tmp = array();
         
-        foreach($this->conditions as $c){
+        foreach($this->selectConditions as $c){
             $field = $c->field;
             $op = $c->op;
             $value = $c->value;
@@ -51,9 +61,46 @@ class QueryBuilder{
         return $this->selectClause().$this->whereClause();
     }
 
-    function someFunct()
-    $escaped = $this->prepareData($values);
-    $formatted = implode("','",$escaped);
-    $columnNames = implode(", ",$columns);
-    $sql = "INSERT INTO $tableName ($columnNames) VALUES ('$formatted')";
+    function buildInsert(){
+        //$escapedValues = $this->prepareInsertValues($values);
+        $formattedValues = implode("','",$escapedValues);
+        $this->insertColumns = implode(", ",$this->insertColumns);
+        $sql = "INSERT INTO $tableName ($insertColumns) VALUES ('$formattedValues')";
+    }
+    
+    function prepareInsertValues(){
+        $vArray = array();
+
+        foreach($this->insertValues as $values){
+            $addSlashedValues = array();
+            
+            foreach($values as $value){
+                $addSlashedValues[] = addslashes($value);
+            }
+            $vArray[] = "('" . implode("','",$addSlashedValues) . "')" ;
+        }
+
+        $this->insertValues = $vArray;
+
+        var_dump($this->insertValues);exit;
+    }
+
+    function prepareInsertColumns(){
+
+        // foreach($columns as $c){
+        //     $cString = implode(",", array_map(function($string) {
+        //         return '(' . $string . ')';
+        //     }, $c));
+
+        //     $cArray[] = $cString;
+        // }
+        foreach($this->insertColumns as $c){
+            $cString = "(" . implode(",",$c) . ")";
+
+            $cArray[] = $cString;
+        }
+
+        $this->insertColumns = $cArray;
+        //var_dump($this->insertColumns);exit;
+    }
 }
