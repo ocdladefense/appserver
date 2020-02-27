@@ -2,10 +2,9 @@
 
 class QueryBuilder{
     private $tableName;
-    private $selectFields;
-    private $selectConditions = array();
-    private $insertColumns = array();
-    private $insertValues = array();
+    private $conditions = array();
+    private $columns = array();
+    private $values = array();
 
     function __construct(){
 
@@ -16,28 +15,27 @@ class QueryBuilder{
     }
 
     function setConditions($conds){
-        $this->selectConditions = $conds;
+        $this->conditions = $conds;
     }
 
     function setColumns($columns){
-        $this->insertColumns = $columns;
+        $this->columns = $columns;
     }
 
     function setValues($values){
-        $this->insertValues = $values;
+        $this->values = $values;
     }
-    //Additional Methods
 
     function selectClause(){
-        $this->selectFields = array();
+        $this->columns = array();
         return "SELECT * FROM $this->tableName";
     }
     
     function whereClause(){
-        $where = "";  // Prepare to build a SQL WHERE clause
+        $where = "";
         $tmp = array();
         
-        foreach($this->selectConditions as $c){
+        foreach($this->conditions as $c){
             $field = $c->field;
             $op = $c->op;
             $value = $c->value;
@@ -57,50 +55,49 @@ class QueryBuilder{
     }
 
     function compile(){
-        //if statement to determine the type of query
-        return $this->selectClause().$this->whereClause();
-    }
 
-    function buildInsert(){
-        //$escapedValues = $this->prepareInsertValues($values);
-        $formattedValues = implode("','",$escapedValues);
-        $this->insertColumns = implode(", ",$this->insertColumns);
-        $sql = "INSERT INTO $tableName ($insertColumns) VALUES ('$formattedValues')";
+        if($this->getType() == "insert"){
+            $columns = $this->prepareInsertColumns();
+            $values = $this->prepareInsertValues();
+            return "INSERT INTO $this->tableName $columns VALUES $values";
+        } else {
+            return $this->selectClause().$this->whereClause();
+        }
     }
     
     function prepareInsertValues(){
         $vArray = array();
 
-        foreach($this->insertValues as $values){
+        foreach($this->values as $vals){
             $addSlashedValues = array();
             
-            foreach($values as $value){
+            foreach($vals as $value){
                 $addSlashedValues[] = addslashes($value);
             }
             $vArray[] = "('" . implode("','",$addSlashedValues) . "')" ;
         }
 
-        $this->insertValues = $vArray;
-
-        var_dump($this->insertValues);exit;
+        //$this->values = $vArray;
+        return implode(",",$vArray);
     }
 
     function prepareInsertColumns(){
+        return "(" . implode(",",$this->columns) . ")";
+    }
 
-        // foreach($columns as $c){
-        //     $cString = implode(",", array_map(function($string) {
-        //         return '(' . $string . ')';
-        //     }, $c));
+    function getType(){
 
-        //     $cArray[] = $cString;
-        // }
-        foreach($this->insertColumns as $c){
-            $cString = "(" . implode(",",$c) . ")";
-
-            $cArray[] = $cString;
+        if(debug_backtrace()[2]["function"] == "select"){
+            return "select";
         }
-
-        $this->insertColumns = $cArray;
-        //var_dump($this->insertColumns);exit;
+        else if(debug_backtrace()[2]["function"] == "insert"){
+            return "insert";
+        }
+        else if(debug_backtrace()[2]["function"] == "update"){
+            return "update";
+        }
+        else {
+            return "delete";
+        }
     }
 }

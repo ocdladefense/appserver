@@ -19,14 +19,12 @@ class MysqlDatabase{
     }
 
     function insert($sql){
-
-        //builder
-
-
+        
         $result = $this->connection->query($sql);
-        $iSelect = new DbInsertResult($result);
 
-        return $iSelect;
+        $dbir = new DbInsertResult($result,$sql,$this->connection);
+
+        return $dbir->doStuff();
 
 
         //new instance of insertResult 
@@ -52,13 +50,11 @@ class MysqlDatabase{
 
 function insert($objs = array()){
 
-    //array_map
-    //docs for multiple inserts
-    //INSERT INTO car(case,summary) VALUES('escaped1','escaped2'),('escaped3','escaped4');
+    $sample = $objs[0];
 
-    $values = parseValues($objs);
+    $columns = getObjectFields($sample);
 
-    $columns = parseColumns($values);
+    $values = getObjectValues($objs);
 
     $tableName = get_class($objs[0]);
 
@@ -68,56 +64,22 @@ function insert($objs = array()){
     $builder->setTable($tableName);
     $builder->setColumns($columns);
     $builder->setValues($values);
-    $builder->prepareInsertColumns();
-    $builder->prepareInsertValues();exit;
     $sql = $builder->compile();
+    //print($sql);exit;
 
     $db = new MysqlDatabase();
-	return $db->insert($sql);
+    //$insertResult = new DbInsertResult($result,$sql,$id,$count);
+    $insertResult = $db->insert($sql);
+    print($insertResult);exit;
+    
+    // foreach($objs as $obj){
+    //     $obj->id = $insertResult->getNextId();
+    // }
 }
 
-function parseValues($objs){
-
-    $values = array();
-    foreach($objs as $obj){
-        $values[] = get_object_vars($obj);
-    }
-    return $values;
+function getObjectValues($objs){
+    return array_map("get_object_vars",$objs);
 }
-function parseColumns($values){
-
-    $columns = array();
-    foreach($values as $val){
-        $columns[] = array_keys($val);
-    }
-    return $columns;
+function getObjectFields($obj){
+    return array_keys(get_object_vars($obj));
 }
-
-
-//doQyery
-// function doQuery($query){
-//     $conn = $this->connection->query($query);
-//     $result = new StdClass();
-//     $result->hasError = false;
-
-//     if(strpos($query,"INSERT") !== false){
-//         if ($conn === TRUE) {
-//             $result->status = "<br><strong>New record created successfully<br></strong>";
-//         } else {
-//             $result->hasError = true;
-//             $result->status = "<br><strong>ERROR CREATING RECORD: <br>" . $query . "<br>" . $conn->error . "<br></strong>";
-//         }
-//     }
-
-//     if(strpos($query,"SELECT") !== false){
-//         if($conn != null && $conn->num_rows > 0){
-//             $result->data = $conn;
-//         }
-//         else{
-//             $result->hasError = true;
-//             $result->status = "<br><strong>ERROR RETRIEVING RECORD: <br>" . $query . "<br>" . $conn->error . "<br></strong>";
-//         }
-//     }
-
-//     return $result;
-// }
