@@ -5,11 +5,11 @@ class DbSelectResult extends DbResult implements IDbResult, IteratorAggregate{
 
     private $result;
 
-    function __construct($mysqliResult){
+    public function __construct($mysqliResult){
         $this->result = $mysqliResult;
     }
 
-    function getIterator(){
+    public function getIterator(){
         $rows = array();
 
         if($this->result->num_rows > 0){
@@ -18,7 +18,7 @@ class DbSelectResult extends DbResult implements IDbResult, IteratorAggregate{
             }
         }
 
-        return $rows;
+        return new ArrayObject($rows);
     }
 
     public function hasError(){}
