@@ -35,4 +35,9 @@
 	require_once BASE_PATH.'/includes/Module.php';
 	require_once BASE_PATH.'/includes/DocumentParser.php';
 
+	require_once BASE_PATH.'/includes/Database/IDbResult.php';
 	require_once BASE_PATH.'/includes/Database/MysqlDatabase.php';
+	require_once BASE_PATH.'/includes/Database/DbSelectResult.php';
+	require_once BASE_PATH.'/includes/Database/QueryBuilder.php';
+
+	require_once BASE_PATH.'/includes/Exception/DbException.php';
