@@ -72,6 +72,12 @@ class Template
 		return $content;
 	}
 	
+	public static function renderTemplate($name,$vars) {
+		$template = new Template($name);
+		
+		return $template->render($vars);
+	}
+	
 	public static function pathToTemplate($name){
 		return get_theme_path() ."/".$name.self::$TEMPLATE_EXTENSION;
 	}
