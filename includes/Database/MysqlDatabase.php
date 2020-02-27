@@ -7,17 +7,6 @@ class MysqlDatabase{
         $this->connect();
     }
 
-    function prepareData($data){
-
-        $addSlashedValues = array();
-        
-        foreach($data as $value){
-            $addSlashedValues[] = addslashes($value);
-        }
-
-        return $addSlashedValues;
-    }
-
     function connect(){
         //Create connection
         $this->connection = new Mysqli(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
@@ -29,77 +18,106 @@ class MysqlDatabase{
         }
     }
 
-    function insert($tableName,$columns,$values){
-        $escaped = $this->prepareData($values);
-        $formatted = implode("','",$escaped);
-        $columnNames = implode(", ",$columns);
-        $sql = "INSERT INTO $tableName ($columnNames) VALUES ('$formatted')";
+    function insert($sql){
 
-        $result = $this->doQuery($sql);
-        return $result->status;
+        //builder
+
+
+        $result = $this->connection->query($sql);
+        $iSelect = new DbInsertResult($result);
+
+        return $iSelect;
+
+
+        //new instance of insertResult 
+        //get the id of the row i just inserted
+        //read the docs on how to get the ids after insert
     }
 
     function select($sql){
         $result = $this->connection->query($sql);
-        if($result == false){
-            throw new DbException("The error message ". $this->connection->error);
-        }
-        return $result;
-    }
-
-    function doQuery($query){
-        $conn = $this->connection->query($query);
-        $result = new StdClass();
-        $result->hasError = false;
-
-        if(strpos($query,"INSERT") !== false){
-            if ($conn === TRUE) {
-                $result->status = "<br><strong>New record created successfully<br></strong>";
-            } else {
-                $result->hasError = true;
-                $result->status = "<br><strong>ERROR CREATING RECORD: <br>" . $query . "<br>" . $conn->error . "<br></strong>";
-            }
-        }
-
-        if(strpos($query,"SELECT") !== false){
-            if($conn != null && $conn->num_rows > 0){
-                $result->data = $conn;
-            }
-            else{
-                $result->hasError = true;
-                $result->status = "<br><strong>ERROR RETRIEVING RECORD: <br>" . $query . "<br>" . $conn->error . "<br></strong>";
-            }
-        }
-
-        return $result;
-    }
-    
-    function close(){
-        $this->connection->close();
+        return new DbSelectResult($result);
     }
 
     public static function query($sql){
         $db = new MysqlDatabase();
 
-        $result = $db->select($sql);
-
-        return new DbSelectResult($result);
-
+        return $db->select($sql);
+    }
+    
+    function close(){
+        $this->connection->close();
     }
 }
 
-function insert($obj){
-    $values = get_object_vars($obj);
-    
-    $columns = array_keys($values);
+function insert($objs = array()){
 
-    $tableName = get_class($obj);
+    //array_map
+    //docs for multiple inserts
+    //INSERT INTO car(case,summary) VALUES('escaped1','escaped2'),('escaped3','escaped4');
+
+    $values = parseValues($objs);
+
+    $columns = parseColumns($values);
+
+    $tableName = get_class($objs[0]);
+
+
+    //use the querybuilder to build insert statement
+    $builder = new QueryBuilder();
+    $builder->setTable($tableName);
+    $builder->setColumns($columns);
+    $builder->setValues($values);
+    $builder->prepareInsertColumns();
+    $builder->prepareInsertValues();exit;
+    $sql = $builder->compile();
 
     $db = new MysqlDatabase();
-	return $db->insert($tableName,$columns,$values);
+	return $db->insert($sql);
 }
 
-function select($sql){
-    $db = new MysqlDatabase();
-    return $db->select($sql);
+function parseValues($objs){
+
+    $values = array();
+    foreach($objs as $obj){
+        $values[] = get_object_vars($obj);
+    }
+    return $values;
 }
+function parseColumns($values){
+
+    $columns = array();
+    foreach($values as $val){
+        $columns[] = array_keys($val);
+    }
+    return $columns;
+}
+
+
+//doQyery
+// function doQuery($query){
+//     $conn = $this->connection->query($query);
+//     $result = new StdClass();
+//     $result->hasError = false;
+
+//     if(strpos($query,"INSERT") !== false){
+//         if ($conn === TRUE) {
+//             $result->status = "<br><strong>New record created successfully<br></strong>";
+//         } else {
+//             $result->hasError = true;
+//             $result->status = "<br><strong>ERROR CREATING RECORD: <br>" . $query . "<br>" . $conn->error . "<br></strong>";
+//         }
+//     }
+
+//     if(strpos($query,"SELECT") !== false){
+//         if($conn != null && $conn->num_rows > 0){
+//             $result->data = $conn;
+//         }
+//         else{
+//             $result->hasError = true;
+//             $result->status = "<br><strong>ERROR RETRIEVING RECORD: <br>" . $query . "<br>" . $conn->error . "<br></strong>";
+//         }
+//     }
+
+//     return $result;
+// }
