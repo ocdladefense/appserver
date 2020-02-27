@@ -21,15 +21,10 @@ class MysqlDatabase{
     function insert($sql){
         
         $result = $this->connection->query($sql);
+        $count = mysqli_affected_rows($this->connection);
+        $id = mysqli_insert_id($this->connection);
 
-        $dbir = new DbInsertResult($result,$sql,$this->connection);
-
-        return $dbir->doStuff();
-
-
-        //new instance of insertResult 
-        //get the id of the row i just inserted
-        //read the docs on how to get the ids after insert
+        return new DbInsertResult($result,$id,$count,$this->connection->error);
     }
 
     function select($sql){
@@ -68,13 +63,21 @@ function insert($objs = array()){
     //print($sql);exit;
 
     $db = new MysqlDatabase();
-    //$insertResult = new DbInsertResult($result,$sql,$id,$count);
     $insertResult = $db->insert($sql);
-    print($insertResult);exit;
+    $counter = 0;
+
+    foreach($insertResult as $autoId){
+        $objs[$counter]->id = $autoId;
+
+        $counter++;
+    }
+
+
+
+
+
+    //print($insertResult);exit;
     
-    // foreach($objs as $obj){
-    //     $obj->id = $insertResult->getNextId();
-    // }
 }
 
 function getObjectValues($objs){
