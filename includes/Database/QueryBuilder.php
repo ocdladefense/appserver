@@ -1,6 +1,12 @@
 <?php
 
+define("SQL_FIELD_SEPERATOR",",");
+define("SQL_ROW_SEPERATOR",",");
+define("SQL_INSERT_ROW_START","(");
+define("SQL_INSERT_ROW_END",")");
+
 class QueryBuilder{
+
     private $tableName;
     private $conditions = array();
     private $columns = array();
@@ -66,23 +72,28 @@ class QueryBuilder{
     }
     
     function prepareInsertValues(){
-        $vArray = array();
+        $sqlr = array();
 
-        foreach($this->values as $vals){
-            $addSlashedValues = array();
+        foreach($this->values as $rows){
+            $prepared = array();
             
-            foreach($vals as $value){
-                $addSlashedValues[] = addslashes($value);
+            foreach($rows as $value){
+                if(is_numeric($value)){
+                    $prepared[] = $value;
+                } else {
+                    $temp = addslashes($value);
+                    $prepared[] = sprintf("'%s'",$temp);
+                }
             }
-            $vArray[] = "('" . implode("','",$addSlashedValues) . "')" ;
+            $sqlr[] = SQL_INSERT_ROW_START . implode(SQL_FIELD_SEPERATOR,$prepared) . SQL_INSERT_ROW_END ;
         }
 
         //$this->values = $vArray;
-        return implode(",",$vArray);
+        return implode(SQL_ROW_SEPERATOR,$sqlr);
     }
 
     function prepareInsertColumns(){
-        return "(" . implode(",",$this->columns) . ")";
+        return SQL_INSERT_ROW_START . implode(SQL_FIELD_SEPERATOR,$this->columns) . SQL_INSERT_ROW_END;
     }
 
     function getType(){

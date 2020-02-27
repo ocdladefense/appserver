@@ -3,27 +3,27 @@ class DbInsertResult extends DbResult implements IDbResult, IteratorAggregate{
 
     private $result;
     private $sql;
-    private $connection;
+    private $id;
+    private $count;
+    private $error;
 
-    public function __construct($mysqliResult,$sql,$connection){
+    public function __construct($mysqliResult,$id,$count = 0,$error = ""){
         $this->result = $mysqliResult;
-        $this->sql = $sql;
-        $this->connection = $connection;
+        $this->id = $id;
+        $this->count = $count;
+        $this->error = $error;
     }
 
             //what is the relationship between id and count
-
-        // $id = mysqli_insert_id($this->connection);
-        // $count = mysqli_affected_rows($this->connection);
         //set autoincrement and number of rows affected here
 
-    public function doStuff(){
+    public function getResult(){
+
         if (!$this->hasError()) {
-            $this->result = "<br><strong>New record created successfully at row" . $id . "<br></strong>";
+            $this->result = "<br><strong>New record or records created successfully starting at row " . $this->id .".  There were ". $this->count . " rows added to database.<br></strong>";
         } else {
             $this->result = $this->getError();
         }
-        return $this->result;
     }
 
     private function hasError(){
@@ -34,7 +34,7 @@ class DbInsertResult extends DbResult implements IDbResult, IteratorAggregate{
     }
 
     private function getError(){
-        return "<br><strong>ERROR CREATING RECORD: <br>" . $this->sql . "<br>" . $this->connection->error . "<br></strong>";
+        return "<br><strong>ERROR CREATING RECORD: <br>" ."<br>" . $this->connection->error . "<br></strong>";
     }
 
     public function getIterator(){}
