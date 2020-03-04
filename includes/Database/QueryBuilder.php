@@ -74,16 +74,20 @@ class QueryBuilder{
     function prepareInsertValues(){
         $sqlr = array();
 
-        foreach($this->values as $rows){
+        foreach($this->values as $row){
             $prepared = array();
             
-            foreach($rows as $value){
+            foreach($row as $value){
+                
                 if(is_numeric($value)){
                     $prepared[] = $value;
-                } else {
+                } else if(is_string($value)) {
                     $temp = addslashes($value);
                     $prepared[] = sprintf("'%s'",$temp);
+                } else if(is_null($value)){
+                    $prepared[] = 'NULL';
                 }
+
             }
             $sqlr[] = SQL_INSERT_ROW_START . implode(SQL_FIELD_SEPERATOR,$prepared) . SQL_INSERT_ROW_END ;
         }
