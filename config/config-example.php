@@ -14,7 +14,7 @@ define("ACTIVE_THEME","default");
 
 
 //DATABASE 
-define("SERVER_NAME", "");
-define("USER_NAME", "");
-define("PASSWORD", "");
-define("DATABASE_NAME", "");
+define("DB_HOST", "");
+define("DB_USER", "");
+define("DB_PASS", "");
+define("DB_NAME", "");

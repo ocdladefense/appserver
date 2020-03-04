@@ -57,6 +57,7 @@ class MysqlDatabase{
     }
 }
 
+//Global insert function that calls the insert method of the MysqlDatabase class.
 function insert($objs = array()){
     $objs = !is_array($objs) ? [$objs] : $objs;
     $invalid = array_filter($objs, function($obj){return $obj->id !== null;});
