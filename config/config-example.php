@@ -1,5 +1,4 @@
 <?php
-<?php
 define("SALESFORCE_USERNAME", "");
 define("SALESFORCE_PASSWORD", "");
 define("CLIENT_ID", "");
