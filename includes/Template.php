@@ -29,12 +29,19 @@ function pageScripts($scripts = array() ) {
 
 class Template
 {
-    
-	private static $TEMPLATE_EXTENSION = ".tpl.php";
+  
+  const DEBUG = false;
+  
+	const TEMPLATE_EXTENSION = ".tpl.php";
 	
 	private $name;
     
-	private $path;
+	/**
+	 * @var $paths
+	 *
+	 * @description An array of paths to be prepended to $name.
+	 */
+	private static $paths = array();
 	
 	private $scripts = array();
 
@@ -42,8 +49,11 @@ class Template
 
 	private $footerScripts;
 
-
-
+	private $log = array();
+	
+	
+	
+	
 	public function __construct($name){
 		$this->name = $name;
 	}
@@ -52,25 +62,46 @@ class Template
 		$this->scripts = array_merge($this->scripts,$scripts);
 	}
 	
+	public function addScript($js) {
+		$this->scripts []= $js;
+	}
+	
 	public function addStyles($styles) {
 		$this->styles = array_merge($this->styles,$styles);
 	}
+	
+	public function addStyle($css) {
+		$this->styles []= $css;
+	}
+
+
+	public static function addPath($path) {
+		self::$paths []= $path;
+	}
+
 
 	public function render($context = array()){
-		if(!self::exists($this->name)){
-			throw new \Exception("TEMPLATE_ERROR: Template {$this->pathToTemplate()} could not be found.");
-		}
 		
 		$context["styles"] = implode("\n",pageStyles($this->styles));
 		$context["scripts"] = implode("\n",pageScripts($this->scripts));
 		
 		extract($context);
 		ob_start();
-		include self::pathToTemplate($this->name);
+		
+		$this->log("About to include template name, {$this->name}.");
+		$file = self::pathToTemplate($this->name);
+		$this->log("About to include template file, {$file}.");
+		include $file;
+		
 		$content = ob_get_contents();
 		ob_end_clean();
+		
+		
 		return $content;
 	}
+	
+	
+	
 	
 	public static function renderTemplate($name,$vars) {
 		$template = new Template($name);
@@ -78,8 +109,28 @@ class Template
 		return $template->render($vars);
 	}
 	
-	public static function pathToTemplate($name){
-		return get_theme_path() ."/".$name.self::$TEMPLATE_EXTENSION;
+	
+	
+	
+	
+	public static function pathToTemplate($name) {
+		
+		$paths = self::$paths;
+		$paths[]= get_theme_path();
+		
+		$search = array_map(function($item) use($name) {
+			return $item . "/" . $name . self::TEMPLATE_EXTENSION;
+		},$paths);
+
+
+		$found = array_values(array_filter($search,function($file) {
+			return file_exists($file);
+		}));
+		
+		if(!count($found) > 0) throw new \Exception("TEMPLATE_ERROR: Template $name could not be found.");
+		
+		
+		return $found[0];
 	}
 	
 	
@@ -246,5 +297,11 @@ class Template
 	}
 	
 	
+	// Save some log messages.
+	//  Might be of interest later.
+	private function log($msg) {
+		if(self::DEBUG) print $msg;
+		$this->log []= $msg;
+	}	
 	
 }
