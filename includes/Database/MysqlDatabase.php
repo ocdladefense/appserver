@@ -9,7 +9,7 @@ class MysqlDatabase{
 
     function connect(){
         //Create connection
-        $this->connection = new Mysqli(DB_HOST,DB_USER,DB_PASSWORD,DB_NAME);
+        $this->connection = new Mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
 
         // Check connection
         if ($this->connection->connect_error) {
