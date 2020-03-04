@@ -19,11 +19,25 @@ class MysqlDatabase{
     }
 
     function insert($sql){
-        
-        $result = $this->connection->query($sql);
-        $count = mysqli_affected_rows($this->connection);
-        $id = mysqli_insert_id($this->connection);
 
+        $result = $this->connection->query($sql);
+
+        if($result !== true){
+        
+            throw new DbException("Error inserting data in sql query  " . $sql . $this->connection->error);
+        }
+
+        $count = mysqli_affected_rows($this->connection);
+        if($count == 0){
+            throw new DbException("There were ". $count . " rows inserted.");
+        }
+        $id = mysqli_insert_id($this->connection);
+        if($id === null || $id == 0 || $id == ""){
+            throw new DbException("The given id cannot be null or equal to 0 or an empty string");
+        }
+
+
+        //print($error);
         return new DbInsertResult($result,$id,$count,$this->connection->error);
     }
 
@@ -44,6 +58,12 @@ class MysqlDatabase{
 }
 
 function insert($objs = array()){
+    $objs = !is_array($objs) ? [$objs] : $objs;
+    $invalid = array_filter($objs, function($obj){return $obj->id !== null;});
+
+    if(count($invalid) > 0){
+        throw new DbException("Object Id must be null");
+    }
 
     $sample = $objs[0];
 
@@ -52,7 +72,6 @@ function insert($objs = array()){
     $values = getObjectValues($objs);
 
     $tableName = get_class($objs[0]);
-
 
     //use the querybuilder to build insert statement
     $builder = new QueryBuilder();
@@ -66,23 +85,27 @@ function insert($objs = array()){
     $insertResult = $db->insert($sql);
     $counter = 0;
 
+    //give each insertResult an id to save the status of the insert for each object and save it in the application state. 
     foreach($insertResult as $autoId){
-        $objs[$counter]->id = $autoId;
+        $objs[$counter++]->id = $autoId;
 
-        $counter++;
+    }
+}
+
+function getObjectFields($obj){
+
+    if($obj === null){
+        throw new DbException("Given object cannot be null");
     }
 
+    $fields = get_object_vars($obj);
 
-
-
-
-    //print($insertResult);exit;
-    
+    return array_keys($fields);
 }
 
 function getObjectValues($objs){
-    return array_map("get_object_vars",$objs);
-}
-function getObjectFields($obj){
-    return array_keys(get_object_vars($obj));
+
+    $values = array_map("get_object_vars",$objs);
+
+    return $values;
 }

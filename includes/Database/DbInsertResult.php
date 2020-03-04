@@ -37,5 +37,14 @@ class DbInsertResult extends DbResult implements IDbResult, IteratorAggregate{
         return "<br><strong>ERROR CREATING RECORD: <br>" ."<br>" . $this->connection->error . "<br></strong>";
     }
 
-    public function getIterator(){}
+    public function getIterator(){
+        $ids = array($this->id);
+
+        for($i = 1; $i < $this->count; $i++){
+            $nextId = $this->id + $i;
+
+            $ids[] = $nextId;
+        }
+        return new ArrayObject($ids);
+    }
 }
