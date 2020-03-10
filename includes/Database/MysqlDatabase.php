@@ -24,7 +24,7 @@ class MysqlDatabase{
 
         if($result !== true){
         
-            throw new DbException("Error inserting data in sql query  " . $sql . $this->connection->error);
+            throw new DbException("Error inserting data.  " . $this->connection->error);
         }
 
         $count = mysqli_affected_rows($this->connection);
