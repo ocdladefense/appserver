@@ -1,0 +1,13 @@
+{
+    "name": "clickpdx/appserver-car",
+    "description": "A module for parsing Oregon Appellate Court decision records and storing their data in a mysql database",
+    "type": "wordpress-theme",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "trevoruehlinx1",
+            "email": "trevoruehlinx1@gmail.com"
+        }
+    ],
+    "require": {}
+}

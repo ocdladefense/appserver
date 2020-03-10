@@ -44,3 +44,15 @@ function attr($prop,$val = null) {
 	if($val == null) return $prop;
 	else return "{$prop}='{$val}'";
 }
+
+function createElement($tagName, $attributes, $children) {
+	$attributeStrings = array();
+	foreach($attributes as $key => $value) {
+		$attributeStrings[] = $key."=\"".$value."\"";
+	}
+	if(is_array($children)){
+		$children = implode("\n",$children);
+	}
+	return "<{$tagName} ".implode(" ",$attributeStrings).">{$children}</{$tagName}>";
+}
+
