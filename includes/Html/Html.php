@@ -48,7 +48,7 @@ function attr($prop,$val = null) {
 function createElement($tagName, $attributes, $children) {
 	$attributeStrings = array();
 	foreach($attributes as $key => $value) {
-		$attributeStrings[] = $key."=\"".$value."\"";
+		$attributeStrings[] = "{$key}=\"{$value}\"";
 	}
 	if(is_array($children)){
 		$children = implode("\n",$children);
