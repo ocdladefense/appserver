@@ -31,13 +31,13 @@ class DocumentParser extends DomDocument {
         } else {
         	$html = $this->saveHTML();
 					$html = "<!doctype html><html><head><meta charset='utf-8' /><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head><body>".$html."</body></html>";
-        }
-
-				$this->loadHTML($html);
+		}
+		
+		$this->loadHTML($html);
 				
         libxml_clear_errors();
         
-				$this->xpath = new DomXPath($this);
+		$this->xpath = new DomXPath($this);
     }
 
 
@@ -124,6 +124,11 @@ class DocumentParser extends DomDocument {
     
     private static function isEmpty($str) {
 			return "" == trim($str);
-    }
+	}
+	
+	public function isDraft(){
+		$string = $this->saveHtml();
 
+		return strpos($string,"is a draft") !== false;
+	}
 }
