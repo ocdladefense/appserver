@@ -129,7 +129,6 @@ class HttpRequest {
 			curl_setopt($this->handle,CURLOPT_USERAGENT,$this->ua);
 		}
 		
-		
 		$_response = curl_exec($this->handle);
 		
 		$resp = new HttpResponse($_response);
