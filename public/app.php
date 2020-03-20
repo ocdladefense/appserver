@@ -1,8 +1,10 @@
 <?php
 
-require '../bootstrap.php';           
+require '../bootstrap.php';     
+     
 
 session_start();
+// set_time_limit(0);
 
 $request = HTTPRequest::newFromEnvironment();
 //var_dump($request);exit;
