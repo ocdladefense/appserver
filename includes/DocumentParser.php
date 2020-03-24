@@ -25,6 +25,10 @@ class DocumentParser extends DomDocument {
         
         $bodies = $this->getElementsByTagName("body");
         
+        
+        print $bodies[0]->textContent;
+        
+        
         if($bodies->length > 0) {
         	$html = $this->saveHTML($bodies[0]);
 					$html = "<!doctype html><html><head><meta charset='utf-8' /><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head>".$html."</html>";

@@ -72,7 +72,7 @@ function insert($objs = array()){
 
     $values = getObjectValues($objs);
 
-    $tableName = get_class($objs[0]);
+    $tableName = strtolower(get_class($objs[0]));
 
     //use the querybuilder to build insert statement
     $builder = new QueryBuilder();
