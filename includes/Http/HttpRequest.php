@@ -130,6 +130,7 @@ class HttpRequest {
 		}
 		
 		$_response = curl_exec($this->handle);
+		// var_dump(debug_backtrace());
 		
 		$resp = new HttpResponse($_response);
 		$resp->setStatusCode(curl_getinfo($this->handle, CURLINFO_HTTP_CODE));

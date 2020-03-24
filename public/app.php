@@ -4,6 +4,7 @@ require '../bootstrap.php';
      
 
 session_start();
+ini_set("max_execution_time","18000");
 // set_time_limit(0);
 
 $request = HTTPRequest::newFromEnvironment();
