@@ -80,16 +80,6 @@ class HttpResponse
 
     //other methods
 
-    //Send the value of the headers array at the key of content-type 
-    public function sendHeaders(){
-
-			foreach($this->headers as $headerName => $headerValue){
-				header($headerName.": ".$headerValue);
-			}
-			if($this->statusCode != null){
-				header($this->statusCode);
-			}
-    }
     public function __toString(){
         return $this->body;
     }

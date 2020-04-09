@@ -105,11 +105,7 @@ class HttpRequest {
 
 		if(count($this->headers)>0)
 		{
-			foreach($this->headers as $key => $value) {
-				$header = $key . ": ".$value;
-				curl_setopt($this->handle, CURLOPT_HTTPHEADER, array($header));			
-			}
-
+			$this->sendHeaders();
 		}
 		
 		curl_setopt($this->handle, CURLOPT_TIMEOUT, 10);
@@ -218,6 +214,17 @@ class HttpRequest {
 	public function setHeaders($headers){
 		$this->headers = $headers;
 	}
+
+	
+	//Send the value of the headers array at the key of content-type 
+	
+	//An array of HTTP header fields to set, in the format array('Content-type: text/plain', 'Content-length: 100')
+    public function sendHeaders(){
+		foreach($this->headers as $key => $value) {
+			$header = $key . ": ".$value;
+			curl_setopt($this->handle, CURLOPT_HTTPHEADER, array($header));			
+		}
+    }
 	
 
 	
