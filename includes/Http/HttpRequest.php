@@ -115,7 +115,7 @@ class HttpRequest {
 
 	public function makeHttpRequest(){
 		$this->setOptions($this->params);
-		$this->ignoreSSLVerification();
+		// $this->ignoreSSLVerification();
 		// Make the actual HTTP Request AND it returns an HTTP Response.
 		if(null != $this->port) {
 			curl_setopt($this->handle,CURLOPT_PORT,$this->port);
@@ -220,10 +220,15 @@ class HttpRequest {
 	
 	//An array of HTTP header fields to set, in the format array('Content-type: text/plain', 'Content-length: 100')
     public function sendHeaders(){
-		foreach($this->headers as $key => $value) {
-			$header = $key . ": ".$value;
-			curl_setopt($this->handle, CURLOPT_HTTPHEADER, array($header));			
-		}
+			foreach($this->headers as $key => $value) {
+				if($value instanceOf HttpHeader) {
+					$header = $value->getName() . ": " .$value->getValue();
+				} else {
+					$header = $key . ": ".$value;
+				}
+				
+				curl_setopt($this->handle, CURLOPT_HTTPHEADER, array($header));			
+			}
     }
 	
 
