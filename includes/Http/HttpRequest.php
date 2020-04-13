@@ -1,7 +1,9 @@
 <?php
 
 
-
+/** @deprecate
+  ** should be removed soon.
+  */
 
 class HttpRequest {
 

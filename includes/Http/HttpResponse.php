@@ -1,4 +1,9 @@
 <?php
+
+
+/** @deprecate
+  ** should be removed soon.
+  */
 class HttpResponse
 {
     private $body;

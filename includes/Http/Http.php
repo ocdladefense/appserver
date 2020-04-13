@@ -21,11 +21,17 @@ namespace Http;
 	
 	class Http {
 	
+	
+	
 		private static $recordSentHeaders = false;
+	
+	
 	
 		private static $headersSent = null;	
 	
-		public static function send(HttpRequest2 $req) {
+	
+	
+		public static function send(HttpMessage $msg) {
 
 			$url = $req->getUrl();
 			//curl_setopt($this->handle, CURLOPT_ENCODING, '');
@@ -38,7 +44,7 @@ namespace Http;
 			
 			curl_setopt($curl, CURLOPT_CAINFO,"/var/www/trust/vendor/cybersource/rest-client-php/lib/ssl/cacert.pem");
 			
-			curl_setopt($curl, CURLOPT_URL, $req->getUrl());
+			curl_setopt($curl, CURLOPT_URL, $msg->getUrl());
 
 			curl_setopt($curl, CURLOPT_VERBOSE,true);
 			
@@ -46,7 +52,7 @@ namespace Http;
 
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 			
-			curl_setopt($curl, CURLOPT_HTTPHEADER, $req->getHeaders());
+			curl_setopt($curl, CURLOPT_HTTPHEADER, $msg->getHeaders());
 			
 			curl_setopt($curl, CURLOPT_USERAGENT, "Swagger-Codegen/1.0.0/php");
 			
@@ -77,9 +83,7 @@ namespace Http;
 			
 			
 			curl_close($curl);
-			
-			
-			
+
 			fclose($out);  
 			$debug = ob_get_clean();
 
@@ -89,40 +93,48 @@ namespace Http;
 			print str_replace("\n","<br />",$debug);
 			
 			
-            
-			return $response_info;
-			// Handle the response
-			if ($response_info['http_code'] === 0) {
-					$curl_error_message = curl_error($curl);
-
-					// curl_exec can sometimes fail but still return a blank message from curl_error().
-					if (!empty($curl_error_message)) {
-							$error_message = "API call to $url failed: $curl_error_message";
-					} else {
-							$error_message = "API call to $url failed, but for an unknown reason. " .
-									"This could happen if you are disconnected from the network.";
-					}
-
-					$exception = new \Exception($error_message, 0, null, null);
-					// $exception->setResponseObject($response_info);
-					throw $exception;
-			} elseif ($response_info['http_code'] >= 200 && $response_info['http_code'] <= 299) {
-					$stream_headers['http_code'] = $response_info['http_code'];
-					
-					return [$http_body, $stream_headers['http_code'], $stream_headers];
-			} else {
+       // Return a nnew instance of Response();     
+			return self::newHttpResponse($response_info);
 			
-					/*
-					throw new \Exception(
-							"[".$response_info['http_code']."] Error connecting to the API ($url)",
-							$response_info['http_code'],
-							$stream_headers,
-							null
-					);
-					*/
+		
 			}
 
 
+			/**
+			 * Should return a new instance of Response.
+			 */
+			public static function fromCurl($header,$body,$info) {
+	
+				// Handle the response
+				if ($response_info['http_code'] === 0) {
+						$curl_error_message = curl_error($curl);
+
+						// curl_exec can sometimes fail but still return a blank message from curl_error().
+						if (!empty($curl_error_message)) {
+								$error_message = "API call to $url failed: $curl_error_message";
+						} else {
+								$error_message = "API call to $url failed, but for an unknown reason. " .
+										"This could happen if you are disconnected from the network.";
+						}
+
+						$exception = new \Exception($error_message, 0, null, null);
+						// $exception->setResponseObject($response_info);
+						throw $exception;
+				} elseif ($response_info['http_code'] >= 200 && $response_info['http_code'] <= 299) {
+						$stream_headers['http_code'] = $response_info['http_code'];
+					
+						return [$http_body, $stream_headers['http_code'], $stream_headers];
+				} else {
+			
+						/*
+						throw new \Exception(
+								"[".$response_info['http_code']."] Error connecting to the API ($url)",
+								$response_info['http_code'],
+								$stream_headers,
+								null
+						);
+						*/
+			}
 
 		}
 	

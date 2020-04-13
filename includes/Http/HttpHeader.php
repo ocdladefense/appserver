@@ -1,5 +1,10 @@
 <?php
 
+
+
+namespace Http;
+
+
 class HttpHeader {
 
 
