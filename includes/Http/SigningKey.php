@@ -22,7 +22,9 @@ class SigningKey {
     	$this->base64key = $sharedSecret;
     }
     
-
+		public function setSharedSecret($sharedSecret) {
+			$this->base64key = $sharedSecret;
+		}
 
 		
     /**
@@ -37,7 +39,7 @@ class SigningKey {
 		/**
 		 * Load the .PEM key from a file
 		 */
-		public static fromFile($filePath) {
+		public static function fromFile($filePath) {
 		
 		}
 }

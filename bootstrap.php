@@ -17,16 +17,16 @@
 	}
 
 	require_once BASE_PATH.'/includes/Url/Url.php';
-	require_once BASE_PATH.'/includes/Http/Http.php';
-	require_once BASE_PATH.'/includes/Http/HttpRequest.php';
-	require_once BASE_PATH.'/includes/Http/Request.php';
-	require_once BASE_PATH.'/includes/Http/HttpMessage.php';
-	require_once BASE_PATH.'/includes/Http/CybersourceRequest.php';
-	require_once BASE_PATH.'/includes/Http/HttpResponse.php';
-	require_once BASE_PATH.'/includes/Http/HttpResponse2.php';
-	require_once BASE_PATH.'/includes/Http/HttpRedirect.php';
-	require_once BASE_PATH.'/includes/Http/IHttpCache.php';
-	require_once BASE_PATH.'/includes/Http/HttpHeader.php';
+	
+
+	
+	$http = array("Http","HttpRequest","HttpMessage","HttpResponse","HttpRedirect","IHttpCache",
+		"HttpHeader","SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag");
+		
+		foreach($http as $file) {
+			require_once(BASE_PATH.'/includes/Http/'.$file.".php");
+		}
+	
 
 	require_once BASE_PATH.'/includes/Html/Html.php';
 		
