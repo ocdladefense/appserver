@@ -1,18 +1,24 @@
 <?php
+
+
+
+
 class HttpRequest {
 
-	private $handle = null;
+	public $handle = null;
 
 	private $params = array();
+
+	private $headers = array();
+	
+	private $headersSent = array();
 	
 	private $status; 
 	
 	private $errorString = null;
 	
 	private $errorNum = null;
-	
-	private $headers = array();
-	
+
 	private $requestType = "GET";
 	
 	private $info;
@@ -23,29 +29,34 @@ class HttpRequest {
 	
 	private $ua;
 	
-	
+	public $out;
 	 
 	public function __construct($endpoint){
 		// Return a handle to a process that can make an HTTP Request.
-		$this->handle = curl_init($endpoint);
+
+     //curl_setopt($this->handle, CURLOPT_ENCODING, '');
+          ob_start();
+     $this->out = fopen('php://output', 'w');
+		//$f = fopen($logFile, 'a');
+		if(!$this->out) throw new Exception("Could not open PHP output stream.");
+		
+				$this->handle = curl_init();
+    curl_setopt($this->handle, CURLOPT_URL, $endpoint);
+		 
+		curl_setopt($this->handle, CURLOPT_VERBOSE,true);
+		curl_setopt($this->handle, CURLOPT_STDERR ,$this->out);	
 	}
 
 
-	// Set our HTTP Request parameters.
-	// $params = "code=" . $code . "&grant_type = authorization_code&client_id=" 
-	//. CLIENT_ID. "&client_secret=" . CLIENT_SECRET. "&redirect_uri=" .urlencode(REDIRECT_URI);
 	public function setParams($p){
-	  // name/value pairs
-	  // each name/value pair is separate by ampersand
-	  // each name/value pair is set by an `=` sign
-	  if(is_array($p)){
-		$_params = array();
-		foreach($p as $key=>$value){
-			$_params[] = $key ."=".$value;
-		}		
-		$this->params = implode('&',$_params);
+	  if(is_array($p)) {
+			$_params = array();
+			foreach($p as $key=>$value){
+				$_params[] = $key ."=".$value;
+			}		
+			$this->params = implode('&',$_params);
 	  }
-	  else{
+	  else {
 		  $this->params = $p;
 	  }
 
@@ -81,51 +92,88 @@ class HttpRequest {
 	public function setOpt($opt,$value) {
 		curl_setopt($this->handle, $opt, $value);
 	}
+
+
+
 	
 	public function setOptions($params){
-		// Set various options for our HTTP Request.
-		curl_setopt($this->handle, CURLOPT_HEADER, false);
+
+		// curl_setopt($this->handle, CURLOPT_HEADER, false);
+		curl_setopt($this->handle, CURLOPT_HEADER, true);
+		
 		curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, true);
+		
 		curl_setopt($this->handle, CURLOPT_FOLLOWLOCATION, true);
-		if($this->getRequestType() == "POST")
-		{
+		
+		if($this->getRequestType() == "POST") {
 			curl_setopt($this->handle, CURLOPT_POST, true);
 			curl_setopt($this->handle, CURLOPT_POSTFIELDS, $params);
 		}
-		if($this->getRequestType() == "PATCH")
-		{
+		
+		if($this->getRequestType() == "PATCH") {
 			curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "PATCH");
 			curl_setopt($this->handle, CURLOPT_POSTFIELDS, $params);
 		}
-		if($this->getRequestType() == "DELETE")
-		{
+		
+		if($this->getRequestType() == "DELETE") {
 			curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "DELETE");
 			curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, false);
 		}
 
-		if(count($this->headers)>0)
-		{
-			$this->sendHeaders();
-		}
-		
+
 		curl_setopt($this->handle, CURLOPT_TIMEOUT, 10);
 	}
 	
 	
+	public function setCertificateAuthority($path) {
+		curl_setopt($this->handle, CURLOPT_CAINFO, $path);
+	}
+	
+	 
+	public function getSentHeaders() {
+		return $this->headersSent;
+	}
+	
 
-	public function makeHttpRequest(){
+
+
+	/**
+	 * 	Make the actual Http Request.
+	 *   returns an HttpResponse object.
+	 */
+	public function makeHttpRequest() {
+
 		$this->setOptions($this->params);
-		// $this->ignoreSSLVerification();
-		// Make the actual HTTP Request AND it returns an HTTP Response.
+
+
 		if(null != $this->port) {
 			curl_setopt($this->handle,CURLOPT_PORT,$this->port);
 		}
 
 		if(null != $this->ua) {
-			curl_setopt($this->handle,CURLOPT_USERAGENT,$this->ua);
+			curl_setopt($this->handle, CURLOPT_USERAGENT, $this->ua);
 		}
 		
+//		curl_setopt($this->handle, CURLINFO_HEADER_OUT, true);
+		
+
+		$this->sendHeaders();
+		
+     //$logFile = BASE_PATH.'/log/curl.log';
+
+		curl_setopt($this->handle, CURLOPT_VERBOSE,true);
+		curl_setopt($this->handle, CURLOPT_STDERR ,$f);	
+		
 		$_response = curl_exec($this->handle);
+		
+		fclose($this->out);  
+		$debug = ob_get_clean();
+		
+		print "<h2>DEBUG IS:</h2>";
+		print $debug;
+		exit;
+		
+//		$this->headersSent = curl_getinfo($this->handle, CURLINFO_HEADER_OUT );
 		// var_dump(debug_backtrace());
 		
 		$resp = new HttpResponse($_response);
@@ -211,26 +259,42 @@ class HttpRequest {
 	}
 	
 	
-	public function setHeaders($headers){
-		$this->headers = $headers;
+	public function setHeaders(array $headers){
+
+		foreach( $headers as $header ) {
+		
+			if($header instanceOf HttpHeader) {
+				$this->headers[$header->getName()] = $header->getValue();
+			} else {
+				$this->headers[] = $header;
+			}
+		}
 	}
 
+
 	
-	//Send the value of the headers array at the key of content-type 
+	/**
+	 * $f = fopen('request.txt', 'w');
+			curl_setopt($ch,CURLOPT_VERBOSE,true);
+			curl_setopt($ch,CURLOPT_STDERR ,$f);	
+	*/
+	private function sendHeaders() {
 	
-	//An array of HTTP header fields to set, in the format array('Content-type: text/plain', 'Content-length: 100')
-    public function sendHeaders(){
-			foreach($this->headers as $key => $value) {
-				if($value instanceOf HttpHeader) {
-					$header = $value->getName() . ": " .$value->getValue();
-				} else {
-					$header = $key . ": ".$value;
-				}
-				
-				curl_setopt($this->handle, CURLOPT_HTTPHEADER, array($header));			
+		$headers = array();
+		
+		foreach($this->headers as $name => $value) {
+			if(strpos($value,":") !== false) {
+				$header = $value;
+			} else {
+				$header = ($name .": " .$value);
 			}
-    }
-	
+			
+			$headers[]= $header;
+		}		
+			
+		curl_setopt($this->handle, CURLOPT_HTTPHEADER, $headers);			
+	}
+
 
 	
 	public function getRequestUri(){
@@ -238,11 +302,31 @@ class HttpRequest {
 	}
 
 
-	public function ignoreSSLVerification(){
-		//Ignore the SSL vaification
-		// https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html
-		curl_setopt($this->handle,CURLOPT_SSL_VERIFYHOST, false); 
-		curl_setopt($this->handle,CURLOPT_SSL_VERIFYPEER, false);
+	/** 
+	 * 	Ignore the SSL vaification
+	 *
+	 * For more information see:
+	 *  https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html
+	 */
+	public function ignoreSSLVerification() {
+		$this->verifyHost(false);
+		$this->verifyPeer(false);
+	}
+
+	public function verifyHost($boolean = true) {
+		curl_setopt($this->handle,CURLOPT_SSL_VERIFYHOST, $boolean); 		
+	}
+	
+	public function verifyPeer($boolean = true) {
+		curl_setopt($this->handle,CURLOPT_SSL_VERIFYPEER, $boolean);		
+	}
+	
+	public function setCaInfo($path) {
+		curl_setopt($this->handle, CURLOPT_CAINFO, $path);
+	}
+	
+	public function setCaPath($path) {
+		
 	}
 
 

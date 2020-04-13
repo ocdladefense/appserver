@@ -1,5 +1,8 @@
 <?php
-class HttpHeader{
+
+class HttpHeader {
+
+
     const SEPERATOR = ": ";
     
     
@@ -21,6 +24,6 @@ class HttpHeader{
     }
     
     public function getValue() {
-    	return $his->value;
+    	return $this->value;
     }
 }
