@@ -143,9 +143,13 @@ class Application {
         }
     }
     
-    public function send(){
-        $this->resp->sendHeaders();
+    public function send() {
+    
         $content = $this->resp->getBody();
+        
+        foreach($this->resp->getHeaders() as $name => $value) {
+        	header($name . ": " . $value);
+        }
         
         print $content;
     }

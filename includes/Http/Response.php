@@ -1,11 +1,11 @@
 <?php
 
 
-/** @deprecate
-  ** should be removed soon.
-  */
-class HttpResponse
-{
+class HttpResponse2 {
+
+
+
+
     private $body;
     
     private $headers = array();
@@ -37,6 +37,15 @@ class HttpResponse
     public function setHeader($name,$value) {
     	$this->headers[$name] = $value;
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     public function setStatusCode($code) {
     	$this->statusCode = $code;
@@ -71,6 +80,19 @@ class HttpResponse
     	
 			return $this->headers[$headerName];
     }
+    
+	
+	public function getError(){
+		return $this->errorString;
+	}
+
+	public function getErrorNum(){
+		return $this->errorNum;
+	}
+
+	public function success(){
+		return $this->status == 200;
+	}
     
     
     public function getHeaders(){
