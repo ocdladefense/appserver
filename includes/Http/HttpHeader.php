@@ -1,6 +1,5 @@
 <?php
 class HttpHeader{
-    const SEPERATOR = ": ";
     private $name;
     private $value;
 
