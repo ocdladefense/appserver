@@ -3,7 +3,8 @@
 namespace Http;
 
 
-abstract virtual class HttpMessage {
+//remove virtural keyword in class definition?
+class HttpMessage {
 
 	/**
 	 * An array of Http headers to be 
@@ -17,14 +18,24 @@ abstract virtual class HttpMessage {
 	 */
 	private $isSigned = false;
 	
+	public function getHeader($name){
+		return $this->headers[$name];
+	}
+
+	public function getMethod(){
+
+	}
 	
+	public function getPath(){
+
+	}
 
 	public function sign(SigningRequest $sr) {
 		$names = $sr->getHeaders();
 		
 		$vals = $this->getHeaders($names);
 		
-		$headerString = $sr->signHeaders($vals);
+		$headerString = $sr->signHeaders($this);
 		
 		$keyId = new SignatureParameter("keyid", $sr->getKeyId());
 		$algo = new SignatureParameter("algorithm", $sr->getAlgorithm());
@@ -41,6 +52,17 @@ abstract virtual class HttpMessage {
 		$header = new HttpHeader("Signature",$bag->__toString());
 		
 		$this->isSigned = true;
+	}
+
+	// https://tools.ietf.org/id/draft-cavage-http-signatures-07.html#rfc.section.1.1
+	public function getRequestTarget($method, $path, $resourceId = null) {
+		if(null != $resourceId) {
+			$resourcePath = $method . " " . $path .$resourceId;
+		} else {
+			$resourcePath = $method . " " . $path;
+		}
+		
+		$this->headers["(request-target)"] = utf8_encode($resourcePath);
 	}
 
 }

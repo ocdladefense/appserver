@@ -29,40 +29,9 @@ class SigningRequest {
 		/*
 		* these specific "set.." methods should be removed very soon.
 		*/
-		public function signHeaders($orderedNames) {
+		public function headersToSign($orderedNames) {
 			$this->orderedNames = $orderedNames;
 		}
-		
-		
-		public function setHost($host) {
-			$this->headers["host"] = $host;
-		}
-		
-		public function setDate($date) {
-			$this->headers["date"] = $date;
-		}
-		
-		// https://tools.ietf.org/id/draft-cavage-http-signatures-07.html#rfc.section.1.1
-		public function setRequestTarget($method, $path, $resourceId = null) {
-			if(null != $resourceId) {
-				$resourcePath = $method . " " . $path .$resourceId;
-			} else {
-				$resourcePath = $method . " " . $path;
-			}
-			
-			$this->headers["(request-target)"] = utf8_encode($resourcePath);
-		}
-		
-		public function setMerchantId($merchantId) {
-			$this->headers["v-c-merchant-id"] = $merchantId;
-		}
-		/*
-		* these specific "set.." methods should be removed very soon.
-		*/
-		
-		
-		
-		
 		
 		
     // The Shared Secret Key should be Base64-encoded and used to sign the signature parameter.
@@ -101,20 +70,17 @@ class SigningRequest {
      *
      * the names are already stored in $this->orderedNames
      */
-    public function signHeaders($headers) {
-    	
-    		// foreach($this->orderedNames blah, blah, blah)
-    
-				$host = $headers["host"];
-				$date = $headers["date"];
-				$requestTarget = $headers["(request-target)"];
-				$merchantId = $headers["v-c-merchant-id"];
+    public function signHeaders(HttpMessage $message){
 
-
-				$signatureString = "host: " . $host . "\ndate: ". $date . "\n(request-target): ".$requestTarget."\nv-c-merchant-id: ".$merchantId;
+		$temp = array();
+		foreach(explode(" ",$this->orderedNames) as $name){
+			$header = $message->getHeader($name);
+			//throw an exception if the header doesnt exitst
+			$temp[] = $header->getName().": " . $header->getValue();
+		}
 
         
-        return utf8_encode($signatureString);
+        return utf8_encode(implode("\n", $temp));
     }
     
     

@@ -4,7 +4,7 @@
 namespace Http;
 
 
-class Request extends HttpMessage {
+class Request extends \Http\HttpMessage {
 
 
 	// Where should this HttpMessage be sent?
