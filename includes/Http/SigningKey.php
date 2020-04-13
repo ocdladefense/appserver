@@ -10,6 +10,9 @@
 		Featured snippet from the web
 		PEM is a X. 509 certificate (whose structure is defined using ASN. 1), encoded using the ASN. 1 DER (distinguished encoding rules), then run through Base64 encoding and stuck between plain-text anchor lines (BEGIN CERTIFICATE and END CERTIFICATE)
 	*/
+	
+namespace Http;
+	
 class SigningKey {
 
 

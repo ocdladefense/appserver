@@ -31,10 +31,7 @@ class HttpMessage {
 	}
 
 	public function sign(SigningRequest $sr) {
-		$names = $sr->getHeaders();
-		
-		$vals = $this->getHeaders($names);
-		
+
 		$headerString = $sr->signHeaders($this);
 		
 		$keyId = new SignatureParameter("keyid", $sr->getKeyId());

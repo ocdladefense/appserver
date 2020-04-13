@@ -9,6 +9,8 @@
  * 
  * https://tools.ietf.org/id/draft-cavage-http-signatures-07.html#RFC4648
  */
+namespace Http;
+ 
 class SigningRequest {
 
 		// Key that will be used to sign this message.
@@ -72,15 +74,18 @@ class SigningRequest {
      */
     public function signHeaders(HttpMessage $message){
 
-		$temp = array();
-		foreach(explode(" ",$this->orderedNames) as $name){
-			$header = $message->getHeader($name);
-			//throw an exception if the header doesnt exitst
-			$temp[] = $header->getName().": " . $header->getValue();
-		}
+			$temp = array();
+			foreach(explode(" ",$this->orderedNames) as $name){
+				$header = $message->getHeader($name);
+				if( null == $header ) {
+					throw new \Exception("MESSAGE_SIGNING_ERROR: missing header at {$name}.");
+				}
+				
+				$temp[] = $header->getName().": " . $header->getValue();
+			}
 
-        
-        return utf8_encode(implode("\n", $temp));
+				
+			return utf8_encode(implode("\n", $temp));
     }
     
     
