@@ -10,25 +10,65 @@ class HttpMessage {
 	 * An array of Http headers to be 
 	 *  sent with thhe message body.
 	 */
-	private $headers = array();
+	protected $headers = array();
 	
 	/**
 	 * Indicates whether this message has been
 	 *  securely signed.
 	 */
-	private $isSigned = false;
+	protected $isSigned = false;
 	
-	public function getHeader($name){
-		return $this->headers[$name];
+
+
+	
+	protected $params = array();
+
+
+
+
+	public function setHeaders(array $headers) {
+		$this->headers = $headers;
 	}
 
-	public function getMethod(){
 
+	/**
+	 * Return the header with the specified name.
+	 *  If more than one header with this name
+	 *  exists, then return the last one.
+	 */
+	public function getHeader( $name ) {
+		$tmp = array_filter($this->headers,function($header) {
+			return $name == $header->getName();
+		});
+		
+		return $tmp[count($tmp)-1];
+	}
+
+
+
+	
+	
+	public function getHeaders(){
+		return $this->headers;
 	}
 	
-	public function getPath(){
+	
+	
+
+	public function setParams($p){
+	  if(is_array($p)) {
+			$_params = array();
+			foreach($p as $key=>$value){
+				$_params[] = $key ."=".$value;
+			}		
+			$this->params = implode('&',$_params);
+	  }
+	  else {
+		  $this->params = $p;
+	  }
 
 	}
+
 
 	public function sign(SigningRequest $sr) {
 

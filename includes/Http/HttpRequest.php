@@ -7,13 +7,7 @@ namespace Http;
 class HttpRequest extends HttpMessage {
 
 
-	// Where should this HttpMessage be sent?
-	private $url = null;
-	
-	private $params = array();
 
-	private $headers = array();
-	
 
 
 	private $requestType = "GET";
@@ -32,6 +26,10 @@ class HttpRequest extends HttpMessage {
 
 	public function __construct($url){
 		$this->url = $url;
+		print $url;
+		$hostname = self::parseHostname($url);
+		print $hostname; exit;
+		$this->headers[]= new HttpHeader("Host",$hostname);
 	}
 
 	public function getUrl() {
@@ -39,27 +37,17 @@ class HttpRequest extends HttpMessage {
 	}
 
 
-
-
-
-	public function setHeaders(array $headers) {
-		$this->headers = $headers;
+	private static function parseHostname($url) {
+		$host = explode("https://",$url)[1];
+		$host = explode("/",$host)[0];
+		
+		return $hots;
 	}
 
 
 
 
 
-
-	public function getHeader($headerName){
-		//throw an exception
-		return $this->headers[$headerName];
-	}
-	
-	
-	public function getHeaders(){
-		return $this->headers;
-	}
 	
 
 	
@@ -121,22 +109,17 @@ class HttpRequest extends HttpMessage {
 
 
 
-
-
-
-	public function setParams($p){
-	  if(is_array($p)) {
-			$_params = array();
-			foreach($p as $key=>$value){
-				$_params[] = $key ."=".$value;
-			}		
-			$this->params = implode('&',$_params);
-	  }
-	  else {
-		  $this->params = $p;
-	  }
+	public function getMethod(){
 
 	}
+	
+	public function getPath(){
+
+	}
+
+
+
+
 	
 	
 	
