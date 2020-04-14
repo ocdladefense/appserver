@@ -34,9 +34,6 @@ class HttpRequest extends HttpMessage {
 	}
 
 
-
-
-
 	public function __construct($url) {
 		parent::__construct();
 		$this->url = $url;
@@ -48,13 +45,9 @@ class HttpRequest extends HttpMessage {
 	}
 
 
-
-
-
 	public function getUrl() {
 		return $this->url;
 	}
-
 
 
 	private static function parseHostname($url) {
@@ -66,18 +59,9 @@ class HttpRequest extends HttpMessage {
 	}
 
 
-
-
-
 	public function getHost() {
 		return $this->host;
 	}
-
-	
-
-
-
-
 
 	
 	public function setPost(){
@@ -104,18 +88,10 @@ class HttpRequest extends HttpMessage {
 		$this->port = $port;
 	}
 	
-
-
-
-
 	
 	public function getBody() {
 		return $this->body;
 	}
-
-
-
-	
 
 	
 	public function isSupportedContentType($contentType){
@@ -125,28 +101,18 @@ class HttpRequest extends HttpMessage {
 		return false;
 	}
 	
-	
-
-
-	
-
-
 
 	public function getMethod(){
 
 	}
+
 	
 	public function getPath(){
 
 	}
+	
 
 
-
-
-	
-	
-	
-	
 	public static function newFromEnvironment(){
 		$request = new self($_SERVER["REQUEST_URI"]);
 		
