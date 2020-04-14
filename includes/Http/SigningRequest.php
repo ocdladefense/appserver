@@ -74,7 +74,7 @@ class SigningRequest {
      */
     public function signHeaders(HttpMessage $message){
 			print "<pre>" .print_r($message->getHeaders,true)."</pre>";
-			exit;
+
 			$temp = array();
 			foreach(explode(" ",$this->orderedNames) as $name){
 				$header = $message->getHeader($name);

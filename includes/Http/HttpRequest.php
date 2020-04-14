@@ -8,7 +8,7 @@ class HttpRequest extends HttpMessage {
 
 
 
-
+	protected $host;
 
 	private $requestType = "GET";
 	
@@ -26,29 +26,35 @@ class HttpRequest extends HttpMessage {
 
 	public function __construct($url){
 		$this->url = $url;
-		print $url;
-		$hostname = self::parseHostname($url);
-		print $hostname; exit;
-		$this->headers[]= new HttpHeader("Host",$hostname);
+
+
+		$this->host = self::parseHostname($url);
+
+		$this->headers[]= new HttpHeader("Host",$this->host);
 	}
+
+
 
 	public function getUrl() {
 		return $this->url;
 	}
 
 
+
 	private static function parseHostname($url) {
 		$host = explode("https://",$url)[1];
 		$host = explode("/",$host)[0];
 		
-		return $hots;
+		return $host;
 	}
 
 
 
 
 
-	
+	public function getHost() {
+		return $this->host;
+	}
 
 	
 

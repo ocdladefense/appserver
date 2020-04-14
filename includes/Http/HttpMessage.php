@@ -29,6 +29,10 @@ class HttpMessage {
 	public function setHeaders(array $headers) {
 		$this->headers = $headers;
 	}
+	
+	public function addHeaders(array $headers) {
+		array_merge($this->headers,$headers);
+	}
 
 
 	/**
