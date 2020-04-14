@@ -17,12 +17,6 @@ class HttpRequest extends HttpMessage {
 	
 	protected $path;
 
-
-	
-	// Default to empty body for GET request.
-	private $body = "";
-	
-	
 	
 	private $port;
 
@@ -30,7 +24,7 @@ class HttpRequest extends HttpMessage {
 
 
 	public function getRequestUri() {
-		return $this->headers["Request-URI"];
+		return $this->getHeader("Request-URI")->getValue();
 	}
 
 
@@ -96,10 +90,13 @@ class HttpRequest extends HttpMessage {
 
 	
 	public function isSupportedContentType($contentType){
-		if($this->getHeader("Accept") == $contentType || stringContains($this->headers["Accept"], "*/*")){
-			return true;
-		}
-		return false;
+
+		return true;
+
+		
+		$accept = $this->getHeader("Accept")->getValue();
+
+		return $accept == $contentType || stringContains($accept, "*/*");
 	}
 	
 
@@ -117,10 +114,10 @@ class HttpRequest extends HttpMessage {
 	public static function newFromEnvironment(){
 		$request = new self($_SERVER["REQUEST_URI"]);
 		
-		$request->headers = apache_request_headers();
-		$request->headers["Request-URI"] = $_SERVER["REQUEST_URI"];
+		//$request->headers = apache_request_headers();
+		$request->addHeader(new HttpHeader("Request-URI",$_SERVER["REQUEST_URI"]));
             
-		$request->body = file_get_contents('php://input');
+		$request->setBody(file_get_contents('php://input'));
 		return $request;
 	}
 	

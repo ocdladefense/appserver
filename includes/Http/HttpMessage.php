@@ -8,6 +8,7 @@ class HttpMessage {
 
 
 
+    protected $body;
 
 	/**
 	 * An array of Http headers to be 
@@ -34,9 +35,17 @@ class HttpMessage {
 	public function setHeaders(array $headers) {
 		$this->headers = $headers;
 	}
-	
+
+	public function addHeader($header) {
+		$this->headers[] = $header;
+	}
+
 	public function addHeaders(array $headers) {
 		$this->headers = array_merge($this->headers,$headers);
+	}
+
+	public function setBody($body){
+		$this->body = $body;
 	}
 
 
@@ -57,9 +66,9 @@ class HttpMessage {
 		}
 		
 		
-		$filter = function($header) use ($name) {
+	    $filter = function($header) use ($name) {
 			return $name == $header->getName();			
-		};
+		}; 
 		
 		$tmp = array_filter($this->headers, $filter);
 
@@ -98,7 +107,9 @@ class HttpMessage {
 	}
 	
 	
-
+	public function getBody(){
+		return $this->body;
+	}
 	
 	
 

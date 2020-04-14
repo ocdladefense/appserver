@@ -1,43 +1,26 @@
 <?php
 
+namespace Http;
 
-/** @deprecate
-  ** should be removed soon.
-  */
-class HttpResponse
-{
-    private $body;
-    
-    private $headers = array();
 
-		private $statusCode;
-		
-		
-
+class HttpResponse extends HttpMessage{
+	
+	
     public function __construct($body = null){
     	$this->body = $body;
     }
 
-		public function setCurlInfo($info) {
-			$this->info = $info;
-		}
     //Setters
     public function setBody($content){
         $this->body = $content;
     }
     
     public function setContentType($contentType){
-			$this->headers["Content-Type"] = $contentType;
+            $header = new HttpHeader("Content-Type", $contentType);
+
+            $this->headers[] = $header;
     }
-    
-    public function setHeaders($headers){
-        $this->headers = $headers;
-    }
-    
-    public function setHeader($name,$value) {
-    	$this->headers[$name] = $value;
-    }
-    
+
     public function setStatusCode($code) {
     	$this->statusCode = $code;
     }
@@ -56,28 +39,22 @@ class HttpResponse
     }
 
     //Getters
-    public function getBody(){
-        return $this->body;
-    }
-
     public function getStatusCode(){
         return $this->statusCode;
     }
-    
-    public function getHeader($headerName){
-    	if(!isset($this->headers[$headerName])) {
-    		return null;
-    	}
-    	
-			return $this->headers[$headerName];
-    }
-    
-    
-    public function getHeaders(){
-        return $this->headers;
-    }
-    
-    
+	
+	public function getError(){
+		return $this->errorString;
+	}
+
+	public function getErrorNum(){
+		return $this->errorNum;
+	}
+
+	public function success(){
+		return $this->status == 200;
+	}
+
     public function getPhpArray(){
         // Parsing the HTTP Response; by parsing we just mean the data has a known format and we can retrieve certain things from the Response.
 			return json_decode($this->body, true);

@@ -20,8 +20,8 @@
 	
 
 	
-	$http = array("Http","HttpMessage","HttpRequest","Response","HttpResponse","HttpRedirect","IHttpCache",
-		"HttpHeader","SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag");
+	$http = array("Http","HttpHeader","HttpMessage","HttpRequest","HttpResponse","HttpRedirect","IHttpCache",
+		"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag");
 		
 		foreach($http as $file) {
 			require_once(BASE_PATH.'/includes/Http/'.$file.".php");
