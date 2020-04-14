@@ -16,10 +16,10 @@ namespace Http;
 class SigningKey {
 
 
-		// new SecretKeySpec(Base64.getDecoder().decode(“YOUR SHARED SECRET KEY”), "HmacSHA256");		
-		private $base64key = null;
-		
-		private $keyId;
+	// new SecretKeySpec(Base64.getDecoder().decode(“YOUR SHARED SECRET KEY”), "HmacSHA256");		
+	private $base64key = null;
+	
+	private $keyId;
 		
 		
 
@@ -37,7 +37,7 @@ class SigningKey {
      * Base64 Key
      */
 		public function decode() {
-        return base64_decode($this->sharedSecret);
+        	return base64_decode($this->sharedSecret);
 		}
 		
 		
