@@ -7,15 +7,26 @@ namespace Http;
 class HttpRequest extends HttpMessage {
 
 
-
+	protected $method = "GET";
+	
+	
+	
 	protected $host;
+	
+	
+	
+	protected $path;
 
-	private $requestType = "GET";
+
 	
 	// Default to empty body for GET request.
 	private $body = "";
 	
+	
+	
 	private $port;
+
+
 
 
 	public function getRequestUri() {
@@ -24,17 +35,19 @@ class HttpRequest extends HttpMessage {
 
 
 
+
+
 	public function __construct($url) {
 		parent::__construct();
 		$this->url = $url;
 
 
-		$this->host = self::parseHostname($url);
+		list($this->host, $this->path) = self::parseHostname($url);
 
 		$this->headers[]= new HttpHeader("Host",$this->host);
-		
-		print_r($this->headers);
 	}
+
+
 
 
 
@@ -45,10 +58,11 @@ class HttpRequest extends HttpMessage {
 
 
 	private static function parseHostname($url) {
-		$host = explode("https://",$url)[1];
-		$host = explode("/",$host)[0];
+		list($scheme,$address) = explode("://",$url);
+		$parts = explode("/",$address);
 		
-		return $host;
+		
+		return array(array_unshift($parts), "/".implode("/",$parts));
 	}
 
 

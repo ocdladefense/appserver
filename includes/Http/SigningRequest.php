@@ -21,7 +21,7 @@ class SigningRequest {
 		//  the signature.
 		private $orderedNames;
 
-
+		private $algorithm;
 
     public function __construct() {}
     
@@ -35,7 +35,17 @@ class SigningRequest {
 			$this->orderedNames = $orderedNames;
 		}
 		
+		public function getSignedHeaders() {
+			return $this->orderedNames;
+		}
 		
+		public function setAlgorithm($algo) {
+			return $this->algorithm;
+		}
+		
+		public function getAlgorithm(){
+			return $this->algorithm;
+		}
     // The Shared Secret Key should be Base64-encoded and used to sign the signature parameter.
     /** 
      *SecretKeySpec secretKey = 
@@ -58,13 +68,11 @@ class SigningRequest {
 			*		cybersource-rest-samples-php/blob/
 			*			master/Samples/Authentication/StandAloneHttpSignature.php
 			*/
-    public function signWith(SigningKey $key) {
+
     
-    	$this->signingKey = $key;
-    	
-    }
-    
-    
+    private static $HTTP_STANDARD_HEADERS = array(
+    	"date","host","content-type","accept"
+    );
     /**
      * Needs to be refactored
      *  so that we are not hard-conding
@@ -79,8 +87,10 @@ class SigningRequest {
 			
 			foreach(explode(" ",$this->orderedNames) as $name) {
 			
-				$actual = ucfirst($name);
+				$actual = !in_array(strtolower($name),self::$HTTP_STANDARD_HEADERS) ? $name : ucfirst($name);
+				
 				$header = $message->getHeader($actual);
+				
 				if( null == $header ) {
 					throw new \Exception("MESSAGE_SIGNING_ERROR: missing header at {$actual}.");
 				}
@@ -94,9 +104,9 @@ class SigningRequest {
     
     
     
-    public function generateSignature($headerString) {
+    public static function generateSignature($headerString, SigningKey $signingKey) {
     
-    		if(null == $this->signingKey) {
+    		if(null == $signingKey) {
     			throw new \Exception("MISSING_KEY_ERROR: Cannot generate signature without a key.");
     		}
     
@@ -106,7 +116,7 @@ class SigningRequest {
 
 
         // $this->signedValue = hash_hmac("sha256", $headers, $key->getBase64(), true));
-				return base64_encode(hash_hmac("sha256", $byteString, $this->signingKey->decode(), $asBinary));
+				return base64_encode(hash_hmac("sha256", $byteString, $signingKey->decode(), $asBinary));
     }
 
     

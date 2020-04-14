@@ -1,6 +1,8 @@
 <?php
 
 
+namespace Http;
+
 class SignatureParameter extends Parameter {
 
 

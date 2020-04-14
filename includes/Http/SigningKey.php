@@ -19,11 +19,14 @@ class SigningKey {
 		// new SecretKeySpec(Base64.getDecoder().decode(“YOUR SHARED SECRET KEY”), "HmacSHA256");		
 		private $base64key = null;
 		
+		private $keyId;
+		
+		
 
-
-    public function __construct($sharedSecret){
-    	$this->base64key = $sharedSecret;
+    public function __construct($keyId){
+    	$this->keyId = $keyId;
     }
+    
     
 		public function setSharedSecret($sharedSecret) {
 			$this->base64key = $sharedSecret;
@@ -38,7 +41,9 @@ class SigningKey {
 		}
 		
 		
-		
+		public function getKeyId() {
+			return $this->keyId;
+		}
 		/**
 		 * Load the .PEM key from a file
 		 */

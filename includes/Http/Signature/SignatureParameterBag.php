@@ -1,6 +1,10 @@
 <?php
 
 
+namespace Http;
+
+
+
 class SignatureParameterBag {
 
 		// For multi-parameter bags,
@@ -34,5 +38,7 @@ class SignatureParameterBag {
         return new HttpHeader($name,implode(self::PARAMETER_SEPARATOR,$this->params));
     }
     
-
+		public function __toString() {
+			return implode(self::PARAMETER_SEPARATOR,$this->params);
+		}
 }

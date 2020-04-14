@@ -6,6 +6,9 @@ namespace Http;
 //remove virtural keyword in class definition?
 class HttpMessage {
 
+
+
+
 	/**
 	 * An array of Http headers to be 
 	 *  sent with thhe message body.
@@ -41,28 +44,52 @@ class HttpMessage {
 	 * Return the header with the specified name.
 	 *  If more than one header with this name
 	 *  exists, then return the last one.
+	 *
+	 *  http spec supports multiple headers with the same name,
+	 *  however, multiple pseudo-headers of the same name are prohibited.
 	 */
 	public function getHeader( $name ) {
-		 
+
+		if(strpos($name,":") === 0 || $name == "(request-target)") {
+		
+			
+			return $this->getPseudoHeader($name);
+		}
+		
+		
 		$filter = function($header) use ($name) {
 			return $name == $header->getName();			
 		};
 		
 		$tmp = array_filter($this->headers, $filter);
 
-		if(null == $tmp || count($tmp) < 1) {
-			return null;
-		}
+		if(null == $tmp || count($tmp) < 1) return null;
 		
 		$arrange = array_values($tmp);
 		
-		$last = $arrange[count($arrange)-1];
-		
 
-		return $last;
+		return $arrange[count($arrange)-1];
 	}
 
 
+
+	private function getPseudoHeader($name) {
+		if($name == ":method") {
+			
+			return new HttpHeader($name,strtolower($this->method));
+		} else if($name == ":scheme") {
+		
+		} else if($name == ":authority") {
+		
+		} else if($name == ":path") {
+		
+			return new HttpHeader($name,strtolower($this->path));
+		} else if($name == "(request-target)") {
+			
+			$value = strtolower($this->method) . " " .strtolower($this->path);
+			return new HttpHeader($name,$value);
+		}
+	}
 
 	
 	
@@ -70,6 +97,8 @@ class HttpMessage {
 		return $this->headers;
 	}
 	
+	
+
 	
 	
 
@@ -88,14 +117,15 @@ class HttpMessage {
 	}
 
 
-	public function sign(SigningRequest $sr) {
+	public function sign(SigningRequest $sr, SigningKey $key) {
 
 		$headerString = $sr->signHeaders($this);
 		
-		$keyId = new SignatureParameter("keyid", $sr->getKeyId());
+		$keyId = new SignatureParameter("keyid", $key->getKeyId());
 		$algo = new SignatureParameter("algorithm", $sr->getAlgorithm());
 		$signedHeaders = new SignatureParameter("headers", $sr->getSignedHeaders());
-		$signature = new SignatureParameter("signature", $sr->generateSignature($headerString));
+		$signature = new SignatureParameter("signature", 
+			SigningRequest::generateSignature($headerString,$key));
 		
 		$bag = new SignatureParameterBag(
 			$keyId,
@@ -104,7 +134,7 @@ class HttpMessage {
 			$signature
 		);
 		
-		$header = new HttpHeader("Signature",$bag->__toString());
+		$this->headers []= new HttpHeader("Signature",$bag->__toString());
 		
 		$this->isSigned = true;
 	}

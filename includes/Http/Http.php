@@ -31,9 +31,15 @@ namespace Http;
 	
 	
 	
+		public static function headersToArray(array $headers) {
+			return array_map(function($header) {
+				return $header->getName() . ": ".$header->getValue();
+			},$headers);
+		}
+	
 		public static function send(HttpMessage $msg) {
 
-			$url = $req->getUrl();
+			$url = $msg->getUrl();
 			//curl_setopt($this->handle, CURLOPT_ENCODING, '');
 			ob_start();
 			$out = fopen('php://output', 'w');
@@ -41,6 +47,8 @@ namespace Http;
 			if(!$out) throw new Exception("Could not open PHP output stream.");
 
 			$curl = curl_init();
+			
+			$headers = self::headersToArray($msg->getHeaders());
 			
 			curl_setopt($curl, CURLOPT_CAINFO,"/var/www/trust/vendor/cybersource/rest-client-php/lib/ssl/cacert.pem");
 			
@@ -52,7 +60,7 @@ namespace Http;
 
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 			
-			curl_setopt($curl, CURLOPT_HTTPHEADER, $msg->getHeaders());
+			curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 			
 			curl_setopt($curl, CURLOPT_USERAGENT, "Swagger-Codegen/1.0.0/php");
 			
