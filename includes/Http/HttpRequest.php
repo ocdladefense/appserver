@@ -38,8 +38,8 @@ class HttpRequest extends HttpMessage {
 		parent::__construct();
 		$this->url = $url;
 
+		list($this->host, $this->path) = self::parseHostname($this->url);
 
-		list($this->host, $this->path) = self::parseHostname($url);
 
 		$this->headers[]= new HttpHeader("Host",$this->host);
 	}
@@ -52,10 +52,11 @@ class HttpRequest extends HttpMessage {
 
 	private static function parseHostname($url) {
 		list($scheme,$address) = explode("://",$url);
+
 		$parts = explode("/",$address);
-		
-		
-		return array(array_unshift($parts), "/".implode("/",$parts));
+
+		$host = array_shift($parts);
+		return array($host, "/".implode("/",$parts));
 	}
 
 
@@ -110,7 +111,7 @@ class HttpRequest extends HttpMessage {
 	public function getPath(){
 
 	}
-	
+
 
 
 	public static function newFromEnvironment(){

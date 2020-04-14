@@ -1,16 +1,18 @@
 <?php
 
-
-class HttpResponse2 {
-
+namespace Http;
 
 
+class Response extends HttpMessage{
 
-    private $body;
+
+
+
+    // protected $body;
     
-    private $headers = array();
+    // protected $headers = array();
 
-		private $statusCode;
+    private $statusCode;
 		
 		
 
@@ -18,9 +20,9 @@ class HttpResponse2 {
     	$this->body = $body;
     }
 
-		public function setCurlInfo($info) {
-			$this->info = $info;
-		}
+    public function setCurlInfo($info) {
+        $this->info = $info;
+    }
     //Setters
     public function setBody($content){
         $this->body = $content;

@@ -20,7 +20,7 @@
 	
 
 	
-	$http = array("Http","HttpMessage","HttpRequest","HttpResponse","HttpRedirect","IHttpCache",
+	$http = array("Http","HttpMessage","HttpRequest","Response","HttpResponse","HttpRedirect","IHttpCache",
 		"HttpHeader","SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag");
 		
 		foreach($http as $file) {

@@ -81,7 +81,6 @@ class SigningRequest {
      * the names are already stored in $this->orderedNames
      */
     public function signHeaders(HttpMessage $message) {
-		// print "<pre>" .print_r($message->getHeaders(),true)."</pre>";
 
 		$temp = array();
 		
