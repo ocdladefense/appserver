@@ -18,19 +18,22 @@ class HttpRequest extends HttpMessage {
 	private $port;
 
 
-	public function getRequestUri(){
+	public function getRequestUri() {
 		return $this->headers["Request-URI"];
 	}
 
 
 
-	public function __construct($url){
+	public function __construct($url) {
+		parent::__construct();
 		$this->url = $url;
 
 
 		$this->host = self::parseHostname($url);
 
 		$this->headers[]= new HttpHeader("Host",$this->host);
+		
+		print_r($this->headers);
 	}
 
 

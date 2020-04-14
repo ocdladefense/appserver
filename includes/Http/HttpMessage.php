@@ -24,14 +24,16 @@ class HttpMessage {
 	protected $params = array();
 
 
-
+	public function __construct(){
+	
+	}
 
 	public function setHeaders(array $headers) {
 		$this->headers = $headers;
 	}
 	
 	public function addHeaders(array $headers) {
-		array_merge($this->headers,$headers);
+		$this->headers = array_merge($this->headers,$headers);
 	}
 
 
@@ -41,11 +43,23 @@ class HttpMessage {
 	 *  exists, then return the last one.
 	 */
 	public function getHeader( $name ) {
-		$tmp = array_filter($this->headers,function($header) {
-			return $name == $header->getName();
-		});
+		 
+		$filter = function($header) use ($name) {
+			return $name == $header->getName();			
+		};
 		
-		return $tmp[count($tmp)-1];
+		$tmp = array_filter($this->headers, $filter);
+
+		if(null == $tmp || count($tmp) < 1) {
+			return null;
+		}
+		
+		$arrange = array_values($tmp);
+		
+		$last = $arrange[count($arrange)-1];
+		
+
+		return $last;
 	}
 
 

@@ -72,14 +72,17 @@ class SigningRequest {
      *
      * the names are already stored in $this->orderedNames
      */
-    public function signHeaders(HttpMessage $message){
-			print "<pre>" .print_r($message->getHeaders,true)."</pre>";
+    public function signHeaders(HttpMessage $message) {
+			// print "<pre>" .print_r($message->getHeaders(),true)."</pre>";
 
 			$temp = array();
-			foreach(explode(" ",$this->orderedNames) as $name){
-				$header = $message->getHeader($name);
+			
+			foreach(explode(" ",$this->orderedNames) as $name) {
+			
+				$actual = ucfirst($name);
+				$header = $message->getHeader($actual);
 				if( null == $header ) {
-					throw new \Exception("MESSAGE_SIGNING_ERROR: missing header at {$name}.");
+					throw new \Exception("MESSAGE_SIGNING_ERROR: missing header at {$actual}.");
 				}
 				
 				$temp[] = $header->getName().": " . $header->getValue();
