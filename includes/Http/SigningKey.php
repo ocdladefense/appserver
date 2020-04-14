@@ -28,26 +28,26 @@ class SigningKey {
     }
     
     
-		public function setSharedSecret($sharedSecret) {
-			$this->base64key = $sharedSecret;
-		}
+	public function setSharedSecret($sharedSecret) {
+		$this->base64key = $sharedSecret;
+	}
 
 		
-    /**
-     * Base64 Key
-     */
-		public function decode() {
-        	return base64_decode($this->sharedSecret);
-		}
-		
-		
-		public function getKeyId() {
-			return $this->keyId;
-		}
-		/**
-		 * Load the .PEM key from a file
-		 */
-		public static function fromFile($filePath) {
-		
-		}
+	/**
+	 * Base64 Key
+	 */
+	public function decode() {
+		return base64_decode($this->sharedSecret);
+	}
+	
+	
+	public function getKeyId() {
+		return $this->keyId;
+	}
+	/**
+	 * Load the .PEM key from a file
+	 */
+	public static function fromFile($filePath) {
+	
+	}
 }
