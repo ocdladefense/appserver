@@ -13,39 +13,39 @@ namespace Http;
  
 class SigningRequest {
 
-		// Key that will be used to sign this message.
-		private $signingKey = null;
-		
-		
-		// Header names, ordered, that will be used to generate
-		//  the signature.
-		private $orderedNames;
+	// Key that will be used to sign this message.
+	private $signingKey = null;
+	
+	
+	// Header names, ordered, that will be used to generate
+	//  the signature.
+	private $orderedNames;
 
-		private $algorithm;
+	private $algorithm;
 
     public function __construct() {}
     
 
-		// ‘map’ above is the HashMap of all the five headers discussed below.
+	// ‘map’ above is the HashMap of all the five headers discussed below.
 
-		/*
-		* these specific "set.." methods should be removed very soon.
-		*/
-		public function headersToSign($orderedNames) {
-			$this->orderedNames = $orderedNames;
-		}
-		
-		public function getSignedHeaders() {
-			return $this->orderedNames;
-		}
-		
-		public function setAlgorithm($algo) {
-			return $this->algorithm;
-		}
-		
-		public function getAlgorithm(){
-			return $this->algorithm;
-		}
+	/*
+	* these specific "set.." methods should be removed very soon.
+	*/
+	public function headersToSign($orderedNames) {
+		$this->orderedNames = $orderedNames;
+	}
+	
+	public function getSignedHeaders() {
+		return $this->orderedNames;
+	}
+	
+	public function setAlgorithm($algo) {
+		return $this->algorithm;
+	}
+	
+	public function getAlgorithm(){
+		return $this->algorithm;
+	}
     // The Shared Secret Key should be Base64-encoded and used to sign the signature parameter.
     /** 
      *SecretKeySpec secretKey = 
@@ -81,43 +81,39 @@ class SigningRequest {
      * the names are already stored in $this->orderedNames
      */
     public function signHeaders(HttpMessage $message) {
-			// print "<pre>" .print_r($message->getHeaders(),true)."</pre>";
+		// print "<pre>" .print_r($message->getHeaders(),true)."</pre>";
 
-			$temp = array();
+		$temp = array();
+		
+		foreach(explode(" ",$this->orderedNames) as $name) {
+		
+			$actual = !in_array(strtolower($name),self::$HTTP_STANDARD_HEADERS) ? $name : ucfirst($name);
 			
-			foreach(explode(" ",$this->orderedNames) as $name) {
+			$header = $message->getHeader($actual);
 			
-				$actual = !in_array(strtolower($name),self::$HTTP_STANDARD_HEADERS) ? $name : ucfirst($name);
-				
-				$header = $message->getHeader($actual);
-				
-				if( null == $header ) {
-					throw new \Exception("MESSAGE_SIGNING_ERROR: missing header at {$actual}.");
-				}
-				
-				$temp[] = $header->getName().": " . $header->getValue();
+			if( null == $header ) {
+				throw new \Exception("MESSAGE_SIGNING_ERROR: missing header at {$actual}.");
 			}
+			
+			$temp[] = $header->getName().": " . $header->getValue();
+		}
 
-				
-			return utf8_encode(implode("\n", $temp));
+			
+		return utf8_encode(implode("\n", $temp));
     }
-    
     
     
     public static function generateSignature($headerString, SigningKey $signingKey) {
     
-    		if(null == $signingKey) {
-    			throw new \Exception("MISSING_KEY_ERROR: Cannot generate signature without a key.");
-    		}
-    
-				$headers = array();
-				$asBinary = true;
+		if(null == $signingKey) {
+			throw new \Exception("MISSING_KEY_ERROR: Cannot generate signature without a key.");
+		}
 
+			$headers = array();
+			$asBinary = true;
 
 
         // $this->signedValue = hash_hmac("sha256", $headers, $key->getBase64(), true));
-				return base64_encode(hash_hmac("sha256", $byteString, $signingKey->decode(), $asBinary));
+		return base64_encode(hash_hmac("sha256", $byteString, $signingKey->decode(), $asBinary));
     }
-
-    
 }
