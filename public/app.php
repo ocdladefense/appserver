@@ -1,13 +1,18 @@
 <?php
 
 require '../bootstrap.php';     
-     
+  
+  
+use Http\HttpRequest as HttpRequest;
+use Http\HttpResponse as HttpResponse;   
+
+
 
 session_start();
 ini_set("max_execution_time","18000");
 // set_time_limit(0);
 
-$request = \Http\HttpRequest::newFromEnvironment();
+$request = HttpRequest::newFromEnvironment();
 
 $app = new Application();
 $app->setModuleLoader(new ModuleLoader());
@@ -31,19 +36,18 @@ try {
 	}
 	
 } catch(PageNotFoundException $e) {
-
+		print "The page was not found!";
 	$resp = new HttpResponse();
 	$resp->setNotFoundStatus();
 	$resp->setBody($e->getMessage());
 	
-} /* catch(Exception $e) {
+} catch(Exception $e) {
 
 	$resp = new HttpResponse();
 	$resp->setErrorStatus();
 	$resp->setBody($e->getMessage());
 	
 }
-*/
 
 
 $app->setResponse($resp);

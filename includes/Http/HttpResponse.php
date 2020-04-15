@@ -3,7 +3,7 @@
 namespace Http;
 
 
-class HttpResponse extends HttpMessage{
+class HttpResponse extends HttpMessage {
 	
 	
     public function __construct($body = null){

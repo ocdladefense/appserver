@@ -136,7 +136,14 @@ class Application {
 
     //Other Methods
     public function secure(){ 
-        $contentType = $this->resp->getHeader("Content-Type")->getValue();
+        $header = $this->resp->getHeader("Content-Type");
+        $cType = null;
+        
+        
+        if(null != $cType) {
+					$cType = $header->getValue();
+        }
+        
         $accept = "*/*";
        // $this->request->getHeader("Accept")->getValue();
 

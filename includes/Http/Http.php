@@ -84,51 +84,12 @@ class Http {
 		self::$recordSentHeaders = $boolean;
 	}
 
-	
-
-	
-	
-
-	
-	
-	
-	
-	
-	// Where does this get used?
-	public function formatResponseBody($content, $contentType) {
-
-		if(strpos($contentType,"json")) {
-				if(is_array($content) || is_object($content)) {
-						$out = json_encode($content);
-				}
-				else {
-						$out = json_encode(array("content" => $content));
-				}  
-		}
-		else {
-				$out = $content;
-
-		}
-
-		return $out;
-	}
-	
-	
-	
-	
-	
-	
 
 
-
-
-
-	
-	
-		/**
-		 * Nothing to do here. Leave for now -José
-		 */
-		public static function fromCurl($header,$body,$info) {
+	/**
+	 * Nothing to do here. Leave for now -José
+	 */
+	public static function fromCurl($header,$body,$info) {
 
 		// Handle the response
 		if ($response_info['http_code'] === 0) {
@@ -147,10 +108,10 @@ class Http {
 				throw $exception;
 		} elseif ($response_info['http_code'] >= 200 && $response_info['http_code'] <= 299) {
 				$stream_headers['http_code'] = $response_info['http_code'];
-			
+		
 				return [$http_body, $stream_headers['http_code'], $stream_headers];
 		} else {
-	
+
 				/*
 				throw new \Exception(
 						"[".$response_info['http_code']."] Error connecting to the API ($url)",
@@ -164,3 +125,23 @@ class Http {
 	}
 	
 }
+
+
+	// Where does this get used?
+	function formatResponseBody($content, $contentType) {
+
+		if(strpos($contentType,"json")) {
+				if(is_array($content) || is_object($content)) {
+						$out = json_encode($content);
+				}
+				else {
+						$out = json_encode(array("content" => $content));
+				}  
+		}
+		else {
+				$out = $content;
+
+		}
+
+		return $out;
+	}
