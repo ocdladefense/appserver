@@ -2,22 +2,6 @@
 
 namespace Http;
 
-	const HTTP_METHOD_GET = "GET";
-	
-	const HTTP_METHOD_POST = "POST";
-	
-	const HTTP_METHOD_PUT = "PUT";
-	
-	const HTTP_METHOD_DELETE = "DELETE";
-	
-	const MIME_TEXT_HTML = "text/html; charset=utf-8";
-	
-	const MIME_APPLICATION_JSON = "application/json; charset=utf-8";
-	
-	const MIME_TEXT_JAVASCRIPT = "text/javascript";
-	
-
-	
 	
 class Http {
 
@@ -26,99 +10,123 @@ class Http {
 	private static $recordSentHeaders = false;
 
 
-
 	private static $headersSent = null;	
 
 
+	private $config;
 
-	public static function headersToArray(array $headers) {
-		return array_map(function($header) {
-			return $header->getName() . ": ".$header->getValue();
-		},$headers);
+	private $httpSessionLog;
+
+	// Get the cURL configuration object.
+	//  It has convenience methods to change the curl configuration.
+	public function __construct($config = null) {
+
+		$this->config = new CurlConfiguration($config);
 	}
 
-	public static function send(HttpMessage $msg) {
 
-		$url = $msg->getUrl();
-		//curl_setopt($this->handle, CURLOPT_ENCODING, '');
-		ob_start();
-		$out = fopen('php://output', 'w');
-		//$f = fopen($logFile, 'a');
-		if(!$out) throw new Exception("Could not open PHP output stream.");
-
-		$curl = curl_init();
+	// Send the specified HttpMessage, optionally
+	//   enable logging.
+	public function send(HttpMessage $msg, $log = false) {
 		
-		$headers = self::headersToArray($msg->getHeaders());
+		// Static context so need to reset headers before further processing.
+		self::$headersSent = null;
 		
-		curl_setopt($curl, CURLOPT_CAINFO,"/var/www/trust/vendor/cybersource/rest-client-php/lib/ssl/cacert.pem");
+		// Convert from array of HttpHeaders to a string array
+		// conforming to cURL spec.
+		$this->config->setHeaders(HttpHeader::toArray($msg->getHeaders()));
+
+		// print_r(HttpHeader::toArray($msg->getHeaders()));
+		// Send using cURL with the 
+		$resp = Curl::send($msg->getUrl(), $this->config->getAsCurl());
 		
-		curl_setopt($curl, CURLOPT_URL, $msg->getUrl());
-
-		curl_setopt($curl, CURLOPT_VERBOSE,true);
+		// print "<pre>" .print_r($resp,true)."</pre>";
 		
-		//curl_setopt($curl, CURLOPT_STDERR ,$out);	
-
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		
-		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-		
-		curl_setopt($curl, CURLOPT_USERAGENT, "Swagger-Codegen/1.0.0/php");
-		
-		curl_setopt($curl, CURLOPT_HEADER, 1);
-
-		if(self::$recordSentHeaders) {
-			curl_setopt($curl, CURLINFO_HEADER_OUT, true);
-		}
-		
-		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-
-
-
-		$response = curl_exec($curl);
-		
-		if(self::$recordSentHeaders) {
-			self::$headersSent = curl_getinfo($curl, CURLINFO_HEADER_OUT);
-		}
-
-
-
-		//@jbernal from apiclient line 313		
-		//else {
-		$http_header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-		$http_header = self::httpParseHeaders(substr($response, 0, $http_header_size));
-		$http_body = substr($response, $http_header_size);
-		$response_info = curl_getinfo($curl);
+		$this->httpSessionLog = $resp["log"];
 		
 		
-		curl_close($curl);
-
-		fclose($out);  
-		$debug = ob_get_clean();
-
-
-
-		print "<h2>DEBUG IS:</h2>";
-		print str_replace("\n","<br />",$debug);
+		// Return a new instance of HttpResponse();     
+		$httpResp = self::newHttpResponse(
+			$resp["headers"],
+			$resp["body"],
+			$resp["info"]
+		);
 		
-		
-		// Return a nnew instance of Response();     
-		return self::newHttpResponse($http_body,$http_header,$response_info);
-		
+		return $httpResp;
+	}
+
+	public function getSessionLog(){
+		return $this->httpSessionLog;
+	}
 	
+
+
+	/**
+	 * Trevor, start here on Wednesday.
+	 */
+	private static function newHttpResponse($headers,$body,$info,$log = null){
+		
+		$resp = new HttpResponse($body);
+		// $resp->setHeaders(HttpHeader::fromArray($headers));
+		// $resp->setCurlInfo($info);
+		
+		return $resp;
 	}
 
-	private static function newHttpResponse($body,$header,$response_info){
-		$res = new Response();
-		$res->setBody($body);
-		$res->setHeaders($header);
-		$res->setCurlInfo($response_info);
-		var_dump($res);exit;
 
+
+	public static function getSentHeaders() {
+		return self::$headersSent;
 	}
 
 
+	public static function recordSentHeaders($boolean = true) {
+		self::$recordSentHeaders = $boolean;
+	}
+
+	
+
+	
+	
+
+	
+	
+	
+	
+	
+	// Where does this get used?
+	public function formatResponseBody($content, $contentType) {
+
+		if(strpos($contentType,"json")) {
+				if(is_array($content) || is_object($content)) {
+						$out = json_encode($content);
+				}
+				else {
+						$out = json_encode(array("content" => $content));
+				}  
+		}
+		else {
+				$out = $content;
+
+		}
+
+		return $out;
+	}
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+	
+	
 		/**
-		 * Should return a new instance of Response.
+		 * Nothing to do here. Leave for now -José
 		 */
 		public static function fromCurl($header,$body,$info) {
 
@@ -155,158 +163,4 @@ class Http {
 
 	}
 	
-	
-	
-
-	public static function getSentHeaders() {
-		return self::$headersSent;
-	}
-
-
-	public static function recordSentHeaders($boolean = true) {
-		self::$recordSentHeaders = $boolean;
-	}
-
-
-
-   /**
-    * Return an array of HTTP response headers
-    *
-    * @param string $raw_headers A string of raw HTTP response headers
-    *
-    * @return string[] Array of HTTP response heaers
-    */
-    private static function httpParseHeaders($raw_headers)
-    {
-        // ref/credit: http://php.net/manual/en/function.http-parse-headers.php#112986
-        $headers = [];
-        $key = '';
-
-        foreach (explode("\n", $raw_headers) as $h) {
-            $h = explode(':', $h, 2);
-
-            if (isset($h[1])) {
-                if (!isset($headers[$h[0]])) {
-                    $headers[$h[0]] = trim($h[1]);
-                } elseif (is_array($headers[$h[0]])) {
-                    $headers[$h[0]] = array_merge($headers[$h[0]], [trim($h[1])]);
-                } else {
-                    $headers[$h[0]] = array_merge([$headers[$h[0]]], [trim($h[1])]);
-                }
-
-                $key = $h[0];
-            } else {
-                if (substr($h[0], 0, 1) === "\t") {
-                    $headers[$key] .= "\r\n\t".trim($h[0]);
-                } elseif (!$key) {
-                    $headers[0] = trim($h[0]);
-                }
-                trim($h[0]);
-            }
-        }
-
-        return $headers;
-    }
-
-
-
-
-
-
-	public function setHeaders(array $headers){
-
-		foreach( $headers as $header ) {
-		
-			if($header instanceOf HttpHeader) {
-				$this->headers[$header->getName()] = $header->getValue();
-			} else {
-				$this->headers[] = $header;
-			}
-		}
-	}
-
-
-
-
-
-	/**
-	 * $f = fopen('request.txt', 'w');
-			curl_setopt($ch,CURLOPT_VERBOSE,true);
-			curl_setopt($ch,CURLOPT_STDERR ,$f);	
-	*/
-	private function sendHeaders() {
-	
-		$headers = array();
-		
-		foreach($this->headers as $name => $value) {
-			if(strpos($value,":") !== false) {
-				$header = $value;
-			} else {
-				$header = ($name .": " .$value);
-			}
-			
-			$headers[]= $header;
-		}		
-			
-		curl_setopt($this->handle, CURLOPT_HTTPHEADER, $headers);			
-	}
-
-
-
-
-	
-	public function getRequestUri(){
-		return $this->headers["Request-URI"];
-	}
-
-
-
-
-	
-
-	public function userAgent($ua) {
-		$this->ua = $ua;
-	}
-
-
-	public function verifyHost($boolean = true) {
-		curl_setopt($this->handle,CURLOPT_SSL_VERIFYHOST, $boolean); 		
-	}
-	
-	public function verifyPeer($boolean = true) {
-		curl_setopt($this->handle,CURLOPT_SSL_VERIFYPEER, $boolean);		
-	}
-	
-	public function setCaInfo($path) {
-		curl_setopt($this->handle, CURLOPT_CAINFO, $path);
-	}
-	
-	public function setCaPath($path) {
-		
-	}
-
-
-	
-	
-	
 }
-	
-	
-	
-	function formatResponseBody($content, $contentType) {
-
-		if(strpos($contentType,"json")) {
-				if(is_array($content) || is_object($content)) {
-						$out = json_encode($content);
-				}
-				else {
-						$out = json_encode(array("content" => $content));
-				}  
-		}
-		else {
-				$out = $content;
-
-		}
-
-		return $out;
-	}
