@@ -40,7 +40,7 @@ class SigningRequest {
 	}
 	
 	public function setAlgorithm($algo) {
-		return $this->algorithm;
+		$this->algorithm = $algo;
 	}
 	
 	public function getAlgorithm(){

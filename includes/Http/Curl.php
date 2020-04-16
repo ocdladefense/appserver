@@ -8,14 +8,10 @@ class Curl {
 	public static function send($url, $options = array()) {
 		
 
-		// Start output buffering to
-		// capture output from the cURL command.
-		ob_start();
-
 
 		// If set, start logging the request.
-
-		$out  =  fopen('php://output', 'w');
+		$curl_log_file = "curl_log.txt";
+		$out  =  fopen($curl_log_file,"w+");
 		if( !$out ) throw new Exception("Could not open PHP output stream.");
 
 		
@@ -26,9 +22,12 @@ class Curl {
 		foreach($options as $opt => $value) {
 			curl_setopt($curl, \constant($opt), $value);
 		}
-
+		
 		curl_setopt($curl, CURLOPT_STDERR, $out);
 		curl_setopt($curl, CURLOPT_VERBOSE, true);
+
+
+
 
 		
 		// Send the request using cURL.
@@ -52,17 +51,23 @@ class Curl {
 		curl_close($curl);
 
 
-
 		fclose($out);  
 		
-		$debug = ob_get_clean();
+		//this value is necessary to discard any garbage data
+		$LOG_DATA_START = "Trying";
+
+		$logData = "Trying" . explode($LOG_DATA_START, file_get_contents($curl_log_file))[1];
+
+		
+
+
 
 
 		return array(
 			"headers" 	=> $headers,
-			"body"			=> $body,
-			"info"			=> $info,
-			"log"				=> $debug
+			"body"		=> $body,
+			"info"		=> $info,
+			"log"		=> $logData
 		);
 	}
 	

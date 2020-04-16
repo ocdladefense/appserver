@@ -40,7 +40,7 @@ class HttpHeader {
      */
 		public static function toArray(array $headers) {
 			return array_map(function($header) {
-				return $header->getName() . ": ".$header->getValue();
+				return $header->getName() . ":".$header->getValue();
 			},$headers);
 		}
 		
