@@ -27,5 +27,8 @@
                 "note":"type key is currently a workaround to get this to install per clickpdx/devenv."
             }
         ]
+    },
+    "require": {
+        "square/connect": "^3.20200325"
     }
 }
