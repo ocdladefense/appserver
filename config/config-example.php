@@ -38,8 +38,7 @@ define("CYBERSOURCE_PRODUCTION_API_ENDPOINT","");
 // Used by SignatureKey
 // put your own values here...
 $keyStore = array(
-	"keyId" =>
-	"sharedSecret"
+	"keyId" => "sharedSecret"
 );
 
 
