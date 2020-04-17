@@ -8,13 +8,13 @@ class HttpMessage {
 
 
 
-    protected $body;
+	protected $body;
 
 	/**
 	 * An array of Http headers to be 
 	 *  sent with thhe message body.
 	 */
-	protected $headers = array();
+	protected $headers;
 	
 	/**
 	 * Indicates whether this message has been
@@ -22,67 +22,74 @@ class HttpMessage {
 	 */
 	protected $isSigned = false;
 	
-
-
 	
 	protected $params = array();
 
 
 	public function __construct(){
-	
+		$this->headers = new HttpHeaderCollection();
 	}
+
+
+	public function getHeaderCollection(){
+		return $this->headers;
+	}
+
 
 	public function setHeaders(array $headers) {
-		$this->headers = $headers;
+		if($this->isSigned) throw new \Exception("INVALID HEADER OPERATION");
+		$this->headers->reset();
+		$this->headers->addHeaders($headers);
 	}
-
-	public function addHeader($header) {
-		$this->headers[] = $header;
-	}
-
+	
 	public function addHeaders(array $headers) {
-		$this->headers = array_merge($this->headers,$headers);
+		if($this->isSigned) throw new \Exception("INVALID HEADER OPERATION");
+		$this->headers->addHeaders($headers);
 	}
+
+
+	public function addHeader(HttpHeader $header) {
+		if($this->isSigned) throw new \Exception("INVALID HEADER OPERATION");
+		$this->headers->addHeader($header);
+	}
+
 
 	public function setBody($body){
 		$this->body = $body;
 	}
+	
+	public function getDate() {
+		$header = $this->getHeader('Date');
+		return $header->getValue();
+	}
+
+	public function setStripOwsFromHeaders($names = array()) {
+		$this->headers->setStripOwsFromHeaders($names);
+	}
 
 
-	/**
-	 * Return the header with the specified name.
-	 *  If more than one header with this name
-	 *  exists, then return the last one.
-	 *
-	 *  http spec supports multiple headers with the same name,
-	 *  however, multiple pseudo-headers of the same name are prohibited.
-	 */
-	public function getHeader( $name ) {
-
+	public function getHeader($name) {
 		if(strpos($name,":") === 0 || $name == "(request-target)") {
-		
-			
 			return $this->getPseudoHeader($name);
 		}
 		
-		
-	    $filter = function($header) use ($name) {
-			return $name == $header->getName();			
-		}; 
-		
-		$tmp = array_filter($this->headers, $filter);
-
-		if(null == $tmp || count($tmp) < 1) return null;
-		
-		$arrange = array_values($tmp);
-		
-
-		return $arrange[count($arrange)-1];
+		return $this->headers->getHeader($name);
 	}
 
 
 
-	private function getPseudoHeader($name) {
+
+	
+	
+	public function getHeaders(){
+		return $this->headers;
+	}
+	
+	
+	
+	
+
+	protected function getPseudoHeader($name) {
 		if($name == ":method") {
 			
 			return new HttpHeader($name,strtolower($this->method));
@@ -100,10 +107,16 @@ class HttpMessage {
 		}
 	}
 
-	
-	
-	public function getHeaders(){
-		return $this->headers;
+
+
+	/**
+	 * Convert an array of HttpHeader objects
+	 *  to a PHP keyed array.
+	 */
+	public static function toArray(array $headers) {
+		return array_map(function($header) use($stripOwsFromHeaders){
+			return $header->getName() . ": ".$header->getValue();
+		},$headers);
 	}
 	
 	
@@ -127,16 +140,32 @@ class HttpMessage {
 
 	}
 
-
+	public function getSignature(){
+		$sig = $this->getHeader("Signature");
+		
+		if(null == $sig) {
+			throw new \Exception("Signature not defined.");
+		}
+		
+		return $sig->getValue();
+	}
+	
+	
+	
+	
+	
 	public function sign(SigningRequest $sr, SigningKey $key) {
-
-		$headerString = $sr->signHeaders($this);
+		
+		$headerInventory = implode(" ", $sr->getHeaderInventory());
+		
+		$headerKeyValues = $sr->getHeaderString($this);
+		
 		
 		$keyId = new SignatureParameter("keyid", $key->getKeyId());
 		$algo = new SignatureParameter("algorithm", $sr->getAlgorithm());
-		$signedHeaders = new SignatureParameter("headers", $sr->getSignedHeaders());
+		$signedHeaders = new SignatureParameter("headers", $headerInventory);
 		$signature = new SignatureParameter("signature", 
-			SigningRequest::generateSignature($headerString,$key));
+			SigningRequest::generateSignature($headerKeyValues,$key));
 		
 		$bag = new SignatureParameterBag(
 			$keyId,
@@ -145,7 +174,7 @@ class HttpMessage {
 			$signature
 		);
 		
-		$this->headers []= new HttpHeader("Signature",$bag->__toString());
+		$this->addHeader(new HttpHeader("Signature",$bag->__toString()));
 		
 		$this->isSigned = true;
 	}
@@ -158,6 +187,7 @@ class HttpMessage {
 			$resourcePath = $method . " " . $path;
 		}
 		
+		return 
 		$this->headers["(request-target)"] = utf8_encode($resourcePath);
 	}
 

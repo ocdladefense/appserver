@@ -13,10 +13,19 @@ class Http {
 	private static $headersSent = null;	
 
 
+	private $overrideHeaders;
+	
+	
 	private $config;
+
 
 	private $httpSessionLog;
 
+
+
+	public function setOverrideHeaders($headers = array()) {
+		$this->overrideHeaders = $headers;
+	}
 	// Get the cURL configuration object.
 	//  It has convenience methods to change the curl configuration.
 	public function __construct($config = null) {
@@ -34,7 +43,9 @@ class Http {
 		
 		// Convert from array of HttpHeaders to a string array
 		// conforming to cURL spec.
-		$this->config->setHeaders(HttpHeader::toArray($msg->getHeaders()));
+
+		$headers = !isset($this->overrideHeaders) ? $msg->getHeaders()->getHeadersAsArray() : $this->overrideHeaders;
+		$this->config->setHeaders($headers);
 
 		// print_r(HttpHeader::toArray($msg->getHeaders()));
 		// Send using cURL with the 

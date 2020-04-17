@@ -17,13 +17,25 @@ class SigningRequest {
 	private $signingKey = null;
 	
 	
+	
 	// Header names, ordered, that will be used to generate
 	//  the signature.
 	private $orderedNames;
 
+
+	const STRIP_OWS = 0x001;
+	
+	const PRESERVE_OWS = 0x002;
+	
+	private $ows;
+	
 	private $algorithm;
 
-    public function __construct() {}
+
+
+  public function __construct($opts = array()) {
+  	$this->ows = isset($opts["ows"]) ? $opts["ows"] : self::PRESERVE_OWS;
+  }
     
 
 	// ‘map’ above is the HashMap of all the five headers discussed below.
@@ -35,8 +47,8 @@ class SigningRequest {
 		$this->orderedNames = $orderedNames;
 	}
 	
-	public function getSignedHeaders() {
-		return $this->orderedNames;
+	public function getHeaderInventory() {
+		return explode(" ",$this->orderedNames);
 	}
 	
 	public function setAlgorithm($algo) {
@@ -73,6 +85,33 @@ class SigningRequest {
     private static $HTTP_STANDARD_HEADERS = array(
     	"date","host","content-type","accept"
     );
+    
+
+    public function getHeaders(HttpMessage $msg) {
+    
+    	$ordered = $this->getHeaderInventory();
+
+    	
+			foreach($ordered as $name) {
+		
+				$actual = in_array(strtolower($name),self::$HTTP_STANDARD_HEADERS) ? ucfirst($name) : $name;
+			
+				$header = $msg->getHeader($actual);
+			
+				if( null == $header ) {
+					throw new \Exception("MESSAGE_SIGNING_ERROR: missing header at {$actual}.  This signing request requires that this header be present in the header inventory.");
+				}
+			
+				$separator = ": ";//$this->ows == self::PRESERVE_OWS ? ": " : ":";
+				
+				$temp[] = strtolower($header->getName()).$separator. $header->getValue();
+			}
+			
+			return $temp;
+    }
+    
+    
+    
     /**
      * Needs to be refactored
      *  so that we are not hard-conding
@@ -80,39 +119,32 @@ class SigningRequest {
      *
      * the names are already stored in $this->orderedNames
      */
-    public function signHeaders(HttpMessage $message) {
+    public function getHeaderString(HttpMessage $msg) {
 
-		$temp = array();
-		
-		foreach(explode(" ",$this->orderedNames) as $name) {
-		
-			$actual = !in_array(strtolower($name),self::$HTTP_STANDARD_HEADERS) ? $name : ucfirst($name);
-			
-			$header = $message->getHeader($actual);
-			
-			if( null == $header ) {
-				throw new \Exception("MESSAGE_SIGNING_ERROR: missing header at {$actual}.");
-			}
-			
-			$temp[] = $header->getName().": " . $header->getValue();
-		}
+			$headers = $this->getHeaders($msg);
 
-			
-		return utf8_encode(implode("\n", $temp));
+			return utf8_encode(implode("\n", $headers));
     }
     
     
     public static function generateSignature($headerString, SigningKey $signingKey) {
     
-		if(null == $signingKey) {
-			throw new \Exception("MISSING_KEY_ERROR: Cannot generate signature without a key.");
-		}
+			if(null == $signingKey) {
+				throw new \Exception("MISSING_KEY_ERROR: Cannot generate signature without a key.");
+			}
 
-			$headers = array();
 			$asBinary = true;
 
-
-        // $this->signedValue = hash_hmac("sha256", $headers, $key->getBase64(), true));
-		return base64_encode(hash_hmac("sha256", $byteString, $signingKey->decode(), $asBinary));
+			// Check for empty/null keys and throw an Exception.
+			$decoded = $signingKey->decode();
+			if(null == $decoded) {
+				throw new \Exception("Decode key is malformed.");
+			}
+			
+			
+			return base64_encode(hash_hmac("sha256", $headerString, $decoded, $asBinary));
     }
 }
+
+
+

@@ -28,3 +28,6 @@ function stringContains($haystack, $needle){
     return false;
 
 }
+
+
+

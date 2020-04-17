@@ -7,6 +7,7 @@ class HttpResponse extends HttpMessage {
 	
 	
     public function __construct($body = null){
+			parent::__construct();
     	$this->body = $body;
     }
 
@@ -18,7 +19,7 @@ class HttpResponse extends HttpMessage {
     public function setContentType($contentType){
             $header = new HttpHeader("Content-Type", $contentType);
 
-            $this->headers[] = $header;
+            $this->headers->addHeader($header);
     }
 
     public function setStatusCode($code) {
@@ -35,7 +36,7 @@ class HttpResponse extends HttpMessage {
     
     public function setRedirect($url){
     	$this->statusCode = "HTTP/1.1 301 Moved Permanently";
-    	$this->headers["Location"] = $url;
+    	$this->headers->addHeader(new HttpHeader("Location",$url));
     }
 
     //Getters

@@ -35,6 +35,14 @@ define("CYBERSOURCE_ACCOUNT_ID","");
 define("CYBERSOURCE_TEST_API_ENDPOINT","");
 define("CYBERSOURCE_PRODUCTION_API_ENDPOINT","");
 
+// Used by SignatureKey
+// put your own values here...
+$keyStore = array(
+	"keyId" =>
+	"sharedSecret"
+);
+
+
 //The shared secret key and the id that holds the reference to the shared secret key on cybersource.com
 define("CYBERSOURCE_SHARED_SECRET_KEY_ID","");
 define("CYBERSOURCE_SHARED_SECRET_KEY","");
