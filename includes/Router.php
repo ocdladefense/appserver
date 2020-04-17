@@ -32,18 +32,15 @@ class Router
 
     public function match($path){
     
-				$this->completeRequestedPath = $path;
-				
-				
+		$this->completeRequestedPath = $path;
+					
         $this->initRoutes($this->modules);
 
-        
         $url = new Url($path);
 
-				$this->resourceString = $url->getResourceString();
+		$this->resourceString = $url->getResourceString();
 
-
-				return new Route($this->getFoundRoute(), $url->getArguments());
+		return new Route($this->getFoundRoute(), $url->getArguments());
     }
 
 

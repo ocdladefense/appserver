@@ -2,20 +2,143 @@
 
 namespace Http;
 
-	const HTTP_METHOD_GET = "GET";
 	
-	const HTTP_METHOD_POST = "POST";
+class Http {
+
+
+
+	private static $recordSentHeaders = false;
+
+
+	private static $headersSent = null;	
+
+
+	private $overrideHeaders;
 	
-	const HTTP_METHOD_PUT = "PUT";
 	
-	const HTTP_METHOD_DELETE = "DELETE";
+	private $config;
+
+
+	private $httpSessionLog;
+
+
+
+	public function setOverrideHeaders($headers = array()) {
+		$this->overrideHeaders = $headers;
+	}
+	// Get the cURL configuration object.
+	//  It has convenience methods to change the curl configuration.
+	public function __construct($config = null) {
+
+		$this->config = new CurlConfiguration($config);
+	}
+
+
+	// Send the specified HttpMessage, optionally
+	//   enable logging.
+	public function send(HttpMessage $msg, $log = false) {
+		
+		// Static context so need to reset headers before further processing.
+		self::$headersSent = null;
+		
+		// Convert from array of HttpHeaders to a string array
+		// conforming to cURL spec.
+
+		$headers = !isset($this->overrideHeaders) ? $msg->getHeaders()->getHeadersAsArray() : $this->overrideHeaders;
+		$this->config->setHeaders($headers);
+
+		// print_r(HttpHeader::toArray($msg->getHeaders()));
+		// Send using cURL with the 
+		$resp = Curl::send($msg->getUrl(), $this->config->getAsCurl());
+		
+		// print "<pre>" .print_r($resp,true)."</pre>";
+		
+		$this->httpSessionLog = $resp["log"];
+		
+		
+		// Return a new instance of HttpResponse();     
+		$httpResp = self::newHttpResponse(
+			$resp["headers"],
+			$resp["body"],
+			$resp["info"]
+		);
+		
+		return $httpResp;
+	}
+
+	public function getSessionLog(){
+		return $this->httpSessionLog;
+	}
 	
-	const MIME_TEXT_HTML = "text/html; charset=utf-8";
+
+
+	/**
+	 * Trevor, start here on Wednesday.
+	 */
+	private static function newHttpResponse($headers,$body,$info,$log = null){
+		
+		$resp = new HttpResponse($body);
+		// $resp->setHeaders(HttpHeader::fromArray($headers));
+		// $resp->setCurlInfo($info);
+		
+		return $resp;
+	}
+
+
+
+	public static function getSentHeaders() {
+		return self::$headersSent;
+	}
+
+
+	public static function recordSentHeaders($boolean = true) {
+		self::$recordSentHeaders = $boolean;
+	}
+
+
+
+	/**
+	 * Nothing to do here. Leave for now -José
+	 */
+	public static function fromCurl($header,$body,$info) {
+
+		// Handle the response
+		if ($response_info['http_code'] === 0) {
+				$curl_error_message = curl_error($curl);
+
+				// curl_exec can sometimes fail but still return a blank message from curl_error().
+				if (!empty($curl_error_message)) {
+						$error_message = "API call to $url failed: $curl_error_message";
+				} else {
+						$error_message = "API call to $url failed, but for an unknown reason. " .
+								"This could happen if you are disconnected from the network.";
+				}
+
+				$exception = new \Exception($error_message, 0, null, null);
+				// $exception->setResponseObject($response_info);
+				throw $exception;
+		} elseif ($response_info['http_code'] >= 200 && $response_info['http_code'] <= 299) {
+				$stream_headers['http_code'] = $response_info['http_code'];
+		
+				return [$http_body, $stream_headers['http_code'], $stream_headers];
+		} else {
+
+				/*
+				throw new \Exception(
+						"[".$response_info['http_code']."] Error connecting to the API ($url)",
+						$response_info['http_code'],
+						$stream_headers,
+						null
+				);
+				*/
+		}
+
+	}
 	
-	const MIME_APPLICATION_JSON = "application/json; charset=utf-8";
-	
-	const MIME_TEXT_JAVASCRIPT = "text/javascript";
-	
+}
+
+
+	// Where does this get used?
 	function formatResponseBody($content, $contentType) {
 
 		if(strpos($contentType,"json")) {

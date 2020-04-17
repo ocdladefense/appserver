@@ -1,7 +1,20 @@
 <?php
-class ModuleLoader{
+
+
+
+class ModuleLoader {
+
+
+
     private static $PATH_TO_MODULES = __DIR__ ."/../modules";
+    
+    
+    
     private $modules = array();
+
+
+
+
 
     public function __construct(){}
 

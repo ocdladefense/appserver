@@ -17,7 +17,7 @@ class DocumentParser extends DomDocument {
     public function __construct($body){
         parent::__construct();
 
-				// $encoded = mb_convert_encoding($body, 'HTML-ENTITIES', 'UTF-8');
+		$body = mb_convert_encoding($body, 'HTML-ENTITIES', 'UTF-8');
 
         libxml_use_internal_errors(true);
         

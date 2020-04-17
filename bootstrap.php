@@ -17,11 +17,16 @@
 	}
 
 	require_once BASE_PATH.'/includes/Url/Url.php';
-	require_once BASE_PATH.'/includes/Http/Http.php';
-	require_once BASE_PATH.'/includes/Http/HttpRequest.php';
-	require_once BASE_PATH.'/includes/Http/HttpResponse.php';
-	require_once BASE_PATH.'/includes/Http/HttpRedirect.php';
-	require_once BASE_PATH.'/includes/Http/IHttpCache.php';
+	
+
+	
+	$http = array("HttpConstants","CurlConfiguration","Curl","Http","HttpHeader","HttpHeaderCollection","HttpMessage","HttpRequest","HttpResponse","HttpRedirect","IHttpCache",
+		"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag");
+		
+		foreach($http as $file) {
+			require_once(BASE_PATH.'/includes/Http/'.$file.".php");
+		}
+	
 
 	require_once BASE_PATH.'/includes/Html/Html.php';
 		
@@ -43,3 +48,5 @@
 	require_once BASE_PATH.'/includes/Database/QueryBuilder.php';
 
 	require_once BASE_PATH.'/includes/Exception/DbException.php';
+
+

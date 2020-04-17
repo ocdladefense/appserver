@@ -254,7 +254,7 @@ class Template
 			"$module_path/assets/ux/menu.js",
 		
 			"$module_path/settings.js",
-			"$module_path/public/app.js"
+			"$module_path/public/app.js",
 		);
 	
 		return $scripts;

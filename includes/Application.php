@@ -1,6 +1,9 @@
 <?php
 
 use \Http as Http;
+use \Http\HttpHeader as HttpHeader; 
+use \Http\HttpResponse as HttpResponse;
+use \Http\HttpRequest as HttpRequest;
 
 
 class Application {
@@ -13,9 +16,7 @@ class Application {
     
     private $resp;
 
-		private $activeRoute; 
-		
-		
+	private $activeRoute; 
 		
     public function __construct(){}
 
@@ -44,7 +45,7 @@ class Application {
     public function getModules(){
         return $this->moduleLoader->getModules();
     }
-    
+    // Invalid method definition
     public function getRequestHeader($headerName){
         return $this->request->getHeader($headerName);
     }
@@ -52,7 +53,7 @@ class Application {
 
     
     public function run($path) {
-    	$this->activeRoute = $this->router->match($path);
+      $this->activeRoute = $this->router->match($path);
     	
       $this->activeModule = ModuleLoader::getInstance($this->activeRoute->getModule());
       
@@ -122,8 +123,8 @@ class Application {
 				$contentType = Http\MIME_TEXT_HTML;
 			}
 
-			
-			$resp->setContentType($contentType);
+			$header = new HttpHeader("Content-Type",$contentType);
+			$resp->addHeader($header);
 			
 			$out = Http\formatResponseBody($data, $contentType);
 			
@@ -135,17 +136,29 @@ class Application {
 
     //Other Methods
     public function secure(){ 
-        $routeContentType = $this->resp->getHeader("Content-Type");
-        $requestAcceptType = $this->request->getHeader("Accept");
+        $header = $this->resp->getHeader("Content-Type");
+        $cType = null;
+        
+        
+        if(null != $cType) {
+					$cType = $header->getValue();
+        }
+        
+        $accept = "*/*";
+       // $this->request->getHeader("Accept")->getValue();
 
-        if(!$this->request->isSupportedContentType($routeContentType)){
-            throw new Exception("The content type of the requested resource '$routeContentType' does not match the accepted content type '$requestAcceptType', which is set by the requesting entity.");
+        if(!$this->request->isSupportedContentType("*/*")){
+            throw new Exception("The content type of the requested resource '$contentType' does not match the accepted content type '$accept', which is set by the requesting entity.");
         }
     }
     
-    public function send(){
-        $this->resp->sendHeaders();
+    public function send() {
+    
         $content = $this->resp->getBody();
+        
+        foreach($this->resp->getHeaders() as $header) {
+        	header($header->getName() . ": " . $header->getValue());
+        }
         
         print $content;
     }

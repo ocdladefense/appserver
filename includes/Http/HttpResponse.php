@@ -1,38 +1,27 @@
 <?php
-class HttpResponse
-{
-    private $body;
-    
-    private $headers = array();
 
-		private $statusCode;
-		
-		
+namespace Http;
 
+
+class HttpResponse extends HttpMessage {
+	
+	
     public function __construct($body = null){
+			parent::__construct();
     	$this->body = $body;
     }
 
-		public function setCurlInfo($info) {
-			$this->info = $info;
-		}
     //Setters
     public function setBody($content){
         $this->body = $content;
     }
     
     public function setContentType($contentType){
-			$this->headers["Content-Type"] = $contentType;
+            $header = new HttpHeader("Content-Type", $contentType);
+
+            $this->headers->addHeader($header);
     }
-    
-    public function setHeaders($headers){
-        $this->headers = $headers;
-    }
-    
-    public function setHeader($name,$value) {
-    	$this->headers[$name] = $value;
-    }
-    
+
     public function setStatusCode($code) {
     	$this->statusCode = $code;
     }
@@ -47,32 +36,26 @@ class HttpResponse
     
     public function setRedirect($url){
     	$this->statusCode = "HTTP/1.1 301 Moved Permanently";
-    	$this->headers["Location"] = $url;
+    	$this->headers->addHeader(new HttpHeader("Location",$url));
     }
 
     //Getters
-    public function getBody(){
-        return $this->body;
-    }
-
     public function getStatusCode(){
         return $this->statusCode;
     }
-    
-    public function getHeader($headerName){
-    	if(!isset($this->headers[$headerName])) {
-    		return null;
-    	}
-    	
-			return $this->headers[$headerName];
-    }
-    
-    
-    public function getHeaders(){
-        return $this->headers;
-    }
-    
-    
+	
+	public function getError(){
+		return $this->errorString;
+	}
+
+	public function getErrorNum(){
+		return $this->errorNum;
+	}
+
+	public function success(){
+		return $this->status == 200;
+	}
+
     public function getPhpArray(){
         // Parsing the HTTP Response; by parsing we just mean the data has a known format and we can retrieve certain things from the Response.
 			return json_decode($this->body, true);
@@ -80,16 +63,6 @@ class HttpResponse
 
     //other methods
 
-    //Send the value of the headers array at the key of content-type 
-    public function sendHeaders(){
-
-			foreach($this->headers as $headerName => $headerValue){
-				header($headerName.": ".$headerValue);
-			}
-			if($this->statusCode != null){
-				header($this->statusCode);
-			}
-    }
     public function __toString(){
         return $this->body;
     }
