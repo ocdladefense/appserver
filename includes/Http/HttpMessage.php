@@ -23,7 +23,7 @@ class HttpMessage {
 	protected $isSigned = false;
 	
 	
-	protected $params = array();
+	
 
 
 	public function __construct(){
@@ -139,6 +139,8 @@ class HttpMessage {
 	  }
 
 	}
+
+	
 
 	public function getSignature(){
 		$sig = $this->getHeader("Signature");

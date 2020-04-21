@@ -10,10 +10,8 @@ class HttpRequest extends HttpMessage {
 	protected $method = "GET";
 	
 	
-	
 	protected $host;
-	
-	
+		
 	
 	protected $path;
 
@@ -21,6 +19,7 @@ class HttpRequest extends HttpMessage {
 	private $port;
 
 
+	protected $params = array();
 
 
 	public function getRequestUri() {
@@ -100,7 +99,28 @@ class HttpRequest extends HttpMessage {
 	}
 	
 
+	public function getMethod(){
 
+	}
+
+	
+	public function getPath(){
+
+	}
+
+	public function setParams($p){
+		if(is_array($p)) {
+			  $_params = array();
+			  foreach($p as $key=>$value){
+				  $_params[] = $key ."=".$value;
+			  }		
+			  $this->params = implode('&',$_params);
+		}
+		else {
+			$this->params = $p;
+		}
+  
+	  }
 
 	public static function newFromEnvironment(){
 		$request = new self($_SERVER["REQUEST_URI"]);
