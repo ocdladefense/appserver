@@ -10,7 +10,7 @@ class HttpHeaderCollection {
 
     const SEPERATOR = ": ";
 
-		private $headers = array();
+		protected $headers = array();
 		
 		
 		protected $stripOwsFromHeaders = array();
@@ -22,13 +22,13 @@ class HttpHeaderCollection {
     }
 
 		
-		public function addHeader($header) {
-			$this->headers[] = $header;
-		}
+	public function addHeader($header) {
+		$this->headers[] = $header;
+	}
 
-		public function addHeaders(array $headers) {
-			$this->headers = array_merge($this->headers,$headers);
-		}
+	public function addHeaders(array $headers) {
+		$this->headers = array_merge($this->headers,$headers);
+	}
 		
 		
     public function getHeaders() {

@@ -31,18 +31,12 @@ class HttpHeader {
     public function getValue() {
     	return $this->value;
     }
-    
-    
-    
-
-		
-		
-		public static function fromArray(array $headers) {
-			$tmp = array();
-			foreach($headers as $key => $value) {
-				return new HttpHeader($key,$value);
-			}
-			
-			return $tmp;
-		}
+    	
+    public static function fromArray($headers) {
+        $tmp = array();
+        foreach($headers as $key => $value) {
+            $tmp[] = new HttpHeader($key,$value);
+        }
+        return $tmp;
+    }
 }

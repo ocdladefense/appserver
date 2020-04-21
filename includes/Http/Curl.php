@@ -37,6 +37,7 @@ class Curl {
 		
 		curl_setopt($curl, CURLOPT_STDERR, $out);
 		curl_setopt($curl, CURLOPT_VERBOSE, true);
+		curl_setopt($curl, CURLOPT_HEADER, 1);
 
 
 
@@ -45,6 +46,8 @@ class Curl {
 		// Send the request using cURL.
 		$resp = curl_exec($curl);
 
+		
+		// print"<pre>" .$resp . "</pre>";
 
 		if(false) {
 			// self::$headersSent = curl_getinfo($curl, CURLINFO_HEADER_OUT);
@@ -99,7 +102,7 @@ class Curl {
         $key = '';
 
         foreach (explode("\n", $raw_headers) as $h) {
-            $h = explode(':', $h, 2);
+			$h = explode(':', $h, 2);
 
             if (isset($h[1])) {
                 if (!isset($headers[$h[0]])) {
@@ -110,7 +113,7 @@ class Curl {
                     $headers[$h[0]] = array_merge([$headers[$h[0]]], [trim($h[1])]);
                 }
 
-                $key = $h[0];
+				$key = $h[0];
             } else {
                 if (substr($h[0], 0, 1) === "\t") {
                     $headers[$key] .= "\r\n\t".trim($h[0]);
@@ -119,9 +122,10 @@ class Curl {
                 }
                 trim($h[0]);
             }
-        }
+		}
 
+		// print "<br><br>Headers to be returned by httpParseHeaders";
+		// var_dump($headers);exit;
         return $headers;
-    }
-	
+	}
 }

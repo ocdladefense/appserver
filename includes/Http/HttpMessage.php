@@ -10,10 +10,10 @@ class HttpMessage {
 
 	protected $body;
 
-	/**
-	 * An array of Http headers to be 
-	 *  sent with thhe message body.
-	 */
+
+	protected $curlInfo;
+
+
 	protected $headers;
 	
 	/**
@@ -31,6 +31,16 @@ class HttpMessage {
 	}
 
 
+	//body
+	public function setBody($body){
+		$this->body = $body;
+	}
+
+	public function getBody(){
+		return $this->body;
+	}
+
+	//headers
 	public function getHeaderCollection(){
 		return $this->headers;
 	}
@@ -38,7 +48,7 @@ class HttpMessage {
 
 	public function setHeaders(array $headers) {
 		if($this->isSigned) throw new \Exception("INVALID HEADER OPERATION");
-		$this->headers->reset();
+		//$this->headers->reset();
 		$this->headers->addHeaders($headers);
 	}
 	
@@ -53,16 +63,11 @@ class HttpMessage {
 		$this->headers->addHeader($header);
 	}
 
-
-	public function setBody($body){
-		$this->body = $body;
+	public function getHeaders(){
+		return $this->headers;
 	}
+
 	
-	public function getDate() {
-		$header = $this->getHeader('Date');
-		return $header->getValue();
-	}
-
 	public function setStripOwsFromHeaders($names = array()) {
 		$this->headers->setStripOwsFromHeaders($names);
 	}
@@ -75,19 +80,6 @@ class HttpMessage {
 		
 		return $this->headers->getHeader($name);
 	}
-
-
-
-
-	
-	
-	public function getHeaders(){
-		return $this->headers;
-	}
-	
-	
-	
-	
 
 	protected function getPseudoHeader($name) {
 		if($name == ":method") {
@@ -107,7 +99,21 @@ class HttpMessage {
 		}
 	}
 
+	//curlInfo
+	public function setCurlInfo($info){
+		$this->curlInfo = $info;
+		// print_r($info);exit;
+	}
 
+	public function getCurlInfo(){
+		return $this->curlInfo;
+	}
+
+	public function getDate() {
+		$header = $this->getHeader('Date');
+		return $header->getValue();
+	}
+	
 
 	/**
 	 * Convert an array of HttpHeader objects
@@ -120,12 +126,6 @@ class HttpMessage {
 	}
 	
 	
-	public function getBody(){
-		return $this->body;
-	}
-	
-	
-
 	public function setParams($p){
 	  if(is_array($p)) {
 			$_params = array();
@@ -149,10 +149,6 @@ class HttpMessage {
 		
 		return $sig->getValue();
 	}
-	
-	
-	
-	
 	
 	public function sign(SigningRequest $sr, SigningKey $key) {
 		
