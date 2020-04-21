@@ -25,7 +25,7 @@ class HttpMessage {
 
 
 	
-	protected $params = array();
+	
 
 
 	public function __construct(){
@@ -113,19 +113,7 @@ class HttpMessage {
 	
 	
 
-	public function setParams($p){
-	  if(is_array($p)) {
-			$_params = array();
-			foreach($p as $key=>$value){
-				$_params[] = $key ."=".$value;
-			}		
-			$this->params = implode('&',$_params);
-	  }
-	  else {
-		  $this->params = $p;
-	  }
-
-	}
+	
 
 
 	public function sign(SigningRequest $sr, SigningKey $key) {
