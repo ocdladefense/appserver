@@ -4,19 +4,27 @@ namespace Http;
 
 class Curl {
 
+	/**
+	 * Location of the log file to be used
+	 *  when logging curl commands with CURLOPT_VERBOSE
+	 *   and CURLOPT_STDERR options.
+	 */
+	private static $LOG_FILE = BASE_PATH . "/log/curl.log";
+	
+		//this value is necessary to discard any garbage data
+	private static $LOG_DATA_START = "Trying";
 
+
+
+	/**
+	 * Method actually uses PHP cURL functions to 
+	 *  initiate the Http request.
+	 */
 	public static function send($url, $options = array()) {
-		
-
-		// Start output buffering to
-		// capture output from the cURL command.
-		ob_start();
-
 
 		// If set, start logging the request.
-
-		$out  =  fopen('php://output', 'w');
-		if( !$out ) throw new Exception("Could not open PHP output stream.");
+		$out  =  fopen(self::$LOG_FILE,"w+");
+		if( !$out ) throw new \Exception("Could not open PHP output stream.");
 
 		
 				
@@ -26,9 +34,12 @@ class Curl {
 		foreach($options as $opt => $value) {
 			curl_setopt($curl, \constant($opt), $value);
 		}
-
+		
 		curl_setopt($curl, CURLOPT_STDERR, $out);
 		curl_setopt($curl, CURLOPT_VERBOSE, true);
+
+
+
 
 		
 		// Send the request using cURL.
@@ -52,17 +63,22 @@ class Curl {
 		curl_close($curl);
 
 
-
 		fclose($out);  
 		
-		$debug = ob_get_clean();
+
+
+		$logData = "Trying" . explode(self::$LOG_DATA_START, file_get_contents(self::$LOG_FILE))[1];
+
+		
+
+
 
 
 		return array(
 			"headers" 	=> $headers,
-			"body"			=> $body,
-			"info"			=> $info,
-			"log"				=> $debug
+			"body"		=> $body,
+			"info"		=> $info,
+			"log"		=> $logData
 		);
 	}
 	

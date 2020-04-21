@@ -29,6 +29,8 @@
         ]
     },
     "require": {
-        "cybersource/rest-client-php": "^0.0.13"
+        "square/connect": "^3.20200325",
+        "cybersource/rest-client-php": "^0.0.13",
+        "cybersource/sdk-php": "^1.0"
     }
 }

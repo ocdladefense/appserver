@@ -34,7 +34,7 @@ class HttpRequest extends HttpMessage {
 		list($this->host, $this->path) = self::parseHostname($this->url);
 
 
-		$this->headers[]= new HttpHeader("Host",$this->host);
+		$this->headers->addHeader(new HttpHeader("Host",$this->host));
 	}
 
 
