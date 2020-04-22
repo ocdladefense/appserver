@@ -100,7 +100,7 @@ class HttpRequest extends HttpMessage {
 	
 
 	public function getMethod(){
-
+		return $this->method;
 	}
 
 	

@@ -83,7 +83,7 @@ class SigningRequest {
 
     
     private static $HTTP_STANDARD_HEADERS = array(
-    	"date","host","content-type","accept"
+    	"date","host","content-type","accept","digest"
     );
     
 
@@ -119,15 +119,13 @@ class SigningRequest {
      *
      * the names are already stored in $this->orderedNames
      */
-    public function getHeaderString(HttpMessage $msg) {
-
-			$headers = $this->getHeaders($msg);
+    public static function getEncodedHeaders(array $headers) {
 
 			return utf8_encode(implode("\n", $headers));
     }
     
-    
-    public static function generateSignature($headerString, SigningKey $signingKey) {
+    public static function hash($valueToHash, SigningKey $signingKey) {
+		
     
 			if(null == $signingKey) {
 				throw new \Exception("MISSING_KEY_ERROR: Cannot generate signature without a key.");
@@ -142,8 +140,36 @@ class SigningRequest {
 			}
 			
 			
-			return base64_encode(hash_hmac("sha256", $headerString, $decoded, $asBinary));
-    }
+			return base64_encode(hash_hmac("sha256", $valueToHash, $decoded, $asBinary));
+	}
+
+	public function signMessage(HttpMessage $msg, SigningKey $key){
+
+		if($msg->getMethod() == "POST"){
+			$prefix = "SHA-256=";
+			$digest = $prefix . SigningRequest::hash($msg->getBody(),$key);
+			$msg->addHeader(new HttpHeader("Digest",$digest));
+		}
+
+		$headers = $this->getHeaders($msg);
+		
+		$headerKeyValues = SigningRequest::getEncodedHeaders($headers);
+
+		return SigningRequest::hash($headerKeyValues,$key);
+	}
+
+	// function generateDigest($requestBody,$requiresKey = false){
+
+	// 	if($requiresKey){
+	// 		$hash = base64_encode(hash_hmac("sha256", $requestBody, $decoded, $asBinary));
+	// 	} else {
+	// 		$hash = base64_encode(hash_hmac("sha256", $requestBody));
+	// 	}
+		
+	// 	$prefix = "SHA-256=";
+		
+	// 	return $prefix . $hash;
+	// }
 }
 
 

@@ -153,17 +153,17 @@ class HttpMessage {
 	}
 	
 	public function sign(SigningRequest $sr, SigningKey $key) {
+
+		$signatureParameter = $sr->signMessage($this,$key);
+
+
+
 		
 		$headerInventory = implode(" ", $sr->getHeaderInventory());
-		
-		$headerKeyValues = $sr->getHeaderString($this);
-		
-		
 		$keyId = new SignatureParameter("keyid", $key->getKeyId());
 		$algo = new SignatureParameter("algorithm", $sr->getAlgorithm());
 		$signedHeaders = new SignatureParameter("headers", $headerInventory);
-		$signature = new SignatureParameter("signature", 
-			SigningRequest::generateSignature($headerKeyValues,$key));
+		$signature = new SignatureParameter("signature", $signatureParameter);
 		
 		$bag = new SignatureParameterBag(
 			$keyId,
@@ -171,7 +171,9 @@ class HttpMessage {
 			$signedHeaders,
 			$signature
 		);
-		
+
+
+
 		$this->addHeader(new HttpHeader("Signature",$bag->__toString()));
 		
 		$this->isSigned = true;
