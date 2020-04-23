@@ -59,7 +59,7 @@ class HttpRequest extends HttpMessage {
 
 	
 	public function setPost(){
-		$this->requestType = "POST";
+		$this->method = "POST";
 	}
 	
 	

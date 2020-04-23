@@ -150,7 +150,6 @@ class SigningRequest {
 			$digest = $prefix . SigningRequest::hash($msg->getBody(),$key);
 			$msg->addHeader(new HttpHeader("Digest",$digest));
 		}
-
 		$headers = $this->getHeaders($msg);
 		
 		$headerKeyValues = SigningRequest::getEncodedHeaders($headers);
