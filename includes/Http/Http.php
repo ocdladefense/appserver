@@ -26,6 +26,11 @@ class Http {
 	public function setOverrideHeaders($headers = array()) {
 		$this->overrideHeaders = $headers;
 	}
+	
+	
+	
+	
+	
 	// Get the cURL configuration object.
 	//  It has convenience methods to change the curl configuration.
 	public function __construct($config = null) {
@@ -46,27 +51,38 @@ class Http {
 
 		$headers = !isset($this->overrideHeaders) ? $msg->getHeaders()->getHeadersAsArray() : $this->overrideHeaders;
 		$this->config->setHeaders($headers);
-
+		
+		
+		// For POST requests we need to change the request
+		// type from GET to POST *and we need
+		// to set the CURLOPT_POSTFIELDS options to the body
+		// of our request (JSON, etc.)
+		if($msg->isPost()) {
+			$this->config->setPost();
+			$this->config->setBody($msg->getBody());
+		}
 		// print_r(HttpHeader::toArray($msg->getHeaders()));
 		// Send using cURL with the 
 		$resp = Curl::send($msg->getUrl(), $this->config->getAsCurl());
 
 		// var_dump($resp);exit;
 		
-		// print "<pre>" .print_r($resp,true)."</pre>";
+
+		// $this->httpSessionLog = $resp["log"];
+		$logArray = explode(" * ",$resp["log"]);
 		
-		$this->httpSessionLog = $resp["log"];
+		
+		
+		// $logMessage = implode("<br />",$logArray);
+		$this->httpSessionLog = $logArray;
 		
 		
 		// Return a new instance of HttpResponse();     
-		$httpResp = self::newHttpResponse(
+		return self::newHttpResponse(
 			$resp["headers"],
 			$resp["body"],
 			$resp["info"]
 		);
-		
-		//var_dump($httpResp);exit;
-		return $httpResp;
 	}
 
 	public function getSessionLog(){

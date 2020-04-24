@@ -27,6 +27,8 @@ class SigningRequest {
 	
 	const PRESERVE_OWS = 0x002;
 	
+	const DIGEST_PREFIX = "SHA-256=";
+	
 	private $ows;
 	
 	private $algorithm;
@@ -124,7 +126,7 @@ class SigningRequest {
 			return utf8_encode(implode("\n", $headers));
     }
     
-    public static function hash($valueToHash, SigningKey $signingKey) {
+    public static function thishash($valueToHash, SigningKey $signingKey) {
 		
     
 			if(null == $signingKey) {
@@ -146,29 +148,24 @@ class SigningRequest {
 	public function signMessage(HttpMessage $msg, SigningKey $key){
 
 		if($msg->getMethod() == "POST"){
-			$prefix = "SHA-256=";
-			$digest = $prefix . SigningRequest::hash($msg->getBody(),$key);
+
+			// Hash the digest with a key.
+			// $digest = SigningRequest::DIGEST_PREFIX . SigningRequest::thishash($msg->getBody(),$key);
+			
+			// Hash the digest (using the same algo) without a key.
+			$payload = utf8_encode($msg->getBody());
+			
+			$digest = SigningRequest::DIGEST_PREFIX . base64_encode(hash("sha256", $payload, true));
 			$msg->addHeader(new HttpHeader("Digest",$digest));
 		}
 		$headers = $this->getHeaders($msg);
 		
 		$headerKeyValues = SigningRequest::getEncodedHeaders($headers);
 
-		return SigningRequest::hash($headerKeyValues,$key);
+		return SigningRequest::thishash($headerKeyValues,$key);
 	}
 
-	// function generateDigest($requestBody,$requiresKey = false){
 
-	// 	if($requiresKey){
-	// 		$hash = base64_encode(hash_hmac("sha256", $requestBody, $decoded, $asBinary));
-	// 	} else {
-	// 		$hash = base64_encode(hash_hmac("sha256", $requestBody));
-	// 	}
-		
-	// 	$prefix = "SHA-256=";
-		
-	// 	return $prefix . $hash;
-	// }
 }
 
 

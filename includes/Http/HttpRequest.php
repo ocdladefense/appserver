@@ -62,19 +62,23 @@ class HttpRequest extends HttpMessage {
 		$this->method = "POST";
 	}
 	
+	public function isPost(){
+		return $this->method == "POST";
+	}
+	
 	
 	public function setPatch(){
-		$this->requestType = "PATCH";
+		$this->method = "PATCH";
 	}
 	
 	
 	public function setDelete(){
-		$this->requestType = "DELETE";
+		$this->method = "DELETE";
 	}
 	
 	
 	public function getRequestType(){
-		return $this->requestType;
+		return $this->method;
 	}
 	
 	
@@ -88,6 +92,8 @@ class HttpRequest extends HttpMessage {
 	}
 
 	
+	
+	
 	public function isSupportedContentType($contentType){
 
 		return true;
@@ -99,10 +105,14 @@ class HttpRequest extends HttpMessage {
 	}
 	
 
+
+
 	public function getMethod(){
 		return $this->method;
 	}
 
+	
+	
 	
 	public function getPath(){
 

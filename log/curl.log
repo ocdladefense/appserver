@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 * Expire in 0 ms for 6 (transfer 0x215b81e88c0)
 * Expire in 1 ms for 1 (transfer 0x215b81e88c0)
 * Expire in 0 ms for 1 (transfer 0x215b81e88c0)
@@ -225,3 +226,5 @@
   CAfile: 
   CApath: none
 * Closing connection 0
+=======
+>>>>>>> e0a7e5cb5363c8b0c317e881bbe3fa3f7de58a02

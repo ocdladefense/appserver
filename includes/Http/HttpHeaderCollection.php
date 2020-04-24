@@ -72,6 +72,7 @@ class HttpHeaderCollection {
 			$strip = $this->stripOwsFromHeaders;
 			
 			return array_map(function($header) use($strip) {
+
 				if(in_array($header->getName(),$strip)) {
 					return $header->getName() . ":".$header->getValue();
 				} else {
