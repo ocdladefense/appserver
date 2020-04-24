@@ -22,7 +22,7 @@ class HttpMessage {
 	 */
 	protected $isSigned = false;
 	
-	
+	protected $params;
 	
 
 

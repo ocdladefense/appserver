@@ -141,6 +141,10 @@ class HttpRequest extends HttpMessage {
 		$request->setBody(file_get_contents('php://input'));
 		return $request;
 	}
+
+	public function addParameter($name, $value){
+		$this->params[] .= $name ."=". $value;
+	}
 	
 	
 }
