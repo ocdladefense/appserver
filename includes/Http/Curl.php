@@ -34,7 +34,7 @@ class Curl {
 		foreach($options as $opt => $value) {
 			curl_setopt($curl, \constant($opt), $value);
 		}
-		
+
 		curl_setopt($curl, CURLOPT_STDERR, $out);
 		curl_setopt($curl, CURLOPT_VERBOSE, true);
 		curl_setopt($curl, CURLOPT_HEADER, 1);

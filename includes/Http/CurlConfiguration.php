@@ -22,6 +22,15 @@ namespace Http;
 			
 			return $tmp;
 		}
+		
+		
+		public function setBody($body) {
+			$this->configs["postfields"] = $body;
+		}
+		
+		public function setPost() {
+			$this->configs["post"] = true;
+		}
 
 
 

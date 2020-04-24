@@ -187,8 +187,7 @@ class HttpMessage {
 			$resourcePath = $method . " " . $path;
 		}
 		
-		return 
-		$this->headers["(request-target)"] = utf8_encode($resourcePath);
+		return $this->headers["(request-target)"] = utf8_encode($resourcePath);
 	}
 
 }
