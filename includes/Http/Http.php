@@ -50,6 +50,8 @@ class Http {
 		// print_r(HttpHeader::toArray($msg->getHeaders()));
 		// Send using cURL with the 
 		$resp = Curl::send($msg->getUrl(), $this->config->getAsCurl());
+
+		// var_dump($resp);exit;
 		
 		// print "<pre>" .print_r($resp,true)."</pre>";
 		
@@ -63,6 +65,7 @@ class Http {
 			$resp["info"]
 		);
 		
+		//var_dump($httpResp);exit;
 		return $httpResp;
 	}
 
@@ -71,15 +74,11 @@ class Http {
 	}
 	
 
-
-	/**
-	 * Trevor, start here on Wednesday.
-	 */
 	private static function newHttpResponse($headers,$body,$info,$log = null){
 		
 		$resp = new HttpResponse($body);
-		// $resp->setHeaders(HttpHeader::fromArray($headers));
-		// $resp->setCurlInfo($info);
+		$resp->setHeaders(HttpHeader::fromArray($headers));
+		$resp->setCurlInfo($info);
 		
 		return $resp;
 	}
