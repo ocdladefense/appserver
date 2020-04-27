@@ -26,6 +26,12 @@
 		foreach($http as $file) {
 			require_once(BASE_PATH.'/includes/Http/'.$file.".php");
 		}
+
+	$store = array("ShoppingCart","IPaymentProcessor","Customer","Order");
+	
+	foreach($store as $file) {
+		require_once(BASE_PATH.'/includes/Store/'.$file.".php");
+	}
 	
 
 	require_once BASE_PATH.'/includes/Html/Html.php';
