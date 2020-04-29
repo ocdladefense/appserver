@@ -24,7 +24,7 @@ class ShoppingCart {
         );
     }
 
-    public function getPrice(){
+    public function getTotal(){
         return 999.00;
     }
 }
