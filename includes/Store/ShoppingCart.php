@@ -3,6 +3,7 @@ namespace ClickpdxStore;
 class ShoppingCart {
 
     private $items;
+    private $total;
 
     public function __construct() {
 
@@ -11,6 +12,13 @@ class ShoppingCart {
     public function refresh() {
         return $this->items;
     }
+
+    //Setters
+    public function setTotal($total){
+        $this->total = $total;
+    }
+
+    //Getters
 
     public function getItems() {
         //return $this->items;
@@ -25,6 +33,7 @@ class ShoppingCart {
     }
 
     public function getTotal(){
-        return 999.00;
+        // $this->total = 950;
+        return $this->total;
     }
 }
