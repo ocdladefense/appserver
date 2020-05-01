@@ -17,27 +17,39 @@ class Customer {
     //Getters
 
     public function getUserId() {
-        return $this->userId;
+        if($this->userId != null)
+            return $this->userId;
+        return null;
     }
 
     public function getProfileId() {
-        return $this->customerProfileId;
+        if($this->customerProfileId != null)
+            return $this->customerProfileId;
+        return null;
     }
 
     public function getFirstName() {
-        return $this->firstName;
+        if($this->firstName != null)
+            return $this->firstName;
+        return null;
     }
 
     public function getLastName() {
-        return $this->lastName;
+        if($this->lastName != null)
+            return $this->lastName;
+        return null;
     }
 
     public function getEmail() {
-        return $this->email;
+        if($this->email != null)
+            return $this->email;
+        return null;
     }
 
     public function getBirthDate() {
-        return $this->birthDate;
+        if($this->birthDate != null)
+            return $this->birthDate;
+        return null;
     }
 
 
