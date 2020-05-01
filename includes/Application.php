@@ -88,12 +88,16 @@ class Application {
 
 
     public function doCallback($module,$route){
-    		if(method_exists($module,$route->getCallback())) {
-    			return call_user_func_array(array($module,$route->getCallback()),$route->getArgs());
-    		}
+
+        $args = $route->getMethod() == "post" ? $_POST : $route->getArgs();
+
+        if(method_exists($module,$route->getCallback())) {
+            return call_user_func(array($module,$route->getCallback()),$args);
+        }
     		
         if($route->getMethod() == "post") {
             //should be set to request->getBody();
+            // var_dump($_SERVER);exit;
 
             //check the content type of the request if json decode it and pass json to the callback
             $entityBody = file_get_contents('php://input');
