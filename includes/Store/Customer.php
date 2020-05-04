@@ -7,49 +7,37 @@ class Customer {
     private $customerProfileId;
     private $firstName;
     private $lastName;
-    private $birthDate;
+    private $birthdate;
     private $email;
 
-    public function __construct($userId) {
+    public function __construct($userId = null) {
         $this->userId = $userId;
     }
 
     //Getters
 
     public function getUserId() {
-        if($this->userId != null)
-            return $this->userId;
-        return null;
+        return null == $this->userId ? "" : $this->userId;
     }
 
     public function getProfileId() {
-        if($this->customerProfileId != null)
-            return $this->customerProfileId;
-        return null;
+        return null == $this->customerProfileId ? "" : $this->customerProfileId;
     }
 
     public function getFirstName() {
-        if($this->firstName != null)
-            return $this->firstName;
-        return null;
+        return null == $this->firstName ? "" : $this->firstName;
     }
 
     public function getLastName() {
-        if($this->lastName != null)
-            return $this->lastName;
-        return null;
+        return null == $this->lastName ? "" : $this->lastName;
     }
 
     public function getEmail() {
-        if($this->email != null)
-            return $this->email;
-        return null;
+        return null == $this->email ? "" : $this->email;
     }
 
     public function getBirthDate() {
-        if($this->birthDate != null)
-            return $this->birthDate;
-        return null;
+        return null == $this->birthdate ? "" : $this->birthdate;
     }
 
 
@@ -69,7 +57,7 @@ class Customer {
     }
 
     public function setBirthDate($date){
-        $this->birthDate = $date;
+        $this->birthdate = $date;
     }
 
     public function setEmail($email){
