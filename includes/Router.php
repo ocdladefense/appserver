@@ -14,6 +14,12 @@ class Router
     
     private $resourceString = "";
     
+    //An array of all the routes in all the modules using this format
+    // $route["module"]
+    // $route["method"]
+    // $route["content-type"]
+    // $route["callback"]
+    // $route["files"]
     private $allRoutes = array();
     
     private $headers = array();
@@ -40,7 +46,7 @@ class Router
 
 		$this->resourceString = $url->getResourceString();
 
-		return new Route($this->getFoundRoute(), $url->getArguments());
+		return new Route($this->getFoundRoute());
     }
 
 
@@ -55,7 +61,7 @@ class Router
             foreach($routes as &$route){
                 $route["module"] = $mod;
                 $route["method"] = $route["method"] ?: self::$DEFAULT_HTTP_METHOD;
-                $route["Content-Type"] = $route["Content-Type"] ?: self::$DEFAULT_CONTENT_TYPE;
+                $route["content-type"] = $route["content-type"] ?: self::$DEFAULT_CONTENT_TYPE;
             }
             
 						$this->allRoutes = array_merge($this->allRoutes,$routes);
@@ -67,6 +73,7 @@ class Router
 
 
     //Return the route at the index of the requested resource.
+
     public function getFoundRoute(){
 
         if(!array_key_exists($this->resourceString,$this->allRoutes)){

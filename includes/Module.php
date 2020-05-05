@@ -6,12 +6,16 @@ class Module {
     
     
     protected $dependencies = array();
+
+    
     
     
     protected $files = array();
     
     
     protected $name;
+
+    protected $request;
     
     
 
@@ -27,6 +31,14 @@ class Module {
 
     public function getDependencies(){
         return $this->dependencies;
+    }
+
+    public function setRequest($request){
+        $this->request = $request;
+    }
+
+    public function getRequest(){
+        return $this->request;
     }
 
 

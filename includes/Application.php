@@ -54,14 +54,18 @@ class Application {
     
     public function run($path) {
       $this->activeRoute = $this->router->match($path);
-    	
+
+
+      //Aciive module is an instance of the module class
       $this->activeModule = ModuleLoader::getInstance($this->activeRoute->getModule());
+
+      $this->activeModule->setRequest($this->request);
       
       $this->activeModule->loadFiles();
 
       $this->requireRouteFiles($this->activeRoute);
 
-			return $this->doCallback($this->activeModule,$this->activeRoute);
+        return $this->doCallback($this->activeModule,$this->activeRoute);
     }
     
     
@@ -87,20 +91,41 @@ class Application {
 
 
 
-    public function doCallback($module,$route){
-    		if(method_exists($module,$route->getCallback())) {
-    			return call_user_func_array(array($module,$route->getCallback()),$route->getArgs());
-    		}
-    		
-        if($route->getMethod() == "post") {
-            //should be set to request->getBody();
+    // public function doCallback($module,$route){
+    //     $body;
 
-            //check the content type of the request if json decode it and pass json to the callback
-            $entityBody = file_get_contents('php://input');
-            return call_user_func_array($route->getCallback(),array($entityBody));   
-        } else {
-            return call_user_func_array($route->getCallback(),$route->getArgs());
-        }
+    //     if($route->isPost()){
+    //         $body = $this->request->getBody();
+    //     }
+
+    //     $args = $route->getMethod() == "post" ? $_POST : $route->getArgs();
+
+    //     //if the method is a post then pass the request body into calluser func as the second parameter
+
+    //     if(method_exists($module,$route->getCallback())) {
+    //         return call_user_func(array($module,$route->getCallback()),$args);
+    //     }
+    		
+    //     if($route->getMethod() == "post") {
+    //         //should be set to request->getBody();
+    //         // var_dump($_SERVER);exit;
+
+    //         //check the content type of the request if it is x-www blah blah, json decode it and pass json to the callback
+
+    //         //get rid of entityBody and pass in the requestbody if its a get request ppass in get args other wise pass in getArgs as the
+    //         //2nd parameter as it is set up now pretty much...
+    //         $entityBody = file_get_contents('php://input');
+    //         return call_user_func_array($route->getCallback(),array($entityBody));   
+    //     } else {
+    //         return call_user_func_array($route->getCallback(),$route->getArgs());
+    //     }
+    // }
+
+    public function doCallback($module,$route){
+
+        $args = $this->request->getArguments();
+
+        return call_user_func(array($module,$route->getCallback()),$args);
     }
     
     

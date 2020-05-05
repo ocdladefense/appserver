@@ -1,14 +1,13 @@
 <?php
-session_start();
+
 require '../bootstrap.php';     
-  
+
+session_start();
   
 use Http\HttpRequest as HttpRequest;
 use Http\HttpResponse as HttpResponse;   
 
 
-
-session_start();
 ini_set("max_execution_time","18000");
 // set_time_limit(0);
 

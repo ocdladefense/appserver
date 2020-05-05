@@ -9,10 +9,10 @@ class Route {
 	
 	
 
-	public function __construct($routeInfo, $args) {
+	public function __construct($routeInfo) {
 		$this->routeInfo = $routeInfo;
 		
-		$this->routeArgs = $args;	
+		//$this->routeArgs = $args;
 	}
 	
 	
@@ -38,6 +38,10 @@ class Route {
 	}
 	
 	public function getContentType() {
-		return $this->routeInfo["Content-Type"];
+		return $this->routeInfo["content-type"];
+	}
+
+	public function isPost(){
+		return $routeInfo["method"] == \Http\HTTP_METHOD_GET;
 	}
 }

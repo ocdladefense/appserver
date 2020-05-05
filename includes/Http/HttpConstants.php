@@ -15,3 +15,5 @@ const MIME_TEXT_HTML = "text/html; charset=utf-8";
 const MIME_APPLICATION_JSON = "application/json; charset=utf-8";
 
 const MIME_TEXT_JAVASCRIPT = "text/javascript";
+
+const CONTENT_TYPE_APPLICATION_X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
