@@ -48,6 +48,12 @@ class HttpRequest extends HttpMessage {
 		return $url->getArguments();
 	}
 
+	public function getUrlNamedParameters(){
+		$url = new \Url($this->url);
+
+		return $url->getNamedParameters();
+	}
+
 
 	private static function parseHostname($url) {
 		list($scheme,$address) = explode("://",$url);
@@ -141,20 +147,18 @@ class HttpRequest extends HttpMessage {
 	public static function newFromEnvironment(){
 		$request = new self($_SERVER["REQUEST_URI"]);
 
-
-		if(!empty($_POST)){
+		if($_SERVER["REQUEST_METHOD"] == HTTP_METHOD_POST){
 			$request->setPost();
 		}
 
 		$request->addHeader(new HttpHeader("Request-URI",$_SERVER["REQUEST_URI"]));
 
-
 		if($request->method == HTTP_METHOD_POST){
 			$request->addHeader(new HttpHeader("Content-Type", apache_request_headers()["Content-Type"]));
 		}
-		//var_dump($request->getHeader("content-type"));exit;
 
-		if($request->getHeader("Content-Type")->getValue() == CONTENT_TYPE_APPLICATION_X_WWW_FORM_URLENCODED){
+
+		if($request->method == HTTP_METHOD_POST && $request->getHeader("Content-Type")->getValue() == CONTENT_TYPE_APPLICATION_X_WWW_FORM_URLENCODED){
 			$request->setBody($_POST);
 		} else {
 			$request->setBody(file_get_contents('php://input'));

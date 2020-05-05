@@ -33,8 +33,9 @@ class Url {
 		 
 
 			if($this->hasQueryString($url)){
-					$this->queryString = explode("?",$url)[1];
-					$this->namedParameters = self::parseQueryString($this->queryString);
+
+				$this->queryString = explode("?",$url)[1];
+				$this->namedParameters = self::parseQueryString($this->queryString);
 			}
 
 			$this->everythingElse = explode("?",$url)[0];

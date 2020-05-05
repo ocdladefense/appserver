@@ -91,41 +91,32 @@ class Application {
 
 
 
-    // public function doCallback($module,$route){
-    //     $body;
-
-    //     if($route->isPost()){
-    //         $body = $this->request->getBody();
-    //     }
-
-    //     $args = $route->getMethod() == "post" ? $_POST : $route->getArgs();
-
-    //     //if the method is a post then pass the request body into calluser func as the second parameter
-
-    //     if(method_exists($module,$route->getCallback())) {
-    //         return call_user_func(array($module,$route->getCallback()),$args);
-    //     }
-    		
-    //     if($route->getMethod() == "post") {
-    //         //should be set to request->getBody();
-    //         // var_dump($_SERVER);exit;
-
-    //         //check the content type of the request if it is x-www blah blah, json decode it and pass json to the callback
-
-    //         //get rid of entityBody and pass in the requestbody if its a get request ppass in get args other wise pass in getArgs as the
-    //         //2nd parameter as it is set up now pretty much...
-    //         $entityBody = file_get_contents('php://input');
-    //         return call_user_func_array($route->getCallback(),array($entityBody));   
-    //     } else {
-    //         return call_user_func_array($route->getCallback(),$route->getArgs());
-    //     }
-    // }
-
     public function doCallback($module,$route){
 
+        $expectedRouteParams = $route->getParameters();
+        $urlNamedParameters = $this->request->getUrlNamedParameters();
         $args = $this->request->getArguments();
+        $namedParamKeys = array_keys($urlNamedParameters);
+        $params = array();
 
-        return call_user_func(array($module,$route->getCallback()),$args);
+
+        //if the parameter is defined by name then use the value for that name otherwise use the value at the current index
+        if(!empty($urlNamedParameters)){
+            for($i = 0; $i < count($expectedRouteParams); $i++){
+                if(in_array($namedParamKeys[$i],$expectedRouteParams)){
+                    $params[] = $urlNamedParameters[$namedParamKeys[$i]];
+                }
+                if(count($params) == 0){
+                    $params = $args;
+                }
+            }
+        } else {
+            $params = $args;
+        }
+
+        //var_dump($params);exit;
+
+        return call_user_func_array(array($module,$route->getCallback()),$params);
     }
     
     
@@ -141,7 +132,7 @@ class Application {
 			//Add the preferred content type to the headers array
 			if(strpos($this->activeRoute->getContentType(),"json") !== false)
 			{
-					$contentType = Http\MIME_APPLICATION_JSON;
+                $contentType = Http\MIME_APPLICATION_JSON;
 			}
 			else
 			{
@@ -166,7 +157,7 @@ class Application {
         
         
         if(null != $cType) {
-					$cType = $header->getValue();
+            $cType = $header->getValue();
         }
         
         $accept = "*/*";
@@ -188,3 +179,21 @@ class Application {
         print $content;
     }
 }
+
+
+//---------------------TESTING VAR_DUMP CODE for doCallback()--------------------------------
+
+
+//$usingTheseArgs = array();
+// $usingTheseArgs = empty($args) ? $urlNamedParameters : $args;
+
+// print "<br>urlNamedParameters<br>";
+// var_dump($urlNamedParameters);
+// print "<br>namedParamKeys<br>";
+// var_dump($namedParamKeys);
+// print "<br>args<br>";
+// var_dump($args);
+// print "<br>usingTheseArgs<br>";
+// var_dump($usingTheseArgs);
+// print "<br>expectedRouteParams<br>";
+// var_dump($expectedRouteParams);exit;

@@ -46,6 +46,7 @@ class Router
 
 		$this->resourceString = $url->getResourceString();
 
+        //pass the selected route and any named parameters to the Route constructor.
 		return new Route($this->getFoundRoute());
     }
 

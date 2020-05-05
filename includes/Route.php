@@ -4,15 +4,12 @@ class Route {
 
 	private $routeInfo;
 	
-	
 	private $routeArgs;
 	
 	
 
 	public function __construct($routeInfo) {
 		$this->routeInfo = $routeInfo;
-		
-		//$this->routeArgs = $args;
 	}
 	
 	
@@ -39,6 +36,10 @@ class Route {
 	
 	public function getContentType() {
 		return $this->routeInfo["content-type"];
+	}
+
+	public function getParameters(){
+		return $this->routeInfo["parameters"];
 	}
 
 	public function isPost(){
