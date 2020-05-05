@@ -1,4 +1,4 @@
-
+log/
 
 # Ignore .htaccess; prefer .htaccess-example
 .htaccess
