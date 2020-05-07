@@ -80,7 +80,8 @@ class Router
         if(!array_key_exists($this->resourceString,$this->allRoutes)){
             throw new PageNotFoundException($this->resourceString." could not be found");
         }
-        
+        //    /transaction/5859451965946595103004 should match the route "transaction/%txId%"
+        //    /transaction/5859451965946595103004 should not match the route "transaction"
         return $this->allRoutes[$this->resourceString];
     }
 

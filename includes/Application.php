@@ -101,7 +101,8 @@ class Application {
 
 
         //if the parameter is defined by name then use the value for that name otherwise use the value at the current index
-        if(!empty($urlNamedParameters)){
+        //Determine which kind of paramter to give preference to.
+        if(!empty($urlNamedParameters) && empty($args)){
             for($i = 0; $i < count($expectedRouteParams); $i++){
                 if(in_array($namedParamKeys[$i],$expectedRouteParams)){
                     $params[] = $urlNamedParameters[$namedParamKeys[$i]];
