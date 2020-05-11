@@ -7,6 +7,10 @@ class Customer {
     private $customerProfileId;
     private $firstName;
     private $lastName;
+    private $address;
+    private $city;
+    private $state;
+    private $zip;
     private $birthdate;
     private $email;
 
@@ -36,6 +40,22 @@ class Customer {
         return null == $this->email ? "" : $this->email;
     }
 
+    public function getAddress() {
+        return null == $this->address ? "" : $this->address;
+    }
+
+    public function getCity() {
+        return null == $this->city ? "" : $this->city;
+    }
+
+    public function getState() {
+        return null == $this->state ? "" : $this->state;
+    }
+
+    public function getZip() {
+        return null == $this->zip ? "" : $this->zip;
+    }
+
     public function getBirthDate() {
         return null == $this->birthdate ? "" : $this->birthdate;
     }
@@ -54,6 +74,22 @@ class Customer {
 
     public function setLastName($lastName){
         $this->lastName = $lastName;
+    }
+
+    public function setAddress($address){
+        $this->address = $address;
+    }
+
+    public function setCity($city){
+        $this->city = $city;
+    }
+
+    public function setState($state){
+        $this->state = $state;
+    }
+
+    public function setZip($zip){
+        $this->zip = $zip;
     }
 
     public function setBirthDate($date){
