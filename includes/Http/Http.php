@@ -42,6 +42,7 @@ class Http {
 	// Send the specified HttpMessage, optionally
 	//   enable logging.
 	public function send(HttpMessage $msg, $log = false) {
+
 		
 		// Static context so need to reset headers before further processing.
 		self::$headersSent = null;
@@ -65,10 +66,9 @@ class Http {
 		// Send using cURL with the 
 		$resp = Curl::send($msg->getUrl(), $this->config->getAsCurl());
 
-		// var_dump($resp);exit;
+		//var_dump($resp);exit;
 		
 
-		// $this->httpSessionLog = $resp["log"];
 		$logArray = explode(" * ",$resp["log"]);
 		
 		
@@ -77,7 +77,7 @@ class Http {
 		$this->httpSessionLog = $logArray;
 		
 		
-		// Return a new instance of HttpResponse();     
+		// Return a new instance of HttpResponse(); 
 		return self::newHttpResponse(
 			$resp["headers"],
 			$resp["body"],
@@ -91,11 +91,10 @@ class Http {
 	
 
 	private static function newHttpResponse($headers,$body,$info,$log = null){
-		
 		$resp = new HttpResponse($body);
 		$resp->setHeaders(HttpHeader::fromArray($headers));
 		$resp->setCurlInfo($info);
-		
+		$resp->setStatusCode($info["http_code"]);
 		return $resp;
 	}
 

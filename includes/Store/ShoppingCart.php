@@ -4,6 +4,7 @@ class ShoppingCart {
 
     private $items;
     private $total;
+    private $currency;
 
     public function __construct() {
 
@@ -16,6 +17,10 @@ class ShoppingCart {
     //Setters
     public function setTotal($total){
         $this->total = $total;
+    }
+
+    public function setCurrency($currency){
+        $this->currency = $currency;
     }
 
     //Getters
@@ -33,7 +38,10 @@ class ShoppingCart {
     }
 
     public function getTotal(){
-        // $this->total = 950;
         return $this->total;
+    }
+
+    public function getCurrency(){
+        return $this->currency;
     }
 }

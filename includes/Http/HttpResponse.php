@@ -7,8 +7,8 @@ class HttpResponse extends HttpMessage {
 	
 	
     public function __construct($body = null){
-			parent::__construct();
-    	$this->body = $body;
+        parent::__construct();
+        $this->body = $body;
     }
 
     //Setters
@@ -22,7 +22,7 @@ class HttpResponse extends HttpMessage {
             $this->headers->addHeader($header);
     }
 
-    public function setStatusCode($code) {
+    public function setStatusCode($code){
     	$this->statusCode = $code;
     }
     

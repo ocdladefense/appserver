@@ -115,8 +115,6 @@ class Application {
             $params = $args;
         }
 
-        //var_dump($params);exit;
-
         return call_user_func_array(array($module,$route->getCallback()),$params);
     }
     
@@ -180,21 +178,3 @@ class Application {
         print $content;
     }
 }
-
-
-//---------------------TESTING VAR_DUMP CODE for doCallback()--------------------------------
-
-
-//$usingTheseArgs = array();
-// $usingTheseArgs = empty($args) ? $urlNamedParameters : $args;
-
-// print "<br>urlNamedParameters<br>";
-// var_dump($urlNamedParameters);
-// print "<br>namedParamKeys<br>";
-// var_dump($namedParamKeys);
-// print "<br>args<br>";
-// var_dump($args);
-// print "<br>usingTheseArgs<br>";
-// var_dump($usingTheseArgs);
-// print "<br>expectedRouteParams<br>";
-// var_dump($expectedRouteParams);exit;

@@ -46,6 +46,7 @@ class Curl {
 		// Send the request using cURL.
 		$resp = curl_exec($curl);
 
+
 		
 		// print"<pre>" .$resp . "</pre>";
 
@@ -123,9 +124,6 @@ class Curl {
                 trim($h[0]);
             }
 		}
-
-		// print "<br><br>Headers to be returned by httpParseHeaders";
-		// var_dump($headers);exit;
         return $headers;
 	}
 }

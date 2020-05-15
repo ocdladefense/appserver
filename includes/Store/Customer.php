@@ -1,18 +1,22 @@
 <?php
 
 namespace ClickpdxStore;
-class Customer {
+class Customer { 
 
     private $userId;
     private $customerProfileId;
     private $firstName;
     private $lastName;
-    private $address;
+    private $address1;
+    private $address2;
     private $city;
     private $state;
     private $zip;
+    private $country;
     private $birthdate;
     private $email;
+    private $phoneNumber;
+    private $card;
 
     public function __construct($userId = null) {
         $this->userId = $userId;
@@ -24,7 +28,7 @@ class Customer {
         return null == $this->userId ? "" : $this->userId;
     }
 
-    public function getProfileId() {
+    public function getCustomerProfileId() {
         return null == $this->customerProfileId ? "" : $this->customerProfileId;
     }
 
@@ -40,8 +44,12 @@ class Customer {
         return null == $this->email ? "" : $this->email;
     }
 
-    public function getAddress() {
-        return null == $this->address ? "" : $this->address;
+    public function getAddress1() {
+        return null == $this->address1 ? "" : $this->address1;
+    }
+
+    public function getAddress2() {
+        return null == $this->address2 ? "" : $this->address2;
     }
 
     public function getCity() {
@@ -56,8 +64,20 @@ class Customer {
         return null == $this->zip ? "" : $this->zip;
     }
 
+    public function getCountry() {
+        return null == $this->country ? "" : $this->country;
+    }
+
     public function getBirthDate() {
         return null == $this->birthdate ? "" : $this->birthdate;
+    }
+
+    public function getPhoneNumber() {
+        return null == $this->phoneNumber ? "" : $this->phoneNumber;
+    }
+
+    public function getCard(){
+        return null == $this->card ? null : $this->card;
     }
 
 
@@ -76,8 +96,12 @@ class Customer {
         $this->lastName = $lastName;
     }
 
-    public function setAddress($address){
-        $this->address = $address;
+    public function setAddress1($address1){
+        $this->address1 = $address1;
+    }
+
+    public function setAddress2($address2){
+        $this->address2 = $address2;
     }
 
     public function setCity($city){
@@ -92,11 +116,23 @@ class Customer {
         $this->zip = $zip;
     }
 
+    public function setCountry($country){
+        $this->country = $country;
+    }
+
     public function setBirthDate($date){
         $this->birthdate = $date;
     }
 
     public function setEmail($email){
         $this->email = $email;
+    }
+
+    public function setPhoneNumber($phoneNumber){
+        $this->phoneNumber = $phoneNumber;
+    }
+
+    public function setCard($card){
+        $this->card = $card;
     }
 }

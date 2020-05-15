@@ -102,7 +102,6 @@ class HttpMessage {
 	//curlInfo
 	public function setCurlInfo($info){
 		$this->curlInfo = $info;
-		// print_r($info);exit;
 	}
 
 	public function getCurlInfo(){

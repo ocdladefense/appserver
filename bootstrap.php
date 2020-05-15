@@ -27,7 +27,7 @@
 			require_once(BASE_PATH.'/includes/Http/'.$file.".php");
 		}
 
-	$store = array("ShoppingCart","IPaymentProcessor","Customer","Order");
+	$store = array("ShoppingCart","IPaymentProcessor","Customer","Order","CreditCard");
 	
 	foreach($store as $file) {
 		require_once(BASE_PATH.'/includes/Store/'.$file.".php");
@@ -54,5 +54,6 @@
 	require_once BASE_PATH.'/includes/Database/QueryBuilder.php';
 
 	require_once BASE_PATH.'/includes/Exception/DbException.php';
+
 
 
