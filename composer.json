@@ -31,6 +31,7 @@
     "require": {
         "square/connect": "^3.20200325",
         "cybersource/rest-client-php": "^0.0.13",
-        "cybersource/sdk-php": "^1.0"
+        "cybersource/sdk-php": "^1.0",
+        "vlucas/phpdotenv": "3.3"
     }
 }
