@@ -35,6 +35,35 @@
 		<title>OCDLA - Legal Tools & Research</title>
 
 		<?php echo $styles; ?>
+
+		
+		<!-- link to the SqPaymentForm library -->
+  <script type="text/javascript" src=
+    <?php
+        echo "\"";
+        echo ($_ENV["USE_PROD"] == 'true')  ?  "https://js.squareup.com/v2/paymentform"
+                                            :  "https://js.squareupsandbox.com/v2/paymentform";
+        echo "\"";
+    ?>
+  ></script>
+
+  <script type="text/javascript">
+    window.applicationId =
+      <?php
+        echo "\"";
+        echo ($_ENV["USE_PROD"] == 'true')  ?  $_ENV["PROD_APP_ID"]
+                                            :  $_ENV["SANDBOX_APP_ID"];
+        echo "\"";
+      ?>;
+    window.locationId =
+    <?php
+      echo "\"";
+      echo ($_ENV["USE_PROD"] == 'true')  ?  $_ENV["PROD_LOCATION_ID"]
+                                          :  $_ENV["SANDBOX_LOCATION_ID"];
+      echo "\"";
+    ?>;
+    
+  </script>
 		
 		<script type="text/javascript">
 			window.appModules = {};
