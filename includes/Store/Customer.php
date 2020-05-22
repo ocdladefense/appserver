@@ -4,7 +4,7 @@ namespace ClickpdxStore;
 class Customer { 
 
     private $userId;
-    private $customerProfileId;
+    private $paymentProfileId;
     private $firstName;
     private $lastName;
     private $address1;
@@ -28,8 +28,8 @@ class Customer {
         return null == $this->userId ? "" : $this->userId;
     }
 
-    public function getCustomerProfileId() {
-        return null == $this->customerProfileId ? "" : $this->customerProfileId;
+    public function getPaymentProfileId() {
+        return null == $this->paymentProfileId ? "" : $this->paymentProfileId;
     }
 
     public function getFirstName() {
@@ -84,8 +84,8 @@ class Customer {
     //Setters
 
 
-    public function setCustomerProfileId($profileId){
-        $this->customerProfileId = $profileId;
+    public function setPaymentProfileId($profileId){
+        $this->paymentProfileId = $profileId;
     }
 
     public function setFirstName($firstName){
