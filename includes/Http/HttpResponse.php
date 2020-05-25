@@ -39,6 +39,10 @@ class HttpResponse extends HttpMessage {
     	$this->headers->addHeader(new HttpHeader("Location",$url));
     }
 
+    public function isSuccess(){
+        return $this->getStatusCode() == 200 || $this->getStatusCode() == 201;
+    }
+
     //Getters
     public function getStatusCode(){
         return $this->statusCode;
