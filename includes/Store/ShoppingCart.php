@@ -6,8 +6,9 @@ class ShoppingCart {
     private $total;
     private $currency;
 
-    public function __construct() {
-
+    public function __construct($currency = "USD") {
+        $this->total = $total;
+        $this->currency = $currency;
     }
 
     public function refresh() {
@@ -44,4 +45,17 @@ class ShoppingCart {
     public function getCurrency(){
         return $this->currency;
     }
+
+
+    /**
+     * 
+     */
+    public static function fromParams($params){
+		$cart = new ShoppingCart();
+		$cart->setTotal($params["total"]);
+		$cart->setCurrency($params["currency"] ?: "USD");
+
+		return $cart;
+	}
+
 }

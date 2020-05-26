@@ -103,6 +103,7 @@ class HttpRequest extends HttpMessage {
 		return $this->body;
 	}
 
+
 	
 	
 	
@@ -167,6 +168,7 @@ class HttpRequest extends HttpMessage {
 		if($request->method == HTTP_METHOD_GET){
 			$request->setBody(null);
 		}
+
 	
 	
 		return $request;
