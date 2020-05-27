@@ -27,7 +27,7 @@
 			require_once(BASE_PATH.'/includes/Http/'.$file.".php");
 		}
 
-	$store = array("ShoppingCart","IPaymentProcessor","Customer","Order","CreditCard");
+	$store = array("ShoppingCart","IPaymentProcessor","Customer","Order","CreditCard","Payment");
 	
 	foreach($store as $file) {
 		require_once(BASE_PATH.'/includes/Store/'.$file.".php");

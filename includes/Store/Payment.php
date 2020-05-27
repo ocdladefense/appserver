@@ -3,30 +3,24 @@
 namespace ClickpdxStore;
 class Payment {
 
-    private $resp;
-    private $respBody;
     private $lastFour;
     private $currency;
     private $authorizedAmount;
     private $cardType;
     private $status;
-    private $paymentProfileId;
-    private $hasError;
-    private $log;
+    //token, sourceId, customerId
+    private $token;
+
     
-
-    public function __construct($resp){
-
-        $this->resp = $resp;
-        $this->respBody = json_decode($this->resp->getBody());
-        $this->status = $this->respBody->status;
-        $this->authorizedAmount = $this->respBody->orderInformation->amountDetails->authorizedAmount;
-        $this->cardType = $this->respBody->paymentAccountInformation->card->type;
-        $this->currency = $this->respBody->orderInformation->amountDetails->currency;
+    public function __construct($token){
+        $this->token = $token;
     }
 
-    public function setPaymentProfileId($id){
-        $this->paymentProfileId = $id;
+    public function setToken($token){
+        $this->token = $token;
+    }
+    public function setAmount($amount){
+        $this->amount = $amount;
     }
 
     public function setLastFour($lastfour){
