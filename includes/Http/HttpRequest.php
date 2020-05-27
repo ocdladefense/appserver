@@ -147,15 +147,19 @@ class HttpRequest extends HttpMessage {
 
 	public static function newFromEnvironment(){
 		$request = new self($_SERVER["REQUEST_URI"]);
+		// $_SERVER["HTTP_ACCEPT"] = "application/json";
+		// var_dump($_SERVER["HTTP_ACCEPT"]);
+		// var_dump(apache_request_headers()["Accept"]);
+
 
 		if($_SERVER["REQUEST_METHOD"] == HTTP_METHOD_POST){
 			$request->setPost();
 		}
-
 		$request->addHeader(new HttpHeader("Request-URI",$_SERVER["REQUEST_URI"]));
 
 		if($request->method == HTTP_METHOD_POST){
 			$request->addHeader(new HttpHeader("Content-Type", apache_request_headers()["Content-Type"]));
+			//$request->addHeader(new HttpHeader("Accept", "application/json"));
 		}
 
 
@@ -168,9 +172,7 @@ class HttpRequest extends HttpMessage {
 		if($request->method == HTTP_METHOD_GET){
 			$request->setBody(null);
 		}
-
-	
-	
+			
 		return $request;
 	}
 
