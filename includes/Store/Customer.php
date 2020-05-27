@@ -80,6 +80,10 @@ class Customer {
         return null == $this->card ? null : $this->card;
     }
 
+    public function getLastFour(){
+        return $this->card->getCardNumber();
+    }
+
 
     //Setters
 
@@ -135,4 +139,35 @@ class Customer {
     public function setCard($card){
         $this->card = $card;
     }
+
+    public function isSavedPaymentProfile(){
+        return $this->getPaymentProfileId() != null;
+    }
+
+    public static function fromParams($params){
+
+		$customer = new ClickpdxStore\Customer();		
+		$customer->setPaymentProfileId($params["paymentProfileId"]);
+		$customer->setFirstName($params["firstName"]);
+		$customer->setLastName($params["lastName"]);
+		$customer->setAddress1($params["address"]);
+		$customer->setAddress2($params["address2"]);
+		$customer->setCity($params["city"]);
+		$customer->setState($params["state"]);
+		$customer->setZip($params["zipcode"]);
+		$customer->setCountry($params["country"]);
+		$customer->setEmail($params["email"]);
+		$customer->setPhoneNumber($params["phoneNumber"]);
+	
+		$card = new ClickpdxStore\CreditCard();
+		$card->setCardNumber($params["ccNumber"]);
+		$card->setExpirationMonth($params["expMonth"]);
+		$card->setExpirationYear($params["expYear"]);
+		$card->setSecurityCode($params["securityCode"]);
+		$card->setCardType($params["cardType"]);
+	
+		$customer->setCard($card);
+	
+		return $customer;
+	}
 }

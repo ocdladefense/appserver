@@ -60,6 +60,10 @@ class QueryBuilder{
         return $where;
     }
 
+		function optionsClause(){
+			return " LIMIT 100";
+		}
+
     function compile(){
 
         if($this->getType() == "insert"){
@@ -67,7 +71,7 @@ class QueryBuilder{
             $values = $this->prepareInsertValues();
             return "INSERT INTO $this->tableName $columns VALUES $values";
         } else {
-            return $this->selectClause().$this->whereClause();
+            return $this->selectClause().$this->whereClause() . $this->optionsClause();
         }
     }
     

@@ -39,6 +39,10 @@ class HttpMessage {
 	public function getBody(){
 		return $this->body;
 	}
+	public function getContentType(){
+		return $this->getHeader('Content-Type')->getValue();
+	}
+
 
 	//headers
 	public function getHeaderCollection(){

@@ -139,7 +139,8 @@ class Application {
 			}
 
 			$header = new HttpHeader("Content-Type",$contentType);
-			$resp->addHeader($header);
+            $resp->addHeader($header);
+            
 			
 			$out = Http\formatResponseBody($data, $contentType);
 			
