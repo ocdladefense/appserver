@@ -33,6 +33,7 @@ try {
 		if(gettype($out) === "string" && $out[0] == "{"){
 			header('Content-Type: application/json');
 		}
+		
 	} else if(get_class($out) == "HttpRedirect") {
 		$app->setResponse($out);
 		// $app->secure();
