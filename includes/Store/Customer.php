@@ -4,7 +4,7 @@ namespace ClickpdxStore;
 class Customer { 
 
     private $userId;
-    private $customerProfileId;
+    private $paymentProfileId;
     private $firstName;
     private $lastName;
     private $address1;
@@ -28,8 +28,8 @@ class Customer {
         return null == $this->userId ? "" : $this->userId;
     }
 
-    public function getCustomerProfileId() {
-        return null == $this->customerProfileId ? "" : $this->customerProfileId;
+    public function getPaymentProfileId() {
+        return null == $this->paymentProfileId ? "" : $this->paymentProfileId;
     }
 
     public function getFirstName() {
@@ -80,12 +80,16 @@ class Customer {
         return null == $this->card ? null : $this->card;
     }
 
+    public function getLastFour(){
+        return $this->card->getCardNumber();
+    }
+
 
     //Setters
 
 
-    public function setCustomerProfileId($profileId){
-        $this->customerProfileId = $profileId;
+    public function setPaymentProfileId($profileId){
+        $this->paymentProfileId = $profileId;
     }
 
     public function setFirstName($firstName){
@@ -135,4 +139,35 @@ class Customer {
     public function setCard($card){
         $this->card = $card;
     }
+
+    public function isSavedPaymentProfile(){
+        return $this->getPaymentProfileId() != null;
+    }
+
+    public static function fromParams($params){
+
+		$customer = new ClickpdxStore\Customer();		
+		$customer->setPaymentProfileId($params["paymentProfileId"]);
+		$customer->setFirstName($params["firstName"]);
+		$customer->setLastName($params["lastName"]);
+		$customer->setAddress1($params["address"]);
+		$customer->setAddress2($params["address2"]);
+		$customer->setCity($params["city"]);
+		$customer->setState($params["state"]);
+		$customer->setZip($params["zipcode"]);
+		$customer->setCountry($params["country"]);
+		$customer->setEmail($params["email"]);
+		$customer->setPhoneNumber($params["phoneNumber"]);
+	
+		$card = new ClickpdxStore\CreditCard();
+		$card->setCardNumber($params["ccNumber"]);
+		$card->setExpirationMonth($params["expMonth"]);
+		$card->setExpirationYear($params["expYear"]);
+		$card->setSecurityCode($params["securityCode"]);
+		$card->setCardType($params["cardType"]);
+	
+		$customer->setCard($card);
+	
+		return $customer;
+	}
 }
