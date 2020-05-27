@@ -174,7 +174,6 @@ class Application {
         
         foreach($this->resp->getHeaders() as $header) {
             header($header->getName() . ": " . $header->getValue());
-            print $header->getName() . ": " . $header->getValue();
         }
 
 
