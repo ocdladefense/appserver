@@ -65,6 +65,8 @@ class Application {
 
       $this->requireRouteFiles($this->activeRoute);
 
+      //var_dump($this->activeRoute->getContentType());exit;
+
         return $this->doCallback($this->activeModule,$this->activeRoute);
     }
     
