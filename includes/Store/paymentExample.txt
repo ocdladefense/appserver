@@ -1,7 +1,0 @@
-$nonce = $_POST["nonce-from-square-form"];
-
-
-$payment = new Payment(23.00);
-
-$payment->setToken($nonce);
-$payment->setNonce($nonce);
