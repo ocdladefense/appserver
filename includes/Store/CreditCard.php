@@ -3,11 +3,11 @@
 namespace ClickpdxStore;
 class CreditCard{
 
-    private $cardNumber;
-    private $expirationMonth;
-    private $expirationYear;
-    private $cardType;
-    private $securityCode;
+    protected $cardNumber;
+    protected $expirationMonth;
+    protected $expirationYear;
+    protected $cardType;
+    protected $securityCode;
 
     public function __construct(){}
 

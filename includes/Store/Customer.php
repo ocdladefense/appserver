@@ -81,7 +81,7 @@ class Customer {
     }
 
     public function getLastFour(){
-        return $this->card->getCardNumber();
+        return substr($this->card->getCardNumber(),12);
     }
 
 
@@ -169,5 +169,5 @@ class Customer {
 		$customer->setCard($card);
 	
 		return $customer;
-	}
+    }
 }
