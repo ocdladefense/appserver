@@ -146,7 +146,7 @@ class Customer {
 
     public static function fromParams($params){
 
-		$customer = new ClickpdxStore\Customer();		
+		$customer = new Customer();		
 		$customer->setPaymentProfileId($params["paymentProfileId"]);
 		$customer->setFirstName($params["firstName"]);
 		$customer->setLastName($params["lastName"]);
@@ -159,7 +159,7 @@ class Customer {
 		$customer->setEmail($params["email"]);
 		$customer->setPhoneNumber($params["phoneNumber"]);
 	
-		$card = new ClickpdxStore\CreditCard();
+		$card = new CreditCard();
 		$card->setCardNumber($params["ccNumber"]);
 		$card->setExpirationMonth($params["expMonth"]);
 		$card->setExpirationYear($params["expYear"]);
