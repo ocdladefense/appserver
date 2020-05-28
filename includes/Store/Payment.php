@@ -5,7 +5,7 @@ class Payment {
 
     private $lastFour;
     private $currency;
-    private $authorizedAmount;
+    private $amount;
     private $cardType;
     private $status;
     //token, sourceId, customerId
