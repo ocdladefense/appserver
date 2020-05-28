@@ -159,7 +159,7 @@ class Customer {
 		$customer->setEmail($params["email"]);
 		$customer->setPhoneNumber($params["phoneNumber"]);
 	
-		$card = new ClickpdxStore\CreditCard();
+		$card = new CreditCard();
 		$card->setCardNumber($params["ccNumber"]);
 		$card->setExpirationMonth($params["expMonth"]);
 		$card->setExpirationYear($params["expYear"]);
