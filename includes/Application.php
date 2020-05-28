@@ -140,9 +140,11 @@ class Application {
 				$contentType = Http\MIME_TEXT_HTML;
 			}
 
-			$header = new HttpHeader("Content-Type",$contentType);
-            $resp->addHeader($header);
+            $header = new HttpHeader("Content-Type",$contentType);
             
+            $resp->addHeader($header);
+            $contentTypeHeader = $resp->getHeader("Content-Type");
+
 			
 			$out = Http\formatResponseBody($data, $contentType);
 			
@@ -174,7 +176,8 @@ class Application {
     
         $content = $this->resp->getBody();
         
-        foreach($this->resp->getHeaders() as $header) {
+        $collection = $this->resp->getHeaderCollection();
+        foreach($collection->getHeaders() as $header) {
             header($header->getName() . ": " . $header->getValue());
         }
 
