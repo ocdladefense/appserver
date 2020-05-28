@@ -59,6 +59,10 @@ class Http {
 		// to set the CURLOPT_POSTFIELDS options to the body
 		// of our request (JSON, etc.)
 		if($msg->isPost()) {
+			if(gettype($msg->getBody()) != "string"){
+				throw new \Exception("INVALID_TYPE_ERROR: MESSAGE BODY MUST BE A STRING");
+			}
+
 			$this->config->setPost();
 			$this->config->setBody($msg->getBody());
 		}

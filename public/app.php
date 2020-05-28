@@ -28,6 +28,7 @@ try {
 		$resp = $out;
 	} else if(gettype($out) === "string" || gettype($out) === "array" || gettype($out) === "object") {
 		$resp = $app->getAsHttpResponse($out);
+
 	} else if(get_class($out) == "HttpRedirect") {
 		$app->setResponse($out);
 		// $app->secure();
@@ -54,3 +55,6 @@ $app->setResponse($resp);
 $app->secure();
 
 $app->send();
+
+
+

@@ -12,9 +12,6 @@ class HttpResponse extends HttpMessage {
     }
 
     //Setters
-    public function setBody($content){
-        $this->body = $content;
-    }
     
     public function setContentType($contentType){
             $header = new HttpHeader("Content-Type", $contentType);
