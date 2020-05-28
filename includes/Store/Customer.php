@@ -146,7 +146,7 @@ class Customer {
 
     public static function fromParams($params){
 
-		$customer = new ClickpdxStore\Customer();		
+		$customer = new Customer();		
 		$customer->setPaymentProfileId($params["paymentProfileId"]);
 		$customer->setFirstName($params["firstName"]);
 		$customer->setLastName($params["lastName"]);
