@@ -3,20 +3,20 @@
 namespace ClickpdxStore;
 class Customer { 
 
-    private $userId;
-    private $paymentProfileId;
-    private $firstName;
-    private $lastName;
-    private $address1;
-    private $address2;
-    private $city;
-    private $state;
-    private $zip;
-    private $country;
-    private $birthdate;
-    private $email;
-    private $phoneNumber;
-    private $card;
+    protected $userId;
+    protected $paymentProfileId;
+    protected $firstName;
+    protected $lastName;
+    protected $address1;
+    protected $address2;
+    protected $city;
+    protected $state;
+    protected $zip;
+    protected $country;
+    protected $birthdate;
+    protected $email;
+    protected $phoneNumber;
+    protected $card;
 
     public function __construct($userId = null) {
         $this->userId = $userId;
@@ -140,33 +140,24 @@ class Customer {
         $this->card = $card;
     }
 
-    public function isSavedPaymentProfile(){
-        return $this->getPaymentProfileId() != null;
+    public function shouldTokenize(){
+        return $this->getPaymentProfileId() == null;
     }
 
     public static function fromParams($params){
 
 		$customer = new Customer();		
-		$customer->setPaymentProfileId($params["paymentProfileId"]);
-		$customer->setFirstName($params["firstName"]);
-		$customer->setLastName($params["lastName"]);
-		$customer->setAddress1($params["address"]);
-		$customer->setAddress2($params["address2"]);
-		$customer->setCity($params["city"]);
-		$customer->setState($params["state"]);
-		$customer->setZip($params["zipcode"]);
-		$customer->setCountry($params["country"]);
-		$customer->setEmail($params["email"]);
-		$customer->setPhoneNumber($params["phoneNumber"]);
-	
-		$card = new CreditCard();
-		$card->setCardNumber($params["ccNumber"]);
-		$card->setExpirationMonth($params["expMonth"]);
-		$card->setExpirationYear($params["expYear"]);
-		$card->setSecurityCode($params["securityCode"]);
-		$card->setCardType($params["cardType"]);
-	
-		$customer->setCard($card);
+		$customer->setPaymentProfileId($params->token);
+		$customer->setFirstName($params->firstName);
+		$customer->setLastName($params->lastName);
+		$customer->setAddress1($params->address);
+		$customer->setAddress2($params->address2);
+		$customer->setCity($params->city);
+		$customer->setState($params->state);
+		$customer->setZip($params->zipcode);
+		$customer->setCountry($params->country);
+		$customer->setEmail($params->email);
+		$customer->setPhoneNumber($params->phoneNumber);
 	
 		return $customer;
     }

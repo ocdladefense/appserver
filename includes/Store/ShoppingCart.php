@@ -52,8 +52,8 @@ class ShoppingCart {
      */
     public static function fromParams($params){
 		$cart = new ShoppingCart();
-		$cart->setTotal($params["total"]);
-		$cart->setCurrency($params["currency"] ?: "USD");
+		$cart->setTotal($params->total);
+		$cart->setCurrency($params->currency ?: "USD");
 
 		return $cart;
 	}

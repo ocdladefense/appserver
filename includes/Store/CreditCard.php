@@ -52,4 +52,15 @@ class CreditCard{
     public function setSecurityCode($securityCode){
         $this->securityCode = $securityCode;
     }
+
+    public static function fromParams($params){
+        $card = new CreditCard();
+        $card->setCardNumber($params->cardNumber);
+        $card->setExpirationMonth($params->expirationMonth);
+        $card->setExpirationYear($params->expirationYear);
+        $card->setSecurityCode($params->securityCode);
+        $card->setCardType($params->cardType);
+
+        return $card;
+    }
 }
