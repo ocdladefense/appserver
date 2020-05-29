@@ -24,15 +24,19 @@ class HttpResponse extends HttpMessage {
     }
     
     public function setErrorStatus(){
-    	$this->statusCode = "HTTP/1.1 500 Internal Server Error";
+        $this->setStatusCode(500);
+        $this->statusMessage = "HTTP/1.1 500 Internal Server Error";
+        
     }
     
     public function setNotFoundStatus(){
-    	$this->statusCode = "HTTP/1.1 404 Page Not Found";
+        $this->setStatusCode(404);
+    	$this->statusMessage = "HTTP/1.1 404 Page Not Found";
     }
     
     public function setRedirect($url){
-    	$this->statusCode = "HTTP/1.1 301 Moved Permanently";
+        $this->setStatusCode(301);
+    	$this->statusMessage = "HTTP/1.1 301 Moved Permanently";
     	$this->headers->addHeader(new HttpHeader("Location",$url));
     }
 

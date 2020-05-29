@@ -181,6 +181,8 @@ class Application {
             header($header->getName() . ": " . $header->getValue());
         }
 
+        http_response_code($this->resp->getStatusCode());
+
 
      
         print $content;
