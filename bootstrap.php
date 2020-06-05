@@ -21,7 +21,7 @@
 
 	
 	$http = array("HttpConstants","CurlConfiguration","Curl","Http","HttpHeader","HttpHeaderCollection","HttpMessage","HttpRequest","HttpResponse","HttpRedirect","IHttpCache",
-		"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag");
+		"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag","IJson");
 		
 		foreach($http as $file) {
 			require_once(BASE_PATH.'/includes/Http/'.$file.".php");

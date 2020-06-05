@@ -65,9 +65,61 @@ class Application {
 
       $this->requireRouteFiles($this->activeRoute);
 
-      //var_dump($this->activeRoute->getContentType());exit;
+      $resp = new HttpResponse();
 
-        return $this->doCallback($this->activeModule,$this->activeRoute);
+
+
+      try{
+        $out = $this->doCallback($this->activeModule,$this->activeRoute);
+      
+        if($this->activeRoute->getContentType() == Http\MIME_APPLICATION_JSON){
+
+           $resp->setBody($this->getAsJson($out));
+        } else {
+            $resp->setBody($out);
+        }
+
+      } catch(PageNotFoundException $e) {
+        $resp->setNotFoundStatus();
+        $resp->setBody($e->getMessage());
+        
+      } catch(Exception $e) {
+
+        if($this->activeRoute->getContentType() == Http\MIME_APPLICATION_JSON){
+            $error = new StdClass();
+            $error->error = $e->getMessage();
+            $body = json_encode($error);
+        } else {
+            $body = $e->getMessage();
+        }
+
+        $resp->setErrorStatus();
+        $resp->setBody($body);
+      }
+
+
+
+      //Just adding a header
+      if(strpos($this->activeRoute->getContentType(),"json") !== false){
+          $contentType = Http\MIME_APPLICATION_JSON;
+      } else {
+          $contentType = Http\MIME_TEXT_HTML;
+      }
+
+      $header = new HttpHeader("Content-Type",$contentType);
+      
+      $resp->addHeader($header);
+
+        return $resp;
+    }
+
+    public function getAsJson($out){
+        
+        if(in_array( "Http\IJson",class_implements($out))){
+            return $out->toJson();
+        } else {
+            return json_encode($out);
+        }
     }
     
     
@@ -120,39 +172,6 @@ class Application {
         return call_user_func_array(array($module,$route->getCallback()),$params);
     }
     
-    
-    
-    
-    public function getAsHttpResponse($data) {
-			$resp = new HttpResponse();
-			
-			// Set up the HttpResponse object
-			// Should be in Application or another class.
-			// $resp->setHeaders($this->activeRoute->headers);
-			
-			//Add the preferred content type to the headers array
-			if(strpos($this->activeRoute->getContentType(),"json") !== false)
-			{
-                $contentType = Http\MIME_APPLICATION_JSON;
-			}
-			else
-			{
-				$contentType = Http\MIME_TEXT_HTML;
-			}
-
-            $header = new HttpHeader("Content-Type",$contentType);
-            
-            $resp->addHeader($header);
-            $contentTypeHeader = $resp->getHeader("Content-Type");
-
-			
-			$out = Http\formatResponseBody($data, $contentType);
-			
-			$resp->setBody($out);
-			
-			
-			return $resp;
-    }
 
     //Other Methods
     public function secure(){ 
