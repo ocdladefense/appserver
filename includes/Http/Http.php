@@ -154,25 +154,3 @@ class Http {
 	}
 	
 }
-
-
-	// Where does this get used?
-	function formatResponseBody($content, $contentType) {
-
-		return $content;
-
-		if(strpos($contentType,"json")) {
-				if(is_array($content) || is_object($content)) {
-						$out = json_encode($content);
-				}
-				else {
-						//$out = json_encode(array("content" => $content));
-				}  
-		}
-		else {
-				$out = $content;
-
-		}
-
-		return $out;
-	}

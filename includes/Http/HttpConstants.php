@@ -12,7 +12,8 @@ const HTTP_METHOD_DELETE = "DELETE";
 
 const MIME_TEXT_HTML = "text/html; charset=utf-8";
 
-const MIME_APPLICATION_JSON = "application/json; charset=utf-8";
+const MIME_APPLICATION_JSON = "application/json";// charset=utf-8";
+
 
 const MIME_TEXT_JAVASCRIPT = "text/javascript";
 
