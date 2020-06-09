@@ -19,6 +19,9 @@ class HttpRequest extends HttpMessage {
 	private $port;
 
 
+
+
+
 	protected $params = array();
 
 
@@ -176,6 +179,8 @@ class HttpRequest extends HttpMessage {
 			
 		return $request;
 	}
+
+
 
 	public function addParameter($name, $value){
 		$this->params[] .= $name ."=". $value;

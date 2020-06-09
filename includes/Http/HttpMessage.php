@@ -11,6 +11,9 @@ class HttpMessage {
 	protected $body;
 
 
+	protected $acceptResponse = "Http\HttpResponse";
+
+
 	protected $curlInfo;
 
 
@@ -193,4 +196,12 @@ class HttpMessage {
 		return $this->headers["(request-target)"] = utf8_encode($resourcePath);
 	}
 
+
+	public function setAccept($className){
+		$this->acceptResponse = $className;
+	}
+
+	public function getAccept(){
+		return $this->acceptResponse;
+	}
 }
