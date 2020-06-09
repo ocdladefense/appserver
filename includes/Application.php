@@ -68,7 +68,8 @@ class Application {
       $resp = new HttpResponse();
 
 
-
+      session_start();
+      
       try{
         $out = $this->doCallback($this->activeModule,$this->activeRoute);
       

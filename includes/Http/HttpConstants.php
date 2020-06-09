@@ -10,6 +10,9 @@ const HTTP_METHOD_PUT = "PUT";
 
 const HTTP_METHOD_DELETE = "DELETE";
 
+const HTTP_METHOD_PATCH = "PATCH";
+
+
 const MIME_TEXT_HTML = "text/html; charset=utf-8";
 
 const MIME_APPLICATION_JSON = "application/json";// charset=utf-8";
