@@ -2,7 +2,7 @@
 
 require '../bootstrap.php';     
 
-session_start();
+//session_start();
   
 use Http\HttpRequest as HttpRequest;
 use Http\HttpResponse as HttpResponse;   

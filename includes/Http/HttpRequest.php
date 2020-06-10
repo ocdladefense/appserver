@@ -19,6 +19,9 @@ class HttpRequest extends HttpMessage {
 	private $port;
 
 
+
+
+
 	protected $params = array();
 
 
@@ -73,6 +76,10 @@ class HttpRequest extends HttpMessage {
 	public function setPost(){
 		$this->method = HTTP_METHOD_POST;
 	}
+
+	public function setPut(){
+		$this->method = HTTP_METHOD_PUT;
+	}
 	
 	public function isPost(){
 		return $this->method == HTTP_METHOD_POST;
@@ -80,12 +87,12 @@ class HttpRequest extends HttpMessage {
 	
 	
 	public function setPatch(){
-		$this->method = "PATCH";
+		$this->method = HTTP_METHOD_PATCH;
 	}
 	
 	
 	public function setDelete(){
-		$this->method = "DELETE";
+		$this->method =  HTTP_METHOD_DELETE;
 	}
 	
 	
@@ -176,6 +183,8 @@ class HttpRequest extends HttpMessage {
 			
 		return $request;
 	}
+
+
 
 	public function addParameter($name, $value){
 		$this->params[] .= $name ."=". $value;

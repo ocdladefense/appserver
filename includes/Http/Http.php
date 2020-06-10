@@ -79,10 +79,13 @@ class Http {
 		
 		// $logMessage = implode("<br />",$logArray);
 		$this->httpSessionLog = $logArray;
+
+		$accept = $msg->getAccept() == null ? "Http\HttpResponse" : $msg->getAccept();
 		
 		
 		// Return a new instance of HttpResponse(); 
 		return self::newHttpResponse(
+			$accept,
 			$resp["headers"],
 			$resp["body"],
 			$resp["info"]
@@ -94,8 +97,8 @@ class Http {
 	}
 	
 
-	private static function newHttpResponse($headers,$body,$info,$log = null){
-		$resp = new HttpResponse($body);
+	private static function newHttpResponse($accept,$headers,$body,$info,$log = null){
+		$resp = new $accept($body);
 		$resp->setHeaders(HttpHeader::fromArray($headers));
 		$resp->setCurlInfo($info);
 		$resp->setStatusCode($info["http_code"]);
