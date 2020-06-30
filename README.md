@@ -17,17 +17,29 @@ sudo a2enmod headers
 Appserver has built-in classes to send HTTP Requests and receive HTTP Responses.
 
 <code>
-use Http\HttpRequest;
-use Http\HttpResponse;
+<?php 
+use Http\HttpRequest as HttpRequest;
+use Http\HttpResponse as HttpResponse;
 
 
 // Fetch the New York Times homepage.
+// "All the news that's fit to print."
 $url = "https://nytimes.com";
 
+// Init an http instance for sending requests;
+// include any necessary configuration options.
+$config = array();
+$http = new Http($config);
+
+// The request.
+// See HTTP/1.1 Request(https://www.w3.org/Protocols/rfc2616/rfc2616.html) for more info.
 $req = new HttpRequest($url);
 
-$resp = $req->send();
+// Sending the request returns a Response.
+// See HTTP/1.1 Response(https://www.w3.org/Protocols/rfc2616/rfc2616.html) for more info.
+$resp = $http->send($req);
 
+// See what's in this message.
 echo $resp->getBody();
 </code>
 
