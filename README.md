@@ -53,7 +53,7 @@ c:\wamp64\www\appserver $> composer update
 Loading composer repositories with package information
  
 Step #4 - Create a config/config.php file
- --> copy the config-default.php file to config.php
+ --> copy the config-example.php file to config.php
 
 Step #5 - Create an apache virtual host
  --> modify the DOCUMENT_ROOT setting appropriately
@@ -62,7 +62,7 @@ Step #6 - Create an .htaccess file
   --> modify the RewriteRule target path with a prevailing forward slash that is to be interpreted as being relative to the DOCUMENT_ROOT setting (above)
 
 Step #7 - Test a route
- --> We're going to test "get-customer-payment-profile/{customerId}"
+ --> Test one of the provided routes.
 
 
 
