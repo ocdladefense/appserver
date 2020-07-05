@@ -2,49 +2,46 @@
 A PHP application server
 
 SYSTEM REQUIREMENTS
+Apache webserver
+MySQL Server / MariaDB for car database access.
 
-NOTE: ccapp requires php version >=5.6 and the php-curl extension
+PHP >=5.6 and the php-curl extension
 
 Apache config:
 sudo a2enmod headers
 
 
 
-
-
-# Instructions
-# Using HTTP
-Appserver has built-in classes to send HTTP Requests and receive HTTP Responses.
-
-<code>
-use Http\HttpRequest;
-use Http\HttpResponse;
-
-
-// Fetch the New York Times homepage.
-$url = "https://nytimes.com";
-
-$req = new HttpRequest($url);
-
-$resp = $req->send();
-
-echo $resp->getBody();
-</code>
-
-
-
-
-
-
 INSTALLATION NOTES
+## Description 
+At least something to go on here for how to install this application. If WAMP is already installed you can confirm that you have a half-way decent environment by turning the Apache webserver on, locating your Apache document root and creating a "Hello World!" index.php file.  Open it in a web browser by using the reserved "localhost" domain, i.e., http://localhost/path-to-simple-file/index.php.  If it works you're on the right track.
 
-Install composer
+## Required applications
+- WAMP (so Apache2 web server, MySQL Server, PHP)
+- Composer package manager (https://getcomposer.org/)
+- This repository
+- Web browser
+- Text editor for updating configuration files.
+
+## Overview
+We use the required applications to install an environment that this repo can run in.  As this is a PHP application, a LAMP/WAMP stack is required.  Installing an application like this involves configuring this environment, downloading any additional packages (or their dependencies), identifying the names and locations of configuration files, understanding how the configuration files change the environment, confirming that your configuration changes are effective and finally creating a hostname to reference the site in your preferred web browser.
+
+## Configuration
+PHP and Apache will likely need to be further configured, especially to load the latest version of mod_php (the PHP module for Apache), to change any necessary runtime settings for both Apache and PHP, and especially to configure the Apache document root for this application.
+
+Once that's done we still need to configure the appserver itself.  Check config/ in this repo for the relevant settings and examples.
+
+## Installation directory
+Usually something like c:\wamp64\www\appserver.
+
+
+Install the Composer package manager:
 --> sudo apt install composer
 
-Step #1 - Clone the repository
+Step #1 - Clone this repository into the installation directory.
 
-Step #2 - Composer, install the dependencies.
- --> cd ccapp
+Step #2 - Composer - install the dependencies.
+ --> cd appserver
  --> composer update
  
 Resolve dependencies
@@ -52,19 +49,11 @@ Resolve dependencies
     sudo apt-get install php7.2-curl
 
 Step #3 - Run composer update (again)
- ubuntu@ip-172-31-22-87:/var/www/wordpress/ccapp$ composer update
+c:\wamp64\www\appserver $> composer update
 Loading composer repositories with package information
-Updating dependencies (including require-dev)
-Package operations: 1 install, 0 updates, 0 removals
-    Failed to download authorizenet/authorizenet from dist: The zip extension and unzip command are both missing, skipping.
-Your command-line PHP is using multiple ini files. Run `php --ini` to show them.
-    Now trying to download from source
-  - Installing authorizenet/authorizenet (2.0.0): Cloning 7fa78e6397 from cache
-Writing lock file
-Generating autoload files
  
 Step #4 - Create a config/config.php file
- --> copy the config-default.php file to config.php
+ --> copy the config-example.php file to config.php
 
 Step #5 - Create an apache virtual host
  --> modify the DOCUMENT_ROOT setting appropriately
@@ -73,4 +62,37 @@ Step #6 - Create an .htaccess file
   --> modify the RewriteRule target path with a prevailing forward slash that is to be interpreted as being relative to the DOCUMENT_ROOT setting (above)
 
 Step #7 - Test a route
- --> We're going to test "get-customer-payment-profile/{customerId}"
+ --> Test one of the provided routes.
+
+
+
+
+
+# INSTRUCTIONS
+## Using HTTP
+Appserver has built-in classes to send HTTP Requests and receive HTTP Responses.
+
+
+### use Http\HttpRequest as HttpRequest; 
+### use Http\HttpResponse as HttpResponse;
+
+
+Fetch the New York Times homepage.
+"All the news that's fit to print."
+  $url = "https://nytimes.com";
+
+### Init an http instance for sending requests;
+### include any necessary configuration options.
+<code>$config = array();</code>
+<code>$http = new Http($config);</code>
+
+### The request.
+### See HTTP/1.1 Request(https://www.w3.org/Protocols/rfc2616/rfc2616.html) for more info.
+<code>$req = new HttpRequest($url);</code>
+
+### Sending the request returns a Response.
+### See HTTP/1.1 Response(https://www.w3.org/Protocols/rfc2616/rfc2616.html) for more info.
+<code>$resp = $http->send($req);</code>
+
+### See what's in this message.
+<code>echo $resp->getBody();</code>
