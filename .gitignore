@@ -49,4 +49,6 @@ content/*
 # Ignore any logging files.
 phplog*
 
-/log*
+#ignore the log directory
+/log/
+log/*
