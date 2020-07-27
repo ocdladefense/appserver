@@ -15,7 +15,7 @@
     },
     "extra":{
         "installer-paths":{
-            "modules/testModule":["trevor-uehlin/test-module"],
+            "modules/test":["trevor-uehlin/test-module"],
             "modules/salesforce":["trevor-uehlin/salesforce-module"],
             "modules/authorizenet":["trevor-uehlin/authorize-net-module"],
             "modules/event":["trevor-uehlin/event-module"],
