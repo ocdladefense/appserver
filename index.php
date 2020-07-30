@@ -1,6 +1,6 @@
 <?php
 
-phpinfo();
+//phpinfo();
 
 
 require "includes/Http/HttpRequest.php";
