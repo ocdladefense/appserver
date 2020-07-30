@@ -127,6 +127,10 @@ class QueryBuilder{
         return $limit;
     }
 
+		function optionsClause(){
+			return " LIMIT 100";
+		}
+
     function compile(){
 
         if($this->getType() == "insert"){

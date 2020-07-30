@@ -1,0 +1,116 @@
+<?php
+// MAIN CONFIGURATIONS.
+
+
+
+
+// MySQL Database Connection.
+//  Can also use MariaDB.
+define("DB_HOST", "127.0.0.1");
+define("DB_USER", "");
+define("DB_PASS", "");
+define("DB_NAME", "");
+
+
+// Error reporting.
+// Comment to use values from php.ini.
+error_reporting(E_ALL & ~E_NOTICE);
+
+
+// Default theme.
+// Which theme to use to render text/html callbacks.
+define("ACTIVE_THEME","default");
+
+
+// Key store.
+/* $keyStore = array(
+	"keyId" => "sharedSecret"
+);
+*/
+$keyStore = array(
+	"97db7d6d-219e-47b5-a2b6-54c0906131b1" => "+6tgPmw+I9JDkvx4dk3NA+m4gH96z2CVF6KGMvMmz/I="
+);
+
+
+
+
+
+
+// MODULE CONFIGURATIONS.
+
+
+// Salesforce
+define("SALESFORCE_USERNAME", "");
+define("SALESFORCE_PASSWORD", "");
+define("CLIENT_ID", "");
+define("CLIENT_SECRET", "");
+define("REDIRECT_URI", "");
+define("LOGIN_URI", "");
+
+// Authorize.net
+define("AUTHORIZENET_SANDBOX_URL","");
+define("AUTHORIZENET_MERCHANT_LOGIN_ID", "");
+define("AUTHORIZENET_MERCHANT_TRANSACTION_KEY", "");
+define("AUTHORIZENET_ACCOUNT_ID","");
+define("AUTHORIZENET_TEST_API_ENDPOINT","");
+define("AUTHORIZENET_PRODUCTION_API_ENDPOINT","");
+define("AUTHORIZENET_ORG_ID","");
+define("AUTHORIZENET_USERNAME","");
+
+
+
+// CyberSource
+define("CYBERSOURCE_SANDBOX_URL","https://developer.cybersource.com/api-reference-assets/index.html");
+define("CYBERSOURCE_MERCHANT_ID","");
+define("CYBERSOURCE_ORG_ID","");
+define("CYBERSOURCE_USERNAME","");
+define("CYBERSOURCE_ACCOUNT_ID","");
+define("CYBERSOURCE_TEST_API_ENDPOINT","");
+define("CYBERSOURCE_PRODUCTION_API_ENDPOINT","");
+
+
+// Square
+define("SQUARE_API_KEY","");
+define("SQUARE_API_VERSION","2020-06-25");
+define("SQUARE_APPLICATION_ID","sandbox-sq");
+
+
+
+//The shared secret key and the id that holds the reference to the shared secret key on cybersource.com
+define("CYBERSOURCE_SHARED_SECRET_KEY_ID","");
+define("CYBERSOURCE_SHARED_SECRET_KEY","");
+
+//The access key and secret key for the "visualForce checkout" transaction key, for the "website checkout" profile
+define("CYBERSOURCE_TRANSACTION_KEY_ACCESS_KEY","");
+define("CYBERSOURCE_TRANSACTION_KEY_SECRET_KEY","");
+
+
+
+
+
+
+//Trevors cybersource keys ===========================================================================================
+//cybersource.com
+define("CYBERSOURCE_SANDBOX_URL","https://developer.cybersource.com/api-reference-assets/index.html");
+define("CYBERSOURCE_MERCHANT_ID","trevor_uehlin");
+define("CYBERSOURCE_ORG_ID","trevor_uehlin");
+define("CYBERSOURCE_USERNAME","trevor_uehlin");
+define("CYBERSOURCE_ACCOUNT_ID","trevor_uehlin_acct");
+define("CYBERSOURCE_TEST_API_ENDPOINT","https://apitest.cybersource.com");
+define("CYBERSOURCE_PRODUCTION_API_ENDPOINT","api.cybersource.com");
+define("CYBERSOURCE_TEST_HOST","apitest.cybersource.com");
+define("CYBERSOURCE_PRODUCTION_HOST","api.cybersource.com");
+
+
+
+
+//The shared secret key and the id that holds the reference to the shared secret key on cybersource.com
+define("CYBERSOURCE_SHARED_SECRET_KEY_ID","97db7d6d-219e-47b5-a2b6-54c0906131b1");
+define("CYBERSOURCE_SHARED_SECRET_KEY","+6tgPmw+I9JDkvx4dk3NA+m4gH96z2CVF6KGMvMmz/I=");
+
+//The cybersource signature algorithm used to ????
+define("CYBERSOURCE_SIGNATURE_ALGORITHM","HmacSHA256");
+
+//The access key and secret key for the "visualForce checkout" transaction key, for the "website checkout" profile
+define("CYBERSOURCE_TRANSACTION_KEY_ACCESS_KEY","85339ed8a0543feeadeda49f0eeeefbc");
+define("CYBERSOURCE_TRANSACTION_KEY_SECRET_KEY","573ad151cf204f48a29fcc72f35b62be09b38baca24d4ea89906d920dde1cd1233327b34ed21418286f7a62f646760e6bd428ec8b8af481e886ae2a8fccbed590a20bf6bd3f648f081cf9f047709f61ff236d8b13b9e4a6c9cea6a50ab43399bd1a633a447014300a7b91b3c584e181ef30e053c39e846bf9597f074350c0cf8");

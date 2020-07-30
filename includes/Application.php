@@ -116,7 +116,7 @@ class Application {
 
     public function getAsJson($out){
         
-        if(in_array( "Http\IJson",class_implements($out))){
+        if(gettype($out) == "object" && in_array( "Http\IJson",class_implements($out))){
             return $out->toJson();
         } else {
             return json_encode($out);
