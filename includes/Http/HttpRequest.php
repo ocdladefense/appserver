@@ -172,6 +172,7 @@ class HttpRequest extends HttpMessage {
 
 		if($request->method == HTTP_METHOD_POST && $request->getHeader("Content-Type")->getValue() == CONTENT_TYPE_APPLICATION_X_WWW_FORM_URLENCODED){
 			$request->setBody((object)$_POST);
+
 		} elseif($request->method != HTTP_METHOD_GET) {
 			$content = file_get_contents('php://input');
 			$request->setBody(json_decode($content));
@@ -179,6 +180,14 @@ class HttpRequest extends HttpMessage {
 
 		if($request->method == HTTP_METHOD_GET){
 			$request->setBody(null);
+		}
+
+		if(!empty($_FILES["files"]) && $request->method == HTTP_METHOD_POST){
+			$reqBody = new \stdClass();
+			$reqBody->post = $_POST;
+			$reqBody->files = $_FILES["files"];
+
+			$request->setBody($reqBody);
 		}
 			
 		return $request;
