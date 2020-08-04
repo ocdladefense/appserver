@@ -187,6 +187,8 @@ class HttpRequest extends HttpMessage {
 			$reqBody->post = $_POST;
 			$reqBody->files = $_FILES["files"];
 
+			//var_dump($reqBody);exit;
+
 			$request->setBody($reqBody);
 		}
 			
