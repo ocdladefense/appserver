@@ -46,10 +46,17 @@ class MysqlDatabase{
         return new DbSelectResult($result);
     }
 
-    public static function query($sql){
+    public static function query($sql, $type = "select"){
         $db = new MysqlDatabase();
 
-        return $db->select($sql);
+        switch($type) {
+            case "select":
+                return $db->select($sql);
+                break;
+            case "insert":
+                return $db->insert($sql);
+                break;
+        }      
     }
     
     function close(){

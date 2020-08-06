@@ -36,10 +36,12 @@ class QueryBuilder{
 
     function setColumns($columns){
         $this->columns = $columns;
+        //print_r($columns);
     }
 
     function setValues($values){
         $this->values = $values;
+        //print_r($this->values);
     }
 
     function selectClause(){
@@ -97,6 +99,9 @@ class QueryBuilder{
         foreach($this->sortConditions as $c){
             $field = $c->field;
             $desc = $c->desc;
+            if (gettype($desc) == "string") {
+                $desc = filter_var($desc, FILTER_VALIDATE_BOOLEAN);
+            }
 
             if ($desc){
                 $tmp [] = $field." DESC";
@@ -131,9 +136,12 @@ class QueryBuilder{
 			return " LIMIT 100";
 		}
 
-    function compile(){
+    function compile($type = null){
+        if ($type == null) {
+            $type = $this->getType();
+        }
 
-        if($this->getType() == "insert"){
+        if($type == "insert"){
             $columns = $this->prepareInsertColumns();
             $values = $this->prepareInsertValues();
             return "INSERT INTO $this->tableName $columns VALUES $values";
