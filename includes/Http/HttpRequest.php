@@ -110,6 +110,16 @@ class HttpRequest extends HttpMessage {
 		return $this->body;
 	}
 
+	//returns an array of uploaded file data
+	public function getUploadFilesData(){
+		return $this->body->files;
+	}
+
+	//returns an array containing a file uploads accompanying post data
+	public function getUploadPostData(){
+		return $this->body->post;
+	}
+
 
 	
 	
@@ -200,6 +210,5 @@ class HttpRequest extends HttpMessage {
 	public function addParameter($name, $value){
 		$this->params[] .= $name ."=". $value;
 	}
-	
 	
 }
