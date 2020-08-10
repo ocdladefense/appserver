@@ -192,12 +192,10 @@ class HttpRequest extends HttpMessage {
 			$request->setBody(null);
 		}
 
-		if(!empty($_FILES["files"]) && $request->method == HTTP_METHOD_POST){
+		if(!empty($_FILES) && $request->method == HTTP_METHOD_POST){
 			$reqBody = new \stdClass();
 			$reqBody->post = $_POST;
-			$reqBody->files = $_FILES["files"];
-
-			//var_dump($reqBody);exit;
+			$reqBody->files = $_FILES;
 
 			$request->setBody($reqBody);
 		}
