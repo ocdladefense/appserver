@@ -41,6 +41,22 @@ class MysqlDatabase{
         return new DbInsertResult($result,$id,$count,$this->connection->error);
     }
 
+    function update($sql){
+
+        $result = $this->connection->query($sql);
+
+        if($result !== true){
+            throw new DbException("Error updating data.  " . $this->connection->error);
+        }
+
+        $count = mysqli_affected_rows($this->connection);
+        if($count == 0){
+            throw new DbException("There were ". $count . " rows updated.");
+        }
+
+        return new DbUpdateResult($result,$count,$this->connection->error);
+    }
+
     function select($sql){
         $result = $this->connection->query($sql);
         return new DbSelectResult($result);
@@ -55,6 +71,9 @@ class MysqlDatabase{
                 break;
             case "insert":
                 return $db->insert($sql);
+                break;
+            case "update":
+                return $db->update($sql);
                 break;
         }      
     }

@@ -13,6 +13,7 @@ class QueryBuilder{
     private $limitCondition;
     private $columns = array();
     private $values = array();
+    private $updateFields = array();
 
     function __construct(){
 
@@ -36,12 +37,14 @@ class QueryBuilder{
 
     function setColumns($columns){
         $this->columns = $columns;
-        //print_r($columns);
     }
 
     function setValues($values){
         $this->values = $values;
-        //print_r($this->values);
+    }
+
+    function setUpdateFields($fields){
+        $this->updateFields = $fields;
     }
 
     function selectClause(){
@@ -145,6 +148,9 @@ class QueryBuilder{
             $columns = $this->prepareInsertColumns();
             $values = $this->prepareInsertValues();
             return "INSERT INTO $this->tableName $columns VALUES $values";
+        } else if($type == "update") {
+            $fields = $this->prepareUpdateFields();
+            return "UPDATE $this->tableName SET $fields".$this->whereClause();
         } else {
             return $this->selectClause().$this->whereClause().$this->orderByClause().$this->limitClause();
         }
@@ -177,6 +183,26 @@ class QueryBuilder{
 
     function prepareInsertColumns(){
         return SQL_INSERT_ROW_START . implode(SQL_FIELD_SEPERATOR,$this->columns) . SQL_INSERT_ROW_END;
+    }
+
+    function prepareUpdateFields(){
+        $fields = "";
+        $tmp = array();
+
+        foreach($this->updateFields as $set) {
+            $field = $set->field;
+            $value = $set->value;
+            $op = "=";
+
+            if(is_int($value)){
+                $tmp[] = sprintf("%s %s %d",$field,$op,$value);
+            } else {
+                $tmp[] = sprintf("%s %s '%s'",$field,$op,$value);
+            }
+        }
+
+        $fields = implode(SQL_FIELD_SEPERATOR, $tmp);
+        return $fields;
     }
 
     function getType(){
