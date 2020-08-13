@@ -8,6 +8,7 @@ define("SQL_INSERT_ROW_END",")");
 class QueryBuilder{
 
     private $tableName;
+    private $type;
     private $conditions = array();
     private $sortConditions = array();
     private $limitCondition;
@@ -21,6 +22,10 @@ class QueryBuilder{
 
     function setTable($tbName){
         $this->tableName = $tbName;
+    }
+
+    function setType($tp){
+        $this->type = $tp;
     }
 
     function setConditions($conds){
@@ -139,19 +144,15 @@ class QueryBuilder{
 			return " LIMIT 100";
 		}
 
-    function compile($type = null){
-        if ($type == null) {
-            $type = $this->getType();
-        }
-
-        if($type == "insert"){
+    function compile(){
+        if($this->type == "insert"){
             $columns = $this->prepareInsertColumns();
             $values = $this->prepareInsertValues();
             return "INSERT INTO $this->tableName $columns VALUES $values";
-        } else if($type == "update") {
+        } else if($this->type == "update") {
             $fields = $this->prepareUpdateFields();
             return "UPDATE $this->tableName SET $fields".$this->whereClause();
-        } else if($type == "delete") {
+        } else if($this->type == "delete") {
             return "DELETE FROM $this->tableName".$this->whereClause();
         } else {
             return $this->selectClause().$this->whereClause().$this->orderByClause().$this->limitClause();
@@ -205,21 +206,5 @@ class QueryBuilder{
 
         $fields = implode(SQL_FIELD_SEPERATOR, $tmp);
         return $fields;
-    }
-
-    function getType(){
-
-        if(debug_backtrace()[2]["function"] == "select"){
-            return "select";
-        }
-        else if(debug_backtrace()[2]["function"] == "insert"){
-            return "insert";
-        }
-        else if(debug_backtrace()[2]["function"] == "update"){
-            return "update";
-        }
-        else {
-            return "delete";
-        }
     }
 }
