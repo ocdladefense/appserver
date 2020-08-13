@@ -151,6 +151,8 @@ class QueryBuilder{
         } else if($type == "update") {
             $fields = $this->prepareUpdateFields();
             return "UPDATE $this->tableName SET $fields".$this->whereClause();
+        } else if($type == "delete") {
+            return "DELETE FROM $this->tableName".$this->whereClause();
         } else {
             return $this->selectClause().$this->whereClause().$this->orderByClause().$this->limitClause();
         }

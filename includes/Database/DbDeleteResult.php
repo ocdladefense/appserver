@@ -1,5 +1,5 @@
 <?php
-class DbUpdateResult extends DbResult implements IDbResult, IteratorAggregate{
+class DbDeleteResult extends DbResult implements IDbResult, IteratorAggregate{
 
     private $result;
     private $count;
@@ -15,7 +15,7 @@ class DbUpdateResult extends DbResult implements IDbResult, IteratorAggregate{
     public function getResult(){
 
         if (!$this->hasError()) {
-            $this->result = "<br><strong>There were ". $this->count . " rows updated on the database.<br></strong>";
+            $this->result = "<br><strong>There were ". $this->count . " rows deleted from the database.<br></strong>";
         } else {
             $this->result = $this->getError();
         }
@@ -29,7 +29,7 @@ class DbUpdateResult extends DbResult implements IDbResult, IteratorAggregate{
     }
 
     private function getError(){
-        return "<br><strong>ERROR UPDATING RECORD: <br>" ."<br>" . $this->connection->error . "<br></strong>";
+        return "<br><strong>ERROR DELETING RECORD: <br>" ."<br>" . $this->connection->error . "<br></strong>";
     }
 
     public function getIterator(){

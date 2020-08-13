@@ -56,6 +56,21 @@ class MysqlDatabase{
 
         return new DbUpdateResult($result,$count,$this->connection->error);
     }
+    
+    function delete($sql){
+        $result = $this->connection->query($sql);
+
+        if($result !== true){
+            throw new DbException("Error deleting data.  " . $this->connection->error);
+        }
+
+        $count = mysqli_affected_rows($this->connection);
+        if($count == 0){
+            throw new DbException("There were ". $count . " rows deleted.");
+        }
+
+        return new DbDeleteResult($result,$count,$this->connection->error);
+    }
 
     function select($sql){
         $result = $this->connection->query($sql);
@@ -74,6 +89,9 @@ class MysqlDatabase{
                 break;
             case "update":
                 return $db->update($sql);
+                break;
+            case "delete":
+                return $db->delete($sql);
                 break;
         }      
     }
