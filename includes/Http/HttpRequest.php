@@ -152,6 +152,14 @@ class HttpRequest extends HttpMessage {
 	public function getBody() {
 		return $this->body;
 	}
+	
+	/**
+	 * @todo needs to return an MessageBody object,
+	 *   that has ->text(), ->json(), ->value()->, and ->files() methods.
+	 */
+	public function getFiles() {
+		return $this->files;
+	}
 
 
 	
