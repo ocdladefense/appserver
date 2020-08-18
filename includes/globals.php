@@ -3,7 +3,10 @@ function getPathToModules(){
     return  __DIR__ ."/../modules";
 }
 function getPathToContent(){
-    return __DIR__."/../content";
+    return BASE_PATH . "/content";
+}
+function getUploadPath(){
+    return BASE_PATH . "/content/uploads";
 }
 //returns the path to directory at the root level
 function getPath($dir){

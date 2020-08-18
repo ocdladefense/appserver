@@ -73,6 +73,9 @@ class Application {
       try{
         $out = $this->doCallback($this->activeModule,$this->activeRoute);
       
+        if(gettype($out) == "File"){
+            $resp = new HttpResponse($out);
+        }
         if($this->activeRoute->getContentType() == Http\MIME_APPLICATION_JSON){
 
            $resp->setBody($this->getAsJson($out));
@@ -111,7 +114,7 @@ class Application {
       
       $resp->addHeader($header);
 
-        return $resp;
+        return $resp;8
     }
 
     public function getAsJson($out){
@@ -202,6 +205,17 @@ class Application {
         }
 
         http_response_code($this->resp->getStatusCode());
+
+        if($this->resp->getHeader("Content-Description").getValue() == "File Transfer"){
+
+            $path = $this->resp->readFile();
+
+            if($path != null){
+                readfile($path);
+            }
+
+            
+        }
 
 
      

@@ -5,10 +5,39 @@ namespace Http;
 
 class HttpResponse extends HttpMessage {
 	
-	
+	private $file;
     public function __construct($body = null){
         parent::__construct();
-        $this->body = $body;
+        if(gettype($body) == "File"){
+            $this->file = $body;
+
+            //set the headers
+            //function setUpFileHeaders()
+            
+        } else {
+            $this->body = $body;
+        }
+        
+    }
+
+    public function getBody(){
+        if(gettype($this->body) == "File"){
+            return $this->body->getPath();
+        } else {
+            return $this->body;
+        }
+    }
+
+    public function readFile(){
+        return $this->file->exists() ? $this->file->getPath() : null;
+    }
+    private function setUpFileHeaders(){
+
+        // $this->addHeader("Cache-Control"public");
+		// header("Content-Description: File Transfer");
+		// header("Content-Disposition: attachment; filename=$fileName");
+		// header("Content-Type: $mimeType");
+		// header("Content-Transfer-Encoding: binary");
     }
 
     //Setters
