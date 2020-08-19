@@ -53,6 +53,7 @@ class Application {
 
     
     public function run($path) {
+    
       $this->activeRoute = $this->router->match($path);
 
 
@@ -70,14 +71,37 @@ class Application {
 
       session_start();
       
-      try{
+      $contentType = $this->activeRoute->getContentType();
+      
+      
+      try {
+      
         $out = $this->doCallback($this->activeModule,$this->activeRoute);
       
-        if($this->activeRoute->getContentType() == Http\MIME_APPLICATION_JSON){
+        if($contentType == Http\MIME_APPLICATION_JSON) {
 
            $resp->setBody($this->getAsJson($out));
+           
+        } 
+        // For a full HTML page
+        // Render the HTML template and inject content to 
+        //  be the body of the page.
+        else if($contentType == null || $contentType == Http\MIME_TEXT_HTML) {
+        
+					$template = Template::loadTemplate("html");
+				
+					$content = $template->render(array(
+						"defaultStageClass" 	=> "not-home", //home
+						"content" 						=> $out
+					));
+        
+          $resp->setBody($content);
+          
+        } else if($contentType == Http\MIME_TEXT_HTML_PARTIAL) {
+        
+        		$resp->setBody($out);
         } else {
-            $resp->setBody($out);
+        		$resp->setBody($out);
         }
 
       } catch(PageNotFoundException $e) {
@@ -86,7 +110,7 @@ class Application {
         
       } catch(Exception $e) {
 
-        if($this->activeRoute->getContentType() == Http\MIME_APPLICATION_JSON){
+        if($contentType == Http\MIME_APPLICATION_JSON){
             $error = new StdClass();
             $error->error = $e->getMessage();
             $body = json_encode($error);
@@ -101,18 +125,16 @@ class Application {
 
 
       //Just adding a header
-      if(strpos($this->activeRoute->getContentType(),"json") !== false){
-          $contentType = Http\MIME_APPLICATION_JSON;
-      } else {
-          $contentType = Http\MIME_TEXT_HTML;
-      }
+			$contentType = strpos($contentType, "json") !== false ? Http\MIME_APPLICATION_JSON : Http\MIME_TEXT_HTML;
 
-      $header = new HttpHeader("Content-Type",$contentType);
+      $header = new HttpHeader("Content-Type", $contentType);
       
       $resp->addHeader($header);
 
-        return $resp;
+			return $resp;
     }
+
+
 
     public function getAsJson($out){
         

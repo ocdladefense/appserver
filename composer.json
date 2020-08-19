@@ -20,7 +20,8 @@
             "modules/authorizenet":["trevor-uehlin/authorize-net-module"],
             "modules/event":["trevor-uehlin/event-module"],
             "modules/sitestatus":["clickpdx/sitestatus"],
-            "modules/webconsole":["clickpdx/webconsole"]
+            "modules/webconsole":["clickpdx/webconsole"],
+            "modules/car":["clickpdx/appserver-car"]
         },
         "comments":[
             {

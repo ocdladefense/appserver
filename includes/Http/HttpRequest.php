@@ -170,7 +170,7 @@ class HttpRequest extends HttpMessage {
 		}
 
 
-		if($request->method == HTTP_METHOD_POST && $request->getHeader("Content-Type")->getValue() == CONTENT_TYPE_APPLICATION_X_WWW_FORM_URLENCODED){
+		if($request->method == HTTP_METHOD_POST && $request->getHeader("Content-Type")->getValue() == MIME_TYPE_APPLICATION_X_WWW_FORM_URLENCODED){
 			$request->setBody((object)$_POST);
 		} elseif($request->method != HTTP_METHOD_GET) {
 			$content = file_get_contents('php://input');
