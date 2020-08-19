@@ -8,9 +8,13 @@ define("SQL_INSERT_ROW_END",")");
 class QueryBuilder{
 
     private $tableName;
+    private $type;
     private $conditions = array();
+    private $sortConditions = array();
+    private $limitCondition;
     private $columns = array();
     private $values = array();
+    private $updateFields = array();
 
     function __construct(){
 
@@ -20,8 +24,20 @@ class QueryBuilder{
         $this->tableName = $tbName;
     }
 
+    function setType($tp){
+        $this->type = $tp;
+    }
+
     function setConditions($conds){
         $this->conditions = $conds;
+    }
+
+    function setSortConditions($conds){
+        $this->sortConditions = $conds;
+    }
+
+    function setLimitCondition($cond){
+        $this->limitCondition = $cond;
     }
 
     function setColumns($columns){
@@ -30,6 +46,10 @@ class QueryBuilder{
 
     function setValues($values){
         $this->values = $values;
+    }
+
+    function setUpdateFields($fields){
+        $this->updateFields = $fields;
     }
 
     function selectClause(){
@@ -42,22 +62,82 @@ class QueryBuilder{
         $tmp = array();
         
         foreach($this->conditions as $c){
-            $field = $c->field;
-            $op = $c->op;
-            $value = $c->value;
-    
-            if(is_int($value)){
-                $tmp []= sprintf("%s %s %d",$field,$op,$value);
-            } else if($op == 'LIKE'){
-                $tmp [] = sprintf("%s %s '%%%s%%'",$field,$op,$value);
-            } else {
-                $tmp [] = sprintf("%s %s '%s'",$field,$op,$value);
+            if (is_array($c)) {
+                $subTmp = array();
+                
+                foreach($c as $subC) {
+                    $subTmp [] = $this->createWhereCondition($subC);
+                }
+
+                $tmp [] = "(".implode(' OR ', $subTmp).")";
+            } else {  
+                $tmp [] = $this->createWhereCondition($c);
             }
         }
-    
-        $where .= " WHERE ".implode(' AND ',$tmp);
-    
+
+        if (count($tmp) > 0) {
+            $where .= " WHERE ".implode(' AND ',$tmp);
+        }
+
         return $where;
+    }
+
+    function createWhereCondition($c) {
+        $field = $c->field;
+        $op = $c->op;
+        $value = $c->value;
+
+        $returnStr = "";
+
+        if(is_int($value)){
+            $returnStr = sprintf("%s %s %d",$field,$op,$value);
+        } else if($op == 'LIKE'){
+            $returnStr = sprintf("%s %s '%%%s%%'",$field,$op,$value);
+        } else {
+            $returnStr = sprintf("%s %s '%s'",$field,$op,$value);
+        }
+
+        return $returnStr;
+    }
+
+    function orderByClause() {
+        $orderBy = "";
+        $tmp = array();
+
+        foreach($this->sortConditions as $c){
+            $field = $c->field;
+            $desc = $c->desc;
+            if (gettype($desc) == "string") {
+                $desc = filter_var($desc, FILTER_VALIDATE_BOOLEAN);
+            }
+
+            if ($desc){
+                $tmp [] = $field." DESC";
+            } else {
+                $tmp [] = $field;
+            }
+        }
+
+        if (count($tmp) > 0) {
+            $orderBy .= " ORDER BY ".implode(", ", $tmp);
+        }
+
+        return $orderBy;
+    }
+
+    function limitClause() {
+        $limit = "";
+        if ($this->limitCondition != null && $this->limitCondition != "") {
+            $rowCount = $this->limitCondition->rowCount;
+            $offset = $this->limitCondition->offset;
+
+            if ($offset != null && $offset > 0) {
+                $limit .= " LIMIT " . $offset . ", " . $rowCount;
+            } else {
+                $limit .= " LIMIT " . $rowCount;
+            }
+        }
+        return $limit;
     }
 
 		function optionsClause(){
@@ -65,13 +145,17 @@ class QueryBuilder{
 		}
 
     function compile(){
-
-        if($this->getType() == "insert"){
+        if($this->type == "insert"){
             $columns = $this->prepareInsertColumns();
             $values = $this->prepareInsertValues();
             return "INSERT INTO $this->tableName $columns VALUES $values";
+        } else if($this->type == "update") {
+            $fields = $this->prepareUpdateFields();
+            return "UPDATE $this->tableName SET $fields".$this->whereClause();
+        } else if($this->type == "delete") {
+            return "DELETE FROM $this->tableName".$this->whereClause();
         } else {
-            return $this->selectClause().$this->whereClause() . $this->optionsClause();
+            return $this->selectClause().$this->whereClause().$this->orderByClause().$this->limitClause();
         }
     }
     
@@ -104,19 +188,23 @@ class QueryBuilder{
         return SQL_INSERT_ROW_START . implode(SQL_FIELD_SEPERATOR,$this->columns) . SQL_INSERT_ROW_END;
     }
 
-    function getType(){
+    function prepareUpdateFields(){
+        $fields = "";
+        $tmp = array();
 
-        if(debug_backtrace()[2]["function"] == "select"){
-            return "select";
+        foreach($this->updateFields as $set) {
+            $field = $set->field;
+            $value = $set->value;
+            $op = "=";
+
+            if(is_int($value)){
+                $tmp[] = sprintf("%s %s %d",$field,$op,$value);
+            } else {
+                $tmp[] = sprintf("%s %s '%s'",$field,$op,$value);
+            }
         }
-        else if(debug_backtrace()[2]["function"] == "insert"){
-            return "insert";
-        }
-        else if(debug_backtrace()[2]["function"] == "update"){
-            return "update";
-        }
-        else {
-            return "delete";
-        }
+
+        $fields = implode(SQL_FIELD_SEPERATOR, $tmp);
+        return $fields;
     }
 }

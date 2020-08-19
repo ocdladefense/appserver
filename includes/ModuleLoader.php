@@ -58,7 +58,9 @@ class ModuleLoader {
     
     //require each of the dependencies for each module
     public static function getInstance($moduleName){
-        $className = ucwords($moduleName)."Module";
+				// ucwords ( string $str [, string $delimiters = " \t\r\n\f\v" ] )
+        $className = ucwords($moduleName,"-\t\r\n\f\v");
+        $className = str_replace("-","",$className)."Module";
         $moduleClass = new $className();
         $dependencies = $moduleClass->getDependencies();
 
