@@ -51,6 +51,8 @@
 	require_once BASE_PATH.'/includes/Database/MysqlDatabase.php';
 	require_once BASE_PATH.'/includes/Database/DbSelectResult.php';
 	require_once BASE_PATH.'/includes/Database/DbInsertResult.php';
+	require_once BASE_PATH.'/includes/Database/DbUpdateResult.php';
+	require_once BASE_PATH.'/includes/Database/DbDeleteResult.php';
 	require_once BASE_PATH.'/includes/Database/QueryBuilder.php';
 
 	require_once BASE_PATH.'/includes/Exception/DbException.php';

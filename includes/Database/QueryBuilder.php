@@ -200,7 +200,7 @@ class QueryBuilder{
             if(is_int($value)){
                 $tmp[] = sprintf("%s %s %d",$field,$op,$value);
             } else {
-                $tmp[] = sprintf("%s %s '%s'",$field,$op,$value);
+                $tmp[] = sprintf("%s %s '%s'",$field,$op,addslashes($value));
             }
         }
 
