@@ -76,14 +76,13 @@ class Application {
 
             //Set up the response body.
 
-            if(get_class($out) == "File"){
+            if(gettype($out) != "string" && get_class($out) == "File"){
 
                 $resp = new HttpResponse($out);
 
                 $resp->setBody($this->getAsJson($out));
 
                 return $resp;
-
             }
             
             if($this->activeRoute->getContentType() == Http\MIME_APPLICATION_JSON){

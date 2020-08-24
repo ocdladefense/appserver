@@ -15,8 +15,10 @@ class HttpResponse extends HttpMessage {
 
             $this->file = $body;
 
-            $this->setUpFileDownloadHeaders();
-            
+            if($this->isfile()){
+
+                $this->setUpFileDownloadHeaders();
+            }
         }
         $this->body = $body;
     }
@@ -34,10 +36,7 @@ class HttpResponse extends HttpMessage {
             new HttpHeader("Content-Type", $this->file->getType())
         );
 
-        if($this->isFile()){
-
-            $this->addHeaders($headers);
-        }
+        $this->addHeaders($headers);
     }
 
     public function getFile(){
@@ -47,7 +46,10 @@ class HttpResponse extends HttpMessage {
 
     public function isFile(){
 
-        return get_class($this->file) == "File" && file_exists($this->file->getPath());
+        if($this->file != null){
+
+            return get_class($this->file) == "File" && file_exists($this->file->getPath());
+        }
     }
 
     //Setters
