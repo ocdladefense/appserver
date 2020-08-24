@@ -5,39 +5,49 @@ namespace Http;
 
 class HttpResponse extends HttpMessage {
 	
-	private $file;
+    private $file;
+    
     public function __construct($body = null){
+
         parent::__construct();
-        if(gettype($body) == "File"){
+
+        if($body != null && get_class($body) == "File"){
+
             $this->file = $body;
 
-            //set the headers
-            //function setUpFileHeaders()
+            $this->setUpFileDownloadHeaders();
             
-        } else {
-            $this->body = $body;
         }
+        $this->body = $body;
+    }
+
+    //FILE DOWNLOAD FUNCTIONALITY
+    private function setUpFileDownloadHeaders(){
         
-    }
+        $fileName = $this->file->getName();
+        
 
-    public function getBody(){
-        if(gettype($this->body) == "File"){
-            return $this->body->getPath();
-        } else {
-            return $this->body;
+        $headers = array(
+            new HttpHeader("Cache-Control", "private"),
+            new HttpHeader("Content-Description", "File Transfer"),
+            new HttpHeader("Content-Disposition", "attachment; filename=$fileName"),
+            new HttpHeader("Content-Type", $this->file->getType())
+        );
+
+        if($this->isFile()){
+
+            $this->addHeaders($headers);
         }
     }
 
-    public function readFile(){
-        return $this->file->exists() ? $this->file->getPath() : null;
-    }
-    private function setUpFileHeaders(){
+    public function getFile(){
 
-        // $this->addHeader("Cache-Control"public");
-		// header("Content-Description: File Transfer");
-		// header("Content-Disposition: attachment; filename=$fileName");
-		// header("Content-Type: $mimeType");
-		// header("Content-Transfer-Encoding: binary");
+        return $this->file;
+    }
+
+    public function isFile(){
+
+        return get_class($this->file) == "File" && file_exists($this->file->getPath());
     }
 
     //Setters
