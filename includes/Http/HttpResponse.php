@@ -5,35 +5,30 @@ namespace Http;
 
 class HttpResponse extends HttpMessage {
 	
-    private $file;
     
     public function __construct($body = null){
 
         parent::__construct();
 
-        if($body != null && get_class($body) == "File"){
-
-            $this->file = $body;
-
-            if($this->isfile()){
-
-                $this->setUpFileDownloadHeaders();
-            }
-        }
         $this->body = $body;
+
+        if($this->isfile() && $this->body->exists()){
+
+            $this->setUpFileDownloadHeaders();
+        }
     }
 
     //FILE DOWNLOAD FUNCTIONALITY
     private function setUpFileDownloadHeaders(){
         
-        $fileName = $this->file->getName();
+        $fileName = $this->body->getName();
         
 
         $headers = array(
             new HttpHeader("Cache-Control", "private"),
             new HttpHeader("Content-Description", "File Transfer"),
             new HttpHeader("Content-Disposition", "attachment; filename=$fileName"),
-            new HttpHeader("Content-Type", $this->file->getType())
+            new HttpHeader("Content-Type", $this->body->getType())
         );
 
         $this->addHeaders($headers);
@@ -41,14 +36,14 @@ class HttpResponse extends HttpMessage {
 
     public function getFile(){
 
-        return $this->file;
+        return $this->isFile() ? $this->body : null;
     }
 
     public function isFile(){
 
-        if($this->file != null){
+        if($this->body != null && gettype($this->body) == "object"){
 
-            return get_class($this->file) == "File" && file_exists($this->file->getPath());
+            return get_class($this->body) == "File";
         }
     }
 

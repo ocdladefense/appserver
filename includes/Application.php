@@ -80,8 +80,6 @@ class Application {
 
                 $resp = new HttpResponse($out);
 
-                $resp->setBody($this->getAsJson($out));
-
                 return $resp;
             }
             
@@ -202,7 +200,6 @@ class Application {
         }
         
         $accept = "*/*";
-       // $this->request->getHeader("Accept")->getValue();
 
         if(!$this->request->isSupportedContentType("*/*")){
             throw new Exception("The content type of the requested resource '$contentType' does not match the accepted content type '$accept', which is set by the requesting entity.");
@@ -212,10 +209,6 @@ class Application {
     public function send() {
 
         $content = $this->resp->getBody();
-
-        //var_dump($content);exit;
-
-        //var_dump($this->resp->getFile());exit;
 
         
         $collection = $this->resp->getHeaderCollection();
@@ -227,9 +220,18 @@ class Application {
 
         if($this->resp->isFile()){
 
-            readfile($this->resp->getFile()->getPath());
-            exit;
+            $file = $this->resp->getFile();
+            if($file->exists()){
+
+                readfile($file->getPath());
+
+            } else {
+
+                $content = $file->getContent();
+                
+            }
         }
+
         print $content;
     }
 }
