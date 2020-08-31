@@ -33,7 +33,7 @@
 		require_once(BASE_PATH.'/includes/Store/'.$file.".php");
 	}
 	
-	$handlers = array("Handler","JsonHandler","HtmlDocumentHandler","JsonErrorHandler","HtmlStringHandler","HtmlErrorHandler");
+	$handlers = array("Handler","FileHandler","JsonHandler","HtmlDocumentHandler","JsonErrorHandler","HtmlStringHandler","HtmlErrorHandler");
 	
 	foreach($handlers as $file) {
 		require_once(BASE_PATH.'/includes/Handlers/'.$file.".php");
