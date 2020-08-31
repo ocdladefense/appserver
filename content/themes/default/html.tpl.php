@@ -61,6 +61,16 @@
 			
 		</script>
 
+		<script src="/modules/car/assets/js/FormSubmission.js"></script>
+		<script src="/modules/car/assets/js/BaseComponent.js"></script>
+		<script src="/modules/car/assets/js/DBQuery.js"></script>
+		<script src="/modules/car/assets/js/FormParser.js"></script>
+		<script src="/modules/car/assets/js/InfiniteScroller.js"></script>
+		<script src="/modules/car/assets/js/PageUI.js"></script>
+		<script src="/modules/car/assets/js/module.js"></script>
+		<!--<script src="/modules/car/assets/js/CreateCarUI.js"></script>
+		<script src="/modules/car/assets/js/CarCreateModule.js"></script>-->
+
 		<?php echo $scripts; ?> 
 	</head>
 	<body style="background-color: rgba(191,161,46,1.0); color: rgba(255,255,255,1.0);">
