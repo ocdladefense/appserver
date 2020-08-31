@@ -1,103 +1,117 @@
 <?php
 
-/**
- * Helper function to format list of styles into HTML <link> elements.
- */
-function pageStyles($styles = array() ) {
 
-	// Only include active styles.
-	$fn = function($style) {
-		return $style["active"] !== false;
-	};
-
-	$active = array_filter($styles,$fn);
-
-
-	return array_map("Html\HtmlLink",$active);
-}
-
-
-
-/**
- * Helpfer function to format list of scripts into HTML <script> elements.
- */
-function pageScripts($scripts = array() ) {
-	return array_map("Html\HtmlScript",$scripts);
-}
-
-
-
-class Template
-{
+class Template {
   
   const DEBUG = false;
   
+  
+  // Default file extension for template files.
 	const TEMPLATE_EXTENSION = ".tpl.php";
 	
-	protected $name;
-    
-	/**
-	 * @var $paths
-	 *
-	 * @description An array of paths to be prepended to $name.
-	 */
-	protected static $paths = array();
 	
-	protected $scripts = array();
+	// Name of this template; usually the name of a template.
+	protected $name;
+	
+	
+	// Context to be bound to this template.
+	protected $context = array();
+	
+	
+	// Path or paths associated with this template.
+  protected $paths = array();
+	
 
-	protected $styles = array();
-
-	protected $footerScripts;
-
+	// Messages to record status of this template.
 	protected $log = array();
 	
 	
+	protected $scripts = array();
 	
 	
-	public function __construct($name){
+	protected $styles = array();
+	
+	
+	
+	// Name is optional so we can use string literals to contruct a template.
+	public function __construct($name = null) {
 		$this->name = $name;
 	}
+	
+	public function setContent($content) {
+		$this->content = $content;
+	}
 		
-	public function addScripts($scripts) {
-		$this->scripts = array_merge($this->scripts,$scripts);
+
+
+
+	public function addPath($path) {
+		$this->paths []= $path;
 	}
 	
-	public function addScript($js) {
-		$this->scripts []= $js;
+	public function getPaths() {
+		return $this->paths;
 	}
 	
 	public function addStyles($styles) {
-		$this->styles = array_merge($this->styles,$styles);
+		$this->styles += $styles;
 	}
 	
-	public function addStyle($css) {
-		$this->styles []= $css;
+	public function getStyles() {
+		return $this->styles;
 	}
-
-
-	public static function addPath($path) {
-		self::$paths []= $path;
+	
+	public function addScripts($scripts) {
+		$this->scripts += $scripts;
+	}
+	
+	public function getScripts() {
+		return $this->scripts;
+	}
+	
+	public static function isTemplate($obj) {
+		return is_object($obj) && (get_parent_class($obj) == "Template" || get_class($obj) == "Template");
 	}
 
 
 	public function render($context = array()) {
+		$context = count($context) === 0 ? $this->context : $context;
 		
-		$context["styles"] = implode("\n",pageStyles($this->styles));
-		$context["scripts"] = implode("\n",pageScripts($this->scripts));
-		
+		return null == $this->content ? $this->renderTemplateFile($context) : $this->renderTemplateString($context);
+	}
+	
+	
+	public function renderTemplateString($context = array()) {
 		extract($context);
 		ob_start();
 		
-		$this->log("About to include template name, {$this->name}.");
-		$file = self::pathToTemplate($this->name);
-		$this->log("About to include template file, {$file}.");
-		include $file;
+		eval('?>'.$this->content);
 		
 		$content = ob_get_contents();
 		ob_end_clean();
 		
 		
 		return $content;
+	}
+	
+	public function renderTemplateFile($context = array()) {
+		extract($context);
+		ob_start();
+		
+		$this->log("About to include template name, {$this->name}.");
+		$file = $this->pathToTemplate($this->name);
+		$this->log("About to include template file, {$file}.");
+		require $file;
+		
+		$content = ob_get_contents();
+		ob_end_clean();
+		
+		
+		return $content;
+	}
+	
+	public function __toString() {
+		return $this->render();
 	}
 	
 	
@@ -113,21 +127,25 @@ class Template
 	
 	
 	
-	public static function pathToTemplate($name) {
+	
+	
+	public function pathToTemplate($name) {
 		
-		$paths = self::$paths;
+		$paths = $this->getPaths();
 		$paths[]= get_theme_path();
 		
 		$search = array_map(function($item) use($name) {
 			return $item . "/" . $name . self::TEMPLATE_EXTENSION;
 		},$paths);
+		
+		$searchPaths = implode(",", $search);
 
 
 		$found = array_values(array_filter($search,function($file) {
 			return file_exists($file);
 		}));
 		
-		if(!count($found) > 0) throw new \Exception("TEMPLATE_ERROR: Template $name could not be found.");
+		if(!count($found) > 0) throw new \Exception("TEMPLATE_ERROR: Template $name could not be found at: " . $searchPaths);
 		
 		
 		return $found[0];
@@ -138,71 +156,34 @@ class Template
 		return file_exists(self::pathToTemplate($name));
 	}
 	
+	public function bind($context, $value = null) {
+		if(!is_array($context) && !is_object($context)) {
+			$this->context += array($context => $value);
+		}
+		else if(is_object($context) && in_array("IRenderable",class_implements($context))) {
+			$this->context += $context->getContext();
+		}
+		else $this->context += $context;
+		
+		return $this;
+	}
+	
 
 	
 	/**
 	 * Load a template by name; also a shortcut to get the scripts/styles, too.
 	 */
 	public static function loadTemplate($name) {
-
-		// Init the theme, first.
-		$path = get_theme_path();
-		require($path . "/Theme.php");
-	
-		$template = new DefaultTheme($name);
-
-
-		$bootstrap = array(
-			array(
-				"src" => "https://code.jquery.com/jquery-3.4.1.slim.min.js",
-				"integrity" => "sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n",
-				"crossorigin" => "anonymous",
-				"active" => true
-			),
-			array(
-				"src" => "https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js",
-				"integrity" => "sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo",
-				"crossorigin" => "anonymous",
-				"active" => true
-			),
-			array(
-				"src" => "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js",
-				"integrity" => "sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6",
-				"crossorigin" => "anonymous",
-				"active" => true
-			)
-		);
-
-		$jquery = array(
-			array(
-				"src" => "/modules/webconsole/assets/jquery/jquery-1.11.0-min.js"
-			)
-		);
-
-	
-		$react = array(
-			array(
-				"src" => "/modules/webconsole/assets/react/react-16.12.0-development.js"
-			),
-			array(
-				"src" => "/modules/webconsole/assets/react/react-16.12.0-dom-development.js"
-			),
-			array(
-				"src" => "/modules/webconsole/assets/react/babel-6.26.0-standalone.js"
-			)
-		);
-
-	
-		$template->addScripts($react);
-		$template->addScripts($bootstrap);
-		$template->addScripts($template->moduleGetScripts());
-		$template->addStyles($template->moduleGetStyles());
-	
-	
-		return $template;
+		
+		return new Template($name);
 	}
 	
-	
+	public static function fromString($string) {
+		$tpl = new Template();
+		$tpl->setContent($string);
+		
+		return $tpl;
+	}
 	// Save some log messages.
 	//  Might be of interest later.
 	protected function log($msg) {

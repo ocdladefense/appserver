@@ -33,12 +33,20 @@
 		require_once(BASE_PATH.'/includes/Store/'.$file.".php");
 	}
 	
+	$handlers = array("Handler","JsonHandler","HtmlDocumentHandler","JsonErrorHandler","HtmlStringHandler","HtmlErrorHandler");
+	
+	foreach($handlers as $file) {
+		require_once(BASE_PATH.'/includes/Handlers/'.$file.".php");
+	}
 
 	require_once BASE_PATH.'/includes/Html/Html.php';
 		
 	require_once BASE_PATH.'/includes/Exception/PageNotFoundException.php';		
-	
+
+
 	require_once BASE_PATH.'/includes/Template.php';
+	require_once BASE_PATH.'/includes/Theme.php';	
+	require_once BASE_PATH.'/includes/IRenderable.php';
 	require_once BASE_PATH.'/includes/Application.php';
 	require_once BASE_PATH.'/includes/ModuleLoader.php';
 	require_once BASE_PATH.'/includes/Route.php';

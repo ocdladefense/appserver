@@ -52,23 +52,33 @@ class Application {
     
 
     
+    /**
+     * For HTTP contexts,
+     *  `run` should return an HttpResponse object that will be returned to the
+     *  webserver context.
+     */
     public function run($path) {
     
+    	// Return an HttpResponse to the calling application.
+      $resp = new HttpResponse();
+      
       $this->activeRoute = $this->router->match($path);
 
 
-      //Aciive module is an instance of the module class
+      // Active module is an instance of the module class
       $this->activeModule = ModuleLoader::getInstance($this->activeRoute->getModule());
 
+
+
       $this->activeModule->setRequest($this->request);
+			// $this->activeModule->setTheme($theme);
       
       $this->activeModule->loadFiles();
 
       $this->requireRouteFiles($this->activeRoute);
 
-      $resp = new HttpResponse();
 
-
+			
       session_start();
       
       $contentType = $this->activeRoute->getContentType();
@@ -76,34 +86,31 @@ class Application {
       
       try {
       
-        $out = $this->doCallback($this->activeModule,$this->activeRoute);
+        $output = $this->doCallback($this->activeModule, $this->activeRoute);
       
-        if($contentType == Http\MIME_APPLICATION_JSON) {
+      	$handler = Handler::fromType($output, $contentType);
+      	
+				$resp->setBody($handler->getOutput());
 
-           $resp->setBody($this->getAsJson($out));
-           
-        } 
-        // For a full HTML page
-        // Render the HTML template and inject content to 
-        //  be the body of the page.
-        else if($contentType == null || $contentType == Http\MIME_TEXT_HTML) {
-        
-					$template = Template::loadTemplate("html");
-				
-					$content = $template->render(array(
-						"defaultStageClass" 	=> "not-home", //home
-						"content" 						=> $out
-					));
-        
-          $resp->setBody($content);
-          
-        } else if($contentType == Http\MIME_TEXT_HTML_PARTIAL) {
-        
-        		$resp->setBody($out);
-        } else {
-        		$resp->setBody($out);
-        }
+			} catch(Exception $e) {
+				throw $e;
+			}
 
+
+
+      $header = new HttpHeader("Content-Type", "text/html");
+      
+      $resp->addHeader($header);
+      // Verify that we can completely override the response body.
+      // $resp->setBody("foobar");
+
+			return $resp;
+    }
+
+
+
+    private function setupResponse($output, Exception $e) {
+			/* 
       } catch(PageNotFoundException $e) {
         $resp->setNotFoundStatus();
         $resp->setBody($e->getMessage());
@@ -121,31 +128,10 @@ class Application {
         $resp->setErrorStatus();
         $resp->setBody($body);
       }
+      */
 
 
-
-      //Just adding a header
-			$contentType = strpos($contentType, "json") !== false ? Http\MIME_APPLICATION_JSON : Http\MIME_TEXT_HTML;
-
-      $header = new HttpHeader("Content-Type", $contentType);
-      
-      $resp->addHeader($header);
-
-			return $resp;
     }
-
-
-
-    public function getAsJson($out){
-        
-        if(gettype($out) == "object" && in_array( "Http\IJson",class_implements($out))){
-            return $out->toJson();
-        } else {
-            return json_encode($out);
-        }
-    }
-    
-    
     
     
     //require all of the necessary file in the route at the key of 'files'
@@ -197,7 +183,7 @@ class Application {
     
 
     //Other Methods
-    public function secure(){ 
+    public function secure() { 
         $header = $this->resp->getHeader("Content-Type");
         $cType = null;
         
