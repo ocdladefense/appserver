@@ -61,10 +61,10 @@
 			
 		</script>
 
-		<script src="/modules/car/assets/js/FormSubmission.js"></script>
-		<script src="/modules/car/assets/js/BaseComponent.js"></script>
-		<script src="/modules/car/assets/js/DBQuery.js"></script>
-		<script src="/modules/car/assets/js/FormParser.js"></script>
+		<script src="/content/libraries/form/FormSubmission.js"></script>
+		<script src="/content/libraries/component/BaseComponent.js"></script>
+		<script src="/content/libraries/database/DBQuery.js"></script>
+		<script src="/content/libraries/form/FormParser.js"></script>
 		<script src="/modules/car/assets/js/InfiniteScroller.js"></script>
 		<script src="/modules/car/assets/js/PageUI.js"></script>
 		<script src="/modules/car/assets/js/module.js"></script>
