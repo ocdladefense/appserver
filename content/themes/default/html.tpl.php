@@ -108,6 +108,7 @@
 						<ul id="home-menu">
 							<li class="home-menu-item"><i class="fas fa-home fa-2x"></i><a href="/events">home</a></li>
 							<li class="home-menu-item"><i class="fas fa-calendar-day fa-2x"></i><a href="/events">events</a></li>
+							<li class="home-menu-item"><i class="fas fa-briefcase"></i><a href="#">jobs</a></li>
 							<li class="home-menu-item"><i class="fas fa-database fa-2x"></i><a href="/cars">CAR reviews</a></li>
 							<li class="home-menu-item"><i class="fas fa-map-pin fa-2x"></i><a href="#">maps</a></li>
 							<li class="home-menu-item"><i class="fas fa-video fa-2x"></i><a href="#">videos</a></li>
@@ -170,6 +171,7 @@
 			
 			var app;
 		
+			/*
 			domReady(function(){
 				app = new App();
 				// app.addRoutes(clientSettings["routes-enabled"]);
@@ -180,7 +182,7 @@
 				}	
 				// app.setKeyboardManager(kbd);
 			});
-			
+			*/
 
 			
 		</script>

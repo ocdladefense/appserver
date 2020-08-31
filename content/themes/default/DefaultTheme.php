@@ -28,18 +28,32 @@ class DefaultTheme extends Theme {
 		
 		
 		array(
-			"src" => "/modules/webconsole/assets/jquery/jquery-1.11.0-min.js"
+//			"src" => "/modules/webconsole/assets/jquery/jquery-1.11.0-min.js"
+			"src" => "/content/libraries/jquery/jquery-1.11.0-min.js"
 		),
 		
 		array(
-			"src" => "/modules/webconsole/assets/react/react-16.12.0-development.js"
+			"src" => "/content/libraries/react/react-16.12.0-development.js"
 		),
 		array(
-			"src" => "/modules/webconsole/assets/react/react-16.12.0-dom-development.js"
+			"src" => "/content/libraries/react/react-16.12.0-dom-development.js"
 		),
 		array(
-			"src" => "/modules/webconsole/assets/react/babel-6.26.0-standalone.js"
+			"src" => "/content/libraries/react/babel-6.26.0-standalone.js"
 		)
+		
+		
+		// $module_path = "/modules/webconsole";
+		/*
+		$scripts = array(
+			"$module_path/assets/lib/event.js",
+			"$module_path/assets/lib/datetime.js",
+			"$module_path/assets/lib/modal.js",
+			"$module_path/assets/lib/view.js",
+			"$module_path/assets/lib/Dom.js",
+			"$module_path/assets/lib/http/http.js",
+			"$module_path/assets/lib/http/HttpCache.js"
+		);*/
 	);
 
 
@@ -48,7 +62,7 @@ class DefaultTheme extends Theme {
 	public function __construct() {
 		parent::__construct("default");
 		
-		$this->addScripts($this->getThemeScripts());
+		// $this->addScripts($this->getThemeScripts());
 		$this->addStyles($this->getThemeStyles());
 	}
 
@@ -74,25 +88,6 @@ class DefaultTheme extends Theme {
 		);
 	}
 
-
-
-	public function getThemeScripts() {
-		$module_path = "/modules/webconsole";
-
-		$scripts = array(
-			"$module_path/assets/lib/event.js",
-			"$module_path/assets/lib/datetime.js",
-			"$module_path/assets/lib/modal.js",
-			"$module_path/assets/lib/view.js",
-			"$module_path/assets/lib/Dom.js",
-			"$module_path/assets/lib/http/http.js",
-			"$module_path/assets/lib/http/HttpCache.js",
-			"/modules/home/settings.js",
-			"/modules/home/public/app.js"
-		);
-	
-		return $scripts;
-	}
 
 
 

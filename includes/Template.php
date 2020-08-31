@@ -53,8 +53,9 @@ class Template {
 		return $this->paths;
 	}
 	
+
 	public function addStyles($styles) {
-		$this->styles += $styles;
+		$this->styles = $this->styles + $styles;
 	}
 	
 	public function getStyles() {
