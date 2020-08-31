@@ -59,7 +59,10 @@ class HttpMessage {
 		$this->headers->addHeaders($headers);
 	}
 	
-	public function addHeaders(array $headers) {
+	public function addHeaders($headers) {
+		if(!is_array($headers) ) {
+			$headers = array($headers);
+		}
 		if($this->isSigned) throw new \Exception("INVALID HEADER OPERATION");
 		$this->headers->addHeaders($headers);
 	}

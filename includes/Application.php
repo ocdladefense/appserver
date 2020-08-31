@@ -58,6 +58,10 @@ class Application {
      *  webserver context.
      */
     public function run($path) {
+    	return $this->runHttp($path);
+    	// $this->runCli($cmd, $flags);
+    } 
+    public function runHttp($path) {
     
     	// Return an HttpResponse to the calling application.
       $resp = new HttpResponse();
@@ -68,39 +72,35 @@ class Application {
       // Active module is an instance of the module class
       $this->activeModule = ModuleLoader::getInstance($this->activeRoute->getModule());
 
-
-
-      $this->activeModule->setRequest($this->request);
-			// $this->activeModule->setTheme($theme);
       
+      // Other files required by the module.
       $this->activeModule->loadFiles();
-
+      
+			// Still other files required by the route itself.
       $this->requireRouteFiles($this->activeRoute);
 
+      // Incoming request should be available to the module.
+      $this->activeModule->setRequest($this->request);
 
 			
       session_start();
       
-      $contentType = $this->activeRoute->getContentType();
-      
-      
+
       try {
       
         $output = $this->doCallback($this->activeModule, $this->activeRoute);
       
-      	$handler = Handler::fromType($output, $contentType);
+      	$handler = Handler::fromType($output, $this->activeRoute->getContentType());
       	
 				$resp->setBody($handler->getOutput());
-
+				$resp->addHeaders($handler->getHeaders());
+				
 			} catch(Exception $e) {
 				throw $e;
 			}
 
 
 
-      $header = new HttpHeader("Content-Type", "text/html");
-      
-      $resp->addHeader($header);
       // Verify that we can completely override the response body.
       // $resp->setBody("foobar");
 

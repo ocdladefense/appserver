@@ -1,5 +1,5 @@
 <?php
-
+use \Http\HttpHeader as HttpHeader;
 
 class JsonHandler extends Handler {
 
@@ -17,5 +17,9 @@ class JsonHandler extends Handler {
 			} else {
 					return json_encode($this->output);
 			}
+	}
+	
+	public function getHeaders() {
+		return new HttpHeader("Content-Type","application/json");
 	}
 }

@@ -10,7 +10,24 @@ abstract class Handler {
 	protected $mimeType;
 	
 	
-
+	/**
+	 * @method getOutput
+	 *
+	 * @description
+	 *   Format the output consistent with the specified handler
+	 *    instance.  Typically this will be a string data type.
+	 */
+	protected abstract function getOutput();
+	
+	
+	/**
+	 * @method getHeaders
+	 *
+	 * @description
+	 *    Get any HttpHeaders consistent with the mime-type 
+	 *     of this data.
+	 */
+	protected abstract function getHeaders();
 
 
 	public static function fromType($output, $mimeType = null) {

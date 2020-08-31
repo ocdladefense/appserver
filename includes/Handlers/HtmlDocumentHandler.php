@@ -1,5 +1,7 @@
 <?php
 
+use \Http\HttpHeader as HttpHeader;
+
 /**
  * Handler to return a well-formed XHTML document.
  *
@@ -35,5 +37,10 @@ class HtmlDocumentHandler extends Handler {
 			
 			// Loads an HTML page with defined scripts, css.
 			return $theme->render($content);
+	}
+	
+	public function getHeaders() {
+
+      return new HttpHeader("Content-Type", "text/html");
 	}
 }
