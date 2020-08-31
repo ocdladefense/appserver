@@ -50,6 +50,14 @@ class FileHandler extends Handler {
 	}
 	
 	public function getHeaders() {
+		$filename = $this->output->getName();
+		$contentType = $this->output->getType();
 	
+		return array(
+				new HttpHeader("Cache-Control", "private"),
+				new HttpHeader("Content-Description", "File Transfer"),
+				new HttpHeader("Content-Disposition", "attachment; filename=$fileName"),
+				new HttpHeader("Content-Type", $contentType)
+		);
 	}
 }
