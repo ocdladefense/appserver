@@ -1,0 +1,32 @@
+/* https://clrs.cc */
+.meta {
+	display:inline-block;
+	text-align:left;
+	font-size:1.0em;
+	padding:5px;
+	border-radius:3px;
+	font-size:0.9em;
+	color:#001f3f;
+background-image: url(/content/images/icon-cal.png);
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 60px 60px;
+    overflow: visible;
+    height:75px;
+/*	background-color:rgb(31, 80, 124);*/
+	/*background-color:#001f3f;*/
+}
+
+.meta-date {
+	padding-left:50px;
+	font-weight:bold;
+	display:inline-block;
+	vertical-align:middle;
+	font-size:1.3em;
+}
+
+.center {
+	display:inline-block;
+	height:100%;
+	vertical-align:middle;
+}
