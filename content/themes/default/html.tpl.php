@@ -80,66 +80,88 @@
 		</script>
 		-->
 
-		<div id="page">
 
+		<div id="header">
 
-
-			<div id="header">
-
-				<div id="header-content" class="header-content">
-					<div id="logo">
+			<div id="header-content" class="header-content">
+				<div id="logo">
+					<a href="/home">
 						<img src="/content/images/logo.png" />
-					</div>
-					<div id="banner">&nbsp;</div>
-					<div class="icon" id="mobile-icon">&#9776;</div>
+					</a>
 				</div>
-				
+				<div id="banner">&nbsp;</div>
+				<!-- <div class="icon" id="mobile-icon">&#9776;</div> -->
 			</div>
 			
-			<!--end header-->
-			
-			
+		</div>
+		
+		<!--end header-->
+		
+		
+		
+
+		<div id="page">
+
 			<div id="container">
 			
-			<!--
-				<a href="/home">
-					<img id="logo" src="/content/images/logo.png" alt="Back to app home." />
-				</a>
-			-->
-				<div id="container-left" class="column column-left">
-					<div id="menu-left">
-						<ul id="home-menu">
-							<li class="home-menu-item"><i class="fas fa-home fa-2x"></i><a href="/events">home</a></li>
-							<li class="home-menu-item"><i class="fas fa-calendar-day fa-2x"></i><a href="/events">events</a></li>
-							<li class="home-menu-item"><i class="fas fa-briefcase"></i><a href="#">jobs</a></li>
-							<li class="home-menu-item"><i class="fas fa-database fa-2x"></i><a href="/cars">CAR reviews</a></li>
-							<li class="home-menu-item"><i class="fas fa-map-pin fa-2x"></i><a href="#">maps</a></li>
-							<li class="home-menu-item"><i class="fas fa-video fa-2x"></i><a href="#">videos</a></li>
-							<li class="home-menu-item"><i class="fas fa-user-friends fa-2x"></i><a href="#">members/experts</a></li>
-							<li class="home-menu-item"><i class="fas fa-people-arrows fa-2x"></i><a href="/" title="How OCDLA is pivoting to meet COVID-19 challenges.">covid-19</a></li>
-							<li class="home-menu-item"><i class="fas fa-comment-dots fa-2x"></i><a href="/">feedback</a></li>
-							<li class="home-menu-item"><i class="fas fa-mobile-alt fa-2x"></i><a href="/">contact us</a></li>
-						</ul>
-					</div>
-				</div>
+				<div class="container-content">
 				
-				
-				
-				<div id="stage" class="<?php echo $defaultStageClass; ?>" class="column column-middle">
-
-					<div id="stage-content">
-							<i class="fas fa-home fa-2x"></i>
-							<?php echo $content; ?>
+					<!--
+						<a href="/home">
+							<img id="logo" src="/content/images/logo.png" alt="Back to app home." />
+						</a>
+					-->
+					<div id="container-left" class="column column-left">
+						<div id="menu-left">
+							<ul class="main-menu">
+						
+								<li class="home-menu-item"><i class="fas fa-home fa-2x"></i><a href="/events">home</a></li>
 							
+								<li class="home-menu-item"><i class="fas fa-people-arrows fa-2x"></i><a href="/" title="How OCDLA is pivoting to meet COVID-19 challenges.">covid-19</a></li>
+							
+								<li class="home-menu-item"><i class="fas fa-people-arrows fa-2x"></i><a href="/" title="How OCDLA is pivoting to meet COVID-19 challenges.">motion bank</a></li>
+							
+								<li class="home-menu-item"><i class="fas fa-people-arrows fa-2x"></i><a href="/" title="How OCDLA is pivoting to meet COVID-19 challenges.">my publications</a></li>
+							
+								<li class="home-menu-item"><i class="fas fa-calendar-day fa-2x"></i><a href="/events">events</a></li>
+							
+								<li class="home-menu-item"><i class="fas fa-briefcase"></i><a href="#">jobs</a></li>
+							
+								<li class="home-menu-item"><i class="fas fa-database fa-2x"></i><a href="/cars">CAR reviews</a></li>
+							
+								<li class="home-menu-item"><i class="fas fa-map-pin fa-2x"></i><a href="#">maps</a></li>
+							
+								<li class="home-menu-item"><i class="fas fa-video fa-2x"></i><a href="#">videos</a></li>
+							
+								<li class="home-menu-item"><i class="fas fa-user-friends fa-2x"></i><a href="#">members/experts</a></li>
+							
+								<li class="home-menu-item"><i class="fas fa-comment-dots fa-2x"></i><a href="/">feedback</a></li>
+							
+								<li class="home-menu-item"><i class="fas fa-mobile-alt fa-2x"></i><a href="/">contact us</a></li>
+							
+							</ul>
+						</div>
 					</div>
-					
-				</div>
+				
+				
+				
+					<div id="stage" class="<?php echo $defaultStageClass; ?>" class="column column-middle">
 
-				<!--
-				<div id="container-right" class="column column-right">
-					&nbsp;
-				</div>
-				-->
+						<div id="stage-content">
+								<i class="fas fa-home fa-2x"></i>
+								<?php echo $content; ?>
+							
+						</div>
+					
+					</div>
+
+					<!--
+					<div id="container-right" class="column column-right">
+						&nbsp;
+					</div>
+					-->
+				
+				</div> <!-- end container-content -->
 				
 			</div> <!--end container-->
 						

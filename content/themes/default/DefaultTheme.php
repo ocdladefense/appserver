@@ -28,7 +28,6 @@ class DefaultTheme extends Theme {
 		
 		
 		array(
-//			"src" => "/modules/webconsole/assets/jquery/jquery-1.11.0-min.js"
 			"src" => "/content/libraries/jquery/jquery-1.11.0-min.js"
 		),
 		
@@ -125,6 +124,10 @@ class DefaultTheme extends Theme {
 			array(
 				"active" => true,
 				"href" => $path . "/css/menu.css"
+			),
+			array(
+				"active" => true,
+				"href" => $path . "/css/main-menu.css"
 			),
 			array(
 				"active" => true,

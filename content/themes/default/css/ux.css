@@ -64,7 +64,7 @@ body {
 
 
 #stage {
-	width: 80%;
+	width: 70%;
 	font-family: "Helvetica Neuve",Helvetica;
 	background-color: #fff;
 	font-size: 15.5px;
@@ -102,31 +102,6 @@ body {
 
 
 
-#menu-left {
-	display:block;
-}
-
-#menu-left ul {
-	padding-left: 0;
-	font-size: 0.8em;
-}
-
-#menu-left li {
-	display:block;
-	border-bottom: 0.5px solid rgba(0,0,0,0.1);
-}
-
-#menu-left li a {
-	color:rgba(0,0,0,0.5);
-}
-
-#menu-left i {
-	color:rgba(0,0,0,0.6);
-	display:inline-block;
-	min-width: 45px;
-	vertical-align:middle;
-	font-size: 1.0rem;
-}
 
 
 

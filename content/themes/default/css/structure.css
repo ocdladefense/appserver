@@ -1,38 +1,79 @@
 
 
+
+
+
+
+
+
+#container {
+	text-align:center;
+	padding-top: 110px;
+}
+
+.container-content {
+
+}
+
+
+
+.column {
+	width:19%;
+	overflow-y:hidden;
+	display: inline-block;
+}
+
+#container-left {
+	overflow-y: scroll;
+	text-align:left;
+	display:none;
+}
+
+@media screen and (min-width: 1024px) {
+	body:not(".is-home") #container-left {
+		display: inline-block;
+		width: 25%;
+	}
+}
+
+
+
+
 #btnAdd {
 	max-width: 10vh;
 	cursor: pointer;
 }
 
 
+#stage-content {
 
+}
+
+
+#stage.home {
+	max-width:78%;
+}
+
+
+#footer {
+	z-index:10;
+	position:fixed;
+	bottom:0px;
+	left:0px;
+	height: 100px;
+	width:100%;
+}
 
 
 #installBanner {
 	margin-top: 50px;
 }
 
-#home-menu li {
-	list-style: none;
-	font-size: 1.3em;
-}
 
-h1 {
-	font-size: 2.3em;
-	
-}
-h2.event-title {
-	font-size: 1.6em;
-}
 
-#home-menu {
-	
-}
 
-#home-menu li {
-	padding: 15px;
-}
+
+
 
 body {
 	margin:0 !important;
@@ -59,6 +100,10 @@ body {
 }
 
 
+.header-content {
+	padding-left:3%;
+	padding-right:3%;
+}
 
 
 #logo {
@@ -67,36 +112,15 @@ body {
 	max-width: 40%;
 }
 
-@media screen and (max-width: 600px) {
-	#logo {
-		max-width: 55%;
-	}	
+#logo img {
+	max-width: 150px;
 }
 
 
 
-.header-content {
-	padding-left:3%;
-	padding-right:3%;
-}
 
-#container-left {
-	overflow-y: scroll;
-	text-align:left;
-}
 
-#container {
-	text-align:center;
-}
 
-#container .column {
-	display: inline-block;
-}
-
-.column {
-	width:19%;
-	overflow-y:hidden;
-}
 
 #stage {
 	display: block;
@@ -107,11 +131,22 @@ body {
 }
 
 
+
+
+
+h1 {
+	font-size: 2.3em;
+	
+}
+h2.event-title {
+	font-size: 1.6em;
+}
+
+
+
+
 @media screen and (min-width: 800px) {
 
-	#container {
-		padding-top: 110px;	
-	}
 
 
 	#stage {
@@ -123,27 +158,8 @@ body {
 		min-height: 200px;
 	}
 	
-	#logo img {
-		max-width: 150px;
-	}
-}
-
-
-#stage-content {
 
 }
 
 
-#stage.home {
-	max-width:78%;
-}
 
-
-#footer {
-	z-index:10;
-	position:fixed;
-	bottom:0px;
-	left:0px;
-	height: 100px;
-	width:100%;
-}
