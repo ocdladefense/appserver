@@ -36,7 +36,7 @@ class BaseComponent {
 			$el.setAttribute(html5, vnode.props[prop]);
 		}
 		
-		if(vnode.children && vnode.children != []) {
+		if(vnode.children && vnode.children != [] && vnode.children.length > 0) {
 			vnode.children.map(vnode.component.createElement)
 				.forEach($el.appendChild.bind($el));
 		}

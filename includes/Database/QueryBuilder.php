@@ -158,6 +158,20 @@ class QueryBuilder{
             return $this->selectClause().$this->whereClause().$this->orderByClause().$this->limitClause();
         }
     }
+
+    function getCountQuery() {
+        $count = clone($this);
+        $count->resetSelect("count(*)");
+        $count->resetLimit("");
+        return $count;
+    }
+
+    function getPageCount($limit) {
+        $query = $this->getCountQuery();
+        $sql = $query->compile();
+		//print($sql);
+		return MysqlDatabase::query($sql);
+    }
     
     function prepareInsertValues(){
         $sqlr = array();
