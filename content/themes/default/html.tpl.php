@@ -115,29 +115,29 @@
 						<div id="menu-left">
 							<ul class="main-menu">
 						
-								<li class="home-menu-item"><i class="fas fa-home fa-2x"></i><a href="/events">home</a></li>
-							
-								<li class="home-menu-item"><i class="fas fa-people-arrows fa-2x"></i><a href="/" title="How OCDLA is pivoting to meet COVID-19 challenges.">covid-19</a></li>
-							
-								<li class="home-menu-item"><i class="fas fa-people-arrows fa-2x"></i><a href="/" title="How OCDLA is pivoting to meet COVID-19 challenges.">motion bank</a></li>
-							
-								<li class="home-menu-item"><i class="fas fa-people-arrows fa-2x"></i><a href="/" title="How OCDLA is pivoting to meet COVID-19 challenges.">my publications</a></li>
-							
-								<li class="home-menu-item"><i class="fas fa-calendar-day fa-2x"></i><a href="/events">events</a></li>
-							
-								<li class="home-menu-item"><i class="fas fa-briefcase"></i><a href="#">jobs</a></li>
-							
-								<li class="home-menu-item"><i class="fas fa-database fa-2x"></i><a href="/cars">CAR reviews</a></li>
-							
-								<li class="home-menu-item"><i class="fas fa-map-pin fa-2x"></i><a href="#">maps</a></li>
-							
-								<li class="home-menu-item"><i class="fas fa-video fa-2x"></i><a href="#">videos</a></li>
-							
-								<li class="home-menu-item"><i class="fas fa-user-friends fa-2x"></i><a href="#">members/experts</a></li>
-							
-								<li class="home-menu-item"><i class="fas fa-comment-dots fa-2x"></i><a href="/">feedback</a></li>
-							
-								<li class="home-menu-item"><i class="fas fa-mobile-alt fa-2x"></i><a href="/">contact us</a></li>
+				<li class="home-menu-item"><i class="fas fa-home fa-2x" aria-hidden="true"></i><a href="/home">home</a></li>
+
+				<li class="home-menu-item"><i class="fas fa-people-arrows fa-2x"></i><a href="/covid" title="How OCDLA is pivoting to meet COVID-19 challenges.">covid-19</a></li>
+			
+				<li class="home-menu-item"><i class="fas fa-scroll"></i><a href="/motions" title="OCDLA motion bank">motion bank</a></li>
+			
+				<li class="home-menu-item"><i class="fas fa-book-open"></i><a href="/books" title="Read your publications">my publications</a></li>
+			
+				<li class="home-menu-item"><i class="fas fa-calendar-day fa-2x" aria-hidden="true"></i><a href="/events">events</a></li>
+			
+				<li class="home-menu-item"><i class="fas fa-briefcase" aria-hidden="true"></i><a href="/jobs">jobs</a></li>
+			
+				<li class="home-menu-item"><i class="fas fa-database fa-2x" aria-hidden="true"></i><a href="/cars">case reviews</a></li>
+			
+				<li class="home-menu-item"><i class="fas fa-map-pin fa-2x" aria-hidden="true"></i><a href="/maps">maps</a></li>
+			
+				<li class="home-menu-item"><i class="fas fa-video fa-2x" aria-hidden="true"></i><a href="/videos">videos</a></li>
+			
+				<li class="home-menu-item"><i class="fas fa-user-friends fa-2x" aria-hidden="true"></i><a href="/directory">members/experts</a></li>
+			
+				<li class="home-menu-item"><i class="fas fa-comment-dots fa-2x" aria-hidden="true"></i><a href="/feedback">feedback</a></li>
+			
+				<li class="home-menu-item"><i class="fas fa-mobile-alt fa-2x" aria-hidden="true"></i><a href="/contact">contact us</a></li>
 							
 							</ul>
 						</div>

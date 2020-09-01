@@ -107,31 +107,31 @@ class DefaultTheme extends Theme {
 			),
 			array(
 				"active" => true,
-				"href" => $path . "/css/resets.css"
+				"href" => $path . "/css/resets.css?bust=001"
 			),
 			array(
 				"active" => true,
-				"href" => $path . "/css/structure.css"
+				"href" => $path . "/css/structure.css?bust=001"
 			),
 			array(
 				"active" => true,
-				"href" => $path . "/css/ux.css"
+				"href" => $path . "/css/ux.css?bust=001"
 			),
 			array(
 				"active" => true,
-				"href" => $path . "/css/responsive.css"
+				"href" => $path . "/css/responsive.css?bust=001"
 			),
 			array(
 				"active" => true,
-				"href" => $path . "/css/menu.css"
+				"href" => $path . "/css/menu.css?bust=001"
 			),
 			array(
 				"active" => true,
-				"href" => $path . "/css/main-menu.css"
+				"href" => $path . "/css/main-menu.css?bust=001"
 			),
 			array(
 				"active" => true,
-				"href" => $path . "/css/modal.css"
+				"href" => $path . "/css/modal.css?bust=001"
 			)
 		);
 	
