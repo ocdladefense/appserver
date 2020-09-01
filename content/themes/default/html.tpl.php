@@ -61,15 +61,8 @@
 			
 		</script>
 
-		<script src="/content/libraries/form/FormSubmission.js"></script>
-		<script src="/content/libraries/component/BaseComponent.js"></script>
-		<script src="/content/libraries/database/DBQuery.js"></script>
-		<script src="/content/libraries/form/FormParser.js"></script>
-		<script src="/modules/car/assets/js/InfiniteScroller.js"></script>
-		<script src="/modules/car/assets/js/PageUI.js"></script>
-		<script src="/modules/car/assets/js/module.js"></script>
-		<!--<script src="/modules/car/assets/js/CreateCarUI.js"></script>
-		<script src="/modules/car/assets/js/CarCreateModule.js"></script>-->
+
+
 
 		<?php echo $scripts; ?> 
 	</head>

@@ -33,6 +33,7 @@ class HtmlDocumentHandler extends Handler {
 			// $theme->addScript
 			// $theme->addMeta
 			// $theme
+			
 			$content = Template::isTemplate($this->output) ? $theme->renderTemplate($this->output) : $this->output;
 			
 			// Loads an HTML page with defined scripts, css.

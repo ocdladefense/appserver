@@ -62,8 +62,11 @@ class Theme {
 	 */
 	public function renderTemplate(Template $tpl) {
 		
+		// print "<pre>".print_r($tpl->getScripts(), true) . "</pre>";
+		// exit;
+		
 		$this->addScripts($tpl->getScripts());
-		$this->addStyle($tpl->getStyles());
+		$this->addStyles($tpl->getStyles());
 		
 		
 		return $tpl->render();
