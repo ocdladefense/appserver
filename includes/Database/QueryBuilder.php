@@ -56,6 +56,10 @@ class QueryBuilder{
         $this->columns = array();
         return "SELECT * FROM $this->tableName";
     }
+
+    function selectCountClause(){
+        return "SELECT count(*) FROM $this->tableName";
+    }
     
     function whereClause(){
         $where = "";
@@ -154,23 +158,46 @@ class QueryBuilder{
             return "UPDATE $this->tableName SET $fields".$this->whereClause();
         } else if($this->type == "delete") {
             return "DELETE FROM $this->tableName".$this->whereClause();
+        } else if($this->type == "count") {
+            return $this->selectCountClause().$this->whereClause();
         } else {
             return $this->selectClause().$this->whereClause().$this->orderByClause().$this->limitClause();
         }
     }
 
-    function getCountQuery() {
-        $count = clone($this);
-        $count->resetSelect("count(*)");
-        $count->resetLimit("");
-        return $count;
+    function getPageCount($limit = null) {
+        if ($limit === null) {
+            if ($this->limitCondition != null && $this->limitCondition != "") {
+                $limit = $this->limitCondition->rowCount;
+            } else {
+                $limit = 1;
+            }
+        }
+
+        $clone = clone($this);
+        $clone->setType("count");
+        $sql = $clone->compile();
+
+        $result = MysqlDatabase::query($sql);
+        
+        $count;
+        //loop is just to access first and only result
+        foreach($result as $r) {
+            $count = $r["count(*)"];
+        }
+
+        return ceil($count / $limit);
     }
 
-    function getPageCount($limit) {
-        $query = $this->getCountQuery();
-        $sql = $query->compile();
-		//print($sql);
-		return MysqlDatabase::query($sql);
+    function getCurrentPage() {
+        if ($this->limitCondition == null || $this->limitCondition == "") {
+            return 0;
+        }
+
+        $rowCount = $this->limitCondition->rowCount;
+        $offset = $this->limitCondition->offset;
+
+        return ($offset / $rowCount) + 1;
     }
     
     function prepareInsertValues(){
