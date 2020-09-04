@@ -12,7 +12,7 @@ class HttpResponse extends HttpMessage {
 
         $this->body = $body;
 
-        if($this->isfile() && $this->body->exists()){
+        if($this->isfile()){
 
             $this->setUpFileDownloadHeaders();
         }
