@@ -15,6 +15,7 @@ class QueryBuilder{
     private $columns = array();
     private $values = array();
     private $updateFields = array();
+    private $uikvps = array();
 
     function __construct(){
 
@@ -52,9 +53,17 @@ class QueryBuilder{
         $this->updateFields = $fields;
     }
 
+    function setUpdateInsertKeyValuePairs($uikvps) {
+        $this->uikvps = $uikvps;
+    }
+
     function selectClause(){
         $this->columns = array();
         return "SELECT * FROM $this->tableName";
+    }
+
+    function selectCountClause(){
+        return "SELECT count(*) FROM $this->tableName";
     }
     
     function whereClause(){
@@ -93,6 +102,9 @@ class QueryBuilder{
             $returnStr = sprintf("%s %s %d",$field,$op,$value);
         } else if($op == 'LIKE'){
             $returnStr = sprintf("%s %s '%%%s%%'",$field,$op,$value);
+        } else if(substr($value, 0, 5) === "(SQL)") {
+            $value = str_replace("(SQL)", "", $value);
+            $returnStr = sprintf("%s %s %s",$field,$op,$value);
         } else {
             $returnStr = sprintf("%s %s '%s'",$field,$op,$value);
         }
@@ -154,23 +166,46 @@ class QueryBuilder{
             return "UPDATE $this->tableName SET $fields".$this->whereClause();
         } else if($this->type == "delete") {
             return "DELETE FROM $this->tableName".$this->whereClause();
+        } else if($this->type == "count") {
+            return $this->selectCountClause().$this->whereClause();
         } else {
             return $this->selectClause().$this->whereClause().$this->orderByClause().$this->limitClause();
         }
     }
 
-    function getCountQuery() {
-        $count = clone($this);
-        $count->resetSelect("count(*)");
-        $count->resetLimit("");
-        return $count;
+    function getPageCount($limit = null) {
+        if ($limit === null) {
+            if ($this->limitCondition != null && $this->limitCondition != "") {
+                $limit = $this->limitCondition->rowCount;
+            } else {
+                $limit = 1;
+            }
+        }
+
+        $clone = clone($this);
+        $clone->setType("count");
+        $sql = $clone->compile();
+
+        $result = MysqlDatabase::query($sql);
+        
+        $count;
+        //loop is just to access first and only result
+        foreach($result as $r) {
+            $count = $r["count(*)"];
+        }
+
+        return ceil($count / $limit);
     }
 
-    function getPageCount($limit) {
-        $query = $this->getCountQuery();
-        $sql = $query->compile();
-		//print($sql);
-		return MysqlDatabase::query($sql);
+    function getCurrentPage() {
+        if ($this->limitCondition == null || $this->limitCondition == "") {
+            return 0;
+        }
+
+        $rowCount = $this->limitCondition->rowCount;
+        $offset = $this->limitCondition->offset;
+
+        return ($offset / $rowCount) + 1;
     }
     
     function prepareInsertValues(){
@@ -206,19 +241,34 @@ class QueryBuilder{
         $fields = "";
         $tmp = array();
 
-        foreach($this->updateFields as $set) {
-            $field = $set->field;
-            $value = $set->value;
+        if (count($this->values) != 1) {
+            return "";
+        }
+
+        $updateFields;
+
+        foreach($this->values as $value) {
+            $updateFields = $value;
+        }
+
+        foreach($updateFields as $set) {
+            $field = array_search($set, $updateFields);
+            $value = $set;
             $op = "=";
 
             if(is_int($value)){
                 $tmp[] = sprintf("%s %s %d",$field,$op,$value);
             } else {
-                $tmp[] = sprintf("%s %s '%s'",$field,$op,$value);
+                $tmp[] = sprintf("%s %s '%s'",$field,$op,addslashes($value));
             }
         }
 
         $fields = implode(SQL_FIELD_SEPERATOR, $tmp);
         return $fields;
+    }
+
+    static function fromJson($json) {
+        $json = json_decode(urldecode($json));
+        return GenericDb::setUpQueryBuilder($json);
     }
 }

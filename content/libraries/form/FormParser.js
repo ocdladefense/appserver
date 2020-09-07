@@ -76,9 +76,9 @@ const FormParser = (function() {
             }
         }
 
-        //query = new DBQuery();
-        //query.addCondition();
-        conditions.push(DBQuery.createLimitCondition(resultsLimit, resultsOffset));
+        if (resultsLimit) {
+            conditions.push(DBQuery.createLimitCondition(resultsLimit, resultsOffset));
+        }
 
         return conditions;
     };
