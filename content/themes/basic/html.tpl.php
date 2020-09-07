@@ -31,38 +31,6 @@
 		<meta name="theme-color" content="#c4a12e" />
 		<link type="text/css" href="/pwa-install.css" rel="stylesheet" />
 		
-		<style type="text/css">
-	
-		.fullscreen #container-left {
-			display:none;
-		}
-
-		.fullscreen #stage {
-			width: 100% !important;
-		}
-	
-		.fullscreen #stage-content {
-			height: 100vh;
-		}
-
-		#header {
-			transition: height 0.3s ease-in-out 0.5s;
-			overflow: hidden;
-		}
-	
-		.fullscreen #header {
-			height: 0px;
-		}
-	
-		#container {
-			transition: padding-top 0.3s ease-out 1.0s;
-		}
-	
-		.fullscreen #container {
-			padding-top: 0px;
-		}
-		</style>
-		
 		<script src="https://kit.fontawesome.com/c2278a45b9.js" crossorigin="anonymous"></script>
 
 		<script src="/pwa-homescreen.js">
@@ -98,7 +66,7 @@
 
 		<?php echo $scripts; ?> 
 	</head>
-	<body style="background-color: rgba(191,161,46,1.0); color: rgba(255,255,255,1.0);">
+	<body>
 
 		<!--
 		<div id="babel-foo" style="position:absolute;top:0px;right:0px;background-color:#fff;z-index:101;max-width:325px;padding:10px;">&nbsp;</div>
@@ -177,10 +145,10 @@
 				
 				
 				
-					<div id="stage" class="column column-middle">
+					<div id="stage" height="800px;">
 
-						<div id="stage-content">
-
+						<div id="stage-content" style="height:1000px;">
+								<i class="fas fa-home fa-2x"></i>
 								<?php echo $content; ?>
 							
 						</div>
@@ -205,73 +173,6 @@
 			
 		</div> <!--end page -->
 
-		
-		<div id="modal-backdrop">
-			<div id="modal">
-				<div id="modal-content"></div>
-			</div>
-		</div>
-		
-		<!--
-		<div id="context-menu-container">
-			<div id="context-menu" style="height:200px; width:90%; background-color:teal;"></div>
-		</div>
-		-->
-		
-		<div id="positioned-context-container"></div>
-
-		<?php if(false !== $doInit): ?>
-		<script type="text/javascript">
-	
-			// domReady(renderMenu);
-			
-			
-			var app;
-		
-			/*
-			domReady(function(){
-				app = new App();
-				// app.addRoutes(clientSettings["routes-enabled"]);
-				try {
-					app.init(clientSettings);
-				} catch(e) {
-					console.log(e);
-				}	
-				// app.setKeyboardManager(kbd);
-			});
-			*/
-
-			
-		</script>
-		<?php endif; ?>
-
-		<script type="text/javascript">	
-		
-			function fullscreen() {
-				document.body.classList.add("fullscreen");
-			}
-			/*
-			function renderMenu() {
-				var vnode = createMenu();
-				var node = createElement( vnode );
-				document.getElementById("header").appendChild(node);
-			}
-	
-			renderMenu();
-			*/
-		</script>
-
-		<!--
-		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-		-->
-		
-		<!--
-		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-		-->
-		
-		<!--
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-		-->
 
 	</body>
 
