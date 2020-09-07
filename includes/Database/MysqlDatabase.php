@@ -124,7 +124,6 @@ function insert($objs = array()){
     $builder->setColumns($columns);
     $builder->setValues($values);
     $sql = $builder->compile();
-    //print($sql);exit;
 
     $db = new MysqlDatabase();
     $insertResult = $db->insert($sql);

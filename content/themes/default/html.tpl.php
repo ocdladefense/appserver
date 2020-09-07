@@ -179,6 +179,10 @@
 				<div id="modal-content"></div>
 			</div>
 		</div>
+
+		<div id="loading">
+			<div id="loading-wheel"></div>
+		</div>
 		
 		<!--
 		<div id="context-menu-container">
