@@ -45,6 +45,12 @@ class DefaultTheme extends Theme {
 		),
 		array(
 			"src" => "/content/libraries/core/Repository.js"
+		),
+		array (
+			"src" => "/content/libraries/view/view.js"
+		),
+		array(
+			"src" => "/content/libraries/view/modal.js"
 		)
 		
 		
