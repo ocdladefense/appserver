@@ -39,6 +39,12 @@ class DefaultTheme extends Theme {
 		),
 		array(
 			"src" => "/content/libraries/react/babel-6.26.0-standalone.js"
+		),
+		array(
+			"src" => "/content/libraries/core/Callout.js"
+		),
+		array(
+			"src" => "/content/libraries/core/Repository.js"
 		)
 		
 		

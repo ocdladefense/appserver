@@ -47,7 +47,13 @@
 		<script type="text/javascript">
 			window.appModules = {};
 			
-			
+			function triggerEvent(name, data) {
+
+				let event = new CustomEvent(name, { detail: data });
+				document.dispatchEvent(event);
+			}
+
+
 			function define(name,mod){
 				if(typeof name == "string")
 					appModules[name] = mod();
