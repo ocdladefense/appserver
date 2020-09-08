@@ -9,5 +9,10 @@ var modal = {
     render: function(vNode){
         document.getElementById('modal-content').innerHTML = "";
         document.getElementById('modal-content').appendChild(createElement(vNode));
+    },
+
+    
+    renderHtml: function(html) {
+        document.getElementById('modal-content').innerHTML = html;
     }
 };

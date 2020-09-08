@@ -13,18 +13,15 @@ ul.main-menu {
 
 .main-menu li {
 	display: block;
-	padding: 15px;
-	padding-left:6px;
-	padding-right:1.0em;
+	padding: 10px;
 	position:relative;
-	font-size:14.4px;
+	font-size: 12pt;
 	list-style: none;
-	font-size: 1.3em;
 	border-bottom: 1px solid rgba(200,200,200,0.3);
 }
 
 .main-menu > li {
-	padding-bottom:8px;
+ 	/* padding-bottom:8px; */
 }
 
 

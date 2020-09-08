@@ -25,12 +25,25 @@ const User = (function(){
         
         get: function(attr){
             return this.data[attr];
+        },
+        
+        addPurchasedProduct(videoId) {
+        	this.products.push(videoId);
+        },
+        
+        hasPurchasedProduct(videoId) {
+        	return this.products.includes(videoId);
         }
     };
     
     
     function User(init){
-		this.data = init;
+			this.data = {
+				FirstName: "Jane",
+				LastName: "Doe"
+			};
+			
+			this.products = [];
     }
     
     
@@ -42,7 +55,7 @@ const User = (function(){
         const userProto = p;
         
         var User = function(init){
-			this.data = init;  
+					this.data = init;  
         };
         
         for(var prop in proto)  {

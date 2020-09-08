@@ -79,7 +79,7 @@
 		<script type="text/javascript">
 			window.appModules = {};
 			
-			
+			/*
 			function define(name,mod){
 				if(typeof name == "string")
 					appModules[name] = mod();
@@ -90,6 +90,7 @@
 				if(!appModules[name]) throw new Error("Module "+name+" hasn't been loaded.");
 				return appModules[name];
 			}
+			*/
 			
 		</script>
 
