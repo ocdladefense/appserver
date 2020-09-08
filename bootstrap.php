@@ -18,14 +18,18 @@
 
 	require_once BASE_PATH.'/includes/Url/Url.php';
 	
-
-	
 	$http = array("HttpConstants","CurlConfiguration","Curl","Http","HttpHeader","HttpHeaderCollection","HttpMessage","HttpRequest","HttpResponse","HttpRedirect","IHttpCache",
-		"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag","IJson");
-		
-		foreach($http as $file) {
-			require_once(BASE_PATH.'/includes/Http/'.$file.".php");
-		}
+	"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag","IJson");
+	
+	foreach($http as $file) {
+		require_once(BASE_PATH.'/includes/Http/'.$file.".php");
+	}
+
+	$files = array("File", "FileList", "FileHandler", "PhpFileUpload");
+
+	foreach($files as $file) {
+		require_once(BASE_PATH.'/includes/File/'.$file.".php");
+	}
 
 	$store = array("ShoppingCart","IPaymentProcessor","Customer","Order","CreditCard","Payment");
 	
