@@ -129,8 +129,80 @@ class Application {
         $resp->setBody($body);
       }
       */
+        $this->activeRoute = $this->router->match($path);
 
 
+        //Aciive module is an instance of the module class
+        $this->activeModule = ModuleLoader::getInstance($this->activeRoute->getModule());
+
+        $this->activeModule->setRequest($this->request);
+        
+        $this->activeModule->loadFiles();
+
+        $this->requireRouteFiles($this->activeRoute);
+
+        $resp = new HttpResponse();
+
+
+        session_start();
+        
+        try{
+
+            $out = $this->doCallback($this->activeModule,$this->activeRoute);
+
+            //Set up the response body.
+
+            if(gettype($out) != "string" && get_class($out) == "File"){
+
+                $resp = new HttpResponse($out);
+
+                return $resp;
+            }
+            
+            if($this->activeRoute->getContentType() == Http\MIME_APPLICATION_JSON){
+
+            $resp->setBody($this->getAsJson($out));
+
+            } else {
+                $resp->setBody($out);
+            }
+
+        } catch(PageNotFoundException $e) {
+
+            $resp->setNotFoundStatus();
+            $resp->setBody($e->getMessage());
+            
+        } catch(Exception $e) {
+
+            if($this->activeRoute->getContentType() == Http\MIME_APPLICATION_JSON){
+
+                $error = new StdClass();
+                $error->error = $e->getMessage();
+                $body = json_encode($error);
+
+            } else {
+
+                $body = $e->getMessage();
+            }
+
+            $resp->setErrorStatus();
+            $resp->setBody($body);
+        }
+
+
+
+        //Just adding a header
+        if(strpos($this->activeRoute->getContentType(),"json") !== false){
+            $contentType = Http\MIME_APPLICATION_JSON;
+        } else {
+            $contentType = Http\MIME_TEXT_HTML;
+        }
+
+        $header = new HttpHeader("Content-Type",$contentType);
+        
+        $resp->addHeader($header);
+
+        return $resp;
     }
     
     
@@ -193,7 +265,6 @@ class Application {
         }
         
         $accept = "*/*";
-       // $this->request->getHeader("Accept")->getValue();
 
         if(!$this->request->isSupportedContentType("*/*")){
             throw new Exception("The content type of the requested resource '$contentType' does not match the accepted content type '$accept', which is set by the requesting entity.");
@@ -201,8 +272,9 @@ class Application {
     }
     
     public function send() {
-    
+
         $content = $this->resp->getBody();
+
         
         $collection = $this->resp->getHeaderCollection();
         foreach($collection->getHeaders() as $header) {
@@ -211,8 +283,20 @@ class Application {
 
         http_response_code($this->resp->getStatusCode());
 
+        if($this->resp->isFile()){
 
-     
+            $file = $this->resp->getFile();
+            if($file->exists()){
+
+                readfile($file->getPath());
+
+            } else {
+
+                $content = $file->getContent();
+                
+            }
+        }
+
         print $content;
     }
 }
