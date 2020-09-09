@@ -1,5 +1,34 @@
 <?php
 
+<<<<<<< HEAD
+
+?>
+<!doctype html>
+<html>
+	<head>
+		<title>OCDLA WebApp</title>
+		<meta charset="utf-8" />
+		<link href="/content/assets/css/styles.css" type="text/css" rel="stylesheet" />
+	</head>
+	
+	<body>
+		<header>
+		
+		</header>
+	
+		<main>
+		
+			<img id="main-logo" alt="OCDLA Logo" src="content/images/logo.png" />
+		
+		</main>
+	
+		<footer>
+		
+		</footer>
+	</body>
+
+</html>
+=======
 //phpinfo();
 
 
@@ -203,3 +232,4 @@ $sites = json_decode($json);
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
 </html>
+>>>>>>> bca2b9ac4f71967d07a73dfabc29ed38eecfd6a6

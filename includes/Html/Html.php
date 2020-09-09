@@ -56,3 +56,15 @@ function createElement($tagName, $attributes, $children) {
 	return "<{$tagName} ".implode(" ",$attributeStrings).">{$children}</{$tagName}>";
 }
 
+
+
+class Html {
+
+	public static function toList($items,$heading) {
+		return "<h2>{$heading}</h2><ul>" . implode("\n",array_map(function($item) {
+			return "<li>{$item}</li>";
+		}, $items))."</ul>";
+	}
+	
+}
+

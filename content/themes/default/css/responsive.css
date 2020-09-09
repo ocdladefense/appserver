@@ -1,0 +1,50 @@
+/************ RESPONSIVE STYLES *************/
+
+/* Targeting Phones */
+/* @media (max-width: 450px) {  */
+
+	/*** HEADERS ***/
+
+
+
+	#logo {
+		margin-top: 0px;
+		margin-bottom: 0px;
+	}
+
+	#doc-header {
+		display: none;
+	}
+
+	
+
+
+/* Targeting Tablets */
+@media (min-width: 450px) and (max-width: 800px) {
+	#doc-header {
+		display: none;
+	}
+
+	#container-left {
+		display: none;
+	}
+
+	#container-right {
+		display: none;
+	}
+
+	#stage {
+		max-width: 90%;
+		border: 0px;
+	}
+}
+/* End Targeting Tablets */ 
+
+
+
+@media all and (display-mode: standalone) {
+	#installBanner {
+		display: none;
+	}
+    /* Here goes the CSS rules that will only apply if app is running standalone */
+}

@@ -52,7 +52,83 @@ class Application {
     
 
     
+    /**
+     * For HTTP contexts,
+     *  `run` should return an HttpResponse object that will be returned to the
+     *  webserver context.
+     */
     public function run($path) {
+    	return $this->runHttp($path);
+    	// $this->runCli($cmd, $flags);
+    } 
+    public function runHttp($path) {
+    
+    	// Return an HttpResponse to the calling application.
+      $resp = new HttpResponse();
+      
+      $this->activeRoute = $this->router->match($path);
+
+
+      // Active module is an instance of the module class
+      $this->activeModule = ModuleLoader::getInstance($this->activeRoute->getModule());
+
+      
+      // Other files required by the module.
+      $this->activeModule->loadFiles();
+      
+			// Still other files required by the route itself.
+      $this->requireRouteFiles($this->activeRoute);
+
+      // Incoming request should be available to the module.
+      $this->activeModule->setRequest($this->request);
+
+			
+      session_start();
+      
+
+      try {
+      
+        $output = $this->doCallback($this->activeModule, $this->activeRoute);
+      
+      	$handler = Handler::fromType($output, $this->activeRoute->getContentType());
+      	
+				$resp->setBody($handler->getOutput());
+				$resp->addHeaders($handler->getHeaders());
+				
+			} catch(Exception $e) {
+				throw $e;
+			}
+
+
+
+      // Verify that we can completely override the response body.
+      // $resp->setBody("foobar");
+
+			return $resp;
+    }
+
+
+
+    private function setupResponse($output, Exception $e) {
+			/* 
+      } catch(PageNotFoundException $e) {
+        $resp->setNotFoundStatus();
+        $resp->setBody($e->getMessage());
+        
+      } catch(Exception $e) {
+
+        if($contentType == Http\MIME_APPLICATION_JSON){
+            $error = new StdClass();
+            $error->error = $e->getMessage();
+            $body = json_encode($error);
+        } else {
+            $body = $e->getMessage();
+        }
+
+        $resp->setErrorStatus();
+        $resp->setBody($body);
+      }
+      */
         $this->activeRoute = $this->router->match($path);
 
 
@@ -128,17 +204,6 @@ class Application {
 
         return $resp;
     }
-
-    public function getAsJson($out){
-        
-        if(gettype($out) == "object" && in_array( "Http\IJson",class_implements($out))){
-            return $out->toJson();
-        } else {
-            return json_encode($out);
-        }
-    }
-    
-    
     
     
     //require all of the necessary file in the route at the key of 'files'
@@ -190,7 +255,7 @@ class Application {
     
 
     //Other Methods
-    public function secure(){ 
+    public function secure() { 
         $header = $this->resp->getHeader("Content-Type");
         $cType = null;
         

@@ -7,27 +7,34 @@ class Module {
     
     protected $dependencies = array();
 
-    
-    
-    
+
     protected $files = array();
     
     
     protected $name;
+    
+    
+    protected $path;
+
 
     protected $request;
     
     
-
-    public function __construct($application = null){
+    protected $theme;
     
+    
+
+    public function __construct($path = null){
+    	$this->path = $path;
     }
 
-
+		public function getPath() {
+			return $this->path;
+		}
+		
     public function getRoutes(){
         return $this->routes;
     }
-
 
     public function getDependencies(){
         return $this->dependencies;
@@ -39,6 +46,14 @@ class Module {
 
     public function getRequest(){
         return $this->request;
+    }
+    
+    public function setTheme($theme) {
+    	$this->theme = $theme;
+    }
+    
+    public function getTheme() {
+    	return $this->theme;
     }
 
 
@@ -61,7 +76,7 @@ class Module {
 
     public function loadFile($file){
         $path = getPathToModules()."/{$this->name}/src/".$file;
-            require_once($path);
+				require_once($path);
     }
 
 

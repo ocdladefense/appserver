@@ -1,0 +1,64 @@
+body {
+	font-size: 1.0em;
+	text-align:center;
+}
+
+div.page-wrapper {
+	padding-left:5%;
+	padding-right:5%;
+}
+
+main {
+	width: 90vw;
+	margin:0 auto;
+}
+
+@media screen and (min-width:800px) {
+	main {
+		width: 60vw;
+		margin:0 auto;
+	}
+}
+
+
+h1, h2, h3 {
+	font-family: 'Montserrat', sans-serif;
+	/*font-family: 'Noto Sans SC', sans-serif;*/
+}
+
+h1 {
+	font-size: 4.0em;
+}
+
+h2 {
+	font-size:2.0em;
+	line-height:1.3em;
+	color:#181818;
+}
+
+@media screen and (min-width:800px) {
+	h2 {
+		font-size:3.0em;
+		line-height:1.3em;
+	}
+}
+
+.body, .meta {
+	font-family: 'Questrial', sans-serif;
+}
+.body {
+	text-align:left;
+	font-size:1.4em;
+	line-height:1.4em;
+	color:#4c4646
+}
+
+article {
+	text-align:left;
+}
+
+
+footer {
+	height:160vh;
+	background-color:rgb(249, 249, 249);
+}

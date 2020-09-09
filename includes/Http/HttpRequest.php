@@ -246,6 +246,7 @@ class HttpRequest extends HttpMessage {
 			$request->addHeader(new HttpHeader("Content-Type", $env->http->headers["Content-Type"]));
 		}
 
+
 		// GET requests cannot have a body.
 		// Otherwise determine the data structure that best represents the message body.
 		// Prevents us from having to continually call json_decode, etc,
@@ -258,6 +259,7 @@ class HttpRequest extends HttpMessage {
 			$request->setBody((object)$_POST);
 			
 		} else if($request->isPost() && $request->isMultipart()) {
+
 			$request->setBody((object)$_POST);
 			$request->setFiles($_FILES);
 			
