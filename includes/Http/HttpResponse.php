@@ -5,10 +5,46 @@ namespace Http;
 
 class HttpResponse extends HttpMessage {
 	
-	
+    
     public function __construct($body = null){
+
         parent::__construct();
+
         $this->body = $body;
+
+        if($this->isfile()){
+
+            $this->setUpFileDownloadHeaders();
+        }
+    }
+
+    //FILE DOWNLOAD FUNCTIONALITY
+    private function setUpFileDownloadHeaders(){
+        
+        $fileName = $this->body->getName();
+        
+
+        $headers = array(
+            new HttpHeader("Cache-Control", "private"),
+            new HttpHeader("Content-Description", "File Transfer"),
+            new HttpHeader("Content-Disposition", "attachment; filename=$fileName"),
+            new HttpHeader("Content-Type", $this->body->getType())
+        );
+
+        $this->addHeaders($headers);
+    }
+
+    public function getFile(){
+
+        return $this->isFile() ? $this->body : null;
+    }
+
+    public function isFile(){
+
+        if($this->body != null && gettype($this->body) == "object"){
+
+            return get_class($this->body) == "File";
+        }
     }
 
     //Setters
