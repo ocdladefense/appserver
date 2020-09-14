@@ -1,5 +1,9 @@
 <?php
-class Filesystem {
+
+
+class FileSystem {
+
+
     public function __construct(){}
     
     public function hasDirectory($parentDir,$childDir){

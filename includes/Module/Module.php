@@ -60,6 +60,12 @@ class Module {
     public function requireDependencies(){
 
     }
+    
+    
+    public function requireModuleFile($file){
+        $path = getPathToModules()."/{$this->activeRoute->getModule()}/src/".$file;
+				require_once($path);
+    }
 
 
     public function hasDependencies(){
@@ -84,5 +90,11 @@ class Module {
         foreach ($this->files as $file){
             $this->loadFile($file);
         }
+    }
+    
+    public function toJson() {
+
+
+			return json_encode($this->getRoutes());
     }
 }

@@ -1,5 +1,7 @@
 <?php
-class MysqlDatabase{
+
+
+class MysqlDatabase {
 
     private $connection;
 
@@ -100,6 +102,87 @@ class MysqlDatabase{
         $this->connection->close();
     }
 }
+
+
+
+function select($query) {
+	$tokens = explode(" ", strtolower($query));
+	$tokens = implode(" ", array_filter($query));
+	
+	$parts = preg_split("/\s(select|from|where)\s+/",$tokens);
+	
+	print_r($parts);
+	
+	
+	$fields = $parts[0];
+	$object = $parts[1];
+	$conditions = $parts[2];
+	
+	$results = MysqlDatabase::query($query);
+
+	
+	return new ListObject($object,$results);
+}
+
+
+
+
+
+class SObjectList {
+	
+	private $results = array();
+	
+	private $name;
+	
+	public function __construct($object,$results = array()) {
+		foreach($results as $row) {
+				$this->results[] = $row;
+		}
+	}
+	
+	public function get($index) {
+		return $this->results[$index];
+	}
+	
+	
+}
+
+
+
+
+
+class SObject { // implements \Http\IJson {
+
+	protected $id = null;
+	
+	protected $object = null;
+	
+	
+	protected function __construct($object,$id) {
+		$this->id = $id;
+		$this->result = $this->load($id);
+	}
+	
+	private function load($id) {
+		$results = MysqlDatabase::query("SELECT * FROM {$this->object} WHERE id = {$this->id}");
+
+		foreach($results as $row) {
+				$this->$object = $row;
+				return;
+		}
+	}
+}
+
+
+class Car extends SObject {
+
+	public function __construct($id = null) {
+		parent::__construct("car",$id);
+	}
+	
+
+}
+
 
 //Global insert function that calls the insert method of the MysqlDatabase class.
 function insert($objs = array()){

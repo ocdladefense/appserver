@@ -45,7 +45,7 @@ node_modules/*
 #ignore content directory
 content/uploads
 content/modules
-
+content/emails
 
 
 # Ignore any logging files.

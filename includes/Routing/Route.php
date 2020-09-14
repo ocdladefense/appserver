@@ -12,6 +12,18 @@ class Route {
 		$this->routeInfo = $routeInfo;
 	}
 	
+
+	//require all of the necessary file in the route at the key of 'files'
+	public function requireRouteFiles($basePath = ""){
+			if(null == $this->getFiles())
+					return;
+					
+			foreach($this->getFiles() as $file){
+				$path = $basePath . "/" . $file;
+				require_once($path);
+			}
+	}
+	
 	
 	public function getMethod() {
 		return $this->routeInfo["method"];

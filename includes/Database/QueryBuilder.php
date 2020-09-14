@@ -267,8 +267,55 @@ class QueryBuilder{
         return $fields;
     }
 
-    static function fromJson($json) {
-        $json = json_decode(urldecode($json));
-        return GenericDb::setUpQueryBuilder($json);
+
+
+		static function fromJson($json) {
+			return self::fromObject(json_decode($json));
+		}
+
+
+
+    static function fromObject($obj) {
+			// $json = json_decode(urldecode($json));
+
+			if (!is_array($obj->conds)) {
+				$conds = [$conds];
+			}
+
+			$conditions = array();
+			$sortConditions = array();
+			$limitCondition = "";
+			$columns = [];
+			$values = [];
+			//$updateFields = array();
+
+			foreach($conds as $cond) {
+				if (is_array($cond) || ($cond->type == "condition" && $cond->value != "ALL")) {
+					$conditions[] = $cond;
+				} else if ($cond->type == "sortCondition") {
+					$sortConditions[] = $cond;
+				} else if ($cond->type == "limitCondition") {
+					$limitCondition = $cond;
+				} else if ($cond->type == "insertCondition") {
+					if (!in_array($cond->field, $columns)) {
+							$columns[] = $cond->field;					
+					}
+					$values[$cond->rowId][$cond->field] = $cond->value;
+				}// else if ($cond->type == "insertCondition" && $type == "update") {
+				//	$updateFields[] = $cond;
+				//}
+			}
+
+			$builder = new QueryBuilder();
+			//$builder->setTable($table);
+			//$builder->setType($type);
+			$builder->setConditions($conditions);
+			$builder->setSortConditions($sortConditions);
+			$builder->setLimitCondition($limitCondition);
+			$builder->setColumns($columns);
+			$builder->setValues($values);
+			//$builder->setUpdateFields($updateFields);
+
+			return $builder;
     }
 }
