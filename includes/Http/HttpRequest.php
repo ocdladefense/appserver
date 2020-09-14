@@ -4,6 +4,9 @@
 namespace Http;
 
 use \stdClass as stdClass;
+use File\FileHandler as FileHandler;
+use File\PhpFileUpload as PhpFileUpload;
+use File\FileList as FileList;
 
 
 class HttpRequest extends HttpMessage {
@@ -261,7 +264,46 @@ class HttpRequest extends HttpMessage {
 		} else if($request->isPost() && $request->isMultipart()) {
 
 			$request->setBody((object)$_POST);
-			$request->setFiles($_FILES);
+			// $request->setFiles($_FILES);
+
+
+			try {
+
+				global $config;
+				
+				$handler = new FileHandler($config);
+	
+				$handler->createDirectory();
+	
+				$uploads = new PhpFileUpload($_FILES);
+				$temps = $uploads->getTempFiles();
+				$dests = $uploads->getDestinationFiles();
+	
+				//var_dump($temps, $dests);exit;
+	
+				$dFiles = $dests->getFiles();
+				$finalFiles = new FileList();
+				foreach($temps->getFiles() as $tFile){
+	
+					$i = 0;
+		
+					$dest = $handler->getTargetFile($dFiles[$i]);
+
+					$finalFiles->addFile($dest);
+		
+					$handler->move($tFile, $dest);
+	
+					$i++;
+				}
+
+				$request->setFiles($finalFiles);
+
+			} catch(Exception $e){
+
+				throw $e;
+			}
+
+	
 			
 		} else if(!$request->isGet()) {
 			$content = file_get_contents('php://input');
