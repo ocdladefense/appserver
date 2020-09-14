@@ -138,13 +138,14 @@ class FileList implements IJson {
         return $fileNames;
 
     }
-    
+
+    //Currently we are assuming that every instance of filelIst needs a handler to set the appId and userId
     public function toJson(){
 
         $response = array(
             "files"     => $this->files,
-            "appId"     => $this->handler->getAppId(),
-            "userId"    => $this->handler->getUserId(),
+            //"appId"     => $this->handler->getAppId(),
+            //"userId"    => $this->handler->getUserId(),
             "status"    => $this->status
         );
 

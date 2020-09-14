@@ -46,7 +46,8 @@ node_modules/*
 content/uploads
 content/modules
 content/emails
-
+content/ors
+content/output
 
 # Ignore any logging files.
 phplog*
