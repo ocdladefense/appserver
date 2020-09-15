@@ -10,7 +10,7 @@ use \Http\HttpHeader as HttpHeader;
  *  document itself wouldn't necessarily need any styling information.
  *  And that the theme could "inject" its scripting and styling information?
  */
-class FileHandler extends Handler {
+class ApplicationFileHandler extends Handler {
 
 
 	

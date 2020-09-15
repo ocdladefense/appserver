@@ -207,7 +207,7 @@ class Application {
 
 
 
-		private function handleErrors() {
+    private function handleErrors() {
 		
 			/* 
       } catch(PageNotFoundException $e) {
