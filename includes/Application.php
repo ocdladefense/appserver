@@ -58,23 +58,47 @@ class Application {
             $def["path"] = $path;
             return $def;
         });
-        
-        
+           
         // dump($defs);
 
         // Build an index for modules.
         $modules = $defs->indexBy(function($def) {
             return $def["name"];
         });
-        $this->loader = new ModuleLoader($modules->getArray());
-        // dump($modules);
 
-        
+        //dump($modules);exit;
+
+        $coreDef = array(
+            "comment"      => "The core module",
+            "name"         => "core",
+            "description"  => "holds routes for core functionality",
+            "files"        => array(),
+            "routes"       => array(
+                "download/%fileName" => array(
+                    "callback"      => "download",
+                    "content-type"  => "application/json",
+                    "path"          => "download",
+                    "module"        => "core",
+                    "method"        => "get"
+                )
+            ),
+                //If the path is null the module loader will not try to load the file
+                //core module is loaded in autoloader.php
+                "path"     => null
+            
+        );
+
+        $modules->put("core", $coreDef);
+
+        $this->loader = new ModuleLoader($modules->getArray());
+
+        //dump($modules);exit;
+
         // Build an index for routes.
         $this->routes = $modules->map(function($def) {
             $routes = $def["routes"];
             $name = $def["name"];
-            // dump($routes);
+
             
             foreach($routes as $path => &$route) {
                 $route["path"] = $path;
@@ -86,8 +110,7 @@ class Application {
             return $routes;
         },false)->flatten();
 
-
-        // dump($this->routes);
+        //dump($this->routes);exit;
     }
 
 
@@ -112,8 +135,7 @@ class Application {
             $out = $this->getOutput($module, $route, $params);
             
             $handler = Handler::fromType($out, $route["content-type"]);
-            // $handler->get($out);
-            // var_dump($handler);
+
             $resp->setBody($handler->getOutput());
             $resp->addHeaders($handler->getHeaders());
             
@@ -202,7 +224,7 @@ class Application {
 
 
 
-		private function handleErrors() {
+    private function handleErrors() {
 		
 			/* 
       } catch(PageNotFoundException $e) {
