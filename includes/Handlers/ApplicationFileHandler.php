@@ -23,6 +23,8 @@ class ApplicationFileHandler extends Handler {
 
 	
 	public function getOutput() {
+
+		print "here I am"; exit;
 	/*
             if(gettype($out) != "string" && get_class($out) == "File"){
 
