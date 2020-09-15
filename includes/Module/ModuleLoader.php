@@ -33,7 +33,9 @@ class ModuleLoader {
     	}
     	$module = $this->index[$name];
     	$path = $module["path"];
-    	
+        
+        if($path == null) return;
+        
     	require_once($path."/module.php");
     	
     	foreach($module["files"] as $file) {

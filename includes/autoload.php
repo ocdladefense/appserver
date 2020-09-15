@@ -17,6 +17,7 @@
 	require_once BASE_PATH.'/includes/System/ClassName.php';
 	require_once BASE_PATH.'/includes/System/XList.php';
 	require_once BASE_PATH.'/includes/System/IJson.php';
+
 	
 
 
@@ -74,8 +75,9 @@
 
 	require_once BASE_PATH.'/includes/Module/Module.php';
 	require_once BASE_PATH.'/includes/Module/ModuleLoader.php';
-	require_once BASE_PATH.'/includes/Module/ModuleDiscoveryService.php';
 	require_once BASE_PATH.'/includes/DocumentParser.php';
+
+	require_once BASE_PATH.'/includes/System/CoreModule.php';
 
 	require_once BASE_PATH.'/includes/Database/IDbResult.php';
 	require_once BASE_PATH.'/includes/Database/DbResult.php';

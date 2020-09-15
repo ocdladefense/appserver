@@ -17,6 +17,12 @@ class XList {
 		return $this->items;
 	}
 
+	public function put($index, $value) {
+
+		$this->items[$index] = $value;
+
+	}
+
 
 
 	public static function fromFilesystem($startPath = null) {
