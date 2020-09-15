@@ -32,7 +32,7 @@ class Router {
 		// return new Route($this->getFoundRoute());
 		$target = $this->getTargetPath($url->getUrl(), $sources);
 		
-		return false === $target ? false : $target;
+		return $target;
 	}
 
 
@@ -66,7 +66,7 @@ class Router {
 			}
 		}
 	
-		return $found ? $p->getValue() : false;
+		return $found ? $p: false;
 	}
 
 

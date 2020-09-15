@@ -148,8 +148,9 @@ class Application {
 			}
 
 			
-			$route = $this->routes[$path];
-			
+			$route = $this->routes[$path->__toString()];
+			$params = $path->getParams();
+
 			l("Will execute $path: </p><pre>".print_r($route,true)."</pre>");
 			
 			$moduleName = $route["module"];
@@ -171,12 +172,6 @@ class Application {
     	// Load the routes files, if any.
 			// $target->loadFiles();
     	
-    	$params = array(
-    		"request" => $req,
-    		"service1" => null,
-    		"service2" => null,
-    		"named" => array("foo"=> $bar,"baz" => $pow)
-    	);
     	
     	return array($object, $route, $params);
     }

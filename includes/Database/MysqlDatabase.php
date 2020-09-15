@@ -101,6 +101,15 @@ class MysqlDatabase {
     function close(){
         $this->connection->close();
     }
+    
+		public static function getSelectList($field, $table) {
+				$dbResults = MysqlDatabase::query("SELECT DISTINCT {$field} FROM {$table} ORDER BY {$field}");
+				$parsedResults = array();
+				foreach($dbResults as $result) {
+						$parsedResults[] = $result[$field];
+				}
+				return $parsedResults;
+		}
 }
 
 
@@ -151,37 +160,37 @@ class SObjectList {
 
 
 
-class SObject { // implements \Http\IJson {
+class SObject implements \Http\IJson { // implements \Http\IJson {
 
 	protected $id = null;
 	
-	protected $object = null;
+	protected $type;
+	
+	protected $result = null;
 	
 	
-	protected function __construct($object,$id) {
+	protected function __construct($type,$id) {
+		$this->type = $type;
 		$this->id = $id;
 		$this->result = $this->load($id);
 	}
 	
 	private function load($id) {
-		$results = MysqlDatabase::query("SELECT * FROM {$this->object} WHERE id = {$this->id}");
+		$results = MysqlDatabase::query("SELECT * FROM {$this->type} WHERE id = {$this->id}");
 
 		foreach($results as $row) {
-				$this->$object = $row;
-				return;
+				return $row;
 		}
-	}
-}
-
-
-class Car extends SObject {
-
-	public function __construct($id = null) {
-		parent::__construct("car",$id);
+		
 	}
 	
-
+	public function toJson() {
+		return json_encode($this->result);
+	}
 }
+
+
+
 
 
 //Global insert function that calls the insert method of the MysqlDatabase class.
@@ -217,6 +226,11 @@ function insert($objs = array()){
         $objs[$counter++]->id = $autoId;
 
     }
+    
+    
+    
+
+    
 }
 
 function getObjectFields($obj){

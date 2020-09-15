@@ -18,6 +18,8 @@ class Path {
 
 	private $path;
 	
+	private $params = array();
+	
 	private $patterns = array('/\//mis','/%\w+/mis');
 
 	private $replacements = array('\/','([\w\-\s\%\'\"+_\.]+)');
@@ -56,7 +58,21 @@ class Path {
 				$str = $str->getPath();
 			}
 			
-			return preg_match($pattern, $str, $matches) === 1;
+			$results = preg_match($pattern, $str, $matches);
+			if($results === 1) {
+				// dump($matches);
+				$this->params = $matches;
+			}
+			
+			return $results === 1;
+	}
+	
+	public function getParams() {
+		return array_slice($this->params,1);
+	}
+	
+	public function __toString() {
+		return $this->path;
 	}
 
 }

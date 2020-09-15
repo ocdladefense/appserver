@@ -1,6 +1,22 @@
+
+/**
+ * This class should be merged into 
+ *  The new Callout class.
+ */
 const FormSubmission = (function() {
 
-    function FormSubmission() {}
+    function FormSubmission(url) {
+    	this.url = url;
+    }
+
+
+		FormSubmission.prototype = {
+			sendMe: function(params) {
+        return fetch(this.url).then((resp) => {
+            return resp.json();
+        });
+			}
+		};
 
     FormSubmission.send = function (url, json) {
         let req = this.getRequest(json, url);
