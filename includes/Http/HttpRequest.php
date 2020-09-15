@@ -264,7 +264,6 @@ class HttpRequest extends HttpMessage {
 		} else if($request->isPost() && $request->isMultipart()) {
 
 			$request->setBody((object)$_POST);
-			// $request->setFiles($_FILES);
 
 
 			try {
@@ -276,27 +275,25 @@ class HttpRequest extends HttpMessage {
 				$handler->createDirectory();
 	
 				$uploads = new PhpFileUpload($_FILES);
-				$temps = $uploads->getTempFiles();
-				$dests = $uploads->getDestinationFiles();
+				$tempList = $uploads->getTempFiles();
+				$destList = $uploads->getDestinationFiles();
 	
-				//var_dump($temps, $dests);exit;
-	
-				$dFiles = $dests->getFiles();
-				$finalFiles = new FileList();
-				foreach($temps->getFiles() as $tFile){
+				$dFiles = $destList->getFiles();
+				$movedFiles = new FileList();
+				foreach($tempList->getFiles() as $tFile){
 	
 					$i = 0;
 		
 					$dest = $handler->getTargetFile($dFiles[$i]);
-
-					$finalFiles->addFile($dest);
 		
 					$handler->move($tFile, $dest);
+
+					$movedFiles->addFile($dest);
 	
 					$i++;
 				}
 
-				$request->setFiles($finalFiles);
+				$request->setFiles($movedFiles);
 
 			} catch(Exception $e){
 
