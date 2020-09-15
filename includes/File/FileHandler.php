@@ -7,11 +7,15 @@ class FileHandler {
     protected $basePath;
     protected $acceptedFileTypes;
     protected $maxUploadSize;
+    protected $appId;
+    protected $userId;
 
     public function __construct($config){
         $this->maxUploadSize = (int)(ini_get("upload_max_filesize")*1024) *1000;
         $this->acceptedFileTypes = $config["fileTypes"];
         $this->basePath = $config["path"];
+        $this->appId = $config["appId"];
+        $this->userId = $config["userId"];
     }
 
     public function move($file1, $file2) {
@@ -34,7 +38,7 @@ class FileHandler {
             $target->setName($updatedName);
         }
 
-        $target->setPath($this->getTargetPath() . "/" . $name);
+        $target->setPath($this->getTargetPath() . "/" . $target->getName());
 
         return $target;
     }
@@ -67,7 +71,7 @@ class FileHandler {
         $tmpName = implode(".", $nameParts);
         $increment = 1;
 
-        while(file_exists($this->getTargetPath() . $tmpName . "(" . $increment . ")." . $ext)){
+        while(file_exists($this->getTargetPath() . "/" . $tmpName . "(" . $increment . ")." . $ext)){
 
             $increment++;
         }
@@ -86,7 +90,7 @@ class FileHandler {
 
     public function getTargetPath() {
 
-        return getUploadPath();
+        return getUploadPath() . "/" . $this->appId . "/" . $this->userId;
     }
 
     public function getSourcePaths() {

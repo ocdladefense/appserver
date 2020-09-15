@@ -114,3 +114,12 @@ define("CYBERSOURCE_SIGNATURE_ALGORITHM","HmacSHA256");
 //The access key and secret key for the "visualForce checkout" transaction key, for the "website checkout" profile
 define("CYBERSOURCE_TRANSACTION_KEY_ACCESS_KEY","85339ed8a0543feeadeda49f0eeeefbc");
 define("CYBERSOURCE_TRANSACTION_KEY_SECRET_KEY","573ad151cf204f48a29fcc72f35b62be09b38baca24d4ea89906d920dde1cd1233327b34ed21418286f7a62f646760e6bd428ec8b8af481e886ae2a8fccbed590a20bf6bd3f648f081cf9f047709f61ff236d8b13b9e4a6c9cea6a50ab43399bd1a633a447014300a7b91b3c584e181ef30e053c39e846bf9597f074350c0cf8");
+
+
+//File List config example
+$config = array(
+	"path" 		=> __DIR__ . "../content/uploads",
+	"fileTypes" => array("pdf", "docx", "doc", "txt", "jpg", "json"),
+	"userId"    => "user123",//$postData->userId,
+	"appId"	    => "app123"//$postData->appId
+);

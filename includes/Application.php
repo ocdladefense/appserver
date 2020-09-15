@@ -35,103 +35,101 @@ class Application {
 		
     public function __construct(){
 		
-				// Demonstrate that we can build an index of modules.
-				// $mIndex = new ModuleDiscoveryService(path_to_modules());
-				$list = XList::fromFileSystem(path_to_modules());
-				
-				// dump($list);exit;
-				
-				// Only include folders with the magic module.json file.
-				$only = $list->filter(function($folder) {
-					$file = $folder . "/module.json";
-					return file_exists($file);
-				});
-				
-				
+        // Demonstrate that we can build an index of modules.
+        // $mIndex = new ModuleDiscoveryService(path_to_modules());
+        $list = XList::fromFileSystem(path_to_modules());
+        
+        // dump($list);exit;
+        
+        // Only include folders with the magic module.json file.
+        $only = $list->filter(function($folder) {
+            $file = $folder . "/module.json";
+            return file_exists($file);
+        });
+        
+        
 
-				// Build the complete list of module definitions specified by 
-				//  module.json files.
-				$defs = $only->map(function($path) {
-					$file = $path . "/module.json";
-					$json = file_exists($file) ? file_get_contents($file) : "{}";
-					$def = json_decode($json, true);
-					$def["path"] = $path;
-					return $def;
-				});
-				
-				
-				// dump($defs);
+        // Build the complete list of module definitions specified by 
+        //  module.json files.
+        $defs = $only->map(function($path) {
+            $file = $path . "/module.json";
+            $json = file_exists($file) ? file_get_contents($file) : "{}";
+            $def = json_decode($json, true);
+            $def["path"] = $path;
+            return $def;
+        });
+        
+        
+        // dump($defs);
 
-				// Build an index for modules.
-				$modules = $defs->indexBy(function($def) {
-					return $def["name"];
-				});
-				$this->loader = new ModuleLoader($modules->getArray());
-				// dump($modules);
+        // Build an index for modules.
+        $modules = $defs->indexBy(function($def) {
+            return $def["name"];
+        });
+        $this->loader = new ModuleLoader($modules->getArray());
+        // dump($modules);
 
-				
-				// Build an index for routes.
-				$this->routes = $modules->map(function($def) {
-					$routes = $def["routes"];
-					$name = $def["name"];
-					// dump($routes);
-					
-					foreach($routes as $path => &$route) {
-						$route["path"] = $path;
-						$route["module"] = $name;
-						$route["method"] = $route["method"] ?: self::$DEFAULT_HTTP_METHOD;
-						$route["content-type"] = $route["content-type"] ?: self::$DEFAULT_CONTENT_TYPE;
-					}
+        
+        // Build an index for routes.
+        $this->routes = $modules->map(function($def) {
+            $routes = $def["routes"];
+            $name = $def["name"];
+            // dump($routes);
+            
+            foreach($routes as $path => &$route) {
+                $route["path"] = $path;
+                $route["module"] = $name;
+                $route["method"] = $route["method"] ?: self::$DEFAULT_HTTP_METHOD;
+                $route["content-type"] = $route["content-type"] ?: self::$DEFAULT_CONTENT_TYPE;
+            }
 
-					return $routes;
-				},false)->flatten();
+            return $routes;
+        },false)->flatten();
 
 
-				// dump($this->routes);
+        // dump($this->routes);
     }
 
 
     
-		public function runHttp($req) {
+    public function runHttp($req) {
 
-			$uri = $req->getRequestUri();
-    	l("Processing {$uri}.");
-    	
-    	$resp = new HttpResponse();
-			
+        $uri = $req->getRequestUri();
+        l("Processing {$uri}.");
+    
+        $resp = new HttpResponse();
+        
 
-      session_start();
-      
+        session_start();
+    
 
-      try {
-      
-				list($module, $route, $params) = $this->init($uri);
-      	
-      	$module->setRequest($req);
-      	
-				$out = $this->getOutput($module, $route, $params);
-				
-				$handler = Handler::fromType($out, $route["content-type"]);
-      	// $handler->get($out);
-				// var_dump($handler);
-				$resp->setBody($handler->getOutput());
-				$resp->addHeaders($handler->getHeaders());
-				
-			} catch(Exception $e) {
-				throw $e;
-			}
-
-			
-			return $resp;
-		}
-		
-		
-		
-		public function exec($uri) {
-			list($module, $route, $params) = $this->init($uri);
-			
-			return $this->getOutput($module, $route, $params);
-		}
+        try {
+    
+            list($module, $route, $params) = $this->init($uri);
+    
+            $module->setRequest($req);
+    
+            $out = $this->getOutput($module, $route, $params);
+            
+            $handler = Handler::fromType($out, $route["content-type"]);
+            // $handler->get($out);
+            // var_dump($handler);
+            $resp->setBody($handler->getOutput());
+            $resp->addHeaders($handler->getHeaders());
+            
+        } catch(Exception $e) {
+            throw $e;
+        }
+        return $resp;
+    }
+    
+    
+    
+    public function exec($uri) {
+        list($module, $route, $params) = $this->init($uri);
+        
+        return $this->getOutput($module, $route, $params);
+    }
 		
 		
 		

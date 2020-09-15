@@ -117,7 +117,7 @@ class File implements \JsonSerializable {
 
     public function getCreationDate(){
 
-        return $this->creationDate === null ? ($this->creationDate = date("F d, Y", filemtime($this->getPath()))) : $this->creationDate;
+        return $this->exists() ? date("F d, Y", filemtime($this->getPath())) : $this->creationDate;
     }
 
     public function getContent(){
