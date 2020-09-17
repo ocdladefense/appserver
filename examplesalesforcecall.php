@@ -3,21 +3,22 @@
 use Http\HttpHeader;
 use Http\HttpRequest;
 use Http\HttpResponse;
+use Http\Http;
 require 'bootstrap.php';     
 
 if ($_SESSION["salesforce_access_token"] == null)
 {
 
     $req = new HttpRequest("https://login.salesforce.com/services/oauth2/token");
-    $client_id = "3MVG9FxR3Tq3eZN_t4r27D3y_tnXtB5ee8ExXP.EdH9b9Njv2UQOWnTn3TW19c7Kd6OW6g5pyR_Ss1RlYSvnV";
-    $secret = "43EF03AB5F74900355E4139D2880FFC488088136439C69892F62E4FD795FB84B";
-    $username = "test-fdz8tpa3yigj@example.com";
-    $SecurityToken = "BSKMdRJV8SFJXw9enLakWcTg";
+    $req->setPost();
+    $client_id = "123.456";
+    $secret = "321";
+    $username = "foobar@foobar.com";
+    $SecurityToken = "foobar";
     $password ="Password1234".$SecurityToken;
-    $contentTypeHeader = new HttpHeader("Content-Type","application/x-www-form-urlencoded");
-    $req ->setHeaders($contentTypeHeader);
-    $body = "clientId=".$client_id."&clientSecret=".$secret."&redirectUri=https://&grant_type=password&username="
-    .$username."&password=".$password;
+    $contentTypeHeader = new HttpHeader("Content-Type", "application/x-www-form-urlencoded");
+    $req ->addHeader($contentTypeHeader);
+    $body = "grant_type=password&client_id=".$client_id."&client_secret=".$secret."&username=".$username."&password=".$password;
 
     $req->setBody($body);
     $config = array(
@@ -36,9 +37,9 @@ if ($_SESSION["salesforce_access_token"] == null)
     );
     
     $http = new Http($config);
-
     $response = $http->send($req);
     $body =json_decode($response->getBody(), true);
+    var_dump($body);
 
     $_SESSION["salesforce_instance_url"] = $body["instance_url"];
     $_SESSION["salesforce_access_token"]= $body["access_token"];
