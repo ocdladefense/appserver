@@ -251,9 +251,8 @@ class QueryBuilder{
             $updateFields = $value;
         }
 
-        foreach($updateFields as $set) {
-            $field = array_search($set, $updateFields);
-            $value = $set;
+        foreach($this->columns as $field) {
+            $value = $updateFields[$field];
             $op = "=";
 
             if(is_int($value)){
@@ -278,8 +277,8 @@ class QueryBuilder{
     static function fromObject($obj) {
 			// $json = json_decode(urldecode($json));
 
-			if (!is_array($obj->conds)) {
-				$conds = [$conds];
+			if (!is_array($obj)) {
+				$obj = [$obj];
 			}
 
 			$conditions = array();
@@ -289,7 +288,7 @@ class QueryBuilder{
 			$values = [];
 			//$updateFields = array();
 
-			foreach($conds as $cond) {
+			foreach($obj as $cond) {
 				if (is_array($cond) || ($cond->type == "condition" && $cond->value != "ALL")) {
 					$conditions[] = $cond;
 				} else if ($cond->type == "sortCondition") {
