@@ -1,5 +1,5 @@
 'use strict'
-
+// Probably should be depricated
 class BaseComponent {
     constructor() {
 
