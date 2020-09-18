@@ -14,6 +14,7 @@ const Callout = (function() {
 		// files = params.get('files[]');
 		send: function(params) {
 
+			// Should be able to mock file download
 			if (typeof params === 'function') {
 
 				params = params();
@@ -25,6 +26,11 @@ const Callout = (function() {
 				throw new Exception("Params must be of type 'FormData'");
 			}
 
+
+			let body = this.source instanceof Error ? { error: this.source.message } : this.source;
+			let status = this.source instanceof Error ? 500 : 200;
+	
+	
 			// httpRequest
 
 			// httpRequest.headers
@@ -39,22 +45,49 @@ const Callout = (function() {
 
 			this.dispatchBeforeSendEvents(params);
 
-			let resp = new Promise((resolve, reject) => {
+
+			let resp;
+
+			if (this.source instanceof Error) {
+
+				resp = new Response();
+				resp.setBody(typeof body !== 'function' && typeof body === 'object' ? JSON.stringify(body) : body);
+				resp.setHeader('Content-Type', typeof body !== 'function' && typeof body === 'object' ? 'application/json' : 'text/html');
+				resp.setStatus(status);
+				resp.setHeader('X-Mock-Resp', '');
+
+
+			} else if (typeof this.source === 'function') {
+
+				resp = new Promise((resolve, reject) => {
+					
+					try {
+
+						let result = this.source.call(null, params);
+						resolve(result);
+
+					} catch(e) {
+
+						reject(e);
+					}
+				});
+			}
+
+
+
+
+			
+
+
+
+
+
+
+
+			resp.then(result => result.body)
+			.then(body => {
 				
-				try {
-
-					let result = this.source.call(null, params);
-					resolve(result);
-
-				} catch(e) {
-
-					reject(e);
-				}
-			});
-
-			resp.then((result) => {
-				
-				this.dispatchAfterSendEvents(params, result);
+				this.dispatchAfterSendEvents(params, body);
 			})
 			.catch((reject) => {
 
@@ -121,7 +154,7 @@ const Callout = (function() {
 
 			if (params.hasFile) {
 
-				triggerEvent('fileuploadcomplete', params.getFiles());
+				triggerEvent('fileuploadcomplete', { filesBefore: params.getFiles(), filesAfter: result.files });
 			}
 		},
 
@@ -133,22 +166,6 @@ const Callout = (function() {
 				triggerEvent('fileuploaderror', params.getFiles());
 			}
 		}
-
-
-		
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	}
@@ -168,70 +185,78 @@ const Callout = (function() {
 // fileuploadstart, fileuploadprogress, fileuploadcomplete, fileuploaderror
 
 
+window.onload = () => {
+
+	// Creates a property (self-executing function)
+	// let formData = new FormData();
+	// formData.hasFile
+	Object.defineProperty(FormData.prototype, "hasFile", {
+		get: function hasFile() {			
+		
+			for (let value of this.values()) {
+				
+				if (value instanceof File) {
+
+					return true;
+				}
+			}
+
+			return false;
+		}
+	});
+
+	// Creates a function
+	// let formData = new FormData();
+	// formData.hasFile();
+	// FormData.prototype.hasFile = function() {
+
+	// 	for (let value of this.values()) {
+			
+	// 		if (value instanceof File) {
+
+	// 			return true;
+	// 		}
+	// 	}
+
+	// 	return false;
+	// };
 
 
-// Creates a property (self-executing function)
-// let formData = new FormData();
-// formData.hasFile
-Object.defineProperty(FormData.prototype, "hasFile", {
-	get: function hasFile() {			
-	
+	// Creates a function
+	// let formData = new FormData();
+	// let files = formData.getFiles();
+	FormData.prototype.getFiles = function() {
+
+		let files = [];
+
 		for (let value of this.values()) {
 			
 			if (value instanceof File) {
 
-				return true;
+				files.push(value);
 			}
 		}
 
-		return false;
-	}
-});
-
-// Creates a function
-// let formData = new FormData();
-// formData.hasFile();
-// FormData.prototype.hasFile = function() {
-
-// 	for (let value of this.values()) {
-		
-// 		if (value instanceof File) {
-
-// 			return true;
-// 		}
-// 	}
-
-// 	return false;
-// };
+		return files;
+	};
 
 
-// Creates a function
-// let formData = new FormData();
-// let files = formData.getFiles();
-FormData.prototype.getFiles = function() {
+	// let formData = new FormData();
 
-	let files = [];
+	// formData.set('Test String 1', 'Test 1');
+	// formData.set('Test String 2', 'Test 2');
+	// formData.set('Test File 1', new File(['Test File 1'], 'TestFile1.txt', { type: 'text' }));
+	// formData.set('Test File 2', new File(['Test File 2'], 'TestFile2.txt', { type: 'text' }));
 
-	for (let value of this.values()) {
-		
-		if (value instanceof File) {
+	// formData.hasFile;
 
-			files.push(value);
-		}
-	}
+	// let filesInFormData = formData.getFiles();
 
-	return files;
+
+
 };
 
 
 
-// let formData = new FormData();
 
-// formData.set('Test String 1', 'Test 1');
-// formData.set('Test String 2', 'Test 2');
-// formData.set('Test File 1', new File(['Test File 1'], 'TestFile1.txt', { type: 'text' }));
-// formData.set('Test File 2', new File(['Test File 2'], 'TestFile2.txt', { type: 'text' }));
 
-// formData.hasFiles();
-
-// let filesInFormData = formData.getFiles();
