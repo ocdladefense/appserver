@@ -60,10 +60,12 @@ const Form = (function() {
 
         render: function() {
 
-            this.elements.forEach(element => {
-
-                element.render(this.formId);
-            });
+            return createVNode(
+                "form",
+                { id: this.formId },
+                this.elements,
+                this
+            };
         },
 
 
