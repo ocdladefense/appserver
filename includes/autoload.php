@@ -1,6 +1,5 @@
 <?php
 
-	
 
 	if(file_exists(BASE_PATH.'/config/config.php')){		
 		require_once BASE_PATH.'/config/config.php';
@@ -92,4 +91,5 @@
 	require_once BASE_PATH.'/includes/Exception/DbException.php';
 
 	require_once BASE_PATH.'/includes/Application.php';
+	require_once BASE_PATH. '/includes/Salesforce/Salesforce.php';
 
