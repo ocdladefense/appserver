@@ -24,35 +24,12 @@ class ApplicationFileHandler extends Handler {
 	
 	public function getOutput() {
 
-		print "here I am"; exit;
-	/*
-            if(gettype($out) != "string" && get_class($out) == "File"){
-
-                $resp = new HttpResponse($out);
-
-                return $resp;
-            }
-	
-        if($this->resp->isFile()){
-
-            $file = $this->resp->getFile();
-            if($file->exists()){
-
-                readfile($file->getPath());
-
-            } else {
-
-                $content = $file->getContent();
-                
-            }
-        }
-        */
-			// Loads an HTML page with defined scripts, css.
-			// return $theme->render($content);
+		return $this->output;
 	}
 	
 	public function getHeaders() {
-		$filename = $this->output->getName();
+		$fileName = $this->output->getName();
+
 		$contentType = $this->output->getType();
 	
 		return array(

@@ -24,47 +24,30 @@ class CoreModule extends Module {
 
 		return $this->request->getFiles();
 	}
-	
-	//A testing function that uses hard coded values for testing the file listing functionality.
-	public function listFilesRouteTest(){
 
-		$appId = "app123";
-		$userId = "user123";
-		return $this->listFiles($appId, $userId);
+	public function download($filename){
+
+		global $fileConfig;
+
+		$handler = new FileHandler($fileConfig);
+
+		$file = File::fromPath($handler->getTargetPath(). "/" . $filename);
+				
+		return $file;
 	}
 
-	//Return a json object representing files related to the given appId and userId.
-	public function listFilesRoute(){
+	public function list(){
 
-		$postData = $this->request->getBody();
-		var_dump($postData);exit;
+		global $fileConfig;
 
-		return $this->listFiles($postData->appId, $postData->userId);
-	}
-
-	public function listFiles($appId, $userId){
-
-		$config = array(
-			"path" 		=> getUploadPath(),
-			"userId"    => $userId,
-			"appId"	    => $appId
-		);
-
-		$handler = new FileHandler($config);
+		$handler = new FileHandler($fileConfig);
 
 		$fList = FileList::fromHandler($handler);
 
 		return $fList;
 	}
 
-	// public function download($fileName){
 
-	// 	global $config;
-	// 	$handler = new FileHandler($config);
-	// 	$path = $handler->getTargetPath() . "/" . $fileName;
-
-	// 	return File::fromPath($path);
-	// }
 
 
     // //Rewrite this so that it handles core uploads.  Gonna look in the core upload spot for the files to delete

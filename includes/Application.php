@@ -74,31 +74,24 @@ class Application {
             "description"  => "holds routes for core functionality",
             "files"        => array(),
             "routes"       => array(
-                "download/%fileName" => array(
-                    "callback"      => "download",
-                    "content-type"  => "application/json",
-                    "path"          => "download",
-                    "module"        => "core",
-                    "method"        => "get"
-                ),
-                "upload" => array(
+                "file/upload" => array(
                     "callback"      => "upload",
                     "content-type"  => "application/json",
                     "path"          => "upload",
                     "module"        => "core",
                     "method"        => "get"
                 ),
-                "list/files/%appId/%userId" => array(
-                    "callback"      => "listFilesRoute",
+                "file/download/%filename" => array(
+                    "callback"      => "download",
                     "content-type"  => "application/json",
-                    "path"          => "list/files",
+                    "path"          => "download",
                     "module"        => "core",
                     "method"        => "get"
                 ),
-                "list/files/test" => array(
-                    "callback"      => "listFilesRouteTest",
+                "file/list" => array(
+                    "callback"      => "list",
                     "content-type"  => "application/json",
-                    "path"          => "list/files/test",
+                    "path"          => "list/files",
                     "module"        => "core",
                     "method"        => "get"
                 )
@@ -163,6 +156,7 @@ class Application {
         } catch(Exception $e) {
             throw $e;
         }
+
         return $resp;
     }
     
@@ -324,11 +318,12 @@ class Application {
             header($header->getName() . ": " . $header->getValue());
         }
 
+
         http_response_code($resp->getStatusCode());
 
         if($resp->isFile()){
 
-            $file = $resp->getFile();
+            $file = $resp->getBody();
             if($file->exists()){
 
                 readfile($file->getPath());
