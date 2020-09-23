@@ -68,6 +68,11 @@ const Application = (function() {
                 let head = document.body.getElementsByTagName('HEAD')[0];
                 head.appendChild(node);
             });
+        },
+
+
+        render: function(vNode, location) {
+            location.appendChild(createElement(vNode));
         }
     };
 
