@@ -1,102 +1,155 @@
 const Callout = (function() {
 
+	const server = new Server();
+	// Param 1 could be: string, Error, function, Request
+	// If string: construct Request setting URL to Param 1
+	// If Error: construct Request from null (unused Request)
+	// If function: construct Request from null (unused Request)
+	// If Request: use it with Fetch
+	function Callout(url, mockCallback) {
+		this.server.addRoute(new Route(url, callback));
 
+		this.url = url || null;
+		this.requestInit = requestInit || { method: 'POST', headers: { 'Content-Type': 'application/json' }};
+		this.method = this.requestInit.method;
+		this.isMock = !!mockCallback;
+		this.mockCallback = mockCallback;
 
-	function Callout(fn) {
-		this.source = fn || null;
 	}
 	
 	
 	let callout = {
 
-		// What is params?
-		// Params = new FormData()
-		// files = params.get('files[]');
+
 		send: function(params) {
 
-			// Should be able to mock file download
-			if (typeof params === 'function') {
 
-				params = params();
-			}
+			params = typeof params === 'function' ? params() : params;
 
-
-			if (!(params instanceof FormData)) {
-
-				throw new Exception("Params must be of type 'FormData'");
-			}
-
-
-			let body = this.source instanceof Error ? { error: this.source.message } : this.source;
-			let status = this.source instanceof Error ? 500 : 200;
+			let body = params instanceof Error ? { error: params.message } : params;
 	
+			if (this.requestInit.headers['Content-Type'] === 'application/json') {
 	
-			// httpRequest
-
-			// httpRequest.headers
-
-			// inspect headers for content-type === 'multipart/form-data'
-
-			// if (headers.includes('multipart/form-data)) 
-
-			// It's possible that a request of 'multipart/form-data' will not include files to be sent
-
-			let req = new Request();
-
-			this.dispatchBeforeSendEvents(params);
-
-
-			let resp;
-
-			if (this.source instanceof Error) {
-
-				resp = new Response();
-				resp.setBody(typeof body !== 'function' && typeof body === 'object' ? JSON.stringify(body) : body);
-				resp.setHeader('Content-Type', typeof body !== 'function' && typeof body === 'object' ? 'application/json' : 'text/html');
-				resp.setStatus(status);
-				resp.setHeader('X-Mock-Resp', '');
-
-
-			} else if (typeof this.source === 'function') {
-
-				resp = new Promise((resolve, reject) => {
-					
-					try {
-
-						let result = this.source.call(null, params);
-						resolve(result);
-
-					} catch(e) {
-
-						reject(e);
-					}
-				});
+				body = JSON.stringify(body);
 			}
-
-
-
-
+	
+			let init = {
+				method: 'POST',
+				headers: { 
+					'Content-Type': 'application/json'
+				},
+				body: body
+			};
+	
+			// Builds a request object that is either:
+			// 		1. A real request to be sent to the server
+			//		2. A mock request for testing (Should we even build a request for a mock?)
+			let req = new Request(this.url, init);
+	
+			dispatchBeforeSendEvents(params);
 			
 
 
+			// Returns a response in a promise:
+			//		1. If request was real, response will be real
+			//		2. If request was mock, response will be mocked and wrapped in a promise
+			let resp = !!this.isMock ? Promise.resolve(this.buildMockResponse(params)) : fetch(req);
 
 
+			let eventsResp = resp.clone();
 
+			
+			dispatchAfterSendEvents(eventsResp); // TODO: Refactor to use resp object
 
-
-			resp.then(result => result.body)
-			.then(body => {
-				
-				this.dispatchAfterSendEvents(params, body);
-			})
-			.catch((reject) => {
-
-				this.dispatchErrorEvents(params, reject);
-			});
 
 			return resp;
 		},
+
+
+
+		buildRequest: function(params) {
+
+			// if (this.method !== 'GET' && this.method !== 'HEAD' && !!params) {
+
+				if (params instanceof Error) {
+
+					this.requestInit.body = { error: this.source.message };
+	
+				} else if (typeof params === 'object') {
+	
+					this.requestInit.body = JSON.stringify(params);
+	
+				} else if (!!params) {
+	
+					this.requestInit.body = params;
+				}
+
+			// }
+
+			return new Request(this.url, this.requestInit);
+		},
 		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// Might want some way to read from the request
+		buildMockResponse(params) {
+			// const route = server.match(this.url);
+			if (typeof this.mockResponseBody === 'function') {
+
+				this.mockResponseBody = this.mockResponseBody(params);
+			}
+
+			let body = params instanceof Error ? { error: params.message } : this.mockResponseBody;
+			body = typeof body === 'object' ? JSON.stringify(body) : body;
+
+			let status = params instanceof Error ? 500 : 200;
+
+			return new Response(body, {
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Mock-Resp': ''
+				},
+				status: status
+			});
+		},
+
+
+
+		processResponse(resp, req, params) {
+
+			// Every response object has access to .text() and .json()
+			return resp.then(response => {
+				
+				console.log(response);
+				return response.json();
+			})
+			.then(data => {
+				
+				dispatchAfterSendEvents(params, data);
+				return data;
+			})
+			.catch((reject) => {
+
+				dispatchErrorEvents(params, reject);
+				return reject;
+			});
+		},
+
+
 
 		defaultCallout: function(formData, currentEndpoint) {
 
@@ -138,33 +191,6 @@ const Callout = (function() {
 			});
 		
 			return promise;
-		},
-
-
-		dispatchBeforeSendEvents: function(params) {
-
-			if (params.hasFile) {
-
-				triggerEvent('fileuploadstart', params.getFiles());
-			}
-		},
-
-
-		dispatchAfterSendEvents: function(params, result) {
-
-			if (params.hasFile) {
-
-				triggerEvent('fileuploadcomplete', { filesBefore: params.getFiles(), filesAfter: result.files });
-			}
-		},
-
-
-		dispatchErrorEvents: function(params, reject) {
-
-			if (params.hasFile) {
-
-				triggerEvent('fileuploaderror', params.getFiles());
-			}
 		}
 
 
@@ -175,9 +201,84 @@ const Callout = (function() {
 	Callout.prototype = callout;
 
 
+	Callout.dispatchBeforeSendEvents = function(params) {
+
+		if (hasFile(params)) {
+	
+			triggerEvent('fileuploadstart', getFiles(params));
+		}
+	},
+	
+	
+	Callout.dispatchAfterSendEvents = function(params, result) {
+	
+		if (hasFile(params)) {
+	
+			triggerEvent('fileuploadcomplete', { filesBefore: getFiles(params), filesAfter: result.files });
+		}
+	},
+	
+	
+	Callout.dispatchErrorEvents = function(params, reject) {
+	
+		if (hasFile(params)) {
+	
+			triggerEvent('fileuploaderror', getFiles(params));
+		}
+	}
+	
+	Callout.hasFile = function(params) {
+	
+		if (!(params instanceof FormData)) {
+	
+			return false;
+		}
+	
+		for (let value of params.values()) {
+					
+			if (value instanceof File) {
+	
+				return true;
+			}
+		}
+	
+		return false;
+	};
+	
+	
+	Callout.getFiles = function(params) {
+	
+		let files = [];
+	
+		if (!(params instanceof FormData)) {
+	
+			return files;
+		}
+	
+	
+		for (let value of params.values()) {
+			
+			if (value instanceof File) {
+	
+				files.push(value);
+			}
+		}
+	
+		return files;
+	};
+	
 
 	return Callout;
 })();
+
+
+
+
+
+
+
+
+
 
 
 
@@ -185,76 +286,6 @@ const Callout = (function() {
 // fileuploadstart, fileuploadprogress, fileuploadcomplete, fileuploaderror
 
 
-window.onload = () => {
-
-	// Creates a property (self-executing function)
-	// let formData = new FormData();
-	// formData.hasFile
-	Object.defineProperty(FormData.prototype, "hasFile", {
-		get: function hasFile() {			
-		
-			for (let value of this.values()) {
-				
-				if (value instanceof File) {
-
-					return true;
-				}
-			}
-
-			return false;
-		}
-	});
-
-	// Creates a function
-	// let formData = new FormData();
-	// formData.hasFile();
-	// FormData.prototype.hasFile = function() {
-
-	// 	for (let value of this.values()) {
-			
-	// 		if (value instanceof File) {
-
-	// 			return true;
-	// 		}
-	// 	}
-
-	// 	return false;
-	// };
-
-
-	// Creates a function
-	// let formData = new FormData();
-	// let files = formData.getFiles();
-	FormData.prototype.getFiles = function() {
-
-		let files = [];
-
-		for (let value of this.values()) {
-			
-			if (value instanceof File) {
-
-				files.push(value);
-			}
-		}
-
-		return files;
-	};
-
-
-	// let formData = new FormData();
-
-	// formData.set('Test String 1', 'Test 1');
-	// formData.set('Test String 2', 'Test 2');
-	// formData.set('Test File 1', new File(['Test File 1'], 'TestFile1.txt', { type: 'text' }));
-	// formData.set('Test File 2', new File(['Test File 2'], 'TestFile2.txt', { type: 'text' }));
-
-	// formData.hasFile;
-
-	// let filesInFormData = formData.getFiles();
-
-
-
-};
 
 
 
