@@ -11,28 +11,8 @@ class HttpResponse extends HttpMessage {
         parent::__construct();
 
         $this->body = $body;
-
-        if($this->isfile()){
-
-            $this->setUpFileDownloadHeaders();
-        }
     }
 
-    //FILE DOWNLOAD FUNCTIONALITY
-    private function setUpFileDownloadHeaders(){
-        
-        $fileName = $this->body->getName();
-        
-
-        $headers = array(
-            new HttpHeader("Cache-Control", "private"),
-            new HttpHeader("Content-Description", "File Transfer"),
-            new HttpHeader("Content-Disposition", "attachment; filename=$fileName"),
-            new HttpHeader("Content-Type", $this->body->getType())
-        );
-
-        $this->addHeaders($headers);
-    }
 
     public function getFile(){
 
@@ -43,7 +23,7 @@ class HttpResponse extends HttpMessage {
 
         if($this->body != null && gettype($this->body) == "object"){
 
-            return get_class($this->body) == "File";
+            return get_class($this->body) == "File\File";
         }
     }
 

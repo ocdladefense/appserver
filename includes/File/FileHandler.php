@@ -90,12 +90,12 @@ class FileHandler {
 
     public function getTargetPath() {
 
-        return getUploadPath() . "/" . $this->appId . "/" . $this->userId;
+        return $this->basePath;
     }
 
     public function getSourcePaths() {
 
-        return array(getUploadPath());
+        return array($this->basePath);
     }
 
     public function getAcceptedFileTypes(){

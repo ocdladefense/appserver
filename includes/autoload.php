@@ -1,12 +1,12 @@
 <?php
 
+	require_once BASE_PATH.'/includes/globals.php';
 
 	if(file_exists(BASE_PATH.'/config/config.php')){		
 		require_once BASE_PATH.'/config/config.php';
 		require_once BASE_PATH.'/includes/theme.inc';
 	}
 
-	require_once BASE_PATH.'/includes/globals.php';
 
 	if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
 		include BASE_PATH.'/vendor/autoload.php';

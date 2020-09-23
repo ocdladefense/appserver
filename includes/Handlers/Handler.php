@@ -42,6 +42,10 @@ abstract class Handler {
 		} else if($mimeType == Http\MIME_TEXT_HTML_PARTIAL) {
 
 			$handler = new HtmlStringHandler($output, $mimeType);
+
+		} else if( get_class($output) == "File\File") {
+
+			$handler = new ApplicationFileHandler($output, $mimeType);
 			
 		} else if($mimeType == Http\MIME_APPLICATION_JSON) {
 
