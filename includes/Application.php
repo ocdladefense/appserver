@@ -80,6 +80,13 @@ class Application {
                     "path"          => "download",
                     "module"        => "core",
                     "method"        => "get"
+                ),
+                "upload" => array(
+                    "callback"      => "upload",
+                    "content-type"  => "application/json",
+                    "path"          => "upload",
+                    "module"        => "core",
+                    "method"        => "get"
                 )
             ),
                 //If the path is null the module loader will not try to load the file
