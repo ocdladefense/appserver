@@ -87,6 +87,20 @@ class Application {
                     "path"          => "upload",
                     "module"        => "core",
                     "method"        => "get"
+                ),
+                "list/files/%appId/%userId" => array(
+                    "callback"      => "listFilesRoute",
+                    "content-type"  => "application/json",
+                    "path"          => "list/files",
+                    "module"        => "core",
+                    "method"        => "get"
+                ),
+                "list/files/test" => array(
+                    "callback"      => "listFilesRouteTest",
+                    "content-type"  => "application/json",
+                    "path"          => "list/files/test",
+                    "module"        => "core",
+                    "method"        => "get"
                 )
             ),
                 //If the path is null the module loader will not try to load the file

@@ -18,6 +18,7 @@ class FileList implements IJson {
         $fList = new FileList();
 
         $dirs = $handler->getSourcePaths();
+        
         $paths = FileList::listDirectoryFilesMultiple($dirs);
 
         foreach($paths as $path){
