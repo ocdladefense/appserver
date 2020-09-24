@@ -58,7 +58,9 @@
 
 	require_once BASE_PATH.'/includes/Html/Html.php';
 		
-	require_once BASE_PATH.'/includes/Exception/PageNotFoundException.php';		
+	require_once BASE_PATH.'/includes/Exception/PageNotFoundException.php';
+	require_once BASE_PATH.'/includes/Exception/SalesforceAccessException.php';
+	require_once BASE_PATH.'/includes/Exception/SalesforceAuthException.php';		
 
 
 
@@ -91,5 +93,6 @@
 	require_once BASE_PATH.'/includes/Exception/DbException.php';
 
 	require_once BASE_PATH.'/includes/Application.php';
-	require_once BASE_PATH. '/includes/Salesforce/Salesforce.php';
+	require_once BASE_PATH.'/includes/Salesforce/Salesforce.php';
+	require_once BASE_PATH.'/includes/Salesforce/SalesforceAuthResult.php';
 
