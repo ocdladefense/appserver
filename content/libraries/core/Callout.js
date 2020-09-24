@@ -1,3 +1,17 @@
+// import core/libraries/http/XMLHttpRequestFetch.js
+// import core/libraries/http/HttpServer2.js
+// import core/libraries/http/Route.js
+// import core/libraries/http/HttpClient.js
+
+
+/**
+ * @class Callout
+ *
+ * @description Callout is a transient, convenience object
+ *  that encapsulates the relationship between an internal
+ *  HttpServer and its Routes (and callbacks).
+ */
+
 const Callout = (function() {
 
 	const server = new Server();
@@ -160,37 +174,7 @@ const Callout = (function() {
 			}
 
 
-			let promise = new Promise((resolve, reject) => {
-
-				var xhr = new XMLHttpRequest();
-
-				xhr.open("POST", currentEndpoint);
-			
-				xhr.onreadystatechange = (e) => {
-			
-					let xhr = e.target;
-		
-					if (xhr.readyState !== XMLHttpRequest.DONE) {
-		
-						return;
-					}
-		
-					let response = JSON.parse(xhr.response);
-
-					if (xhr.status === 200) {
-			
-						resolve(response);
-			
-					} else {
-			
-						reject(response);
-					}
-				};
-			
-				xhr.send(formData);
-			});
-		
-			return promise;
+			return XMLHttpRequestFetch(currentEndpoint, formData);
 		}
 
 
