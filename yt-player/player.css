@@ -1,0 +1,11 @@
+table #progress-bar{
+    position: relative;
+    width: 80px;
+    height: 20px;
+    cursor: grab;
+    padding-right: 40px;
+}
+
+#playlist{
+    position: top;
+}
