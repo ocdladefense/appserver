@@ -23,6 +23,10 @@ class SelectElement extends IFormElement {
         this.name = name;
         this.values = values;
         this.props = !!props ? props : { id: this.name };
+
+        if (!this.props.id) {
+            this.props.id = this.name;
+        }
     }
 
 
@@ -38,9 +42,9 @@ class SelectElement extends IFormElement {
     render(formId) {
 
 
-        let options;
+        let options = [];
 
-        if (Array.isArray(this.values)) {
+        /*if (Array.isArray(this.values)) {
 
             options = values.map(value => this.createOptionFromString(value));
 
@@ -50,38 +54,70 @@ class SelectElement extends IFormElement {
 
                 options.push(this.createOptionFromKeyValuePair(value, this.values[value]));
             }
+        }*/
+
+        let values = Array.isArray(this.values) ? this.values : [this.values];
+
+        for (let i in values) {
+            options.push(this.createOption(values[i]));
         }
         
         
 
 
-        let selectVNode = super.createVNode(
+        let selectVNode = vNode(
             "select",
             this.props,
-            options,
-            this
+            options
         );
-        
+        return selectVNode;
+    }
+
+    createOption(option) {
+        if (typeof option === 'object' && option !== null) {
+            if (Object.keys(option).length === 1) {
+                // This loop will only iterate once
+                for (let key in option) {
+                    return this.createOptionFromKeyValuePair(key, option[key]);
+                }
+            } else if (Object.keys(option).length > 1) {
+                return this.createOptionFromObject(option);
+            }
+        } else {
+            return this.createOptionFromString(option);
+        }
     }
 
     createOptionFromString(value) {
 
-        return super.createVNode(
+        return vNode(
             "option",
             { value: value },
-            value,
-            this
+            value + ""
         );
     }
 
-    createOptionFromKeyValuePair(key, value) {
+    createOptionFromKeyValuePair(text, value) {
 
-        return super.createVNode(
+        return vNode(
             "option",
-            { value: key },
-            value,
-            this
+            { value: value },
+            text + ""
         );
     }
 
+    createOptionFromObject(props) {
+        if (!props.text || !props.value) {
+            return;
+        }
+
+        let text = props.text;
+        delete props.text;
+
+        return vNode(
+            "option",
+            props,
+            text + ""
+        );
+    }
 }

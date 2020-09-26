@@ -5,9 +5,8 @@ class LookupElement extends IFormElement {
         super();
         this.name = name;
         this.values = values;
-        this.props = !!props ? props : { id: this.name };
+        this.props = !!props ? this.formatProps(props) : this.defaultProps();
     }
-
 
     getId() { return this.props.id};
 
@@ -17,42 +16,80 @@ class LookupElement extends IFormElement {
 
     getValue() { return this.value; }
 
+    defaultProps() {
+        return {
+            lookup: {
+                id: this.name, 
+                className: "lookup"
+            },
+            label: {
+                id: "insert-" + this.name + "-label", 
+                className: "lookup-label"
+            },
+            group: {
+                id: this.name + "-group", 
+                className: "lookup-group"
+            },
+            input: {
+                id: "insert-" + this.name, 
+                className: "lookup-input"
+            },
+            select: {
+                id: this.name + '-select',
+                className: 'lookup-select'
+            }
+        };
+    }
 
+    formatProps(props) {
+        let dProps = this.defaultProps();
+        for (let prop in dProps) {
+            if (props[prop]) {
+                for (let attribute in dProps[prop]) {
+                    if (!props[prop][attribute]) {
+                        props[prop][attribute] = dProps[prop][attribute];
+                    } else if(attribute == "className") {
+                        props[prop][attribute] += " " + dProps[prop][attribute];
+                    }
+                }
+            } else {
+                props[prop] = dProps[prop];
+            }
+        }
+        return props;
+    }
 
     render(formId) {
 
+        let values = this.values;
+        values.unshift({ "--NEW--": "NEW" });
 
-        let selectVNode = new SelectElement(field + '-select', values, { id: field + '-select', className: 'existing-select'});
+        let field = this.name;
 
-        let inputVNode = super.createVNode(
+        let selectVNode = new SelectElement(field + '-select', values, this.props.select);
+
+        let inputVNode = vNode(
             "input",
-            { id: "insert-" + field, class: "existing-input car-create-field", "data-field": field, "data-row-id": 1 },
-            [],
-            this
+            this.props.input,
+            []
         );
 
-        let divVNode = super.createVNode(
+        let divVNode = vNode(
             "div",
-            { id: field + "-group", class: "existing-group" },
-            [selectVNode, inputVNode],
-            this
+            this.props.group,
+            [selectVNode.render(), inputVNode]
         );
 
-        let labelVNode = super.createVNode(
+        let labelVNode = vNode(
             "label",
-            { id: "insert-" + field + "-label" },
-            formatLabel(field) + ": ",
-            this
+            this.props.label,
+            field + ": "
         );
 
-        return super.createVNode(
+        return vNode(
             "div",
-            { id: field, class: "form-field" },
-            [labelVNode, divVNode],
-            this
+            this.props.lookup,
+            [labelVNode, divVNode]
         );
     }
-
-
-
 }
