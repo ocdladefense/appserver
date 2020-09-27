@@ -90,7 +90,7 @@ const Callout = (function() {
 
 
 
-	// @deprecated
+	// @deprecated?
 	function defaultCallout(formData, currentEndpoint) {
 
 			return !currentEndpoint ? Promise.reject("Endpoint not set! XmlHttpRequest not sent.") : XMLHttpRequestFetch(currentEndpoint, formData);
