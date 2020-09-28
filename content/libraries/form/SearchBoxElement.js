@@ -86,19 +86,34 @@ class SearchBoxElement extends IFormElement {
 
     createCheckboxes() {
         return this.values.flatMap(searchField => {
+            let labelText = "";
+
             let checkboxProps = this.copyPropObject(this.props.checkbox);
-            checkboxProps.id += checkboxProps.id === "" ? searchField : "-" + searchField;
             checkboxProps.type = "checkbox";
-            checkboxProps.value = searchField;
 
             let labelProps = this.copyPropObject(this.props.checkboxLabel);
-            labelProps.id += labelProps.id === "" ? searchField : "-" + searchField;
+
+            if (typeof searchField === 'object' && searchField !== null) {
+                for (let key in searchField) {
+                    checkboxProps.id += checkboxProps.id === "" ? searchField[key] : "-" + searchField[key];
+                    labelProps.id += labelProps.id === "" ? searchField[key] : "-" + searchField[key];
+                    labelText += key;
+                    checkboxProps.value = searchField[key];
+                    break; //End now because there should only be one key/value pair
+                }
+            } else {
+                checkboxProps.id += checkboxProps.id === "" ? searchField : "-" + searchField;
+                labelProps.id += labelProps.id === "" ? searchField : "-" + searchField;
+                labelText += searchField;
+                checkboxProps.value = searchField;
+            }
+
             labelProps.for = checkboxProps.id;
     
             return [vNode(
                 "label",
                 labelProps,
-                searchField
+                labelText
             ),
             vNode(
                 "input",

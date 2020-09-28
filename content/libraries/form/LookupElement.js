@@ -46,7 +46,7 @@ class LookupElement extends IFormElement {
         for (let prop in dProps) {
             if (props[prop]) {
                 for (let attribute in dProps[prop]) {
-                    if (!props[prop][attribute]) {
+                    if (typeof props[prop][attribute] === "undefined") {
                         props[prop][attribute] = dProps[prop][attribute];
                     } else if(attribute == "className") {
                         props[prop][attribute] += " " + dProps[prop][attribute];
