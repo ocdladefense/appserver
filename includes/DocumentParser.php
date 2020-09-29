@@ -21,12 +21,9 @@ class DocumentParser extends DomDocument {
 
         libxml_use_internal_errors(true);
         
-        $this->loadHTML($body);
+		$this->loadHTML($body);
         
         $bodies = $this->getElementsByTagName("body");
-        
-        
-        print $bodies[0]->textContent;
         
         
         if($bodies->length > 0) {
@@ -42,6 +39,7 @@ class DocumentParser extends DomDocument {
         libxml_clear_errors();
         
 		$this->xpath = new DomXPath($this);
+
     }
 
 
