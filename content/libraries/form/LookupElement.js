@@ -92,4 +92,18 @@ class LookupElement extends IFormElement {
             [labelVNode, divVNode]
         );
     }
+
+    attachEventListeners() {
+        let select = document.getElementById(this.props.select.id);
+        let input = document.getElementById(this.props.input.id);
+
+        select.addEventListener("input", () => {
+            input.value = "";
+            if (select.value == "NEW") {
+                input.disabled = false;
+            } else {
+                input.disabled = true;
+            }
+        });
+    }
 }
