@@ -78,7 +78,7 @@ class InsertForm {
                 break;
             case HIDDEN:
                 props = props.input;
-                return this.createHiddenField(props);
+                return this.createHiddenField(field, props);
             default:
                 fieldCom = new TextInputElement(field, field, props);
                 break;
@@ -116,11 +116,11 @@ class InsertForm {
                     return;
                 }
                 let values = Array.isArray(fieldObj.values) ? fieldObj.values : [fieldObj.values];
-                fieldCom = new LookupElement(field, values, props);
+                fieldCom = new LookupElement(field, values, props, label);
                 break;
             case HIDDEN:
                 props = props.input;
-                return this.createHiddenField(props);
+                return this.createHiddenField(field, props);
             default:
                 fieldCom = new TextInputElement(field, label, props);
                 break;
@@ -129,8 +129,9 @@ class InsertForm {
         return fieldCom.render();
     }
 
-    createHiddenField(props) {
+    createHiddenField(field, props) {
         let hiddenProps = {
+            id: field + "-input",
             style: "display: none;"
         };
 

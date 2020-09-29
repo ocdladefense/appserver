@@ -1,11 +1,12 @@
 class LookupElement extends IFormElement {
 
-    constructor(name, values, props) {
+    constructor(name, values, props, label) {
 
         super();
         this.name = name;
         this.values = values;
         this.props = !!props ? this.formatProps(props) : this.defaultProps();
+        this.label = label;
     }
 
     getId() { return this.props.id};
@@ -23,7 +24,7 @@ class LookupElement extends IFormElement {
                 className: "lookup"
             },
             label: {
-                id: "insert-" + this.name + "-label", 
+                id: this.name + "-label", 
                 className: "lookup-label"
             },
             group: {
@@ -31,7 +32,7 @@ class LookupElement extends IFormElement {
                 className: "lookup-group"
             },
             input: {
-                id: "insert-" + this.name, 
+                id: this.name + '-input', 
                 className: "lookup-input"
             },
             select: {
@@ -61,7 +62,7 @@ class LookupElement extends IFormElement {
 
     render(formId) {
 
-        let values = this.values;
+        let values = [...this.values];
         values.unshift({ "--NEW--": "NEW" });
 
         let field = this.name;
@@ -83,7 +84,7 @@ class LookupElement extends IFormElement {
         let labelVNode = vNode(
             "label",
             this.props.label,
-            field + ": "
+            !!this.label ? this.label : field
         );
 
         return vNode(
