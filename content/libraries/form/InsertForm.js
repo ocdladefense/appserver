@@ -6,7 +6,7 @@ const HIDDEN = "hidden";
 class InsertForm {
     constructor(name, fields, props) {
         this.name = name;
-        this.fields = fields;
+        this.fields = Array.isArray(fields) ? fields : [fields];
         this.props = !!props ? props : { id: this.name };
 
         if (!this.props.id) {
