@@ -13,8 +13,8 @@ class HtmlStringHandler extends Handler {
 	
 	
 	public function getOutput() {
-			// Loads an HTML page with defined scripts, css.
-			return $this->output;
+		// Loads an HTML page with defined scripts, css.
+		return $this->output;
 	}
 	
 	public function getHeaders() {

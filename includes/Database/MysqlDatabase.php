@@ -80,6 +80,7 @@ class MysqlDatabase {
     }
 
     public static function query($sql, $type = "select"){
+
         $db = new MysqlDatabase();
 
         switch($type) {
