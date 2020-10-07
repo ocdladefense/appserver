@@ -135,9 +135,6 @@ function select($query) {
 }
 
 
-
-
-
 class SObjectList {
 	
 	private $results = array();
@@ -158,11 +155,6 @@ class SObjectList {
 }
 
 
-
-
-
-
-
 //Global insert function that calls the insert method of the MysqlDatabase class.
 function insert($objs = array()){
 
@@ -179,10 +171,7 @@ function insert($objs = array()){
 
     $values = getObjectValues($objs);
     
-
     $tableName = strtolower(get_class($objs[0]));
-
-    //var_dump($columns, $values, $tableName);exit;
 
     //use the querybuilder to build insert statement
     $builder = new QueryBuilder();
@@ -201,11 +190,7 @@ function insert($objs = array()){
         $objs[$counter++]->id = $autoId;
 
     }
-    
-    
-    
-
-    
+   
 }
 
 function getObjectFields($obj){
