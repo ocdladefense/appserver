@@ -33,6 +33,10 @@ class HttpMessage {
 		$this->headers = new HttpHeaderCollection();
 	}
 
+	public function getUrl(){
+
+		return $this->curlInfo["url"];
+	}
 
 	//body
 	public function setBody($body){
