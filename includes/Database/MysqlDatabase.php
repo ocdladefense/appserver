@@ -76,6 +76,11 @@ class MysqlDatabase {
 
     function select($sql){
         $result = $this->connection->query($sql);
+        
+        if(!$result){
+
+            throw new DbException($this->connection->error);
+        }
         return new DbSelectResult($result);
     }
 
