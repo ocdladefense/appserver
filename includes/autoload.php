@@ -16,6 +16,7 @@
 	require_once BASE_PATH.'/includes/System/ClassName.php';
 	require_once BASE_PATH.'/includes/System/XList.php';
 	require_once BASE_PATH.'/includes/System/IJson.php';
+	require_once BASE_PATH.'/includes/System/DateRange.php';
 
 	
 
