@@ -129,6 +129,45 @@ class Salesforce {
         }
         return $this->createQuery($soql,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
+    public function createRecordFromSession($sObjectName,$sObjectFields){
+        $authResult = $this->authorizeToSalesforce();
+        if (!$authResult->isSuccess()) {
+            throw new SalesforceAuthException("Not Authorized");
+        }
+        return $this->createRecord($sObjectName,$sObjectFields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+    }
+    public function createRecord($sObjectName,$sObjectFields,$instance_url = null,$access_token = null){
+        //curl https://yourInstance.salesforce.com/services/data/v20.0/sobjects/Account/ 
+        //-H "Authorization: Bearer token -H "Content-Type: application/json" -d "@newaccount.json"
+
+        $endpoint = "/services/data/v20.0/sobjects/".$sObjectName;
+        // $endpoint = "/v49.0/query?q=";
+        $resource_url = $instance_url . $endpoint;
+
+        //print "<p>Will execute query at: ".$resource_url."</p>";
+        $req = new HttpRequest($resource_url);
+        $token = new HttpHeader("Authorization", "Bearer " . $access_token);
+        $req->addHeader($token);
+        $req->setBody($sObjectFields);
+
+        $config = array(
+            // "cainfo" => null,
+            // "verbose" => false,
+            // "stderr" => null,
+            // "encoding" => '',
+            "returntransfer" => true,
+            // "httpheader" => null,
+            "useragent" => "Mozilla/5.0",
+            // "header" => 1,
+            // "header_out" => true,
+            "followlocation" => true,
+            "ssl_verifyhost" => false,
+            "ssl_verifypeer" => false
+        );
+
+        $http = new Http($config);
+
+    }
 
     public function createQuery($soql,$instance_url = null,$access_token = null){
         //$body = "";
@@ -170,7 +209,49 @@ class Salesforce {
         //var_dump($body);
         return $body;
     }
+    public function updateRecordFromSession($sObjectName,$sObjectId,$sObjectFields){
+        $authResult = $this->authorizeToSalesforce();
+        if (!$authResult->isSuccess()) {
+            throw new SalesforceAuthException("Not Authorized");
+        }
+        return $this->updateRecord($sObjectName,$sObjectId,$sObjectFields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+    }
+    public function updateRecord($sObjectName,$sObjectId,$sObjectFields,$instance_url = null,$access_token = null){
+        $endpoint = "/services/sobjects/".$sObjectName."/".$sObjectId;
+        $resource_url = $instance_url . $endpoint;
 
+        //print "<p>Will execute query at: ".$resource_url."</p>";
+        $req = new HttpRequest($resource_url);
+        $token = new HttpHeader("Authorization", "Bearer " . $access_token);
+        $req->addHeader($token);
+        $req->setPatch();
+        $req->setBody($sObjectFields);
+
+        $config = array(
+            // "cainfo" => null,
+            // "verbose" => false,
+            // "stderr" => null,
+            // "encoding" => '',
+            "returntransfer" => true,
+            // "httpheader" => null,
+            "useragent" => "Mozilla/5.0",
+            // "header" => 1,
+            // "header_out" => true,
+            "followlocation" => true,
+            "ssl_verifyhost" => false,
+            "ssl_verifypeer" => false
+        );
+
+        $http = new Http($config);
+
+        // Get the log for this
+        //var_dump($req);
+        $resp = $http->send($req);
+        //var_dump($resp->getBody());
+        $body = json_decode($resp->getBody(),true);
+        //var_dump($body);
+        return $body;
+    }
     //}
 
 }
