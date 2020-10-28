@@ -16,11 +16,13 @@ class ShoppingCart  implements IJson {
 		"password" => SALESFORCE_PASSWORD,
 		"security_token" => SALESFORCE_SECURITY_TOKEN,
 		"redirect_uri" => SALESFORCE_REDIRECT_URI
-		);
+        );
+    private $salesforce = null;
 
     public function __construct($currency = "USD") {
         $this->total = $total;
         $this->currency = $currency;
+        $this->salesforce = new Salesforce(self::$oauth_config);
     }
 
     public function refresh() {
@@ -108,6 +110,24 @@ class ShoppingCart  implements IJson {
 
         return $cart;
     }
+    public static function addProduct($productId){
+        $salesforce = new Salesforce(self::$oauth_config);
+        $PricebookEntry = $salesforce->createQueryFromSession("select Id from PricebookEntry where Product2Id = '".$productId."'");
+        $item = array(
+            "Quantity"=>1,
+            "PricebookEntryId"=>$PricebookEntry["id"],
+            "OpportunityId"=>$_SESSION["cartId"]
+        );
+        $salesforce->createRecordFromSession("OpportunityLineItem",json_encode($item));
+    }
+    public static function getFromCustomerId($customerId){
+        $salesforce = new Salesforce(self::$oauth_config);
+        $response = $salesforce->createQueryFromSession("select Id, Name from Opportunity where AccountId = '".$customerId."'");
+        $cart = new ShoppingCart();
+        $cart->setId($response["id"]);
+        return $cart;
+    }
+
     public function toJson(){
         
     }
