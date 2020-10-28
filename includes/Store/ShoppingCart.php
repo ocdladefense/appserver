@@ -107,9 +107,9 @@ class ShoppingCart  implements IJson {
         $cart->setId($response["id"]);
 
         return $cart;
+    }
+    public function toJson(){
         
-
-
-	}
+    }
 
 }
