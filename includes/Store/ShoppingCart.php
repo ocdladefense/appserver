@@ -1,10 +1,22 @@
 <?php
-namespace ClickpdxStore;
-class ShoppingCart {
 
+use Http\IJson;
+
+class ShoppingCart  implements IJson {
+
+    private $Id;
     private $items;
     private $total;
     private $currency;
+    private static $oauth_config = array(
+		"oauth_url" => SALESFORCE_LOGIN_URL,
+		"client_id" => SALESFORCE_CLIENT_ID,
+		"client_secret" => SALESFORCE_CLIENT_SECRET,
+		"username" => SALESFORCE_USERNAME,
+		"password" => SALESFORCE_PASSWORD,
+		"security_token" => SALESFORCE_SECURITY_TOKEN,
+		"redirect_uri" => SALESFORCE_REDIRECT_URI
+		);
 
     public function __construct($currency = "USD") {
         $this->total = $total;
@@ -45,6 +57,16 @@ class ShoppingCart {
     public function getCurrency(){
         return $this->currency;
     }
+    public function calculateTotal(){
+        $itemsArray = $this->getItems(); 
+        $total;
+
+        foreach($itemsArray as $item){
+            $total += $item["productPrice"]; 
+        }
+
+        return $total;
+    }
 
 
     /**
@@ -56,6 +78,38 @@ class ShoppingCart {
 		$cart->setCurrency($params->currency ?: "USD");
 
 		return $cart;
+    }
+
+    private function setId($Id){
+        $this->Id = $Id;
+    }
+    public function getId(){
+        return $this->Id;
+    }
+    public static function newFromCustomerId($customerId){
+        //accountId,customerId,OppName
+        //query for account Id
+        //session for accountId
+        $cartBody = array(
+            "AccountId" => TEST_ACCOUNT_ID,
+            "Name" => "My Shopping Cart",
+            "StageName" => "Draft",
+            "CloseDate" => "2020-12-15"
+        );
+        $salesforce = new Salesforce(self::$oauth_config);
+        
+		$response = $salesforce->createRecordFromSession("Opportunity",json_encode($cartBody));
+        //return $response;
+        if($response["success"] != true){
+            return false;
+        }
+        $cart = new ShoppingCart();
+        $cart->setId($response["id"]);
+
+        return $cart;
+        
+
+
 	}
 
 }

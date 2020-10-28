@@ -28,11 +28,11 @@ class Salesforce {
     public function checkConfig(){
         $oauth_config = $this->oauth_config;
         if(is_null($oauth_config) || !is_array($oauth_config)){
-            throw new SalesforceAccessException("Invalid Auth config");
+            throw new SalesforceAuthException("Invalid Auth config");
         }else if(empty($oauth_config)){
-            throw new SalesforceAccessException("Empty Auth Config");
+            throw new SalesforceAuthException("Empty Auth Config");
         }else if(sizeof($oauth_config) <7){
-            throw new SalesforceAccessException("Invalid Size Config");
+            throw new SalesforceAuthException("Invalid Size Config");
         }
         $this->checkConfigPairs();
     }
@@ -41,16 +41,16 @@ class Salesforce {
         $oauth_config = $this->oauth_config;
         //checking username for @ and .
         if(strpos($oauth_config["username"],"@") === false || strpos($oauth_config["username"],".") === false){
-            throw new SalesforceAccessException("Invalid OauthConfig Usernane: ".$oauth_config["username"]);
+            throw new SalesforceAuthException("Invalid OauthConfig Usernane: ".$oauth_config["username"]);
         }
         //checking oauth url for .salesforce.com/services/oauth2/token
         if(strpos(strtolower($oauth_config["oauth_url"]),".salesforce.com/services/oauth2/token")=== false){
-            throw new SalesforceAccessException("Invalid OauthConfig Login Url: ".$oauth_config["oauth_url"]);
+            throw new SalesforceAuthException("Invalid OauthConfig Login Url: ".$oauth_config["oauth_url"]);
         }
         //checking for a periof in the clientId
-        if(strpos($oauth_config["client_id"],".")=== false){
-            throw new SalesforceAccessException("Invalid OauthConfig Client Id: ".$oauth_config["client_id"]);
-        }
+        // if(strpos($oauth_config["client_id"],".")=== false){
+        //     throw new SalesforceAuthException("Invalid OauthConfig Client Id: ".$oauth_config["client_id"]);
+        // }
     }
 
     public function CheckConfigPairs(){
@@ -59,13 +59,13 @@ class Salesforce {
 
         foreach ($oauth_config as $key => $value) {
             if(strtolower($key) === 0 && strtolower($value) !== "redirect_uri"){
-                throw new SalesforceAccessException("Invalid OauthConfig Key pair: \"".$value."\"");
+                throw new SalesforceAuthException("Invalid OauthConfig Key pair: \"".$value."\"");
             }
             if(!in_array(strtolower($key),$oauth_params)){
-                throw new SalesforceAccessException("Invalid OauthConfig Parameter: ".$key);
+                throw new SalesforceAuthException("Invalid OauthConfig Parameter: ".$key);
             }
             if((empty($value) || is_null($value)) && strtolower($key) !== "redirect_uri"){
-                throw new SalesforceAccessException("Empty/null value in OauthConfig Key Name: ".$key);
+                throw new SalesforceAuthException("Empty/null value in OauthConfig Key Name: ".$key);
             }
         }
         $this->checkConfigValues();
@@ -83,7 +83,7 @@ class Salesforce {
         // If we already have an access_token, so no need to reauthorize; return TRUE.
         //if(isset($_SESSION["salesforce_access_token"])) return true;
         
-        //$this->checkConfig();
+        $this->checkConfig();
         $req = new HttpRequest($oauth_config["oauth_url"]);
         $req->setPost();
 
@@ -140,15 +140,18 @@ class Salesforce {
         //curl https://yourInstance.salesforce.com/services/data/v20.0/sobjects/Account/ 
         //-H "Authorization: Bearer token -H "Content-Type: application/json" -d "@newaccount.json"
 
-        $endpoint = "/services/data/v20.0/sobjects/".$sObjectName;
+        $endpoint = "/services/data/v49.0/sobjects/".$sObjectName;
         // $endpoint = "/v49.0/query?q=";
         $resource_url = $instance_url . $endpoint;
 
         //print "<p>Will execute query at: ".$resource_url."</p>";
         $req = new HttpRequest($resource_url);
         $token = new HttpHeader("Authorization", "Bearer " . $access_token);
+        $content_type = new HttpHeader("Content-Type","application/json");
         $req->addHeader($token);
+        $req->addHeader($content_type);
         $req->setBody($sObjectFields);
+        $req->setPost();
 
         $config = array(
             // "cainfo" => null,
@@ -166,7 +169,11 @@ class Salesforce {
         );
 
         $http = new Http($config);
-
+        $resp = $http->send($req);
+        //var_dump($resp->getBody());
+        $body = json_decode($resp->getBody(),true);
+        //var_dump($body);
+        return $body;
     }
 
     public function createQuery($soql,$instance_url = null,$access_token = null){
@@ -226,6 +233,48 @@ class Salesforce {
         $req->addHeader($token);
         $req->setPatch();
         $req->setBody($sObjectFields);
+
+        $config = array(
+            // "cainfo" => null,
+            // "verbose" => false,
+            // "stderr" => null,
+            // "encoding" => '',
+            "returntransfer" => true,
+            // "httpheader" => null,
+            "useragent" => "Mozilla/5.0",
+            // "header" => 1,
+            // "header_out" => true,
+            "followlocation" => true,
+            "ssl_verifyhost" => false,
+            "ssl_verifypeer" => false
+        );
+
+        $http = new Http($config);
+
+        // Get the log for this
+        //var_dump($req);
+        $resp = $http->send($req);
+        //var_dump($resp->getBody());
+        $body = json_decode($resp->getBody(),true);
+        //var_dump($body);
+        return $body;
+    }
+    public function deleteRecordFromSession($sObjectName,$sObjectId){
+        $authResult = $this->authorizeToSalesforce();
+        if (!$authResult->isSuccess()) {
+            throw new SalesforceAuthException("Not Authorized");
+        }
+        return $this->deleteRecord($sObjectName,$sObjectId,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+    }
+    public function deleteRecord($sObjectName,$sObjectId,$instance_url = null,$access_token = null){
+        $endpoint = "/services/sobjects/".$sObjectName."/".$sObjectId;
+        $resource_url = $instance_url . $endpoint;
+
+        //print "<p>Will execute query at: ".$resource_url."</p>";
+        $req = new HttpRequest($resource_url);
+        $token = new HttpHeader("Authorization", "Bearer " . $access_token);
+        $req->addHeader($token);
+        $req->setDelete();
 
         $config = array(
             // "cainfo" => null,
