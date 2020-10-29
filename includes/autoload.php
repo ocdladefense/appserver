@@ -95,4 +95,5 @@
 	require_once BASE_PATH.'/includes/Application.php';
 	require_once BASE_PATH.'/includes/Salesforce/Salesforce.php';
 	require_once BASE_PATH.'/includes/Salesforce/SalesforceAuthResult.php';
+	require_once BASE_PATH.'/includes/Store/Product.php';
 

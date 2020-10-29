@@ -1,28 +1,22 @@
 <?php
 
 use Http\IJson;
+use Http\HttpResponse;
 
 class ShoppingCart  implements IJson {
 
-    private $Id;
+    private $id;
     private $items;
     private $total;
     private $currency;
-    private static $oauth_config = array(
-		"oauth_url" => SALESFORCE_LOGIN_URL,
-		"client_id" => SALESFORCE_CLIENT_ID,
-		"client_secret" => SALESFORCE_CLIENT_SECRET,
-		"username" => SALESFORCE_USERNAME,
-		"password" => SALESFORCE_PASSWORD,
-		"security_token" => SALESFORCE_SECURITY_TOKEN,
-		"redirect_uri" => SALESFORCE_REDIRECT_URI
-        );
-    private $salesforce = null;
+
+    private static $salesforce = null;
 
     public function __construct($currency = "USD") {
-        $this->total = $total;
+        global $oauth_config;
+        //$this->total = $total;
         $this->currency = $currency;
-        $this->salesforce = new Salesforce(self::$oauth_config);
+        self::$salesforce = new Salesforce($oauth_config);
     }
 
     public function refresh() {
@@ -82,13 +76,14 @@ class ShoppingCart  implements IJson {
 		return $cart;
     }
 
-    private function setId($Id){
-        $this->Id = $Id;
+    private function setId($id){
+        $this->id = $id;
     }
     public function getId(){
-        return $this->Id;
+        return $this->id;
     }
     public static function newFromCustomerId($customerId){
+        global $oauth_config;
         //accountId,customerId,OppName
         //query for account Id
         //session for accountId
@@ -98,7 +93,7 @@ class ShoppingCart  implements IJson {
             "StageName" => "Draft",
             "CloseDate" => "2020-12-15"
         );
-        $salesforce = new Salesforce(self::$oauth_config);
+        $salesforce = new Salesforce($oauth_config);
         
 		$response = $salesforce->createRecordFromSession("Opportunity",json_encode($cartBody));
         //return $response;
@@ -110,23 +105,58 @@ class ShoppingCart  implements IJson {
 
         return $cart;
     }
-    public static function addProduct($productId){
-        $salesforce = new Salesforce(self::$oauth_config);
-        $PricebookEntry = $salesforce->createQueryFromSession("select Id from PricebookEntry where Product2Id = '".$productId."'");
+    public function addProduct($productId){
+        $productId = is_array($productId) ? $productId["Id"] : $productId;
+        $pricebookEntry = getPricebook($productId);
+
+        
         $item = array(
             "Quantity"=>1,
-            "PricebookEntryId"=>$PricebookEntry["id"],
-            "OpportunityId"=>$_SESSION["cartId"]
+            "PricebookEntryId"=>$pricebookEntry["Id"],
+            "OpportunityId"=>$this->id,
+            "TotalPrice"=>20
         );
-        $salesforce->createRecordFromSession("OpportunityLineItem",json_encode($item));
+        $response=self::$salesforce->createRecordFromSession("OpportunityLineItem",json_encode($item));
+        if($response["success"] != true){
+            throw new Exception("could not add the product to the cart");
+        }
+        ++$this->items;
+        return true;
     }
     public static function getFromCustomerId($customerId){
-        $salesforce = new Salesforce(self::$oauth_config);
-        $response = $salesforce->createQueryFromSession("select Id, Name from Opportunity where AccountId = '".$customerId."'");
+        $account = getAccount($customerId);
+        $opportunity = getOpportunity($account["AccountId"]);
         $cart = new ShoppingCart();
-        $cart->setId($response["id"]);
+        $cart->setId(false === $opportunity ? null : $opportunity["Id"]);
         return $cart;
     }
+
+    public static function loadCart($customerId){
+
+		$cart = $customerId == null ? ShoppingCart::newFromCustomerId($customerId) : ShoppingCart::getFromCustomerId($customerId);
+		if ($cart->getId() == null){
+			//check for 0 and expired
+			throw new Exception("could not create cart");
+        }
+		return $cart;
+	}
+
+    function addToCart($productId,$quantity = 1){		
+		try {
+			$product = getProduct($productId);
+
+			$this->addProduct($product);
+			return array(
+				"product" => $product["Name"],
+				"success" => true
+			);
+		} catch (Exception $e) {
+			$response = new HttpResponse();
+			$response->setStatusCode(400);
+			$response->setBody("error trying to add ".$productId." to cart: ".$e->getMessage());
+			return $response;
+		}
+	}
 
     public function toJson(){
         
