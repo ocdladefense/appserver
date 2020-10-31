@@ -2,6 +2,7 @@
 Last Updated: 10/5/2020
 
 **DBQuery**
+
 There are 4 types of conditions defined in DBQuery:
 
  - **Condition** Used for WHERE clause 
@@ -18,6 +19,7 @@ There are 4 types of conditions defined in DBQuery:
    - JSON: `{"type":"insertCondition", "field": field, "value": value, "rowId": rowId}`
 
 **QueryBuilder**
+
 QueryBuilder constructs SQL statements from Conditions.
 
 The function **fromObject()** takes an array of conditions or a single condition and processes them based their type property. Note: If the condition is of type “condition” and its value property is “ALL” the condition is ignored.
@@ -52,6 +54,7 @@ Extra notes on using conditions to create SQL
  - **Update statement:** Every condition of type “insertCondition” must have a matching value in the rowId property.
 
 **FormParser**
+
 Conditions of all types can be created from the attributes of HTML elements.
 
 FormParser decides what type of condition should be constructed based on which attributes the HTML element has.
