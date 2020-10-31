@@ -93,4 +93,8 @@
 
 	require_once BASE_PATH.'/includes/Application.php';
 	require_once BASE_PATH. '/includes/Salesforce/Salesforce.php';
+	require_once BASE_PATH. '/includes/Database/QueryStringParser.php';
+	require_once BASE_PATH. '/includes/Exception/QueryException.php';
+
+
 

@@ -20,6 +20,10 @@ class Salesforce {
     {
         $this->oauth_config = $config;
     }
+
+    public function queryChecker($soql){
+        
+    }
     
     public function authorizeToSalesforce() {
         
@@ -78,6 +82,12 @@ class Salesforce {
         if(!$this->authorizeToSalesforce()){
             throw new Exception("no authorized");
         }
+        
+        if(!QueryStringParser::Validate($soql))
+        {
+            throw new QueryException("Invalid SOQL statement");
+        }
+        
             $endpoint = "/services/data/v49.0/query/?q=";
             // $endpoint = "/v49.0/query?q=";
             $resource_url = $_SESSION["salesforce_instance_url"].$endpoint.urlencode($soql);
