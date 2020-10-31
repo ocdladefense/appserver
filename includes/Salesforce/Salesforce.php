@@ -70,6 +70,10 @@ class Salesforce {
         }
         $this->checkConfigValues();
     }
+
+    public function queryChecker($soql){
+        
+    }
     
     public function authorizeToSalesforce() {
         
@@ -134,8 +138,10 @@ class Salesforce {
         if (!$authResult->isSuccess()) {
             throw new SalesforceAuthException("Not Authorized");
         }
+
         return $this->createRecord($sObjectName,$sObjectFields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
+  
     public function createRecord($sObjectName,$sObjectFields,$instance_url = null,$access_token = null){
         //curl https://yourInstance.salesforce.com/services/data/v20.0/sobjects/Account/ 
         //-H "Authorization: Bearer token -H "Content-Type: application/json" -d "@newaccount.json"
@@ -299,8 +305,50 @@ class Salesforce {
         //var_dump($resp->getBody());
         $body = json_decode($resp->getBody(),true);
         //var_dump($body);
-        return $body;
+        // return $body;
+
+        if(!QueryStringParser::Validate($soql))
+        {
+            throw new QueryException("Invalid SOQL statement");
+        }
+        
+            $endpoint = "/services/data/v49.0/query/?q=";
+            // $endpoint = "/v49.0/query?q=";
+            $resource_url = $_SESSION["salesforce_instance_url"].$endpoint.urlencode($soql);
+            
+            //print "<p>Will execute query at: ".$resource_url."</p>";
+
+            $req = new HttpRequest($resource_url);
+            $token = new HttpHeader("Authorization","Bearer ".$_SESSION["salesforce_access_token"]);
+            $req->addHeader($token);
+            
+            $config = array(
+                    // "cainfo" => null,
+                    // "verbose" => false,
+                    // "stderr" => null,
+                    // "encoding" => '',
+                    "returntransfer" => true,
+                    // "httpheader" => null,
+                    "useragent" => "Mozilla/5.0",
+                    // "header" => 1,
+                    // "header_out" => true,
+                    "followlocation" => true,
+                    "ssl_verifyhost" => false,
+                    "ssl_verifypeer" => false
+            );
+
+            $http = new Http($config);
+            
+            // Get the log for this
+            var_dump($req);
+            $resp = $http->send($req);
+            
+            // var_dump($resp);
+
+
+            return $resp->getBody();
+
     }
-    //}
+
 
 }

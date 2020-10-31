@@ -1,12 +1,12 @@
 <?php
 
+	require_once BASE_PATH.'/includes/globals.php';
 
 	if(file_exists(BASE_PATH.'/config/config.php')){		
 		require_once BASE_PATH.'/config/config.php';
 		require_once BASE_PATH.'/includes/theme.inc';
 	}
 
-	require_once BASE_PATH.'/includes/globals.php';
 
 	if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
 		include BASE_PATH.'/vendor/autoload.php';
@@ -16,6 +16,7 @@
 	require_once BASE_PATH.'/includes/System/ClassName.php';
 	require_once BASE_PATH.'/includes/System/XList.php';
 	require_once BASE_PATH.'/includes/System/IJson.php';
+	require_once BASE_PATH.'/includes/System/DateRange.php';
 
 	
 
@@ -93,7 +94,10 @@
 	require_once BASE_PATH.'/includes/Exception/DbException.php';
 
 	require_once BASE_PATH.'/includes/Application.php';
+
 	require_once BASE_PATH.'/includes/Salesforce/Salesforce.php';
 	require_once BASE_PATH.'/includes/Salesforce/SalesforceAuthResult.php';
 	require_once BASE_PATH.'/includes/Store/Product.php';
+	require_once BASE_PATH. '/includes/Database/QueryStringParser.php';
+	require_once BASE_PATH. '/includes/Exception/QueryException.php';
 
