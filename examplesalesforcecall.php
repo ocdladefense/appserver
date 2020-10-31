@@ -51,10 +51,7 @@ if( authorize_to_salesforce($oauth_config) ) {
 // AUXILLIARY FUNCTION TO AUTHORIZE TO SALESFORCE
 function authorize_to_salesforce($config) {
 
-
-	// print "<h2>Settings are: </h2><pre>".print_r($config,true)."</pre>";
-
-	// If we already have an access_token, so no need to reauthorize; return TRUE.
+	// If we already have an access_token, no need to reauthorize; return TRUE.
 	if(isset($_SESSION["salesforce_access_token"])) return true;
 
 	$req = new HttpRequest($config["oauth_url"]);
@@ -104,7 +101,7 @@ function authorize_to_salesforce($config) {
 // AUXILLIARY FUNCTION TO QUERY SALESFORCE
 function query_salesforce($query) {
 	$endpoint = "/services/data/v49.0/query/?q=";
-	// $endpoint = "/v49.0/query?q=";
+
 	$resource_url = $_SESSION["salesforce_instance_url"].$endpoint.urlencode($query);
 	
 	print "<p>Will execute query at: ".$resource_url."</p>";
