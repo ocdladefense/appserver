@@ -35,15 +35,7 @@ class ShoppingCart  implements IJson {
     //Getters
 
     public function getItems() {
-        //return $this->items;
-        return array(
-            array(
-                "name" => "Fooby",
-                "productId" => "00001",
-                "productPrice" => 20.00,
-                "quantity" => 400
-            )
-        );
+        return $this->items;
     }
 
     public function getTotal(){
@@ -81,6 +73,9 @@ class ShoppingCart  implements IJson {
     }
     public function getId(){
         return $this->id;
+    }
+    public function loadItems(){
+        $this->items = loadItems($this->cartId);
     }
     public static function newFromCustomerId($customerId){
         global $oauth_config;
@@ -126,13 +121,17 @@ class ShoppingCart  implements IJson {
     public static function getFromCustomerId($customerId){
         $account = getAccount($customerId);
         $opportunity = getOpportunity($account["AccountId"]);
+       
         $cart = new ShoppingCart();
         $cart->setId(false === $opportunity ? null : $opportunity["Id"]);
+         $cart->loadItems();
         return $cart;
     }
 
     public static function loadCart($customerId){
-
+        if (empty($customerId)){
+            throw new Exception("customer Id is empty");
+        }
 		$cart = $customerId == null ? ShoppingCart::newFromCustomerId($customerId) : ShoppingCart::getFromCustomerId($customerId);
 		if ($cart->getId() == null){
 			//check for 0 and expired
@@ -159,7 +158,12 @@ class ShoppingCart  implements IJson {
 	}
 
     public function toJson(){
-        
+        return array(
+            "items" => $this->getItems(),
+            "id" => $this->getId(),
+            "currency" => $this->getCurrency(),
+            "total" => $this ->getTotal()
+         );
     }
 
 }

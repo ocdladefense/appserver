@@ -31,10 +31,12 @@ function getAccount($contactId){
 function getOpportunity($accountId){
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
-    $opportunity = $salesforce->createQueryFromSession("select Id, Name from Opportunity where AccountId = '".$accountId."'");
+    $opportunity = $salesforce->createQueryFromSession("select Id, Amount, Name, StageName, Description,AccountId from Opportunity where AccountId = '".$accountId."'");
     return !isset($opportunity["records"][0]) ? false : $opportunity["records"][0];
 }
-
-
-
-
+function loadItems($oppId){
+    global $oauth_config;
+    $salesforce = new Salesforce($oauth_config);
+    $items = $salesforce->createQueryFromSession("select Id,Description,ListPrice,Product2Id,ProductCode,Quantity,UnitPrice,TotalPrice from OpportunityLineItem where OpportunityId = '".$oppId."'");
+    return $items["records"];
+}
