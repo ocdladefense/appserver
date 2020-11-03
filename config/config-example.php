@@ -2,7 +2,15 @@
 // MAIN CONFIGURATIONS.
 
 
-
+$oauth_config = array(
+    "oauth_url" => "https://test.salesforce.com/services/oauth2/token",
+    "client_id" => "",
+    "client_secret" => "",
+    "callback_url" => "",
+    "username" => "",
+    "password" => "",
+    "security_token" => ""
+); 
 
 // MySQL Database Connection.
 //  Can also use MariaDB.

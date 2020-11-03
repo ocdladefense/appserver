@@ -43,7 +43,7 @@ abstract class Handler {
 
 			$handler = new HtmlStringHandler($output, $mimeType);
 
-		} else if( get_class($output) == "File\File") {
+		} else if( is_object($output) && get_class($output) == "File\File") {
 
 			$handler = new ApplicationFileHandler($output, $mimeType);
 			
