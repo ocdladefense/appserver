@@ -140,21 +140,28 @@ class Application {
         session_start();
     
 
+				// Will need to handle PageNotFoundExceptions here.
+				list($module, $route, $params) = $this->init($uri);
+				$module->setRequest($req);
+
         try {
-    
-            list($module, $route, $params) = $this->init($uri);
-    
-            $module->setRequest($req);
-    
+
             $out = $this->getOutput($module, $route, $params);
+            
+            if(null == $out) throw new Exception("Callback function returned NULL!");
             
             $handler = Handler::fromType($out, $route["content-type"]);
 
             $resp->setBody($handler->getOutput());
             $resp->addHeaders($handler->getHeaders());
             
-        } catch(Exception $e) {
-            throw $e;
+        }
+        // Pass the exception to the appropriate handler.
+        catch(Exception $e) {
+            $handler = Handler::fromType($e, $route["content-type"]);
+
+            $resp->setBody($handler->getOutput());
+            $resp->addHeaders($handler->getHeaders());
         }
 
         return $resp;
@@ -221,7 +228,7 @@ class Application {
      */
     public function getOutput($module, $route, $params) {
 
-    	return call_user_func_array(array($module,$route["callback"]),$params);
+			return call_user_func_array(array($module,$route["callback"]),$params);
     }
     
     

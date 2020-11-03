@@ -25,51 +25,60 @@ class Salesforce {
         $this->oauth_config = $oauth_config;
     }
 
-    public function checkConfig(){
-        $oauth_config = $this->oauth_config;
-        if(is_null($oauth_config) || !is_array($oauth_config)){
+
+
+
+    public function checkConfig() {
+        $config = $this->oauth_config;
+        
+        // Removed redirect_uri, security_token cuz it can be empty.
+        $check = array("oauth_url","client_id","client_secret","username","password");
+        
+        
+        // @TODO should it be 5 or 7; should be able to omit keys that aren't required
+        // and still have a valid OAuth config.
+        if(empty($config) || !is_array($config) || sizeof($config) < 7) {
             throw new SalesforceAuthException("Invalid Auth config");
-        }else if(empty($oauth_config)){
-            throw new SalesforceAuthException("Empty Auth Config");
-        }else if(sizeof($oauth_config) <7){
-            throw new SalesforceAuthException("Invalid Size Config");
+				}
+
+
+        foreach($check as $key) {
+        		$value = $config[$key];
+            
+            // None of the configs should be missing!
+            if(!array_key_exists($key,$config)) {
+                throw new SalesforceAuthException("Invalid OAuthConfig Parameter {$key}.");
+            }
+            
+            // Nothing important should be empty!
+            if(empty($value)) {
+                throw new SalesforceAuthException("Empty/null value in OAuthConfig Key Name: {$key}.");
+            }
         }
-        $this->checkConfigPairs();
+        
+        
+        if(!self::isValidSalesforceUsername($config["username"])) {
+					throw new SalesforceAuthException("Invalid OauthConfig Username: ".$config["username"]);
+        }
+        
+        if(!self::isValidOAuthTokenUrl($config["oauth_url"])) {
+					throw new SalesforceAuthException("Invalid OauthConfig Login Url: ".$config["oauth_url"]);
+				}
     }
 
-    public function checkConfigValues(){
-        $oauth_config = $this->oauth_config;
+
+		private static function isValidSalesforceUsername($username) {
         //checking username for @ and .
-        if(strpos($oauth_config["username"],"@") === false || strpos($oauth_config["username"],".") === false){
-            throw new SalesforceAuthException("Invalid OauthConfig Usernane: ".$oauth_config["username"]);
-        }
-        //checking oauth url for .salesforce.com/services/oauth2/token
-        if(strpos(strtolower($oauth_config["oauth_url"]),".salesforce.com/services/oauth2/token")=== false){
-            throw new SalesforceAuthException("Invalid OauthConfig Login Url: ".$oauth_config["oauth_url"]);
-        }
-        //checking for a periof in the clientId
-        // if(strpos($oauth_config["client_id"],".")=== false){
-        //     throw new SalesforceAuthException("Invalid OauthConfig Client Id: ".$oauth_config["client_id"]);
-        // }
-    }
+        return strpos($username,"@") !== false && strpos($username,".") !== false;
+		}
+		
+		private static function isValidOAuthTokenUrl($url) {
+	
+			//checking oauth url for .salesforce.com/services/oauth2/token
+			return strpos(strtolower($url),".salesforce.com/services/oauth2/token") !== false;
+		}
 
-    public function CheckConfigPairs(){
-        $oauth_config = $this->oauth_config;
-        $oauth_params = array("oauth_url","client_id","client_secret","username","password","security_token","redirect_uri");
 
-        foreach ($oauth_config as $key => $value) {
-            if(strtolower($key) === 0 && strtolower($value) !== "redirect_uri"){
-                throw new SalesforceAuthException("Invalid OauthConfig Key pair: \"".$value."\"");
-            }
-            if(!in_array(strtolower($key),$oauth_params)){
-                throw new SalesforceAuthException("Invalid OauthConfig Parameter: ".$key);
-            }
-            if((empty($value) || is_null($value)) && strtolower($key) !== "redirect_uri"){
-                throw new SalesforceAuthException("Empty/null value in OauthConfig Key Name: ".$key);
-            }
-        }
-        $this->checkConfigValues();
-    }
 
     public function queryChecker($soql){
         
@@ -126,13 +135,9 @@ class Salesforce {
         }
         return $authResult;
     }
-    public function createQueryFromSession($soql){
-        $authResult = $this->authorizeToSalesforce();
-        if (!$authResult->isSuccess()) {
-            throw new SalesforceAuthException("Not Authorized");
-        }
-        return $this->createQuery($soql,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
-    }
+
+    
+    
     public function createRecordFromSession($sObjectName,$sObjectFields){
         $authResult = $this->authorizeToSalesforce();
         if (!$authResult->isSuccess()) {
@@ -182,6 +187,21 @@ class Salesforce {
         return $body;
     }
 
+
+
+
+
+    
+    
+    
+    public function createQueryFromSession($soql){
+        $authResult = $this->authorizeToSalesforce();
+        if (!$authResult->isSuccess()) {
+            throw new SalesforceAuthException("Not Authorized");
+        }
+        return $this->createQuery($soql,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+    }
+
     public function createQuery($soql,$instance_url = null,$access_token = null){
         //$body = "";
         //for($tries = 0; $tries<5;$tries++){
@@ -220,8 +240,13 @@ class Salesforce {
         //var_dump($resp->getBody());
         $body = json_decode($resp->getBody(),true);
         //var_dump($body);
+        
+        
         return $body;
     }
+    
+    
+    
     public function updateRecordFromSession($sObjectName,$sObjectId,$sObjectFields){
         $authResult = $this->authorizeToSalesforce();
         if (!$authResult->isSuccess()) {
@@ -229,6 +254,9 @@ class Salesforce {
         }
         return $this->updateRecord($sObjectName,$sObjectId,$sObjectFields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
+    
+    
+    
     public function updateRecord($sObjectName,$sObjectId,$sObjectFields,$instance_url = null,$access_token = null){
         $endpoint = "/services/sobjects/".$sObjectName."/".$sObjectId;
         $resource_url = $instance_url . $endpoint;
