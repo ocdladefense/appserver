@@ -45,7 +45,7 @@
 
 
 
-	$store = array("ShoppingCart","IPaymentProcessor","Customer","Order","CreditCard","Payment");
+	$store = array("IPaymentProcessor","Customer","Order","CreditCard","Payment");
 	
 	foreach($store as $file) {
 		require_once(BASE_PATH.'/includes/Store/'.$file.".php");
@@ -100,4 +100,11 @@
 	require_once BASE_PATH.'/includes/Store/Product.php';
 	require_once BASE_PATH. '/includes/Database/QueryStringParser.php';
 	require_once BASE_PATH. '/includes/Exception/QueryException.php';
+	//to be modules
+	require_once BASE_PATH.'/includes/Store/Salesforce/ShoppingCart.php'; 
+	require_once BASE_PATH.'/includes/Store/Salesforce/PaymentProcessor.php'; 
+	
+	require_once BASE_PATH.'/includes/Store/Square/ShoppingCart.php';
+	require_once BASE_PATH.'/includes/Store/Square/PaymentProcessor.php'; 
+
 

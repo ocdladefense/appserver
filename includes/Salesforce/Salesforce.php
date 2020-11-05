@@ -187,13 +187,6 @@ class Salesforce {
         return $body;
     }
 
-
-
-
-
-    
-    
-    
     public function createQueryFromSession($soql){
         $authResult = $this->authorizeToSalesforce();
         if (!$authResult->isSuccess()) {
@@ -301,7 +294,7 @@ class Salesforce {
         return $this->deleteRecord($sObjectName,$sObjectId,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
     public function deleteRecord($sObjectName,$sObjectId,$instance_url = null,$access_token = null){
-        $endpoint = "/services/sobjects/".$sObjectName."/".$sObjectId;
+        $endpoint = "/services/data/v49.0/sobjects/".$sObjectName."/".$sObjectId;
         $resource_url = $instance_url . $endpoint;
 
         //print "<p>Will execute query at: ".$resource_url."</p>";
@@ -331,50 +324,9 @@ class Salesforce {
         //var_dump($req);
         $resp = $http->send($req);
         //var_dump($resp->getBody());
-        $body = json_decode($resp->getBody(),true);
-        //var_dump($body);
-        // return $body;
 
-        if(!QueryStringParser::Validate($soql))
-        {
-            throw new QueryException("Invalid SOQL statement");
-        }
-        
-            $endpoint = "/services/data/v49.0/query/?q=";
-            // $endpoint = "/v49.0/query?q=";
-            $resource_url = $_SESSION["salesforce_instance_url"].$endpoint.urlencode($soql);
-            
-            //print "<p>Will execute query at: ".$resource_url."</p>";
+        return  $resp->getBody();
 
-            $req = new HttpRequest($resource_url);
-            $token = new HttpHeader("Authorization","Bearer ".$_SESSION["salesforce_access_token"]);
-            $req->addHeader($token);
-            
-            $config = array(
-                    // "cainfo" => null,
-                    // "verbose" => false,
-                    // "stderr" => null,
-                    // "encoding" => '',
-                    "returntransfer" => true,
-                    // "httpheader" => null,
-                    "useragent" => "Mozilla/5.0",
-                    // "header" => 1,
-                    // "header_out" => true,
-                    "followlocation" => true,
-                    "ssl_verifyhost" => false,
-                    "ssl_verifypeer" => false
-            );
-
-            $http = new Http($config);
-            
-            // Get the log for this
-            var_dump($req);
-            $resp = $http->send($req);
-            
-            // var_dump($resp);
-
-
-            return $resp->getBody();
 
     }
 

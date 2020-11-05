@@ -31,12 +31,18 @@ function getAccount($contactId){
 function getOpportunity($accountId){
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
-    $opportunity = $salesforce->createQueryFromSession("select Id, Amount, Name, StageName, Description,AccountId from Opportunity where AccountId = '".$accountId."'");
+    $opportunity = $salesforce->createQueryFromSession("SELECT Id, Amount, Name, StageName, Description,AccountId FROM Opportunity WHERE AccountId = '".$accountId."'");
     return !isset($opportunity["records"][0]) ? false : $opportunity["records"][0];
 }
-function loadItems($oppId){
+function loadCartItems($oppId){
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
-    $items = $salesforce->createQueryFromSession("select Id,Description,ListPrice,Product2Id,ProductCode,Quantity,UnitPrice,TotalPrice from OpportunityLineItem where OpportunityId = '".$oppId."'");
+    $items = $salesforce->createQueryFromSession("SELECT Id,Description,ListPrice,Product2Id,ProductCode,Quantity,UnitPrice,TotalPrice FROM OpportunityLineItem WHERE OpportunityId = '".$oppId."'");
     return $items["records"];
+}
+function deleteCartItem($productLineId){
+    global $oauth_config;
+    $salesforce = new Salesforce($oauth_config);
+    $result = $salesforce->deleteRecordFromSession("OpportunityLineItem",$productLineId);
+    return $result;
 }

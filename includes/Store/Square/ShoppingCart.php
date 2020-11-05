@@ -1,6 +1,7 @@
 <?php
-namespace ClickpdxStore;
-class ShoppingCart2 {
+namespace Square;
+
+class ShoppingCart {
 
     private $items;
     private $total;
