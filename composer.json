@@ -7,7 +7,7 @@
     },
     "extra":{
         "installer-paths":{
-            "modules/test":["ocdladefense/appserver-salesforce"]
+            "modules/salesforce":["ocdladefense/appserver-salesforce"]
         }
     },
     "require": {
