@@ -24,12 +24,26 @@ namespace Http;
 		}
 		
 		
+		public function setMethod($method = "GET") {
+			if( "POST" == $method ) {
+				$this->setPost();
+			} elseif ( "GET" == $method ) {
+				$this->setGet();
+			} else {
+				$this->configs["customrequest"] = $method;
+			}
+		}
+		
 		public function setBody($body) {
 			$this->configs["postfields"] = $body;
 		}
 		
 		public function setPost() {
 			$this->configs["post"] = true;
+		}
+		
+		public function setGet() {
+			$this->configs["httpget"] = true;
 		}
 
 

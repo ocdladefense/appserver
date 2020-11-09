@@ -20,7 +20,7 @@ class Salesforce {
     */
     private $oauth_config = array();
 
-    public function __construct($oauth_config)
+    public function __construct($oauth_config = array())
     {
         $this->oauth_config = $oauth_config;
     }
@@ -333,6 +333,26 @@ class Salesforce {
         return $resp->getStatusCode() == 204?true:false;
 
 
+    }
+
+
+		/**
+		 * Get the actual request object first, so we can
+		 *  more easily inspect it.
+		 */    
+    public function getDeleteRequest($oName, $id, $url = "https://my.salesforce.com", $token = "1234abcde") {
+    
+        $endpoint = "/services/data/v49.0/sobjects/".$oName."/".$id;
+        $url = !empty($url) ? ($url . $endpoint) : $endpoint;
+
+        //print "<p>Will execute query at: ".$resource_url."</p>";
+        $req = new HttpRequest($url);
+        $th = new HttpHeader("Authorization", "Bearer " . $token);
+        $req->addHeader($th);
+        $req->setDelete();
+
+
+				return $req;
     }
 
 

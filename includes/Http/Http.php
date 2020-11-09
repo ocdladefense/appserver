@@ -65,7 +65,15 @@ class Http {
 
 			$this->config->setPost();
 			$this->config->setBody($msg->getBody());
+			
+		} elseif(!$msg->isGet()) {
+		
+			$this->config->setMethod($msg->getMethod());
 		}
+		
+		
+		
+		
 		// print_r(HttpHeader::toArray($msg->getHeaders()));
 		// Send using cURL with the 
 		$resp = Curl::send($msg->getUrl(), $this->config->getAsCurl());

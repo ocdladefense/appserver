@@ -35,7 +35,8 @@ class HttpRequest extends HttpMessage {
 		"OPTIONS",
 		"POST",
 		"PUT",
-		"PATCH"
+		"PATCH",
+		"DELETE"
 	);
 
 
@@ -77,6 +78,10 @@ class HttpRequest extends HttpMessage {
 	
 	public function setMethod($method) {
 		$this->method = $method;
+	}
+	
+	public function getMethod() {
+		return $this->method;
 	}
 
 
@@ -126,6 +131,8 @@ class HttpRequest extends HttpMessage {
 	public function isPost(){
 		return $this->method == HTTP_METHOD_POST;
 	}
+	
+
 	
 	
 	public function setPatch(){
@@ -181,9 +188,6 @@ class HttpRequest extends HttpMessage {
 
 
 
-	public function getMethod(){
-		return $this->method;
-	}
 
 	
 	
