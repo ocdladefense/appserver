@@ -302,7 +302,10 @@ class Salesforce {
         $token = new HttpHeader("Authorization", "Bearer " . $access_token);
         $req->addHeader($token);
         $req->setDelete();
-
+        //$req->setAccept("*/*");
+        
+        //$req->setAccept("*/*");
+        //$req->setBody("{}");
         $config = array(
             // "cainfo" => null,
             // "verbose" => false,
@@ -320,12 +323,14 @@ class Salesforce {
 
         $http = new Http($config);
 
-        // Get the log for this
-        //var_dump($req);
         $resp = $http->send($req);
-        //var_dump($resp->getBody());
-
-        return  $resp->getBody();
+        $body = json_decode($resp->getBody(),true);
+        //var_dump($body);
+        if(!empty($body || $resp->getStatusCode() != 204)){
+            throw new Exception("Status Code: ".$resp->getStatusCode()." Error deleating the record: ".$resp->getBody());
+            
+        }
+        return $resp->getStatusCode() == 204?true:false;
 
 
     }

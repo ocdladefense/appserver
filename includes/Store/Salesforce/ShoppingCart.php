@@ -12,6 +12,7 @@ class ShoppingCart  implements \Http\IJson {
     private $items;
     private $total;
     private $currency;
+    private $error;
 
     private static $salesforce = null;
 
@@ -36,6 +37,10 @@ class ShoppingCart  implements \Http\IJson {
         $this->currency = $currency;
     }
 
+    public function setError($error){
+        $this->error = $error;
+    }
+
     //Getters
 
     public function getItems() {
@@ -48,6 +53,10 @@ class ShoppingCart  implements \Http\IJson {
 
     public function getCurrency(){
         return $this->currency;
+    }
+
+    public function getError(){
+        return $this->error;
     }
     public function calculateTotal(){
         $itemsArray = $this->getItems(); 
@@ -82,7 +91,10 @@ class ShoppingCart  implements \Http\IJson {
         $this->items = loadCartItems($this->id);
     }
     public function deleteProductLine($productLineId){
-        $this->items = deleteCartItem($productLineId);
+        if(!deleteCartItem($productLineId)){
+            throw new \Exception("Error Deleting Item");
+        }
+        //reload all items or just delete the correct one by passing value
     }
     public static function newFromCustomerId($customerId){
         global $oauth_config;
@@ -167,18 +179,9 @@ class ShoppingCart  implements \Http\IJson {
 		}
     }
     function deleteItemLine($productLineId){
-		try {
-			$this->deleteProductLine($productLineId);
-			return array(
-				"productLineId" => $productLineId,
-				"success" => true
-			);
-		} catch (\Exception $e) {
-			$response = new HttpResponse();
-			$response->setStatusCode(400);
-			$response->setBody("error trying to remove ".$productLineId." from cart: ".$e->getMessage());
-			return $response;
-		}
+        $this->deleteProductLine($productLineId);
+        $this->items = loadCartItems($this->id);
+		return true;
     }
 
     public function toJson(){
@@ -186,7 +189,8 @@ class ShoppingCart  implements \Http\IJson {
             "items" => $this->getItems(),
             "id" => $this->getId(),
             "currency" => $this->getCurrency(),
-            "total" => $this ->getTotal()
+            "total" => $this ->getTotal(),
+            "errors" => $this->getError()
          ));
     }
 

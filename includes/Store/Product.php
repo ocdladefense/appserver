@@ -44,5 +44,5 @@ function deleteCartItem($productLineId){
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
     $result = $salesforce->deleteRecordFromSession("OpportunityLineItem",$productLineId);
-    return $result;
+    return $result == true?true:false;
 }
