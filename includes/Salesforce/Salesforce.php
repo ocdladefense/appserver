@@ -136,34 +136,15 @@ class Salesforce {
         return $authResult;
     }
 
-    
-    
-    public function createRecordFromSession($sObjectName,$sObjectFields){
-        $authResult = $this->authorizeToSalesforce();
-        if (!$authResult->isSuccess()) {
-            throw new SalesforceAuthException("Not Authorized");
-        }
-
-        return $this->createRecord($sObjectName,$sObjectFields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
-    }
-  
-    public function createRecord($sObjectName,$sObjectFields,$instance_url = null,$access_token = null){
-        //curl https://yourInstance.salesforce.com/services/data/v20.0/sobjects/Account/ 
-        //-H "Authorization: Bearer token -H "Content-Type: application/json" -d "@newaccount.json"
-
-        $endpoint = "/services/data/v49.0/sobjects/".$sObjectName;
-        // $endpoint = "/v49.0/query?q=";
-        $resource_url = $instance_url . $endpoint;
-
-        //print "<p>Will execute query at: ".$resource_url."</p>";
-        $req = new HttpRequest($resource_url);
-        $token = new HttpHeader("Authorization", "Bearer " . $access_token);
+    public function sendRequest($endpoint,$body,$method = "POST"){
+        $endpoint = $_SESSION["salesforce_instance_url"] . $endpoint."/";
+        $req = new HttpRequest($endpoint);
+        $token = new HttpHeader("Authorization", "Bearer " . $_SESSION["salesforce_access_token"]);
         $content_type = new HttpHeader("Content-Type","application/json");
         $req->addHeader($token);
         $req->addHeader($content_type);
-        $req->setBody($sObjectFields);
-        $req->setPost();
-
+        $req->setBody(json_encode($body));
+        $req->setMethod($method);
         $config = array(
             // "cainfo" => null,
             // "verbose" => false,
@@ -181,9 +162,40 @@ class Salesforce {
 
         $http = new Http($config);
         $resp = $http->send($req);
-        //var_dump($resp->getBody());
+        return $resp;
+    }
+
+    public function createRecordFromSession($sObjectName,$sObjectFields){
+        return $this->createRecordsFromSession($sObjectName,$sObjectFields);
+    }
+    
+    public function createRecordsFromSession($sObjectName,$sObjectFields){
+        $authResult = $this->authorizeToSalesforce();
+        if (!$authResult->isSuccess()) {
+            throw new SalesforceAuthException("Not Authorized");
+        }
+
+        return $this->createRecords($sObjectName,$sObjectFields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+    }
+
+
+  
+    public function createRecords($sObjectName,$records,$instance_url = null,$access_token = null){
+        $pluralEndpoint = "/services/data/v49.0/composite/tree/".$sObjectName;
+        $singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName;
+        $plural = is_array($records) && isset($records[0]);
+        $endpoint = $plural ? $pluralEndpoint : $singularEndpoint;
+        $fn = function ($record,$index) use($sObjectName){
+            $record["attributes"] = array("type"=>$sObjectName,"referenceId"=>"ref".++$index);
+            return $record;
+        };
+        $records = $plural ? array_map($fn,$records,array_keys($records)):$records;
+        $records = $plural ? array("records" => $records ) : $records;
+        $resp = $this->sendRequest($endpoint,$records);
         $body = json_decode($resp->getBody(),true);
-        //var_dump($body);
+        if ($body["hasErrors"] == true){
+            throw new Exception("Error inserting request");
+        }
         return $body;
     }
 
@@ -325,14 +337,12 @@ class Salesforce {
 
         $resp = $http->send($req);
         $body = json_decode($resp->getBody(),true);
-        //var_dump($body);
+        //var_dump($resp);
         if(!empty($body || $resp->getStatusCode() != 204)){
             throw new Exception("Status Code: ".$resp->getStatusCode()." Error deleating the record: ".$resp->getBody());
             
         }
         return $resp->getStatusCode() == 204?true:false;
-
-
     }
 
 

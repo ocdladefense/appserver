@@ -119,9 +119,11 @@ class ShoppingCart  implements \Http\IJson {
 
         return $cart;
     }
-    public function addProduct($productId){
-        $productId = is_array($productId) ? $productId["Id"] : $productId;
-        $pricebookEntry = getPricebook($productId);
+
+    /*
+    public function addProducts($productsIds){
+        //check for array
+        $pricebookEntries = getPricebookEntries($productIds);
         global $oauth_config;
         $salesforce = new Salesforce($oauth_config);
         
@@ -131,7 +133,21 @@ class ShoppingCart  implements \Http\IJson {
             "OpportunityId"=>$this->id,
             "TotalPrice"=>20
         );
-        $response=$salesforce->createRecordFromSession("OpportunityLineItem",json_encode($item));
+    }
+    */
+    public function addProduct($productId){
+        $productId = is_array($productId) ? $productId["Id"] : $productId;
+        $pricebookEntry = getPricebookEntries($productId)[0];
+        global $oauth_config;
+        $salesforce = new Salesforce($oauth_config);
+        
+        $item = array(
+            "Quantity"=> 1,
+            "PricebookEntryId"=> $pricebookEntry["Id"],
+            "OpportunityId"=> $this->id,
+            "TotalPrice"=> 20
+        );
+        $response=$salesforce->createRecordsFromSession("OpportunityLineItem",array($item,$item));
         if($response["success"] != true){
             throw new \Exception("could not add the product to the cart");
         }
