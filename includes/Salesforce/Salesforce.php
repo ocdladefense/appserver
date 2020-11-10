@@ -20,7 +20,7 @@ class Salesforce {
     */
     private $oauth_config = array();
 
-    public function __construct($oauth_config)
+    public function __construct($oauth_config = array())
     {
         $this->oauth_config = $oauth_config;
     }
@@ -302,7 +302,10 @@ class Salesforce {
         $token = new HttpHeader("Authorization", "Bearer " . $access_token);
         $req->addHeader($token);
         $req->setDelete();
-
+        //$req->setAccept("*/*");
+        
+        //$req->setAccept("*/*");
+        //$req->setBody("{}");
         $config = array(
             // "cainfo" => null,
             // "verbose" => false,
@@ -320,14 +323,36 @@ class Salesforce {
 
         $http = new Http($config);
 
-        // Get the log for this
-        //var_dump($req);
         $resp = $http->send($req);
-        //var_dump($resp->getBody());
+        $body = json_decode($resp->getBody(),true);
+        //var_dump($body);
+        if(!empty($body || $resp->getStatusCode() != 204)){
+            throw new Exception("Status Code: ".$resp->getStatusCode()." Error deleating the record: ".$resp->getBody());
+            
+        }
+        return $resp->getStatusCode() == 204?true:false;
 
-        return  $resp->getBody();
+
+    }
 
 
+		/**
+		 * Get the actual request object first, so we can
+		 *  more easily inspect it.
+		 */    
+    public function getDeleteRequest($oName, $id, $url = "https://my.salesforce.com", $token = "1234abcde") {
+    
+        $endpoint = "/services/data/v49.0/sobjects/".$oName."/".$id;
+        $url = !empty($url) ? ($url . $endpoint) : $endpoint;
+
+        //print "<p>Will execute query at: ".$resource_url."</p>";
+        $req = new HttpRequest($url);
+        $th = new HttpHeader("Authorization", "Bearer " . $token);
+        $req->addHeader($th);
+        $req->setDelete();
+
+
+				return $req;
     }
 
 

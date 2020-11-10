@@ -50,7 +50,7 @@ class Path {
 	 *
 	 * @return boolean
 	 *  true, if the string param matches.
-	 *  false, if the strin param does not match.
+	 *  false, if the string param does not match.
 	 */
 	public function matches($str) {
 			$pattern = $this->toRegex();
