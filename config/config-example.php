@@ -12,6 +12,32 @@ $oauth_config = array(
     "security_token" => ""
 ); 
 
+
+$orgs = array(
+	"myDefaultOrg" => array(
+		"url" => "",
+		"username" => "jbernal@trevor.com",
+		"password" => "trevor123",
+		"token" => "ubzmL8CGoKgvwgWJcgKenIFwi",
+		"wsdl" => array(
+			"enterprise" => "enterprise",
+			"partner" => "",
+		)
+	),
+	"iabc-production" => array(
+	
+	),
+	"iabc-sandbox" => array(
+	
+	),
+	"ocdla-production" => array(
+	
+	),
+	"ocdla-sandbox" => array(
+	
+	)
+);
+
 // MySQL Database Connection.
 //  Can also use MariaDB.
 define("DB_HOST", "127.0.0.1");

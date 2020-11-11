@@ -37,9 +37,16 @@ function path_to_uploads() {
     return BASE_PATH . "/content/uploads";
 }
 
+function load_org($name = "myDefaultOrg") {
+	global $orgs;
+	
+	return $orgs[$name];
+}
 
 function path_to_wsdl( $name ) {
-	return BASE_PATH . "/config/wsdl/{$name}.wsdl.xml";
+	$file = BASE_PATH . "/config/wsdl/{$name}.wsdl";
+	
+	return !file_exists($file) ? false : $file;
 }
 
 
