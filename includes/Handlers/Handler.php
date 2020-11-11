@@ -37,7 +37,9 @@ abstract class Handler {
 		//  be the body of the page.
 		if($mimeType == null || $mimeType == Http\MIME_TEXT_HTML) {
 
-			$handler = new HtmlDocumentHandler($output, $mimeType);
+			$handler = is_object($output) && get_class($output) == "Exception" ?
+					new HtmlErrorHandler($output, $mimeType) :
+					new HtmlDocumentHandler($output, $mimeType);
 
 		} else if($mimeType == Http\MIME_TEXT_HTML_PARTIAL) {
 
@@ -49,7 +51,9 @@ abstract class Handler {
 			
 		} else if($mimeType == Http\MIME_APPLICATION_JSON) {
 
-			$handler = new JsonHandler($output, $mimeType);
+			$handler = is_object($output) && get_class($output) == "Exception" ?
+				new JsonErrorHandler($output, $mimeType) :
+				new JsonHandler($output, $mimeType);
 	 
 		} else {
 			$handler = new DefaultHandler($output, $mimeType);
