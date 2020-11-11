@@ -39,13 +39,17 @@ $keyStore = array(
 // MODULE CONFIGURATIONS.
 
 
-// Salesforce
+//Salesforce
 define("SALESFORCE_USERNAME", "");
 define("SALESFORCE_PASSWORD", "");
-define("CLIENT_ID", "");
-define("CLIENT_SECRET", "");
-define("REDIRECT_URI", "");
-define("LOGIN_URI", "");
+define("SALESFORCE_CLIENT_ID", "");
+define("SALESFORCE_CLIENT_SECRET", "");
+define("SALESFORCE_REDIRECT_URI", "");
+define("SALESFORCE_LOGIN_URL", "");
+define("SALESFORCE_SECURITY_TOKEN", "");
+define("ORG_WSDL", array(
+	"myOrg"	=>	"../config/wsdl/example.wsdl"
+));
 
 // Authorize.net
 define("AUTHORIZENET_SANDBOX_URL","");
@@ -123,3 +127,4 @@ $config = array(
 	"userId"    => "user123",//$postData->userId,
 	"appId"	    => "app123"//$postData->appId
 );
+
