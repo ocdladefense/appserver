@@ -87,7 +87,6 @@ class Salesforce {
     public function authorizeToSalesforce() {
         
         $oauth_config = $this->oauth_config;
-
         //testing
         //$_SESSION["salesforce_access_token"] = "123";
         //$_SESSION["salesforce_access_token"] =null;
