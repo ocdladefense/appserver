@@ -38,6 +38,11 @@ function path_to_uploads() {
 }
 
 
+function path_to_wsdl( $name ) {
+	return BASE_PATH . "/config/wsdl/{$name}.wsdl.xml";
+}
+
+
 //returns the path to directory at the root level
 function getPath($dir){
     $path = __DIR__."/../".$dir;
