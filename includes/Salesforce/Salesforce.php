@@ -303,7 +303,7 @@ class Salesforce {
             return $endpoint."&allOrNone=false";
         };
         //$singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName."/".$sObjectIds;
-        $endpoint = is_array($sObjectIds)? $pluralEndpoint : "/services/data/v49.0/sobjects/".$sObjectName."/".$sObjectIds;
+        $endpoint = is_array($sObjectIds)? $pluralEndpoint : "/services/data/v49.0/sobjects/".$sObject."/".$sObjectIds;
         $resp = $this->sendRequest($endpoint,null,"DELETE");
         $body = json_decode($resp->getBody(),true);
         //var_dump($resp);
