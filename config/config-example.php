@@ -14,7 +14,8 @@ $oauth_config = array(
 
 
 $orgs = array(
-	"myDefaultOrg" => array(
+	"trevor" => array(
+		"default" => true,
 		"url" => "",
 		"username" => "jbernal@trevor.com",
 		"password" => "trevor123",

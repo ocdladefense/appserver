@@ -37,34 +37,39 @@ function path_to_uploads() {
     return BASE_PATH . "/content/uploads";
 }
 
-function load_org($name = "myDefaultOrg") {
+function load_org($alias = "myDefaultOrg") {
 	global $orgs;
-	
-	return $orgs[$name];
+
+	return $orgs[$alias];
 }
 
-function path_to_wsdl( $fileName, $orgName = null ) {
 
-    $path = $orgName == null ? $fileName : $orgName . "-" . $fileName;
-    $file = BASE_PATH . "/config/wsdl/{$path}.wsdl";
 
-    $exists = !file_exists($file) ? false : $file;
+function path_to_wsdl( $filename, $orgAlias = null ) {
+
+		
+    $file = null == $orgAlias ? $filename : ($orgAlias . "-" . $filename);
+    $path = BASE_PATH . "/config/wsdl/{$file}.wsdl";
     
-    if(!$exists){
+    if(!file_exists($path)){
 
-        throw new Exception("INVALID_WSDL: Wsdl file for $class could not be found at {$file}.");
+        throw new Exception("INVALID_WSDL: Wsdl file for {$file} could not be found at {$path}.");
     }
 
-    return $exists;
+    return $path;
 }
+
 
 
 //returns the path to directory at the root level
-function getPath($dir){
+function getPath($dir) {
     $path = __DIR__."/../".$dir;
     return $path;
 }
-function filterScanResults($results){
+
+
+
+function filterScanResults($results) {
     $unfilteredResults = $results;
     $filteredResults = array();
 
@@ -75,6 +80,9 @@ function filterScanResults($results){
     }
     return $filteredResults;
 }
+
+
+
 function stringContains($haystack, $needle){
     if(strpos($haystack, $needle) !== false){
         return true;
