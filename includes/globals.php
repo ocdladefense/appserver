@@ -43,10 +43,19 @@ function load_org($name = "myDefaultOrg") {
 	return $orgs[$name];
 }
 
-function path_to_wsdl( $name ) {
-	$file = BASE_PATH . "/config/wsdl/{$name}.wsdl";
-	
-	return !file_exists($file) ? false : $file;
+function path_to_wsdl( $fileName, $orgName = null ) {
+
+    $path = $orgName == null ? $fileName : $orgName . "-" . $fileName;
+    $file = BASE_PATH . "/config/wsdl/{$path}.wsdl";
+
+    $exists = !file_exists($file) ? false : $file;
+    
+    if(!$exists){
+
+        throw new Exception("INVALID_WSDL: Wsdl file for $class could not be found at {$file}.");
+    }
+
+    return $exists;
 }
 
 
