@@ -139,18 +139,18 @@ class ShoppingCart  implements \Http\IJson {
         global $oauth_config;
         $salesforce = new Salesforce($oauth_config);
     }
+    
     public function addProduct($productId){
         $productId = is_array($productId) ? $productId["Id"] : $productId;
         $pricebookEntry = getPricebookEntries($productId)[0];
         global $oauth_config;
         $salesforce = new Salesforce($oauth_config);
-        
+        //
         $item = array(
             "Quantity"=> 1,
             "PricebookEntryId"=> $pricebookEntry["Id"],
-            "OpportunityId"=> $this->id,
-            "TotalPrice"=> 20
-        );
+            "OpportunityId"=> $this->id
+        );//Check for "UnitPrice" instead
         $response=$salesforce->createRecordsFromSession("OpportunityLineItem",$item);
         if($response["success"] != true){
             throw new \Exception("could not add the product to the cart");
