@@ -65,37 +65,58 @@ class Salesforce {
 					throw new SalesforceAuthException("Invalid OauthConfig Login Url: ".$config["oauth_url"]);
 				}
     }
-
-
-		private static function isValidSalesforceUsername($username) {
+	private static function isValidSalesforceUsername($username) {
         //checking username for @ and .
         return strpos($username,"@") !== false && strpos($username,".") !== false;
-		}
+	}
 		
-		private static function isValidOAuthTokenUrl($url) {
+	private static function isValidOAuthTokenUrl($url) {
 	
-			//checking oauth url for .salesforce.com/services/oauth2/token
-			return strpos(strtolower($url),".salesforce.com/services/oauth2/token") !== false;
-		}
+		//checking oauth url for .salesforce.com/services/oauth2/token
+		return strpos(strtolower($url),".salesforce.com/services/oauth2/token") !== false;
+	}
 
 
 
     public function queryChecker($soql){
         
     }
+
+    public function sendRequest($endpoint,$body = null,$method = "POST"){
+        $endpoint = $_SESSION["salesforce_instance_url"] . $endpoint."/";
+        $req = new HttpRequest($endpoint);
+        $token = new HttpHeader("Authorization", "Bearer " . $_SESSION["salesforce_access_token"]);
+        $content_type = new HttpHeader("Content-Type","application/json");
+        $req->addHeader($token);
+        $req->addHeader($content_type);
+        if($body != null)
+        {
+            $req->setBody(json_encode($body));
+        }
+        $req->setMethod($method);
+        $config = array(
+            // "cainfo" => null,
+            // "verbose" => false,
+            // "stderr" => null,
+            // "encoding" => '',
+            "returntransfer" => true,
+            // "httpheader" => null,
+            "useragent" => "Mozilla/5.0",
+            // "header" => 1,
+            // "header_out" => true,
+            "followlocation" => true,
+            "ssl_verifyhost" => false,
+            "ssl_verifypeer" => false
+        );
+
+        $http = new Http($config);
+        $resp = $http->send($req);
+        return $resp;
+    }
     
     public function authorizeToSalesforce() {
         
         $oauth_config = $this->oauth_config;
-
-        //testing
-        //$_SESSION["salesforce_access_token"] = "123";
-        //$_SESSION["salesforce_access_token"] =null;
-        //
-
-        // If we already have an access_token, so no need to reauthorize; return TRUE.
-        //if(isset($_SESSION["salesforce_access_token"])) return true;
-        
         $this->checkConfig();
         $req = new HttpRequest($oauth_config["oauth_url"]);
         $req->setPost();
@@ -104,8 +125,6 @@ class Salesforce {
         $req->addHeader($contentTypeHeader);
         $body = "grant_type=password&client_id=".$oauth_config["client_id"]."&client_secret=".$oauth_config["client_secret"]."&username="
                 .$oauth_config["username"]."&password=".$oauth_config["password"] . $oauth_config["security_token"];
-
-
         $req->setBody($body);
         $config = array(
                 // "cainfo" => null,
@@ -126,6 +145,7 @@ class Salesforce {
         $resp = $http->send($req);
         //$body =json_decode($resp->getBody(), true);
         //different class
+        $resp = 
         $authResult = new SalesforceAuthResult($resp);
 
         if($authResult->isSuccess()) {
@@ -134,35 +154,6 @@ class Salesforce {
             //return true;
         }
         return $authResult;
-    }
-
-    public function sendRequest($endpoint,$body,$method = "POST"){
-        $endpoint = $_SESSION["salesforce_instance_url"] . $endpoint."/";
-        $req = new HttpRequest($endpoint);
-        $token = new HttpHeader("Authorization", "Bearer " . $_SESSION["salesforce_access_token"]);
-        $content_type = new HttpHeader("Content-Type","application/json");
-        $req->addHeader($token);
-        $req->addHeader($content_type);
-        $req->setBody(json_encode($body));
-        $req->setMethod($method);
-        $config = array(
-            // "cainfo" => null,
-            // "verbose" => false,
-            // "stderr" => null,
-            // "encoding" => '',
-            "returntransfer" => true,
-            // "httpheader" => null,
-            "useragent" => "Mozilla/5.0",
-            // "header" => 1,
-            // "header_out" => true,
-            "followlocation" => true,
-            "ssl_verifyhost" => false,
-            "ssl_verifypeer" => false
-        );
-
-        $http = new Http($config);
-        $resp = $http->send($req);
-        return $resp;
     }
 
     public function createRecordFromSession($sObjectName,$sObjectFields){
@@ -186,7 +177,7 @@ class Salesforce {
         $plural = is_array($records) && isset($records[0]);
         $endpoint = $plural ? $pluralEndpoint : $singularEndpoint;
         $fn = function ($record,$index) use($sObjectName){
-            $record["attributes"] = array("type"=>$sObjectName,"referenceId"=>"ref".++$index);
+            $record["attributes"] = array("type"=>$sObjectName[$index],"referenceId"=>"ref".++$index);
             return $record;
         };
         $records = $plural ? array_map($fn,$records,array_keys($records)):$records;
@@ -208,162 +199,125 @@ class Salesforce {
     }
 
     public function createQuery($soql,$instance_url = null,$access_token = null){
-        //$body = "";
-        //for($tries = 0; $tries<5;$tries++){
-        /*if (!$this->authorizeToSalesforce()) {
-            throw new SalesforceAuthException("Not Authorized");
-        }*/
         $endpoint = "/services/data/v49.0/query/?q=";
-        // $endpoint = "/v49.0/query?q=";
         $resource_url = $instance_url . $endpoint . urlencode($soql);
-
-        //print "<p>Will execute query at: ".$resource_url."</p>";
-        $req = new HttpRequest($resource_url);
-        $token = new HttpHeader("Authorization", "Bearer " . $access_token);
-        $req->addHeader($token);
-
-        $config = array(
-            // "cainfo" => null,
-            // "verbose" => false,
-            // "stderr" => null,
-            // "encoding" => '',
-            "returntransfer" => true,
-            // "httpheader" => null,
-            "useragent" => "Mozilla/5.0",
-            // "header" => 1,
-            // "header_out" => true,
-            "followlocation" => true,
-            "ssl_verifyhost" => false,
-            "ssl_verifypeer" => false
-        );
-
-        $http = new Http($config);
-
-        // Get the log for this
-        //var_dump($req);
-        $resp = $http->send($req);
-        //var_dump($resp->getBody());
+        $resp = $this->sendRequest($endpoint . urlencode($soql));
         $body = json_decode($resp->getBody(),true);
-        //var_dump($body);
-        
-        
         return $body;
     }
     
-    
-    
-    public function updateRecordFromSession($sObjectName,$sObjectId,$sObjectFields){
+    public function updateRecordFromSession($records, $sObject = null){
+        return $this->updateRecordsFromSession($records, $sObject = null);
+    }
+
+    public function updateRecordsFromSession($records,$sObject = null){
         $authResult = $this->authorizeToSalesforce();
         if (!$authResult->isSuccess()) {
             throw new SalesforceAuthException("Not Authorized");
         }
-        return $this->updateRecord($sObjectName,$sObjectId,$sObjectFields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+        return $this->updateRecords($records,$sObject,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
-    
-    
-    
-    public function updateRecord($sObjectName,$sObjectId,$sObjectFields,$instance_url = null,$access_token = null){
-        $endpoint = "/services/sobjects/".$sObjectName."/".$sObjectId;
-        $resource_url = $instance_url . $endpoint;
 
-        //print "<p>Will execute query at: ".$resource_url."</p>";
-        $req = new HttpRequest($resource_url);
-        $token = new HttpHeader("Authorization", "Bearer " . $access_token);
-        $req->addHeader($token);
-        $req->setPatch();
-        $req->setBody($sObjectFields);
-
-        $config = array(
-            // "cainfo" => null,
-            // "verbose" => false,
-            // "stderr" => null,
-            // "encoding" => '',
-            "returntransfer" => true,
-            // "httpheader" => null,
-            "useragent" => "Mozilla/5.0",
-            // "header" => 1,
-            // "header_out" => true,
-            "followlocation" => true,
-            "ssl_verifyhost" => false,
-            "ssl_verifypeer" => false
+    public function testUpdateRecords(){
+        $sObjects = array(
+            "Contact","Contact","Account","Account"
+        );
+        $records = array(
+            array (
+                "Id" => "3424",
+                "LastName" => "NOTBOB"
+            ),array(
+                "Id" => "3423",
+                "LastName" => "NOTBOB"
+            ),array(
+                "Id" => "3422",
+                "CompanyName" => "NOTBOB"
+            ),array(
+                "Id" => "3421",
+                "CompanyName" => "NOTBOB"
+            )
         );
 
-        $http = new Http($config);
+        $accounts = array(
+            array(
+                "attributes" => array("type"=>"Account"),
+                "Id" => "3422",
+                "CompanyName" => "NOTBOB"
+            ),array(
+                "attributes" => array("type"=>"Account"),
+                "Id" => "3421",
+                "CompanyName" => "NOTBOB"
+            )
+        );
+        $this->updateRecordsFromSession($records,"Contact");
+        $this->updateRecordsFromSession($accounts);
+    }
+    
+    public function updateRecords($records,$sObject = null,$instance_url = null,$access_token = null){
+        
+        $singularEndpoint = "/services/sobjects/";
+        $pluralEndpoint = "/services/data/v49.0/composite/sobjects/";
+        $plural = is_array($records) && isset($records[0]);
+        
+        if($plural){
+            foreach($records as $record){
+                if(!isset($record["attributes"])){
+                    throw new Exception ("Attribute field not set");
+                }
+            }
+        }
+        $endpoint = $plural ? $pluralEndpoint : $singularEndpoint.$sObject."/".$records[0]["Id"];
 
-        // Get the log for this
-        //var_dump($req);
-        $resp = $http->send($req);
-        //var_dump($resp->getBody());
+        $fn = function ($record,$index) use($sObject){
+            $record["attributes"] = array("type"=>$sObject);
+            return $record;
+        };
+        $records = $plural && $sObject!= null ? array_map($fn,$records,array_keys($records)):$records;
+        $records = $plural ? array("records" => $records ) : $records;
+        if($plural){
+            $records["allOrNone"] = false;
+        }
+
+        $resource_url = $instance_url . $endpoint;
+        $resp = $this->sendRequest($endpoint,$records,"PATCH");
         $body = json_decode($resp->getBody(),true);
-        //var_dump($body);
         return $body;
     }
-    public function deleteRecordFromSession($sObjectName,$sObjectId){
+
+    public function deleteRecordFromSession($sObjectName,$sObjectIds){
+        return $this->deleteRecordsFromSession($sObjectName,$sObjectIds);
+    }
+
+    public function deleteRecordsFromSession($sObjectIds,$sObject){
         $authResult = $this->authorizeToSalesforce();
         if (!$authResult->isSuccess()) {
             throw new SalesforceAuthException("Not Authorized");
         }
-        return $this->deleteRecord($sObjectName,$sObjectId,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+        return $this->deleteRecords($sObjectIds,$sObject,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
-    public function deleteRecord($sObjectName,$sObjectId,$instance_url = null,$access_token = null){
-        $endpoint = "/services/data/v49.0/sobjects/".$sObjectName."/".$sObjectId;
-        $resource_url = $instance_url . $endpoint;
-
-        //print "<p>Will execute query at: ".$resource_url."</p>";
-        $req = new HttpRequest($resource_url);
-        $token = new HttpHeader("Authorization", "Bearer " . $access_token);
-        $req->addHeader($token);
-        $req->setDelete();
-        //$req->setAccept("*/*");
-        
-        //$req->setAccept("*/*");
-        //$req->setBody("{}");
-        $config = array(
-            // "cainfo" => null,
-            // "verbose" => false,
-            // "stderr" => null,
-            // "encoding" => '',
-            "returntransfer" => true,
-            // "httpheader" => null,
-            "useragent" => "Mozilla/5.0",
-            // "header" => 1,
-            // "header_out" => true,
-            "followlocation" => true,
-            "ssl_verifyhost" => false,
-            "ssl_verifypeer" => false
-        );
-
-        $http = new Http($config);
-
-        $resp = $http->send($req);
+    public function deleteRecords($sObjectIds,$sObject,$instance_url = null,$access_token = null){
+        $pluralEndpoint = function () use($sObjectIds){
+            $endpoint = "/services/data/v49.0/composite/sobjects?ids=";
+            foreach ($sObjectIds as $value)
+                $endpoint = $endpoint.$value.",";
+            return $endpoint."&allOrNone=false";
+        };
+        //$singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName."/".$sObjectIds;
+        $endpoint = is_array($sObjectIds)? $pluralEndpoint : "/services/data/v49.0/sobjects/".$sObjectName."/".$sObjectIds;
+        $resp = $this->sendRequest($endpoint,null,"DELETE");
         $body = json_decode($resp->getBody(),true);
         //var_dump($resp);
-        if(!empty($body || $resp->getStatusCode() != 204)){
-            throw new Exception("Status Code: ".$resp->getStatusCode()." Error deleating the record: ".$resp->getBody());
+        if(is_array($sObjectIds) && $resp->getStatusCode() != 200){
+            throw new Exception("Status Code: ".$resp->getStatusCode()." Error deleating the record(s): ".$resp->getBody());
             
         }
-        return $resp->getStatusCode() == 204?true:false;
+        else if(!is_array($sObjectIds) && $resp->getStatusCode() != 204){
+            throw new Exception("Status Code: ".$resp->getStatusCode()." Error deleating the record(s): ".$resp->getBody());
+            
+        }
+        return $resp->getStatusCode() == 204 ?true:false;
     }
 
-
-		/**
-		 * Get the actual request object first, so we can
-		 *  more easily inspect it.
-		 */    
-    public function getDeleteRequest($oName, $id, $url = "https://my.salesforce.com", $token = "1234abcde") {
-    
-        $endpoint = "/services/data/v49.0/sobjects/".$oName."/".$id;
-        $url = !empty($url) ? ($url . $endpoint) : $endpoint;
-
-        //print "<p>Will execute query at: ".$resource_url."</p>";
-        $req = new HttpRequest($url);
-        $th = new HttpHeader("Authorization", "Bearer " . $token);
-        $req->addHeader($th);
-        $req->setDelete();
-
-
-				return $req;
-    }
 
 
 }
