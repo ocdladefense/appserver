@@ -12,6 +12,33 @@ $oauth_config = array(
     "security_token" => ""
 ); 
 
+
+$orgs = array(
+	"trevor" => array(
+		"default" => true,
+		"url" => "",
+		"username" => "jbernal@trevor.com",
+		"password" => "trevor123",
+		"token" => "ubzmL8CGoKgvwgWJcgKenIFwi",
+		"wsdl" => array(
+			"enterprise" => "enterprise",
+			"partner" => "",
+		)
+	),
+	"iabc-production" => array(
+	
+	),
+	"iabc-sandbox" => array(
+	
+	),
+	"ocdla-production" => array(
+	
+	),
+	"ocdla-sandbox" => array(
+	
+	)
+);
+
 // MySQL Database Connection.
 //  Can also use MariaDB.
 define("DB_HOST", "127.0.0.1");
@@ -47,13 +74,17 @@ $keyStore = array(
 // MODULE CONFIGURATIONS.
 
 
-// Salesforce
+//Salesforce
 define("SALESFORCE_USERNAME", "");
 define("SALESFORCE_PASSWORD", "");
-define("CLIENT_ID", "");
-define("CLIENT_SECRET", "");
-define("REDIRECT_URI", "");
-define("LOGIN_URI", "");
+define("SALESFORCE_CLIENT_ID", "");
+define("SALESFORCE_CLIENT_SECRET", "");
+define("SALESFORCE_REDIRECT_URI", "");
+define("SALESFORCE_LOGIN_URL", "");
+define("SALESFORCE_SECURITY_TOKEN", "");
+define("ORG_WSDL", array(
+	"myOrg"	=>	"../config/wsdl/example.wsdl"
+));
 
 // Authorize.net
 define("AUTHORIZENET_SANDBOX_URL","");
@@ -131,3 +162,4 @@ $config = array(
 	"userId"    => "user123",//$postData->userId,
 	"appId"	    => "app123"//$postData->appId
 );
+

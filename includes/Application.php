@@ -227,7 +227,7 @@ class Application {
      *  depending on the context.
      */
     public function getOutput($module, $route, $params) {
-
+    
 			return call_user_func_array(array($module,$route["callback"]),$params);
     }
     
