@@ -10,7 +10,8 @@ config.php
 config.js
 
 login.xml
-login-community.xml
+soap-login-community-user.xml
+soap-login-admin-user.xml
 
 .vscode/
 
