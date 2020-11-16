@@ -2,6 +2,8 @@
     "name": "clickpdx/appserver",
     "description": "A PHP application server.",
     "type": "wordpress-theme",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require-dev": {},
     "extra":{
         "installer-paths":{
