@@ -2,15 +2,14 @@
     "name": "clickpdx/appserver",
     "description": "A PHP application server.",
     "type": "wordpress-theme",
-    "require-dev": {
-        "ocdladefense/appserver-salesforce":"dev-master"
-    },
+    "require-dev": {},
     "extra":{
         "installer-paths":{
             "modules/salesforce":["ocdladefense/appserver-salesforce"]
         }
     },
     "require": {
-        "composer/installers":"~1.0"
+        "composer/installers":"~1.0",
+        "ocdladefense/appserver-salesforce":"dev-development"
     }
 }

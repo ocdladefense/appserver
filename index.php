@@ -1,5 +1,32 @@
 <?php
 
+	$dir = __DIR__;
+	
+	if(file_exists('vendor/autoload.php')) {
+		include 'vendor/autoload.php';
+	}
+	
+use Http\HttpHeader;	
+use Http\HttpRequest;
+use Http\Http;
+
+// curl https://login.salesforce.com/services/Soap/u/50.0 -H "Content-Type: text/xml; charset=UTF-8" -H "SOAPAction: login" -d @login-community.txt | xmllint --format -
+	$url = "https://login.salesforce.com/services/Soap/u/50.0";
+	$request = new HttpRequest($url);
+
+	$request->addHeader(new HttpHeader("Content-Type", "text/xml; charset=UTF-8"));
+	$request->addHeader(new HttpHeader("SOAPAction", "login"));
+	$pathToLogin = $dir."/config/login-community.xml";
+	$load = file_get_contents($pathToLogin);
+	$request->setBody($load);
+	
+	
+	
+	$module = new SalesforceModule();
+	
+	$out = $module->testReport();
+	
+	print $out;
 ?>
 <!doctype html>
 <html>

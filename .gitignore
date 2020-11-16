@@ -9,6 +9,9 @@ settings.js
 config.php
 config.js
 
+login.xml
+login-community.xml
+
 .vscode/
 
 #  But keep default settings.php and settings.js files
