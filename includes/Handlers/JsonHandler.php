@@ -13,7 +13,7 @@ class JsonHandler extends Handler {
 	
 	public function getOutput() {
 			if(gettype($this->output) == "object" && in_array( "Http\IJson",class_implements($this->output))){
-					return $this->output->toJson();
+					return json_encode($this->output->toJson());
 			} else {
 					return json_encode($this->output);
 			}

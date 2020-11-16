@@ -12,9 +12,9 @@ class JsonErrorHandler extends Handler {
 	
 	public function getOutput() {
 			// Loads an HTML page with defined scripts, css.
-			return array(
+			return json_encode(array(
 				"error" => $this->output->getMessage()
-			);
+			));
 	}
 	
 	public function getHeaders() {
