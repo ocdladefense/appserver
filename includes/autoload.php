@@ -8,10 +8,6 @@
 	}
 
 
-	if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
-		include BASE_PATH.'/vendor/autoload.php';
-	}
-	
 	
 	require_once BASE_PATH.'/includes/System/ClassName.php';
 	require_once BASE_PATH.'/includes/System/XList.php';
@@ -108,3 +104,7 @@
 	require_once BASE_PATH.'/includes/Store/Square/PaymentProcessor.php'; 
 
 
+
+	if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
+		include BASE_PATH.'/vendor/autoload.php';
+	}
