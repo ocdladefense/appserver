@@ -7,11 +7,32 @@ function getProduct($productId){
     $product = $salesforce->createQueryFromSession($prodQuery);
     return $product["records"][0];
 }
+
+function getProducts($Ids){
+    global $oauth_config;
+    $salesforce = new Salesforce($oauth_config);
+
+    if (is_array($Ids)){
+        $products = $salesforce->createQueriesFromSession("Product2",$Ids,array("id","name"));
+        return $products;
+    }
+    $prodQuery = sprintf("SELECT Id, Name FROM Product2 WHERE Id = '%s'",$Ids);
+    $product = $salesforce->createQueryFromSession($prodQuery);
+    return $product["records"][0];
+}
 function getFirstProduct(){
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
     $product = $salesforce->createQueryFromSession("SELECT Id, Name FROM Product2 LIMIT 1");
     return empty($product["records"][0]) ? false: $product["records"][0];
+}
+function getAllProducts($limit = 0){
+    global $oauth_config;
+    $salesforce = new Salesforce($oauth_config);
+    $prodsQuery = "SELECT Id, Name FROM Product2";
+    $prodsQuery = $limit ?  $prodsQuery :  $prodsQuery . " LIMIT " . $limit;
+    $product = $salesforce->createQueryFromSession($prodsQuery);
+    return empty($product["records"]) ? false: $product["records"];
 }
 
 function getProductFromMedia($mediaId){
@@ -33,65 +54,32 @@ function getPricebookEntries($productIds){
 function getAccount($contactId){
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
-    $account = $salesforce->createQueryFromSession("select AccountId from Contact where id = '".$contactId."'");
+    $account = $salesforce->createQueryFromSession(sprintf("SELECT AccountId FROM Contact WHERE Id = '%s'",$contactId));
     return $account["records"][0];
 }
 function getOpportunity($accountId){
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
-    $opportunity = $salesforce->createQueryFromSession("SELECT Id, Amount, Name, StageName, Description,AccountId FROM Opportunity WHERE AccountId = '".$accountId."'");
+    $oppQuery = sprintf("SELECT Id, Amount, Name, StageName, Description,AccountId FROM Opportunity WHERE AccountId = '%s'",$accountId);
+    $opportunity = $salesforce->createQueryFromSession($oppQuery);
     return !isset($opportunity["records"][0]) ? false : $opportunity["records"][0];
 }
 function loadCartItems($oppId){
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
-    $items = $salesforce->createQueryFromSession("SELECT Id,Description,ListPrice,Product2Id,ProductCode,Quantity,UnitPrice,TotalPrice FROM OpportunityLineItem WHERE OpportunityId = '".$oppId."'");
+    $lineItemQuery = sprintf("SELECT Id,Description,ListPrice,Product2Id,ProductCode,Quantity,UnitPrice,TotalPrice
+         FROM OpportunityLineItem WHERE OpportunityId = '%s'",$oppId);
+    $items = $salesforce->createQueryFromSession($lineItemQuery);
     return $items["records"];
 }
+
+function loadToCart($products){
+    
+}
+
 function deleteCartItem($productLineId){
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
     $result = $salesforce->deleteRecordFromSession("OpportunityLineItem",$productLineId);
     return $result == true?true:false;
-}
-
-function deleteCartItemRequest($lineId) {
-    // $customerId = $_SESSION["customerId"] = TEST_CONTACT_ID;
-    // global $oauth_config;
-    $force = new Salesforce();
-    $oName = "OpportunityLineItem";
-    $id = $lineId;
-    $req = $force->getDeleteRequest($oName, $id, "na111.salesforce.com");
-
-    var_dump($req);
-    
-    
-    $config = array(
-        // "cainfo" => null,
-        // "verbose" => false,
-        // "stderr" => null,
-        // "encoding" => '',
-        "returntransfer" => true,
-        // "httpheader" => null,
-        "useragent" => "Mozilla/5.0",
-        // "header" => 1,
-        // "header_out" => true,
-        "followlocation" => true,
-        "ssl_verifyhost" => false,
-        "ssl_verifypeer" => false
-    );
-
-    $http = new Http\Http($config);
-
-    $resp = $http->send($req);
-    
-    //print_r($http->getSessionLog());
-    $customerId = $_SESSION["customerId"] = TEST_CONTACT_ID;
-
-        $cart = $_SESSION["cart"] == null ? Salesforce\ShoppingCart::loadCart($customerId):$_SESSION["cart"];
-        return $cart;
-    exit;
-    // $cart = $_SESSION["cart"] == null ? ShoppingCart::loadCart($customerId):$_SESSION["cart"];
-    // return $cart->deleteItemLine($productLineId)?$cart:false;
-
 }

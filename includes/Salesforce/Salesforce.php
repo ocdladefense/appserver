@@ -82,16 +82,29 @@ class Salesforce {
         
     }
 
-    public function sendRequest($endpoint,$body = null,$method = "POST"){
-        $endpoint = $_SESSION["salesforce_instance_url"] . $endpoint."/";
+    public function sendRequest($endpoint,$method = "GET",$body = null,$contentType = "application/json"){
+
+        if (!strpos($endpoint,"oauth")){
+            $endpoint = $_SESSION["salesforce_instance_url"] . $endpoint;
+            $token = new HttpHeader("Authorization", "Bearer " . $_SESSION["salesforce_access_token"]);
+        }
+
         $req = new HttpRequest($endpoint);
-        $token = new HttpHeader("Authorization", "Bearer " . $_SESSION["salesforce_access_token"]);
-        $content_type = new HttpHeader("Content-Type","application/json");
-        $req->addHeader($token);
+        if($token != null){
+            $req->addHeader($token);
+        }
+
+        $content_type = new HttpHeader("Content-Type",$contentType);
         $req->addHeader($content_type);
         if($body != null)
         {
-            $req->setBody(json_encode($body));
+            if($contentType == "application/json"){
+                $body = json_encode($body);
+            }
+            else if($contentType == "application/x-www-form-urlencoded"){
+                $body = http_build_query($body);
+            }
+            $req->setBody($body);
         }
         $req->setMethod($method);
         $config = array(
@@ -110,42 +123,21 @@ class Salesforce {
         );
 
         $http = new Http($config);
-        $resp = $http->send($req);
-        return $resp;
+        return $http->send($req);
     }
     
     public function authorizeToSalesforce() {
         
         $oauth_config = $this->oauth_config;
         $this->checkConfig();
-        $req = new HttpRequest($oauth_config["oauth_url"]);
-        $req->setPost();
-
-        $contentTypeHeader = new HttpHeader("Content-Type", "application/x-www-form-urlencoded");
-        $req->addHeader($contentTypeHeader);
-        $body = "grant_type=password&client_id=".$oauth_config["client_id"]."&client_secret=".$oauth_config["client_secret"]."&username="
-                .$oauth_config["username"]."&password=".$oauth_config["password"] . $oauth_config["security_token"];
-        $req->setBody($body);
-        $config = array(
-                // "cainfo" => null,
-                // "verbose" => false,
-                // "stderr" => null,
-                // "encoding" => '',
-                "returntransfer" => true,
-                // "httpheader" => null,
-                "useragent" => "Mozilla/5.0",
-                // "header" => 1,
-                // "header_out" => true,
-                "followlocation" => true,
-                "ssl_verifyhost" => false,
-                "ssl_verifypeer" => false
+        $body = array(
+            "grant_type" => "password",
+            "client_id" => $oauth_config["client_id"],
+            "client_secret"=> $oauth_config["client_secret"],
+            "username"=>$oauth_config["username"],
+            "password"=>$oauth_config["password"] . $oauth_config["security_token"]
         );
-        
-        $http = new Http($config);
-        $resp = $http->send($req);
-        //$body =json_decode($resp->getBody(), true);
-        //different class
-        $resp = 
+        $resp = $this->sendRequest($oauth_config["oauth_url"],"POST",$body,"application/x-www-form-urlencoded");
         $authResult = new SalesforceAuthResult($resp);
 
         if($authResult->isSuccess()) {
@@ -177,12 +169,12 @@ class Salesforce {
         $plural = is_array($records) && isset($records[0]);
         $endpoint = $plural ? $pluralEndpoint : $singularEndpoint;
         $fn = function ($record,$index) use($sObjectName){
-            $record["attributes"] = array("type"=>$sObjectName[$index],"referenceId"=>"ref".++$index);
+            $record["attributes"] = array("type"=>$sObjectName,"referenceId"=>"ref".++$index);
             return $record;
         };
         $records = $plural ? array_map($fn,$records,array_keys($records)):$records;
         $records = $plural ? array("records" => $records ) : $records;
-        $resp = $this->sendRequest($endpoint,$records);
+        $resp = $this->sendRequest($endpoint,"POST",$records);
         $body = json_decode($resp->getBody(),true);
         if ($body["hasErrors"] == true){
             throw new Exception("Error inserting request");
@@ -200,12 +192,36 @@ class Salesforce {
 
     public function createQuery($soql,$instance_url = null,$access_token = null){
         $endpoint = "/services/data/v49.0/query/?q=";
-        $resource_url = $instance_url . $endpoint . urlencode($soql);
+
         $resp = $this->sendRequest($endpoint . urlencode($soql));
         $body = json_decode($resp->getBody(),true);
         return $body;
     }
-    
+
+    public function queryIdsFromSession($sObjectName,$ids,$fields){
+        $authResult = $this->authorizeToSalesforce();
+        if (!$authResult->isSuccess()) {
+            throw new SalesforceAuthException("Not Authorized");
+        }
+        return $this->queryIds($sObjectName,$ids,$fields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+    }
+
+    public function queryIds($sObjectName,$ids,$fields,$instance_url = null,$access_token = null){
+        $endpoint = "/services/data/v50.0/composite/sobjects/".$sObjectName."?ids=";
+        foreach($ids as $id){
+            $endpoint = $endpoint.$id.",";
+        }
+        $endpoint = rtrim($endpoint, ',');//deleting last comma
+        $endpoint = $endpoint."&fields=";
+        foreach($fields as $field){
+
+            $endpoint = $endpoint.$field.",";
+        }
+        $endpoint = rtrim($endpoint, ',');//deleting last comma
+        $resp = $this->sendRequest($endpoint);
+        $body = json_decode($resp->getBody(),true);
+        return $body;
+    }
     public function updateRecordFromSession($records, $sObject = null){
         return $this->updateRecordsFromSession($records, $sObject = null);
     }
@@ -216,41 +232,6 @@ class Salesforce {
             throw new SalesforceAuthException("Not Authorized");
         }
         return $this->updateRecords($records,$sObject,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
-    }
-
-    public function testUpdateRecords(){
-        $sObjects = array(
-            "Contact","Contact","Account","Account"
-        );
-        $records = array(
-            array (
-                "Id" => "3424",
-                "LastName" => "NOTBOB"
-            ),array(
-                "Id" => "3423",
-                "LastName" => "NOTBOB"
-            ),array(
-                "Id" => "3422",
-                "CompanyName" => "NOTBOB"
-            ),array(
-                "Id" => "3421",
-                "CompanyName" => "NOTBOB"
-            )
-        );
-
-        $accounts = array(
-            array(
-                "attributes" => array("type"=>"Account"),
-                "Id" => "3422",
-                "CompanyName" => "NOTBOB"
-            ),array(
-                "attributes" => array("type"=>"Account"),
-                "Id" => "3421",
-                "CompanyName" => "NOTBOB"
-            )
-        );
-        $this->updateRecordsFromSession($records,"Contact");
-        $this->updateRecordsFromSession($accounts);
     }
     
     public function updateRecords($records,$sObject = null,$instance_url = null,$access_token = null){
@@ -278,24 +259,24 @@ class Salesforce {
             $records["allOrNone"] = false;
         }
 
-        $resource_url = $instance_url . $endpoint;
-        $resp = $this->sendRequest($endpoint,$records,"PATCH");
+        //better way to do the trailing front slash
+        $resp = $this->sendRequest($endpoint."/","PATCH",$records);
         $body = json_decode($resp->getBody(),true);
         return $body;
     }
 
-    public function deleteRecordFromSession($sObjectName,$sObjectIds){
-        return $this->deleteRecordsFromSession($sObjectName,$sObjectIds);
+    public function deleteRecordFromSession($sObject,$sObjectIds){
+        return $this->deleteRecordsFromSession($sObject,$sObjectIds);
     }
 
-    public function deleteRecordsFromSession($sObjectIds,$sObject){
+    public function deleteRecordsFromSession($sObject,$sObjectIds){
         $authResult = $this->authorizeToSalesforce();
         if (!$authResult->isSuccess()) {
             throw new SalesforceAuthException("Not Authorized");
         }
-        return $this->deleteRecords($sObjectIds,$sObject,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+        return $this->deleteRecords($sObject,$sObjectIds,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
-    public function deleteRecords($sObjectIds,$sObject,$instance_url = null,$access_token = null){
+    public function deleteRecords($sObject,$sObjectIds,$instance_url = null,$access_token = null){
         $pluralEndpoint = function () use($sObjectIds){
             $endpoint = "/services/data/v49.0/composite/sobjects?ids=";
             foreach ($sObjectIds as $value)
@@ -304,7 +285,7 @@ class Salesforce {
         };
         //$singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName."/".$sObjectIds;
         $endpoint = is_array($sObjectIds)? $pluralEndpoint : "/services/data/v49.0/sobjects/".$sObject."/".$sObjectIds;
-        $resp = $this->sendRequest($endpoint,null,"DELETE");
+        $resp = $this->sendRequest($endpoint."/","DELETE");
         $body = json_decode($resp->getBody(),true);
         //var_dump($resp);
         if(is_array($sObjectIds) && $resp->getStatusCode() != 200){
@@ -315,7 +296,7 @@ class Salesforce {
             throw new Exception("Status Code: ".$resp->getStatusCode()." Error deleating the record(s): ".$resp->getBody());
             
         }
-        return $resp->getStatusCode() == 204 ?true:false;
+        return true;
     }
 
 
