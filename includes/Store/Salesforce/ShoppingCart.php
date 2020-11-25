@@ -2,6 +2,8 @@
 
 
 namespace Salesforce;
+
+use Exception;
 use Http\IJson;
 use Http\HttpResponse;
 use \Salesforce;
@@ -140,7 +142,7 @@ class ShoppingCart  implements \Http\IJson {
         $salesforce = new Salesforce($oauth_config);
     }
     
-    public function addProduct($productId){
+    public function addProduct($productId , $quantity = 1){
         $productId = is_array($productId) ? $productId["Id"] : $productId;
         $pricebookEntry = getPricebookEntries($productId)[0];
         global $oauth_config;
@@ -158,6 +160,38 @@ class ShoppingCart  implements \Http\IJson {
         ++$this->items;
         return true;
     }
+
+    public function addProducts($products, $quantity = 1, $specialPrice = null){
+        global $oauth_config;
+        $salesforce = new Salesforce($oauth_config);
+        if((!is_string($products) || $quantity <= 0 || $specialPrice <= 0) && !is_array($products)){
+            throw new \Exception("Error calling the function");
+        }
+        //if($products)
+        $pricebookEntry = getPricebookEntries($products);
+        if(is_array($products)){
+            $products = array_map(function($product,$index){
+
+            },$products);
+            $response = $salesforce->createRecordsFromSession("OpportunityLineItem",$products);
+        }else{
+            //
+            $item = array(
+                "Quantity"=> $quantity,
+                "PricebookEntryId"=> $pricebookEntry["Id"],
+                "OpportunityId"=> $this->id
+                //""=> $specialPrice
+            );//Check for "UnitPrice" instead
+            $response=$salesforce->createRecordsFromSession("OpportunityLineItem",$item);
+            //++$this->items;
+        }
+        if($response["success"] != true){
+            $this->setError($response);
+            throw new \Exception("could not add the product(s) to the cart");
+        }
+        return true;
+    }
+    
     public static function getFromCustomerId($customerId){
         $account = getAccount($customerId);
         $opportunity = getOpportunity($account["AccountId"]);
@@ -186,7 +220,7 @@ class ShoppingCart  implements \Http\IJson {
 		try {
 			$product = getProduct($productId);
 
-			$this->addProduct($product);
+			$this->addProduct($product,$quantity);
 			return array(
 				"product" => $product["Name"],
 				"success" => true
@@ -198,6 +232,32 @@ class ShoppingCart  implements \Http\IJson {
 			return $response;
 		}
     }
+    function addItems($items){
+        if(!is_array($items) || empty($items)){
+            throw new Exception ("Items are null or empty");
+        }
+
+        // $products = getProducts(array_map(function($item){
+        //     return $item["Id"];
+
+        // },$items)); //returns keys
+        $productIds = array();
+        foreach($items as $item){
+            array_push($productIds,$item["Id"]);
+        }
+        $products = getProducts($productIds);
+
+
+        $this->addProducts($items);
+        // foreach($products as $product){
+        //     $this->se
+        // }
+		// return array(
+		// 	"items" => ,
+		// 	"success" => true
+		// );
+    }
+
     function deleteItemLine($productLineId){
         $this->deleteProductLine($productLineId);
         $this->items = loadCartItems($this->id);
