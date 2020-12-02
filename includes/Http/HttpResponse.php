@@ -21,10 +21,7 @@ class HttpResponse extends HttpMessage {
 
     public function isFile(){
 
-        if($this->body != null && gettype($this->body) == "object"){
-
-            return get_class($this->body) == "File\File";
-        }
+        return $this->body != null && gettype($this->body) == "object" && get_class($this->body) == "File\File";
     }
 
     //Setters

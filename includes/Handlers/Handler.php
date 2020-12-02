@@ -35,7 +35,13 @@ abstract class Handler {
 		// For a full HTML page
 		// Render the HTML template and inject content to 
 		//  be the body of the page.
-		if($mimeType == null || $mimeType == Http\MIME_TEXT_HTML) {
+		
+		if(is_object($output) && get_class($output) == "Http\HttpResponse") {
+
+			$handler = new HttpResponseHandler($output, $mimeType);
+		}
+		
+		else if($mimeType == null || $mimeType == Http\MIME_TEXT_HTML) {
 
 			$handler = is_object($output) && get_class($output) == "Exception" ?
 					new HtmlErrorHandler($output, $mimeType) :

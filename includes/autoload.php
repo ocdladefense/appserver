@@ -47,7 +47,7 @@
 		require_once(BASE_PATH.'/includes/Store/'.$file.".php");
 	}
 	
-	$handlers = array("Handler","ApplicationFileHandler","JsonHandler","HtmlDocumentHandler","JsonErrorHandler","HtmlStringHandler","HtmlErrorHandler");
+	$handlers = array("Handler","ApplicationFileHandler","HttpResponseHandler","JsonHandler","HtmlDocumentHandler","JsonErrorHandler","HtmlStringHandler","HtmlErrorHandler");
 	
 	foreach($handlers as $file) {
 		require_once(BASE_PATH.'/includes/Handlers/'.$file.".php");
@@ -86,6 +86,10 @@
 	require_once BASE_PATH.'/includes/Database/DbDeleteResult.php';
 	require_once BASE_PATH.'/includes/Database/QueryBuilder.php';
 	require_once BASE_PATH.'/includes/Database/SObject.php';
+	require_once BASE_PATH.'/includes/Database/SObjectList.php';
+
+
+
 
 	require_once BASE_PATH.'/includes/Exception/DbException.php';
 

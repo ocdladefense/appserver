@@ -54,4 +54,9 @@ class HttpHeader {
         }
         return $tmp;
     }
+    
+    
+    public function __toString() {
+    	return $this->name . ": " . $this->value;
+    }
 }

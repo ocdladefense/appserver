@@ -328,10 +328,10 @@ class Application {
 
         http_response_code($resp->getStatusCode());
 
-        if($resp->isFile()){
+        if($resp->isFile()) {
 
             $file = $resp->getBody();
-            if($file->exists()){
+            if($file->exists()) {
 
                 readfile($file->getPath());
 

@@ -5,19 +5,13 @@ use Http\HttpHeader;
 use Http\Http;
 use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 
+
+
+
+
 class Salesforce {
 
-    /*
-    $oauth_config = array(
-        "oauth_url" => SALESFORCE_LOGIN_URL,
-        "client_id" => SALESFORCE_CLIENT_ID,
-        "client_secret" => SALESFORCE_CLIENT_SECRET,
-        "username" => SALESFORCE_USERNAME,
-        "password" => SALESFORCE_PASSWORD,
-        "security_token" => SALESFORCE_SECURITY_TOKEN,
-        "redirect_uri" => SALESFORCE_REDIRECT_URI
-    );
-    */
+
     private $oauth_config = array();
 
     public function __construct($oauth_config = array())
@@ -181,6 +175,19 @@ class Salesforce {
         }
         return $body;
     }
+
+
+
+    
+    public function getAttachment($id) {
+			$endpoint = "/services/data/v49.0/sobjects/Attachment/{$id}/body";
+			$resp = $this->sendRequest($endpoint);
+			
+			return $resp;
+    }
+    
+
+
 
     public function createQueryFromSession($soql){
         $authResult = $this->authorizeToSalesforce();
