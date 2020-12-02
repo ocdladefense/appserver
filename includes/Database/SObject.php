@@ -5,7 +5,7 @@ namespace Database;
 
 
 
-class SObject implements \Http\IJson { // implements \Http\IJson {
+class SObject implements \Http\IJson {
 
 	protected $id = null;
 	

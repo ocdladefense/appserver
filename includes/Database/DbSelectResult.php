@@ -24,7 +24,16 @@ class DbSelectResult extends DbResult implements IDbResult, IteratorAggregate {
         return new ArrayObject($this->rows);
     }
 
-
+	
+		public function each($func) {
+		
+				$arr = array();
+				foreach($this as $result) {
+					$arr[] = $func($result);
+				}
+				
+				return $arr;
+		}
 
     public function hasError(){}
     public function getError(){}

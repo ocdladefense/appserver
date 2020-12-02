@@ -5,11 +5,15 @@ class MysqlDatabase {
 
     private $connection;
 
-    function __construct(){
-        $this->connect();
+
+		/**
+		 * Construct a database connection (for an optional alias.)
+		 */
+    function __construct($alias = null){
+        $this->connect($alias);
     }
 
-    function connect(){
+    function connect($alias = null){
         //Create connection
         $this->connection = new Mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
 
@@ -140,24 +144,7 @@ function select($query) {
 }
 
 
-class SObjectList {
-	
-	private $results = array();
-	
-	private $name;
-	
-	public function __construct($object,$results = array()) {
-		foreach($results as $row) {
-				$this->results[] = $row;
-		}
-	}
-	
-	public function get($index) {
-		return $this->results[$index];
-	}
-	
-	
-}
+
 
 
 //Global insert function that calls the insert method of the MysqlDatabase class.

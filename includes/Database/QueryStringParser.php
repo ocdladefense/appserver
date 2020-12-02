@@ -1,5 +1,5 @@
 <?php
-class QueryStringParser{
+class QueryStringParser {
 
 public static function Validate($sql){
     return true;
