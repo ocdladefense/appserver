@@ -106,8 +106,9 @@
 
 		<?php echo $scripts; ?> 
 	</head>
+	
 	<body style="background-color: rgba(191,161,46,1.0); color: rgba(255,255,255,1.0);">
-
+		<div style="height: 100%; width: 100%; background-color: #fff;">
 		<!--
 		<div id="babel-foo" style="position:absolute;top:0px;right:0px;background-color:#fff;z-index:101;max-width:325px;padding:10px;">&nbsp;</div>
 		<script type="text/babel">
@@ -159,7 +160,7 @@
 
 				<li class="home-menu-item"><i class="fas fa-people-arrows fa-2x"></i><a href="/covid" title="How OCDLA is pivoting to meet COVID-19 challenges.">covid-19</a></li>
 			
-				<li class="home-menu-item"><i class="fas fa-scroll"></i><a href="/motions" title="OCDLA motion bank">motion bank</a></li>
+				<li class="home-menu-item"><i class="fas fa-scroll"></i><a href="/documents" title="OCDLA motion bank">motion bank</a></li>
 			
 				<li class="home-menu-item"><i class="fas fa-book-open"></i><a href="/books" title="Read your publications">my publications</a></li>
 			
@@ -285,6 +286,12 @@
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 		-->
 
+		</div>
+		
+		
+		<footer>
+			&copy;&nbsp;Oregon Criminal Defense Lawyers Associaton 2020-2021
+		</footer>
 	</body>
 
 </html>

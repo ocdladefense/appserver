@@ -144,6 +144,10 @@ class DefaultTheme extends Theme {
 			array(
 				"active" => true,
 				"href" => $path . "/css/modal.css?bust=001"
+			),
+			array(
+				"active" => true,
+				"href" => $path . "/css/tables.css?bust=001"
 			)
 		);
 	
