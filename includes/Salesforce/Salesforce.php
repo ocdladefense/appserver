@@ -157,7 +157,7 @@ class Salesforce {
 
 
   
-    public function createRecords($sObjectName,$records,$instance_url = null,$access_token = null){
+    public function createRecords($sObjectName, $records, $instance_url = null, $access_token = null){
         $pluralEndpoint = "/services/data/v49.0/composite/tree/".$sObjectName;
         $singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName;
         $plural = is_array($records) && isset($records[0]);
