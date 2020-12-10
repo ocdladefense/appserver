@@ -144,14 +144,15 @@ class ShoppingCart  implements \Http\IJson {
     
     public function addProduct($productId , $quantity = 1){
         $productId = is_array($productId) ? $productId["Id"] : $productId;
-        $pricebookEntry = getPricebookEntries($productId)[0];
+        $pricebookEntry = getPricebookEntries($productId,$this->id)[0];
         global $oauth_config;
         $salesforce = new Salesforce($oauth_config);
         //
         $item = array(
-            "Quantity"=> 1,
+            "Quantity"=> $quantity,
             "PricebookEntryId"=> $pricebookEntry["Id"],
-            "OpportunityId"=> $this->id
+            "OpportunityId"=> $this->id,
+            "TotalPrice"=>$pricebookEntry["UnitPrice"]*$quantity
         );//Check for "UnitPrice" instead
         $response=$salesforce->createRecordsFromSession("OpportunityLineItem",$item);
         if($response["success"] != true){
@@ -164,30 +165,31 @@ class ShoppingCart  implements \Http\IJson {
     public function addProducts($products, $quantity = 1, $specialPrice = null){
         global $oauth_config;
         $salesforce = new Salesforce($oauth_config);
-        if((!is_string($products) || $quantity <= 0 || $specialPrice <= 0) && !is_array($products)){
+        if((!is_string($products) || $quantity <= 0 || $specialPrice < 0) && (!is_array($products))){
             throw new \Exception("Error calling the function");
         }
         //if($products)
-        $pricebookEntry = getPricebookEntries($products);
+        
         if(is_array($products)){
-            $products = array_map(function($product,$index){
-
-            },$products);
-            $response = $salesforce->createRecordsFromSession("OpportunityLineItem",$products);
+            try {
+                $response = $salesforce->createRecordsFromSession("OpportunityLineItem",$products);
+            } catch (\Throwable $th) {
+                throw new Exception($th->getMessage());
+                //json body undecoded
+            }
         }else{
-            //
+            $pricebookEntry = getPricebookEntries($products,$this->id);
             $item = array(
                 "Quantity"=> $quantity,
                 "PricebookEntryId"=> $pricebookEntry["Id"],
-                "OpportunityId"=> $this->id
-                //""=> $specialPrice
-            );//Check for "UnitPrice" instead
+                "OpportunityId"=> $this->id,
+                "TotalPrice"=>$pricebookEntry["UnitPrice"]*$quantity
+            );
+            if($specialPrice != null){
+                $item["TotalPrice"] = $specialPrice;
+            }
             $response=$salesforce->createRecordsFromSession("OpportunityLineItem",$item);
-            //++$this->items;
-        }
-        if($response["success"] != true){
-            $this->setError($response);
-            throw new \Exception("could not add the product(s) to the cart");
+            //check for price book
         }
         return true;
     }
@@ -218,9 +220,9 @@ class ShoppingCart  implements \Http\IJson {
 
     function addItem($productId,$quantity = 1){		
 		try {
-			$product = getProduct($productId);
+			$product = getProducts($productId);
 
-			$this->addProduct($product,$quantity);
+			$this->addProduct($product[0],$quantity);
 			return array(
 				"product" => $product["Name"],
 				"success" => true
@@ -236,26 +238,40 @@ class ShoppingCart  implements \Http\IJson {
         if(!is_array($items) || empty($items)){
             throw new Exception ("Items are null or empty");
         }
-
-        // $products = getProducts(array_map(function($item){
-        //     return $item["Id"];
-
-        // },$items)); //returns keys
         $productIds = array();
+        //$productQts = array();
+        //$specialPrices = array();
+        //$addedItems = array();
         foreach($items as $item){
             array_push($productIds,$item["Id"]);
+            //array_push($productQts,$item["Quantity"]);
         }
-        $products = getProducts($productIds);
+        
+        $priceBook = getPricebookEntries($productIds,$this->id);
+
+        $addProdPrice = function ($item,$index) use($priceBook){
+            $item["PricebookEntryId"] = $priceBook[$index]["Id"];
+            $item["OpportunityId"] = $this->id;
+            $item["UnitPrice"] = $priceBook[$index]["UnitPrice"];
+            $item["Quantity"] = $item["Quantity"];
+            unset($item["Id"]);
+            return $item;
+        };
+        $items = array_map($addProdPrice,$items,array_keys($items));
 
 
         $this->addProducts($items);
-        // foreach($products as $product){
-        //     $this->se
-        // }
-		// return array(
-		// 	"items" => ,
-		// 	"success" => true
-		// );
+        $items = array_map(function($item,$index,$productInfo){
+            $item[$index]["Name"] = $productInfo[$index]["Name"];
+            unset($item["OpportunityId"]);
+            unset($item["PricebookEntryId"]);
+            return $item;
+        },$items,array_keys($items),getProducts($productIds));
+
+		return array(
+		    "itemsAdded" => $items,
+		    "success" => true
+		);
     }
 
     function deleteItemLine($productLineId){
