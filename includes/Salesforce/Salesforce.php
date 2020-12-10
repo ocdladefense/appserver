@@ -19,10 +19,14 @@ class Salesforce {
     );
     */
     private $oauth_config = array();
+    private $reqBody = array();
 
     public function __construct($oauth_config = array())
     {
         $this->oauth_config = $oauth_config;
+    }
+    public function getReqBody(){
+        return $this->reqBody;
     }
 
 
@@ -175,10 +179,10 @@ class Salesforce {
         $records = $plural ? array_map($fn,$records,array_keys($records)):$records;
         $records = $plural ? array("records" => $records ) : $records;
         $resp = $this->sendRequest($endpoint,"POST",$records);
-        $body = json_decode($resp->getBody(),true);
-        if ($body["hasErrors"] == true){
-            throw new Exception("Error inserting request");
+        if (strpos($resp->getBody(),"hasErrors:true")){
+            throw new Exception($resp->getBody());
         }
+        $body = json_decode($resp->getBody(),true);
         return $body;
     }
 
@@ -284,8 +288,8 @@ class Salesforce {
             return $endpoint."&allOrNone=false";
         };
         //$singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName."/".$sObjectIds;
-        $endpoint = is_array($sObjectIds)? $pluralEndpoint : "/services/data/v49.0/sobjects/".$sObject."/".$sObjectIds;
-        $resp = $this->sendRequest($endpoint."/","DELETE");
+        $endpoint = is_array($sObjectIds)? $pluralEndpoint."/" : "/services/data/v49.0/sobjects/".$sObject."/".$sObjectIds."/";
+        $resp = $this->sendRequest($endpoint,"DELETE");
         $body = json_decode($resp->getBody(),true);
         //var_dump($resp);
         if(is_array($sObjectIds) && $resp->getStatusCode() != 200){
@@ -297,6 +301,119 @@ class Salesforce {
             
         }
         return true;
+    }
+
+    public function addToBatch($fields,$metod = null){
+        $req = array();//final request to add to batch
+
+        if(empty($fields) && (!is_array($fields) || !is_string($fields))){
+            throw new Exception("Invalid request");
+        }
+        if(!is_array($fields) && strpos($fields,"SELECT")){
+            $req["url"] = "v50.0/query/?q=".urlencode($fields);
+            $req["method"] = "GET";
+            array_push($req);
+            return $this->reqBody;
+        }
+
+
+
+        // if($req["method"] == "PATCH" &&  strpos($req["url"],"v50.0/sobjects/")){//if its calling the update
+        //     if(empty($req["richInput"]) || !is_array($req["richInput"])){
+        //         throw new Exception("Invalid richInput of an UPDATE/PATCH");
+        //     }
+        //     if (array_keys($req["richInput"]) !== range(0, count($req["richInput"]) - 1)){
+        //         throw new Exception("Invalid richInput BODY of an UPDATE/PATCH");
+        //     }
+        //     if(count($req) != 3){
+        //         throw new Exception("Invalid UPDATE/PATCH, malformed elements");
+        //     }
+
+        //     if($this->reqBody == null){
+        //         $this->reqBody = array(
+        //             "batchRequests" => array($req)
+        //         );
+        //     }
+        //     array_push($this->reqBody["batchRequests"],$req);
+        // }
+        // if($req["method"] == "GET" &&  strpos($req["url"],"v50.0/sobjects/")){//if its calling the update
+        //     if(strpos($req["url"],"?fields=")){
+        //         throw new Exception("Invalid url of QUERY/GET or not encoded ");
+        //     }
+        //     if(count($req) != 2){
+        //         throw new Exception("Invalid QUERY/GET, malformed elements");
+        //     }
+        //     if($this->reqBody == null){
+        //         $this->reqBody = array(
+        //             "batchRequests" => array($req)
+        //         );
+        //     }
+        //     array_push($this->reqBody["batchRequests"],$req);
+        // }
+        // if($req["method"] == "POST" &&  strpos($req["url"],"v50.0/sobjects/")){//if its calling the update
+        //     if(empty($req["richInput"]) || !is_array($req["richInput"])){
+        //         throw new Exception("Invalid richInput of an CREATE/POST");
+        //     }
+        //     if (array_keys($req["richInput"]) !== range(0, count($req["richInput"]) - 1)){
+        //         throw new Exception("Invalid richInput BODY of an CREATE/POST");
+        //     }
+        //     if(count($req) != 3){
+        //         throw new Exception("Invalid CREATE/POST, malformed elements");
+        //     }
+
+        //     if($this->reqBody == null){
+        //         $this->reqBody = array(
+        //             "batchRequests" => array($req)
+        //         );
+        //     }
+        //     array_push($this->reqBody["batchRequests"],$req);
+        // }
+
+        // if($req["method"] == "DELETE" &&  strpos($req["url"],"v50.0/sobjects/")){//if its calling the update
+        //     if(empty($req["richInput"]) || !is_array($req["richInput"])){
+        //         throw new Exception("Invalid richInput of an CREATE/POST");
+        //     }
+        //     if (array_keys($req["richInput"]) !== range(0, count($req["richInput"]) - 1)){
+        //         throw new Exception("Invalid richInput BODY of an CREATE/POST");
+        //     }
+        //     if(count($req) != 2){
+        //         throw new Exception("Invalid CREATE/POST, malformed elements");
+        //     }
+
+        //     if($this->reqBody == null){
+        //         $this->reqBody = array(
+        //             "batchRequests" => array($req)
+        //         );
+        //     }
+        //     array_push($this->reqBody["batchRequests"],$req);
+        // }
+
+
+    }
+
+    public function sendBatchFromSession($reqBody = null){
+        $authResult = $this->authorizeToSalesforce();
+        if (!$authResult->isSuccess()) {
+            throw new SalesforceAuthException("Not Authorized");
+        }
+        return $this->deleteRecords($reqBody,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+    }
+
+    public function sendBatch($reqBody = null,$instance_url = null,$access_token = null){
+        if(empty($reqBody)){
+            $reqBody = $this->reqBody;
+        }
+        if (!is_array($reqBody)){
+            throw new Exception("request body is not an array");
+        }
+        
+
+        $endpoint = "/services/data/v50.0/composite/batch/";
+        $resp = $this->sendRequest($endpoint,"POST",array("batchRequests" => $reqBody));
+        if(strpos($resp->getBody(),"\"hasErrors\" : true")){
+            throw new Exception($resp->getBody());
+        }
+        $body = json_decode($resp->getBody(),true);
     }
 
 

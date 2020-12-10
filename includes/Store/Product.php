@@ -1,29 +1,18 @@
 <?php
 
-function getProduct($productId){
+function getProducts($productIds){
+    $productIds = is_array($productIds)?$productIds:array($productIds);
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
-    $prodQuery = sprintf("SELECT Id, Name FROM Product2 WHERE Id = '%s'",$productId);
+    $productIds = implode("','",$productIds);
+    $prodQuery = sprintf("SELECT Id, Name, ProductCode, Description, IsActive, IsArchived, IsDeleted, LastViewedDate, Family, LastModifiedById, QuantityUnitOfMeasure, StockKeepingUnit, Media__c, Image__c from Product2 WHERE Id IN ('%s')",$productIds);
     $product = $salesforce->createQueryFromSession($prodQuery);
-    return $product["records"][0];
-}
-
-function getProducts($Ids){
-    global $oauth_config;
-    $salesforce = new Salesforce($oauth_config);
-
-    if (is_array($Ids)){
-        $products = $salesforce->createQueriesFromSession("Product2",$Ids,array("id","name"));
-        return $products;
-    }
-    $prodQuery = sprintf("SELECT Id, Name FROM Product2 WHERE Id = '%s'",$Ids);
-    $product = $salesforce->createQueryFromSession($prodQuery);
-    return $product["records"][0];
+    return empty($product["records"]) ? false: $product["records"];
 }
 function getFirstProduct(){
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
-    $product = $salesforce->createQueryFromSession("SELECT Id, Name FROM Product2 LIMIT 1");
+    $product = $salesforce->createQueryFromSession("SELECT Id, Name, IsActive, ProductCode FROM Product2 LIMIT 1");
     return empty($product["records"][0]) ? false: $product["records"][0];
 }
 function getAllProducts($limit = 0){
@@ -42,12 +31,17 @@ function getProductFromMedia($mediaId){
     $product = $salesforce->createQueryFromSession($prodQuery);
     return $product["records"][0];
 }
-function getPricebookEntries($productIds){
+function getPricebookEntries($productIds,$oppId,$IsActive = true){
+    if(empty($productIds) || empty($oppId)){
+        throw new Exception("Insuficient / Null fields");
+    }
     $productIds = is_array($productIds)?$productIds:array($productIds);
     global $oauth_config;
     $salesforce = new Salesforce($oauth_config);
+    $pbId = $salesforce->createQueryFromSession(sprintf("SELECT Pricebook2Id FROM Opportunity WHERE Id = '%s'",$oppId));
+    $pbId = $pbId["records"][0]["Pricebook2Id"];
     $productIds = implode("','",$productIds);
-    $pricebookQuery = sprintf("SELECT Id from PricebookEntry WHERE Product2Id IN ('%s')",$productIds);
+    $pricebookQuery = sprintf("SELECT Id, UnitPrice FROM PricebookEntry WHERE Product2Id IN ('%s') AND IsActive = True AND Pricebook2Id = '%s'",$productIds,$pbId);
     $pricebookEntry = $salesforce->createQueryFromSession($pricebookQuery);
     return $pricebookEntry["records"];
 }
