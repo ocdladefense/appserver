@@ -26,53 +26,57 @@ class Module {
 
     public function __construct($path = null){
     	$this->path = $path;
+    	$this->className = get_class($this);
     }
+    
 
 		public function getPath() {
-			return $this->path;
+			$reflector = new \ReflectionClass($this->className);
+			return $reflector->getFileName();
 		}
+		
+		
 		
     public function getRoutes(){
         return $this->routes;
     }
 
+
+
     public function getDependencies(){
         return $this->dependencies;
     }
+
 
     public function setRequest($request){
         $this->request = $request;
     }
 
+
     public function getRequest(){
         return $this->request;
     }
     
+    
     public function setTheme($theme) {
     	$this->theme = $theme;
     }
+    
+    
     
     public function getTheme() {
     	return $this->theme;
     }
 
 
-    public function requireDependencies(){
+    public function requireDependencies() {
 
     }
-    
-    
-    public function requireModuleFile($file){
-        $path = getPathToModules()."/{$this->activeRoute->getModule()}/src/".$file;
-				require_once($path);
-    }
 
 
-    public function hasDependencies(){
-        if(empty($this->dependencies)){
-            return false;
-        }
-        return true;
+    public function hasDependencies() {
+    
+        return !empty($this->dependencies);
     }
 
 
@@ -80,9 +84,10 @@ class Module {
         return $this->files;
     }
 
+
+
     public function loadFile($file){
-        $path = getPathToModules()."/{$this->name}/src/".$file;
-				require_once($path);
+				require_once("/{$this->path}/src/".$file);
     }
 
 

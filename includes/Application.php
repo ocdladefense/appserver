@@ -96,9 +96,9 @@ class Application {
                     "method"        => "get"
                 )
             ),
-                //If the path is null the module loader will not try to load the file
-                //core module is loaded in autoloader.php
-                "path"     => null
+						//If the path is null the module loader will not try to load the file
+						//core module is loaded in autoloader.php
+						"path"     => null
             
         );
 
@@ -191,6 +191,7 @@ class Application {
 
 			
 			$route = $this->routes[$path->__toString()];
+			
 			$params = $path->getParams();
 
 			l("Will execute $path: </p><pre>".print_r($route,true)."</pre>");

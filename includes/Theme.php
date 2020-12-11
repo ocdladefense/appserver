@@ -67,7 +67,7 @@ class Theme {
 		$this->addStyles($tpl->getStyles());
 		
 		
-		return $tpl->render();
+		return $tpl->isRendered() ? $tpl->getOutput() : $tpl->render();
 	}
 	
 	public static function pathToTemplate($name) {

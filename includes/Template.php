@@ -10,8 +10,17 @@ class Template {
 	const TEMPLATE_EXTENSION = ".tpl.php";
 	
 	
-	// Name of this template; usually the name of a template.
+	// Name of this template; usually the name of a template file.
+	// Template files may be suffixed with the .tpl.php extension.
 	protected $name;
+	
+	
+	// Whether the template has been rendered / compiled.
+	protected $rendered = false;
+	
+	
+	// When rendered, the resulting output should be saved here.
+	protected $output = null;
 	
 	
 	// Context to be bound to this template.
@@ -26,11 +35,16 @@ class Template {
 	protected $log = array();
 	
 	
+	protected static $allScripts = array();
+	
+	
+	protected static $allStyles = array();
+	
+	
 	protected $scripts = array();
 	
 	
 	protected $styles = array();
-	
 	
 	
 	// Name is optional so we can use string literals to contruct a template.
@@ -70,15 +84,26 @@ class Template {
 		return $this->scripts;
 	}
 	
+	public function getOutput() {
+		return $this->output;
+	}
+	
 	public static function isTemplate($obj) {
 		return is_object($obj) && (get_parent_class($obj) == "Template" || get_class($obj) == "Template");
 	}
 
 
 	public function render($context = array()) {
+		$this->rendered = true;
 		$context = count($context) === 0 ? $this->context : $context;
 		
-		return null == $this->content ? $this->renderTemplateFile($context) : $this->renderTemplateString($context);
+		$this->output = null == $this->content ? $this->renderTemplateFile($context) : $this->renderTemplateString($context);
+		return $this->output;
+	}
+	
+	
+	public function isRendered() {
+		return $this->rendered;
 	}
 	
 	
