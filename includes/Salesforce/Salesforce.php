@@ -3,6 +3,7 @@
 use Http\HttpRequest;
 use Http\HttpHeader;
 use Http\Http;
+use Http\HttpResponse;
 use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 
 
@@ -72,12 +73,14 @@ class Salesforce {
 	
 		//checking oauth url for .salesforce.com/services/oauth2/token
 		return strpos(strtolower($url),".salesforce.com/services/oauth2/token") !== false;
-	}
-
-
-
-    public function queryChecker($soql){
-        
+    }
+    
+    public function sendRequestFromSession($endpoint,$method = "GET",$body = null,$contentType = "application/json"){
+        $authResult = $this->authorizeToSalesforce();
+        if (!$authResult->isSuccess()) {
+            throw new SalesforceAuthException("Not Authorized");
+        }
+        return $this->sendRequest($endpoint,$method,$body,$contentType);
     }
 
     public function sendRequest($endpoint,$method = "GET",$body = null,$contentType = "application/json"){
@@ -121,11 +124,31 @@ class Salesforce {
         );
 
         $http = new Http($config);
-        return $http->send($req);
+        $response = $http->send($req);
+        if(!$response->is_Success() && $_SESSION["sf_oauth_authenticated"] == false){
+            //trying to authenticate again
+            $_SESSION["salesforce_token_expire_date"] = new DateTime("now");
+            $this->authorizeToSalesforce();
+            $this->sendRequest($endpoint,$method,$body,$contentType);
+        }
+         return $response;
     }
     
     public function authorizeToSalesforce() {
         
+        //check for token in session and timeout value
+        if(isset($_SESSION["salesforce_access_token"]) && isset($_SESSION["salesforce_instance_url"]) && ($_SESSION["salesforce_token_expire_date"] > new DateTime("now"))){
+            $_SESSION["sf_oauth_authenticated"] = false;
+            unset($_SESSION["salesforce_access_token"]);
+            unset($_SESSION["salesforce_instance_url"]);
+            unset($_SESSION["salesforce_token_expire_date"]);
+        }else if (isset($_SESSION["salesforce_access_token"]) && isset($_SESSION["salesforce_instance_url"]) && ($_SESSION["salesforce_token_expire_date"] <= new DateTime("now"))){
+            $_SESSION["sf_oauth_authenticated"] = false;
+            $resp = new HttpResponse("self oath auth");
+            $resp->setStatusCode(200);
+            return (new SalesforceAuthResult($resp));
+        }        
+
         $oauth_config = $this->oauth_config;
         $this->checkConfig();
         $body = array(
@@ -141,21 +164,22 @@ class Salesforce {
         if($authResult->isSuccess()) {
             $_SESSION["salesforce_instance_url"] = $authResult->getInstanceUrl();
             $_SESSION["salesforce_access_token"]= $authResult->getAccessToken();
-            //return true;
+            $_SESSION["sf_oauth_authenticated"] = true;
+            //adding config timeout date in minutes
+            $timeoutDate = date_modify(new DateTime("now"),"+ 15 minutes");
+            if (SALESFORCE_TIMEOUT_MINUTES != null){
+                $timeoutDate = date_modify(new DateTime("now"),"+".SALESFORCE_TIMEOUT_MINUTES."minutes");
+            }
+
+            $_SESSION["salesforce_token_expire_date"] = $timeoutDate;
+        }else{
+            throw new SalesforceAuthException("Not Authorized");
         }
         return $authResult;
     }
-
-    public function createRecordFromSession($sObjectName,$sObjectFields){
-        return $this->createRecordsFromSession($sObjectName,$sObjectFields);
-    }
     
     public function createRecordsFromSession($sObjectName,$sObjectFields){
-        $authResult = $this->authorizeToSalesforce();
-        if (!$authResult->isSuccess()) {
-            throw new SalesforceAuthException("Not Authorized");
-        }
-
+        $this->authorizeToSalesforce();
         return $this->createRecords($sObjectName,$sObjectFields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
 
@@ -179,9 +203,6 @@ class Salesforce {
         $body = json_decode($resp->getBody(),true);
         return $body;
     }
-
-
-
     
     public function getAttachment($id) {
 			$endpoint = "/services/data/v49.0/sobjects/Attachment/{$id}/body";
@@ -189,15 +210,9 @@ class Salesforce {
 			
 			return $resp;
     }
-    
-
-
 
     public function createQueryFromSession($soql){
-        $authResult = $this->authorizeToSalesforce();
-        if (!$authResult->isSuccess()) {
-            throw new SalesforceAuthException("Not Authorized");
-        }
+        $this->authorizeToSalesforce();
         return $this->createQuery($soql,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
 
@@ -210,10 +225,7 @@ class Salesforce {
     }
 
     public function queryIdsFromSession($sObjectName,$ids,$fields){
-        $authResult = $this->authorizeToSalesforce();
-        if (!$authResult->isSuccess()) {
-            throw new SalesforceAuthException("Not Authorized");
-        }
+        $this->authorizeToSalesforce();
         return $this->queryIds($sObjectName,$ids,$fields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
 
