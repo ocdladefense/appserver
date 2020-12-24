@@ -16,16 +16,20 @@ class Salesforce {
     private $oauth_config = array();
     private $reqBody = array();
 
+    private const MAX_LOGIN_ATTEMPTS = 3;
+
+
+
     public function __construct($oauth_config = array())
     {
         $this->oauth_config = $oauth_config;
     }
+
+
+
     public function getReqBody(){
         return $this->reqBody;
     }
-
-
-
 
     public function checkConfig() {
         $config = $this->oauth_config;
@@ -83,9 +87,12 @@ class Salesforce {
         return $this->sendRequest($endpoint,$method,$body,$contentType);
     }
 
+    private function isOauthRequest($endpoint){
+        return strpos($endpoint,"oauth");
+    }
     public function sendRequest($endpoint,$method = "GET",$body = null,$contentType = "application/json"){
 
-        if (!strpos($endpoint,"oauth")){
+        if (!$this->isOauthRequest($endpoint)){
             $endpoint = $_SESSION["salesforce_instance_url"] . $endpoint;
             $token = new HttpHeader("Authorization", "Bearer " . $_SESSION["salesforce_access_token"]);
         }
@@ -125,29 +132,42 @@ class Salesforce {
 
         $http = new Http($config);
         $response = $http->send($req);
-        if(!$response->is_Success() && $_SESSION["sf_oauth_authenticated"] == false){
-            //trying to authenticate again
-            $_SESSION["salesforce_token_expire_date"] = new DateTime("now");
-            $this->authorizeToSalesforce();
-            $this->sendRequest($endpoint,$method,$body,$contentType);
+        $apiresult = new RestApiResult($response);
+
+        //trying to authenticate again if token exp or invalid
+        if(!$response->isSuccess() && !$this->isOauthRequest($endpoint)){
+            
+            if($apiresult->isTokenExpired() || $apiresult->isTokenInvalid()){
+                $this->authorizeToSalesforce();
+                $this->sendRequest($endpoint,$method,$body,$contentType);
+            }
+
         }
          return $response;
     }
     
     public function authorizeToSalesforce() {
+
+        unset($_SESSION["salesforce_access_token"]);
+        unset($_SESSION["salesforce_instance_url"]);
+        unset($_SESSION["salesforce_token_expire_date"]);
+        $_SESSION["login_attempts"]++;
+        if($_SESSION["login_attempts"] > $this->MAX_LOGIN_ATTEMPTS){
+            throw new Exception ("Too many login attempts");
+        }
         
         //check for token in session and timeout value
-        if(isset($_SESSION["salesforce_access_token"]) && isset($_SESSION["salesforce_instance_url"]) && ($_SESSION["salesforce_token_expire_date"] > new DateTime("now"))){
-            $_SESSION["sf_oauth_authenticated"] = false;
-            unset($_SESSION["salesforce_access_token"]);
-            unset($_SESSION["salesforce_instance_url"]);
-            unset($_SESSION["salesforce_token_expire_date"]);
-        }else if (isset($_SESSION["salesforce_access_token"]) && isset($_SESSION["salesforce_instance_url"]) && ($_SESSION["salesforce_token_expire_date"] <= new DateTime("now"))){
-            $_SESSION["sf_oauth_authenticated"] = false;
-            $resp = new HttpResponse("self oath auth");
-            $resp->setStatusCode(200);
-            return (new SalesforceAuthResult($resp));
-        }        
+        // if(isset($_SESSION["salesforce_access_token"]) && isset($_SESSION["salesforce_instance_url"]) && ($_SESSION["salesforce_token_expire_date"] < new DateTime("now"))){
+        //     $_SESSION["sf_oauth_authenticated"] = false;
+        //     unset($_SESSION["salesforce_access_token"]);
+        //     unset($_SESSION["salesforce_instance_url"]);
+        //     unset($_SESSION["salesforce_token_expire_date"]);
+        // }else if (isset($_SESSION["salesforce_access_token"]) && isset($_SESSION["salesforce_instance_url"]) && ($_SESSION["salesforce_token_expire_date"] >= new DateTime("now"))){
+        //     $_SESSION["sf_oauth_authenticated"] = false;
+        //     $resp = new HttpResponse("self oath auth");
+        //     $resp->setStatusCode(200);
+        //     return (new SalesforceAuthResult($resp));
+        // }        
 
         $oauth_config = $this->oauth_config;
         $this->checkConfig();
@@ -158,24 +178,16 @@ class Salesforce {
             "username"=>$oauth_config["username"],
             "password"=>$oauth_config["password"] . $oauth_config["security_token"]
         );
-        $resp = $this->sendRequest($oauth_config["oauth_url"],"POST",$body,"application/x-www-form-urlencoded");
-        $authResult = new SalesforceAuthResult($resp);
+        $respApiResult = $this->sendRequest($oauth_config["oauth_url"],"POST",$body,"application/x-www-form-urlencoded");
 
-        if($authResult->isSuccess()) {
-            $_SESSION["salesforce_instance_url"] = $authResult->getInstanceUrl();
-            $_SESSION["salesforce_access_token"]= $authResult->getAccessToken();
-            $_SESSION["sf_oauth_authenticated"] = true;
-            //adding config timeout date in minutes
-            $timeoutDate = date_modify(new DateTime("now"),"+ 15 minutes");
-            if (SALESFORCE_TIMEOUT_MINUTES != null){
-                $timeoutDate = date_modify(new DateTime("now"),"+".SALESFORCE_TIMEOUT_MINUTES."minutes");
-            }
-
-            $_SESSION["salesforce_token_expire_date"] = $timeoutDate;
+        if($respApiResult->isSuccess()) {
+            $_SESSION["salesforce_instance_url"] = $respApiResult->getInstanceUrl();
+            $_SESSION["salesforce_access_token"]= $respApiResult->getAccessToken();
+            $_SESSION["login_attempts"] = 0;
         }else{
             throw new SalesforceAuthException("Not Authorized");
         }
-        return $authResult;
+        return $respApiResult;
     }
     
     public function createRecordsFromSession($sObjectName,$sObjectFields){
