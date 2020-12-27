@@ -3,6 +3,7 @@
 use Http\HttpRequest;
 use Http\HttpHeader;
 use Http\Http;
+use Http\HttpResponse;
 use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 
 
@@ -15,16 +16,26 @@ class Salesforce {
     private $oauth_config = array();
     private $reqBody = array();
 
+    private const MAX_LOGIN_ATTEMPTS = 3;
+
+
+		/**
+		 * Prepare authentication parameters for the Salesforce REST API.
+		 *  Keep track of the number of login attempts.
+		 */
     public function __construct($oauth_config = array())
     {
         $this->oauth_config = $oauth_config;
+				$loginAttempts = !isset($_SESSION["login_attempts"]) ? 0 : $_SESSION["login_attempts"] + 1;
+				
+				$_SESSION["login_attempts"] = $loginAttempts;
     }
+
+
+
     public function getReqBody(){
         return $this->reqBody;
     }
-
-
-
 
     public function checkConfig() {
         $config = $this->oauth_config;
@@ -63,6 +74,10 @@ class Salesforce {
 					throw new SalesforceAuthException("Invalid OauthConfig Login Url: ".$config["oauth_url"]);
 				}
     }
+    
+    
+    
+    
 	private static function isValidSalesforceUsername($username) {
         //checking username for @ and .
         return strpos($username,"@") !== false && strpos($username,".") !== false;
@@ -72,90 +87,148 @@ class Salesforce {
 	
 		//checking oauth url for .salesforce.com/services/oauth2/token
 		return strpos(strtolower($url),".salesforce.com/services/oauth2/token") !== false;
+    }
+    
+	public function sendRequestFromSession($endpoint,$method = "GET",$body = null,$contentType = "application/json"){
+			$authResult = $this->authorizeToSalesforce();
+			if (!$authResult->isSuccess()) {
+					throw new SalesforceAuthException("Not Authorized");
+			}
+			return $this->sendRequest($endpoint,$method,$body,$contentType);
 	}
 
 
 
-    public function queryChecker($soql){
-        
-    }
 
-    public function sendRequest($endpoint,$method = "GET",$body = null,$contentType = "application/json"){
-
-        if (!strpos($endpoint,"oauth")){
-            $endpoint = $_SESSION["salesforce_instance_url"] . $endpoint;
-            $token = new HttpHeader("Authorization", "Bearer " . $_SESSION["salesforce_access_token"]);
-        }
-
-        $req = new HttpRequest($endpoint);
-        if($token != null){
-            $req->addHeader($token);
-        }
-
-        $content_type = new HttpHeader("Content-Type",$contentType);
-        $req->addHeader($content_type);
-        if($body != null)
-        {
-            if($contentType == "application/json"){
-                $body = json_encode($body);
-            }
-            else if($contentType == "application/x-www-form-urlencoded"){
-                $body = http_build_query($body);
-            }
-            $req->setBody($body);
-        }
-        $req->setMethod($method);
-        $config = array(
-            // "cainfo" => null,
-            // "verbose" => false,
-            // "stderr" => null,
-            // "encoding" => '',
-            "returntransfer" => true,
-            // "httpheader" => null,
-            "useragent" => "Mozilla/5.0",
-            // "header" => 1,
-            // "header_out" => true,
-            "followlocation" => true,
-            "ssl_verifyhost" => false,
-            "ssl_verifypeer" => false
-        );
-
-        $http = new Http($config);
-        return $http->send($req);
-    }
+	private function isOauthRequest($endpoint){
+			return strpos($endpoint,"oauth");
+	}
     
+    
+    
+	public function sendRequest($endpoint, $method = "GET", $body = null, $contentType = "application/json"){
+
+			if (!$this->isOauthRequest($endpoint)){
+					$endpoint = $_SESSION["salesforce_instance_url"] . $endpoint;
+					$token = new HttpHeader("Authorization", "Bearer " . $_SESSION["salesforce_access_token"]);
+			}
+
+			$req = new HttpRequest($endpoint);
+			if($token != null){
+					$req->addHeader($token);
+			}
+
+			$content_type = new HttpHeader("Content-Type",$contentType);
+			$req->addHeader($content_type);
+			if($body != null)
+			{
+					if($contentType == "application/json"){
+							$body = json_encode($body);
+					}
+					else if($contentType == "application/x-www-form-urlencoded"){
+							$body = http_build_query($body);
+					}
+					$req->setBody($body);
+			}
+			$req->setMethod($method);
+			$config = array(
+					// "cainfo" => null,
+					// "verbose" => false,
+					// "stderr" => null,
+					// "encoding" => '',
+					"returntransfer" => true,
+					// "httpheader" => null,
+					"useragent" => "Mozilla/5.0",
+					// "header" => 1,
+					// "header_out" => true,
+					"followlocation" => true,
+					"ssl_verifyhost" => false,
+					"ssl_verifypeer" => false
+			);
+
+			$http = new Http($config);
+			$response = $http->send($req);
+			
+			$result = new RestApiResult($response);
+
+			//trying to authenticate again if token exp or invalid
+			// if(!$result->isSuccess() && !RestApiResult::isOauthRequest($endpoint)) {
+			
+			if($result->isTokenExpired() || $result->isTokenInvalid()) {
+					$this->authorizeToSalesforce();
+					$this->sendRequest($endpoint,$method,$body,$contentType);
+			}
+					
+					
+			 return $result;
+	}
+    
+    
+    
+    /**
+    	* Use an OAuth 2.0 username/password flow 
+    	*  for authorizing to Salesforce.
+    	*  After authorizing we can use the REST API.
+    	*  
+    	*  If the session already has an access_token saved,
+    	*  then attempt to use it before re-authenticating.
+    	*
+    	* @return RespApiResult
+    	*/
     public function authorizeToSalesforce() {
-        
-        $oauth_config = $this->oauth_config;
-        $this->checkConfig();
-        $body = array(
-            "grant_type" => "password",
-            "client_id" => $oauth_config["client_id"],
-            "client_secret"=> $oauth_config["client_secret"],
-            "username"=>$oauth_config["username"],
-            "password"=>$oauth_config["password"] . $oauth_config["security_token"]
-        );
-        $resp = $this->sendRequest($oauth_config["oauth_url"],"POST",$body,"application/x-www-form-urlencoded");
-        $authResult = new SalesforceAuthResult($resp);
-
-        if($authResult->isSuccess()) {
-            $_SESSION["salesforce_instance_url"] = $authResult->getInstanceUrl();
-            $_SESSION["salesforce_access_token"]= $authResult->getAccessToken();
-            //return true;
-        }
-        return $authResult;
-    }
-
-    public function createRecordFromSession($sObjectName,$sObjectFields){
-        return $this->createRecordsFromSession($sObjectName,$sObjectFields);
-    }
     
-    public function createRecordsFromSession($sObjectName,$sObjectFields){
-        $authResult = $this->authorizeToSalesforce();
-        if (!$authResult->isSuccess()) {
+    		// No need to re-authenticate.
+				if(isset($_SESSION["salesforce_access_token"])) return;
+        $_SESSION["login_attempts"]++;
+    
+    		// Setup local var for convenience.
+        $oauth_config = $this->oauth_config;
+
+
+				// We're authenticating, so reset any previous variables.
+        unset($_SESSION["salesforce_access_token"]);
+        unset($_SESSION["salesforce_instance_url"]);
+
+
+
+        
+        
+        if($_SESSION["login_attempts"] > self::MAX_LOGIN_ATTEMPTS) {
+            throw new Exception ("OAUTH_AUTHENTICATION_ERROR: Too many login attempts.");
+        }
+   
+
+
+        $this->checkConfig();
+        
+        
+        $body = array(
+            "grant_type" 			=> "password",
+            "client_id" 			=> $oauth_config["client_id"],
+            "client_secret"		=> $oauth_config["client_secret"],
+            "username"				=> $oauth_config["username"],
+            "password"				=> $oauth_config["password"] . $oauth_config["security_token"]
+        );
+        
+        
+        $result = $this->sendRequest($oauth_config["oauth_url"],"POST",$body,"application/x-www-form-urlencoded");
+
+        if($result->isSuccess()) {
+            $_SESSION["login_attempts"] = 0;
+            $_SESSION["salesforce_instance_url"] = $result->getInstanceUrl();
+            $_SESSION["salesforce_access_token"] = $result->getAccessToken();
+        } else {
             throw new SalesforceAuthException("Not Authorized");
         }
-
+        
+        
+        return $result;
+    }
+    
+    
+    
+    public function createRecordsFromSession($sObjectName,$sObjectFields){
+        $this->authorizeToSalesforce();
         return $this->createRecords($sObjectName,$sObjectFields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
 
@@ -176,13 +249,14 @@ class Salesforce {
         if (strpos($resp->getBody(),"hasErrors:true")){
             throw new Exception($resp->getBody());
         }
-        $body = json_decode($resp->getBody(),true);
+        $body = $resp->getBody();
+
+
         return $body;
     }
 
 
 
-    
     public function getAttachment($id) {
 			$endpoint = "/services/data/v49.0/sobjects/Attachment/{$id}/body";
 			$resp = $this->sendRequest($endpoint);
@@ -190,32 +264,36 @@ class Salesforce {
 			return $resp;
     }
     
-
-
+    
 
     public function createQueryFromSession($soql){
-        $authResult = $this->authorizeToSalesforce();
-        if (!$authResult->isSuccess()) {
-            throw new SalesforceAuthException("Not Authorized");
-        }
+        $this->authorizeToSalesforce();
+        
         return $this->createQuery($soql,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
 
-    public function createQuery($soql,$instance_url = null,$access_token = null){
+
+
+    public function createQuery($soql, $instance_url = null,$access_token = null){
         $endpoint = "/services/data/v49.0/query/?q=";
 
         $resp = $this->sendRequest($endpoint . urlencode($soql));
-        $body = json_decode($resp->getBody(),true);
+        $body = $resp->getBody();
+        
+        
         return $body;
     }
 
+
+
     public function queryIdsFromSession($sObjectName,$ids,$fields){
-        $authResult = $this->authorizeToSalesforce();
-        if (!$authResult->isSuccess()) {
-            throw new SalesforceAuthException("Not Authorized");
-        }
+        $this->authorizeToSalesforce();
+        
+        
         return $this->queryIds($sObjectName,$ids,$fields,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
+
+
 
     public function queryIds($sObjectName,$ids,$fields,$instance_url = null,$access_token = null){
         $endpoint = "/services/data/v50.0/composite/sobjects/".$sObjectName."?ids=";
@@ -230,12 +308,18 @@ class Salesforce {
         }
         $endpoint = rtrim($endpoint, ',');//deleting last comma
         $resp = $this->sendRequest($endpoint);
-        $body = json_decode($resp->getBody(),true);
-        return $body;
+        
+
+        return $resp->getBody();
     }
-    public function updateRecordFromSession($records, $sObject = null){
+    
+    
+    
+    public function updateRecordFromSession($records, $sObject = null) {
         return $this->updateRecordsFromSession($records, $sObject = null);
     }
+
+
 
     public function updateRecordsFromSession($records,$sObject = null){
         $authResult = $this->authorizeToSalesforce();
@@ -245,7 +329,9 @@ class Salesforce {
         return $this->updateRecords($records,$sObject,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
     
-    public function updateRecords($records,$sObject = null,$instance_url = null,$access_token = null){
+    
+    
+    public function updateRecords($records, $sObject = null, $instance_url = null, $access_token = null){
         
         $singularEndpoint = "/services/sobjects/";
         $pluralEndpoint = "/services/data/v49.0/composite/sobjects/";
@@ -272,13 +358,18 @@ class Salesforce {
 
         //better way to do the trailing front slash
         $resp = $this->sendRequest($endpoint."/","PATCH",$records);
-        $body = json_decode($resp->getBody(),true);
-        return $body;
+        
+        
+        return $resp->getBody();
     }
+
+
 
     public function deleteRecordFromSession($sObject,$sObjectIds){
         return $this->deleteRecordsFromSession($sObject,$sObjectIds);
     }
+
+
 
     public function deleteRecordsFromSession($sObject,$sObjectIds){
         $authResult = $this->authorizeToSalesforce();
@@ -287,7 +378,10 @@ class Salesforce {
         }
         return $this->deleteRecords($sObject,$sObjectIds,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
-    public function deleteRecords($sObject,$sObjectIds,$instance_url = null,$access_token = null){
+    
+    
+    
+    public function deleteRecords($sObject, $sObjectIds, $instance_url = null, $access_token = null) {
         $pluralEndpoint = function () use($sObjectIds){
             $endpoint = "/services/data/v49.0/composite/sobjects?ids=";
             foreach ($sObjectIds as $value)
@@ -297,7 +391,8 @@ class Salesforce {
         //$singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName."/".$sObjectIds;
         $endpoint = is_array($sObjectIds)? $pluralEndpoint."/" : "/services/data/v49.0/sobjects/".$sObject."/".$sObjectIds."/";
         $resp = $this->sendRequest($endpoint,"DELETE");
-        $body = json_decode($resp->getBody(),true);
+
+        $body = $resp->getBody();
         //var_dump($resp);
         if(is_array($sObjectIds) && $resp->getStatusCode() != 200){
             throw new Exception("Status Code: ".$resp->getStatusCode()." Error deleating the record(s): ".$resp->getBody());
@@ -307,10 +402,14 @@ class Salesforce {
             throw new Exception("Status Code: ".$resp->getStatusCode()." Error deleating the record(s): ".$resp->getBody());
             
         }
+        
+        
         return true;
     }
 
-    public function addToBatch($fields,$metod = null){
+
+
+    public function addToBatch($fields, $metod = null){
         $req = array();//final request to add to batch
 
         if(empty($fields) && (!is_array($fields) || !is_string($fields))){
@@ -398,6 +497,8 @@ class Salesforce {
 
     }
 
+
+
     public function sendBatchFromSession($reqBody = null){
         $authResult = $this->authorizeToSalesforce();
         if (!$authResult->isSuccess()) {
@@ -406,7 +507,9 @@ class Salesforce {
         return $this->deleteRecords($reqBody,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
 
-    public function sendBatch($reqBody = null,$instance_url = null,$access_token = null){
+
+
+    public function sendBatch($reqBody = null, $instance_url = null, $access_token = null) {
         if(empty($reqBody)){
             $reqBody = $this->reqBody;
         }
@@ -420,7 +523,9 @@ class Salesforce {
         if(strpos($resp->getBody(),"\"hasErrors\" : true")){
             throw new Exception($resp->getBody());
         }
-        $body = json_decode($resp->getBody(),true);
+        
+        
+        return $resp->getBody();
     }
 
 

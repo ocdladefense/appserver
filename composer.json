@@ -5,13 +5,12 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require-dev": {},
-    "extra":{
-        "installer-paths":{
-            "modules/salesforce":["ocdladefense/appserver-salesforce"]
-        }
+    "extra": {
+    	"installer-paths": {
+    		"saml":["simplesamlphp/simplesamlphp"]
+    	}
     },
     "require": {
-        "composer/installers":"~1.0",
-        "ocdladefense/appserver-salesforce":"dev-development"
+        "composer/installers":"~1.0"
     }
 }
