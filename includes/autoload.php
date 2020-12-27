@@ -1,5 +1,10 @@
 <?php
 
+
+	$saml_auth = "/var/simplesamlphp/lib/_autoload.php";
+	if(file_exists($saml_auth)) {
+		require_once($saml_auth);
+	}
 	require_once BASE_PATH.'/includes/globals.php';
 
 	if(file_exists(BASE_PATH.'/config/config.php')){		

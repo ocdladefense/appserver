@@ -179,6 +179,8 @@ class Application {
 		// incoming request: maps
     public function init($uri) {
 
+
+			
 			$router = new Router();
 			$path = $router->match($uri, array_keys($this->routes));
 
@@ -191,6 +193,9 @@ class Application {
 
 			
 			$route = $this->routes[$path->__toString()];
+
+
+			
 			
 			$params = $path->getParams();
 
@@ -198,6 +203,31 @@ class Application {
 			
 			$moduleName = $route["module"];
 			l("Module is: {$moduleName}.");
+
+
+
+			// Check access here.
+			$access_fn = $route["access"][0];
+			if("authenticated" == $access_fn) {
+				
+				$as = new \SimpleSAML\Auth\Simple('default-sp');
+
+				$as->requireAuth();
+
+				$attributes = $as->getAttributes();
+				// print_r($attributes);
+				
+				// This session will be a SimpleSAML session.
+				// print_r($_SESSION);
+				
+				// This session will be a PHP session.
+				// cleanup the SimpleSAML session; also restores the previous session.
+				$session = \SimpleSAML\Session::getSessionFromRequest();
+				$session->cleanup();
+				
+				$_SESSION["saml"] = $attributes;
+				// print_r($_SESSION);
+			}
 
 
 			l("Loading Module...");
@@ -214,7 +244,7 @@ class Application {
     	// dump($object);
     	// Load the routes files, if any.
 			// $target->loadFiles();
-    	
+
     	
     	return array($object, $route, $params);
     }
