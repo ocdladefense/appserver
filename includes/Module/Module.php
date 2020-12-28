@@ -23,6 +23,11 @@ class Module {
     protected $theme;
     
     
+    protected $user;
+    
+    
+
+    
 
     public function __construct($path = null){
     	$this->path = $path;
