@@ -37,8 +37,8 @@ class Application {
 		
         // Demonstrate that we can build an index of modules.
         // $mIndex = new ModuleDiscoveryService(path_to_modules());
-        $list = XList::fromFileSystem(path_to_modules());
-        
+        // $list = XList::fromFileSystem(path_to_modules());
+        $list = new XList(XList::getDirContents(path_to_modules()));        
         // dump($list);exit;
         
         // Only include folders with the magic module.json file.
@@ -207,8 +207,16 @@ class Application {
 
 
 			// Check access here.
-			$access_fn = $route["access"][0];
-			if("authenticated" == $access_fn) {
+			$access = $route["access"];
+			$access_args = $route["access_args"];
+			
+			/*
+			if(!isset($access) ) {
+				return true;
+			} else if(!is_array($access) && function_exists($access)) {
+				return call_user_func_array($access, $access_args);
+			}
+			if("is_authenticated" == $access_fn) {
 				
 				$as = new \SimpleSAML\Auth\Simple('default-sp');
 
@@ -228,7 +236,7 @@ class Application {
 				$_SESSION["saml"] = $attributes;
 				// print_r($_SESSION);
 			}
-
+			*/
 
 			l("Loading Module...");
 			$loader = $this->getLoader();
