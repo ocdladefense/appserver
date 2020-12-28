@@ -92,7 +92,57 @@ function stringContains($haystack, $needle){
 }
 
 
+function user_require_auth() {
 
+	
+		$as = new \SimpleSAML\Auth\Simple('default-sp');
+
+		$as->requireAuth();
+
+		$attributes = $as->getAttributes();
+		// print_r($attributes);
+	
+		// This session will be a SimpleSAML session.
+		// print_r($_SESSION);
+	
+		// This session will be a PHP session.
+		// cleanup the SimpleSAML session; also restores the previous session.
+		$session = \SimpleSAML\Session::getSessionFromRequest();
+		$session->cleanup();
+	
+		$_SESSION["saml"] = $attributes;
+		// print_r($_SESSION);
+
+}
+
+
+function user_has_access($route) {
+
+	// Define in config/config.php.
+	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
+	
+	
+	$access = $route["access"];
+	$args = $route["access_args"];
+	
+	
+	if(!isset($access) ) {
+		return true;
+		
+	} else if( true === $access ) {
+		return true;
+		
+	} else if(function_exists($access)) {
+
+		return null == $args ? call_user_func($access) : call_user_func_array($access, $args);
+	}
+}
+
+
+
+	function is_authenticated() {
+		return isset($_SESSION["userId"]);
+	}
 
 
 

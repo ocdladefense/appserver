@@ -210,33 +210,14 @@ class Application {
 			$access = $route["access"];
 			$access_args = $route["access_args"];
 			
-			/*
-			if(!isset($access) ) {
-				return true;
-			} else if(!is_array($access) && function_exists($access)) {
-				return call_user_func_array($access, $access_args);
+			
+			if(!user_has_access($route)) {
+				user_require_auth();
 			}
-			if("is_authenticated" == $access_fn) {
-				
-				$as = new \SimpleSAML\Auth\Simple('default-sp');
+			
 
-				$as->requireAuth();
 
-				$attributes = $as->getAttributes();
-				// print_r($attributes);
-				
-				// This session will be a SimpleSAML session.
-				// print_r($_SESSION);
-				
-				// This session will be a PHP session.
-				// cleanup the SimpleSAML session; also restores the previous session.
-				$session = \SimpleSAML\Session::getSessionFromRequest();
-				$session->cleanup();
-				
-				$_SESSION["saml"] = $attributes;
-				// print_r($_SESSION);
-			}
-			*/
+
 
 			l("Loading Module...");
 			$loader = $this->getLoader();

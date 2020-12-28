@@ -1,6 +1,10 @@
 <?php
 // MAIN CONFIGURATIONS.
 
+// Force the current user to be a super-user.
+// Works with globals.php/user_has_access().
+define("ADMIN_USER", true);
+
 
 $oauth_config = array(
     "oauth_url" => "https://test.salesforce.com/services/oauth2/token",
