@@ -25,6 +25,23 @@ class XList {
 
 
 
+	public static function getDirContents($dir, &$results = array()) {
+			$files = scandir($dir);
+
+			foreach ($files as $key => $value) {
+					$path = realpath($dir . "/" . $value);
+					if (!is_dir($path) || strpos($value,".") === 0 || strpos($value,"sfdx") === 0) {
+							continue;
+					} else {
+							self::getDirContents($path, $results);
+							$results[] = $path;
+					}
+			}  
+
+			return $results;
+	}
+
+
 	public static function fromFilesystem($startPath = null) {
 		
 
@@ -37,8 +54,8 @@ class XList {
 		$files = scandir(".");
 
 		foreach($files as $dir)  {
-				if(!is_dir($dir) || $dir == ".." || $dir == ".")
-				continue;
+				if(!is_dir($dir) || strpos($dir,".") === 0)
+					continue;
 				$items[] = $startPath . "/" . $dir;
 		}
 		chdir($previous);
