@@ -10,6 +10,8 @@ class RestApiResult {
     
     private $access_token;
     
+    private $access_token_invalid = false;
+    
     private $isSuccess = true;
     
     private $error;
@@ -43,6 +45,13 @@ class RestApiResult {
                     "HttpStatusMessage"					=> self::getErrorMsg($resp->getStatusCode()),
                     "Salesforce_Error"					=> $body["error"],
                     "Salesforce_Error_message"	=> $body["error_description"]
+                );
+            } else if($body["errorCode"] == "Session expired or invalid") {
+                $this->access_token_invalid = true;
+            } else {
+                $this->error = array (
+                    "HttpStatusCode"=>$resp->getStatusCode(),
+                    "HttpStatusMessage"=>$this->getErrorMsg($resp->getStatusCode())
                 );
             }
         }
@@ -83,17 +92,17 @@ class RestApiResult {
     }
     
     
-    public function getError(){
+    public function getError() {
         return $this->error;
     }
     
     
-    public function isTokenExpired(){
+    public function isTokenExpired() {
         return false;
     }
     
     
-    public function isTokenInvalid(){
-        return false;
+    public function isTokenInvalid() {
+				return $this->access_token_invalid;
     }
 }
