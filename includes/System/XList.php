@@ -30,7 +30,7 @@ class XList {
 
 			foreach ($files as $key => $value) {
 					$path = realpath($dir . "/" . $value);
-					if (!is_dir($path) || strpos($value,".") === 0 || strpos($value,"sfdx") === 0) {
+					if (!is_dir($path) || strpos($value,".") === 0) {
 							continue;
 					} else {
 							self::getDirContents($path, $results);
