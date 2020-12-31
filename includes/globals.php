@@ -94,7 +94,10 @@ function stringContains($haystack, $needle){
 
 function user_require_auth() {
 
-	
+		header("Location: /login", true, 302);
+		exit;
+		
+		
 		$as = new \SimpleSAML\Auth\Simple('default-sp');
 
 		$as->requireAuth();
@@ -138,6 +141,10 @@ function user_has_access($route) {
 	}
 }
 
+
+function user_get_initials() {
+	return !is_authenticated() ? "G" : ucfirst(substr($_SESSION["username"], 0, 1));
+}
 
 
 	function is_authenticated() {

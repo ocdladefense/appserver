@@ -61,3 +61,36 @@ li a {
 	font-size: 1.0rem;
 }
 
+
+
+@media screen and (min-width: 800px) {
+
+.main-menu li a {
+	font-size: 0.65em;
+	
+}
+.main-menu i {
+	color:rgba(0,0,0,0.6);
+	display:block;
+	min-width: 45px;
+	vertical-align:top;
+	font-size: 2.0rem;
+	margin-bottom: 0.5em;
+}
+
+.main-menu li {
+    display: inline-block;
+    /* border-bottom: 0.5px solid rgba(0,0,0,0.1); */
+    width: 200px;
+    height: 200px;
+    text-align: center;
+    margin: auto;
+    font-size: 2.0em;
+    overflow: hidden;
+    vertical-align: top;
+    line-height: 1.0em;
+    cursor: pointer;
+    border-bottom: none;
+
+}
+

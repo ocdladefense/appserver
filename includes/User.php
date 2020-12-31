@@ -8,11 +8,15 @@ class User {
 		$username 			= $saml["username"][0];
 		$email 					= $saml["email"][0];
 		$isPortalUser 	= $saml["is_portal_user"][0];
+		
 	
 		$_SESSION["userId"] 			= $userId;
 		$_SESSION["username"] 		= $username;
 		$_SESSION["email"] 				= $email;
 		$_SESSION["isPortalUser"] = $isPortalUser;
+		$_SESSION["FirstName"]		= $firstName;
+		$_SESSION["LastName"] 		= $lastName;
+		$_SESSION["initials"] 		= substr($firstName, 0, 1) . substr($lastName, 0, 1);
 	}
 
 
