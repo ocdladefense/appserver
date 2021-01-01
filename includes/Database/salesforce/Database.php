@@ -107,26 +107,38 @@ class Database {
 		//OAuth
 		$salesforce = new \Salesforce($oauth_config);
 
-		//INSERT INTO Media__c (ResourceId__c, Name, Speakers__c, Description__c, IsPublic__c, Published__c, Date__c) VALUES ('YtoqDF8EnsA', 'name', 'speakers', 'description', true, true, '2020-02-02')
+		
 
-		$newquery = trim($query, "()");
+		
+		
+		$getRidofQuotes = function ($item) {
+			return trim($item, "\"'");
+		};
 
-		print($newquery);
+		$getRidofParen = function ($item) {
+			return trim($item, "()");
+		};
 
-		exit;
-		print(" ");
-		print("Statement________________________________________________________________________________________________________________________________________________________________________________");
-		print(" ");
 
-		$statement = explode("INSERT INTO", $query);
+		function printAll($array, $label = null) {
+			print "<h2>{$label}</h2>";
+			if(is_array($array)) {
+				print "<pre>". print_r($array,true) . "</pre>";
+			} else {
+				print $array;
+			}
+		}
+		//INSERT INTO Media__c (ResourceId__c, Name, Speakers__c, Description__c, IsPublic__c, Published__c, Date__c) VALUES ('YtoqDF8EnsA', 'name', 'speakers', 'description', true, true, '2020-02-02'),('YtoqDF8EnsA', 'name', 'speakers', 'description', true, true, '2020-02-02')
+
+
+
+		$statement = explode("INSERT INTO", $query)[1];
 
 		//$statement[0] is empty
 		//$statement[1] is everything to the right of INSERT INTO
 
-		print_r($statement);
-		print(" ");
-		print("ProtoKeyValues__________________________________________________________________________________________________________________________________________________________________________");
-		print(" ");
+		printAll($statement, "INSERT statement is");
+
 
 		//Media__c(ResourceId__c,Name, Speakers__c, Description__c, IsPublic__c, Published__c, Date__c)VALUES('YtoqDF8EnsA', 'name', 'speakers', 'description', true, true, '2020-02-02'),(THESE ARE MY OTHER VALUES)
 		//if we explode by space... array = {"Media__c", "(ResourceId__c,", "Name,")}
@@ -139,39 +151,23 @@ class Database {
 
 		
 
-		$protoKeyValues = explode("VALUES", $statement[1]);
-		
-		print_r($protoKeyValues);
-		print(" ");
-		print("valueString______________________________________________________________________________________________________________________________________________________________________________");
-		print(" ");
-		
+		$protoKeyValues = explode("VALUES", $statement);
+
+		printAll($protoKeyValues, "Keys and values.");
 
 		$valueString = preg_replace("/\)\s*,\s*\(/", "),(", $protoKeyValues[1]);  //standardizing multiple records
 		//look up preg_replace on php.net!
 		//IF THERE IS NO PATTERN THEN IT WILL RETURN NULL!!
 
-		print($valueString);
-		print(" ");
-		print("values___________________________________________________________________________________________________________________________________________________________________________________");
-		print(" ");
-		
+		printAll(trim($valueString," ()"), "Values are:");
+
+
 
 		$values = explode("),(", $valueString);
 		//Thing I want to use for inital set of values should be taking protoKeyValues at index of [1]
 
-		print_r($values);
-		print(" ");
-		print("SObjectKey_______________________________________________________________________________________________________________________________________________________________________________");
-		print(" ");
+		printAll($values);
 		
-		$getRidofQuotes = function ($item) {
-			return trim($item, "\"'");
-		};
-
-		$getRidofParen = function ($item) {
-			return trim($item, "()");
-		};
 
 		//$protoKeyValues[0] is Media__c(ResourceId__c,Name, Speakers__c, Description__c, IsPublic__c, Published__c, Date__c)
 		//$protoKeyValues[1] is ('YtoqDF8EnsA', 'name', 'speakers', 'description', true, true, '2020-02-02')
@@ -181,58 +177,43 @@ class Database {
 		//$SObjectKey[0] is Media__c
 		//$SObjectKey[1] is ResourceId__c,Name, Speakers__c, Description__c, IsPublic__c, Published__c, Date__c)
 
-		print_r($SObjectKey);
-		print(" ");
-		print("trimKeys_________________________________________________________________________________________________________________________________________________________________________________");
-		print(" ");
+		printAll($SObjectKey, "SObject Keys string is:");
+
 
 		//$SObjectKey[1] are keys
 		//$values are values
 		print("<h2>Setting simple string</h2>");
 		$simpleString = $SObjectKey[1];
-		print($simpleString);
-		$trimKeys = trim($simpleString, ')');
-		print("</br>");
-		print($trimKeys);
-		print("</br>");
-		exit;
-		$trimmedValues = array_map($getRidofParen, $values);
+		printAll($simpleString, "Simple string without trim is: ");
 
-		print($trimKeys);
-		print(" ");
-		print("trimmedValues_______________________________________________________________________________________________________________________________________________________________________________");
-		print(" ");
+		$trimmedKeys = trim($simpleString, ' ()');
+		printAll($trimmedKeys, "Simple string trimmed is: ");
 
-		print_r($trimmedValues);
-		print(" ");
-		print("keys_____________________________________________________________________________________________________________________________________________________________________________________");
-		print(" ");
 
+		$trimmedValues = array_map(function($item) { return trim($item," ()"); }, $values);
+
+		
+		
+		
+		
+		
+		
+		
 		//$trimKeys is  ResourceId__c,Name, Speakers__c, Description__c, IsPublic__c, Published__c, Date__c
 		//$trimValues is 'YtoqDF8EnsA', 'name', 'speakers', 'description', true, true, '2020-02-02'
 
-
-		$keys = explode(',', $trimKeys);
-		$values = explode(",", $trimValues,);
+  
+		$keys = explode($trimmedKeys, ",");
+		$values = explode(",",$trimmedValues);
 
 		//$keys is now {"ResourceId__c", "Name", "Speakers__c", "Description__c", "IsPublic__c", "Published__c", "Date__c"}
 		//$values is now {"YtoqDF8EnsA", 'My Home Video 1', "Josh Cathey", "Josh gives a lecture", true, true, "2020-02-02"}
+
+		printAll($keys, "SObject keys will be:");
 		
-		print_r($keys);
-		print(" ");
-		print("values___________________________________________________________________________________________________________________________________________________________________________________");
-		print(" ");
-
-		print_r($values);
-		print(" ");
-		print("_________________________________________________________________________________________________________________________________________________________________________________________");
-		print(" ");
-
-
 		
-		print(" ");
-		print("trimmedValues_______________________________________________________________________________________________________________________________________________________________________________");
-		print(" ");
+		printAll($values, "SObject values will be:");
+		
 
 		//array_map ( callable|null $callback , array $array , array ...$arrays )?
 		$trimmedValues = array_map($getRidofQuotes, $values);
@@ -260,6 +241,12 @@ class Database {
 
 		return $salesforce->CreateRecordFromSession($SObjectName, $record);
 	}
+	
+	
+	
+	
+	
+	
 	
 	function close() {}
 	
