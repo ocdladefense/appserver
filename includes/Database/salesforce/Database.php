@@ -190,6 +190,11 @@ class Database {
 		printAll($trimmedKeys, "Simple string trimmed is: ");
 
 
+
+
+
+
+
 		$trimmedValues = array_map(function($item) { return trim($item," ()"); }, $values);
 
 		
