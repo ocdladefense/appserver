@@ -187,7 +187,7 @@ class Database {
 		printAll($simpleString, "Simple string without trim is: ");
 
 		$trimmedKeys = trim($simpleString, ' ()');
-		printAll($trimmedKeys, "Simple string trimmed is: ");
+		printAll($trimmedKeys, "Trimmed Keys is: ");
 
 
 
@@ -195,12 +195,7 @@ class Database {
 
 
 
-		$trimmedValues = array_map(function($item) { return trim($item," ()"); }, $values);
-
-		
-		
-		
-		
+		$MultipleRows = array_map(function($item) { return trim($item," ()"); }, $values);
 		
 		
 		
@@ -208,43 +203,61 @@ class Database {
 		//$trimValues is 'YtoqDF8EnsA', 'name', 'speakers', 'description', true, true, '2020-02-02'
 
   
-		$keys = explode($trimmedKeys, ",");
-		$values = explode(",",$trimmedValues);
+		$keys = array_map(function($item) {return trim($item); }, explode(",", $trimmedKeys));
+		printAll($keys, "Keys will be: ");
+		//$values = explode($trimmedValues[], ",");
 
 		//$keys is now {"ResourceId__c", "Name", "Speakers__c", "Description__c", "IsPublic__c", "Published__c", "Date__c"}
 		//$values is now {"YtoqDF8EnsA", 'My Home Video 1', "Josh Cathey", "Josh gives a lecture", true, true, "2020-02-02"}
-
-		printAll($keys, "SObject keys will be:");
 		
-		
-		printAll($values, "SObject values will be:");
-		
+		$records = array();
 
-		//array_map ( callable|null $callback , array $array , array ...$arrays )?
-		$trimmedValues = array_map($getRidofQuotes, $values);
+		function convertStringtoBool($str){
+			if ($str == "true")
+				return true;
+			elseif ($str == "false")
+				return false;
+			throw new Exception("Bool must be either true or false");
+		}
 
-		print_r($trimmedValues);
+		foreach($MultipleRows as $Row){
 
-		$record = array_combine($keys ,$trimmedValues);
-		//want '' coming in input, but want to strip them out for output using trim(value, "'") using a foreach
+			$values = array_map(function($item) {$tmp = trim($item, " '"); return in_array($tmp, ["true", "false"]) ? convertStringtoBool($tmp) : $tmp; }, explode(",", $Row));
 
-		
-		//array_map ( callable|null $callback , array $array , array ...$arrays )
+			printAll($keys, "SObject keys will be:");
+			
+			
+			printAll($values, "SObject values will be:");
+			
 
-
-		$record = array(
-			"ResourceId__c"=>"'YtoqDF8EnsA'",
-			"Name"=>"''",
-			"Speakers__c"=>"''",
-			"Description__c"=>"''",
-			"IsPublic__c"=>true,
-			"Published__c"=>true,
-			"Date__c"=>"''"
-		);
+			//array_map ( callable|null $callback , array $array , array ...$arrays )?
+			$trimmedValues = array_map($getRidofQuotes, $values);
 
 
+			$record = array_combine($keys, $values);
+			//want '' coming in input, but want to strip them out for output using trim(value, "'") using a foreach
 
-		return $salesforce->CreateRecordFromSession($SObjectName, $record);
+			
+			//array_map ( callable|null $callback , array $array , array ...$arrays )
+
+
+			// $record = array(
+			// 	"ResourceId__c"=>"'YtoqDF8EnsA'",
+			// 	"Name"=>"''",
+			// 	"Speakers__c"=>"''",
+			// 	"Description__c"=>"''",
+			// 	"IsPublic__c"=>true,
+			// 	"Published__c"=>true,
+			// 	"Date__c"=>"''"
+			// );
+
+			$records[] = $record;
+		}
+
+		var_dump($records);
+		exit;
+
+		return $salesforce->CreateRecordFromSession($SObjectName, $records);
 	}
 	
 	
