@@ -1,7 +1,19 @@
 <?php
 
 
-class MysqlDatabase {
+
+
+namespace Mysql;
+
+
+/**
+ * $db = new Database();
+ *  $db->connect(array("username" => "jbernal"));  // Pass in the credentials.
+  *  $results = $db->query("SELECT Id, Name FROM car");
+  */
+
+
+class Database {
 
     private $connection;
 
@@ -13,7 +25,7 @@ class MysqlDatabase {
         $this->connect($alias);
     }
 
-    function connect($alias = null){
+    function connect($credentials = array()){
         //Create connection
         $this->connection = new Mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
 
@@ -87,7 +99,15 @@ class MysqlDatabase {
         }
         return new DbSelectResult($result);
     }
+    
+    // May need to add an instance method "query" in addition to select.
+    
 
+
+		/**
+		 * Example:
+		 *   MysqlDatabase::query("SELECT * FROM car");
+		 */
     public static function query($sql, $type = "select"){
 
         $db = new MysqlDatabase();
@@ -124,6 +144,12 @@ class MysqlDatabase {
 
 
 
+
+
+
+// THESE GLOBAL FUNCTIONS ARE OUTSIDE OF THE DATABASE CLASS!
+
+
 function select($query) {
 	$tokens = explode(" ", strtolower($query));
 	$tokens = implode(" ", array_filter($query));
@@ -157,6 +183,14 @@ function insert($objs = array()){
         throw new DbException("Object Id must be null");
     }
 
+
+
+		$force = new Salesforce();
+		return $force->createRecords($sObjectName, $records);
+
+
+		// Some of this, below, may not be necessary b/c it generates SQL.
+		
     $sample = $objs[0];
 
     $columns = getObjectFields($sample);
