@@ -255,9 +255,9 @@ class Database {
 		}
 
 		var_dump($records);
-		exit;
+		
 
-		return $salesforce->CreateRecordFromSession($SObjectName, $records);
+		return $salesforce->createRecordsFromSession($SObjectName, $records);
 	}
 	
 	
