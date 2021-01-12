@@ -33,7 +33,7 @@ class Application {
 	
 	
 		
-    public function __construct(){
+    public function __construct() {
 		
         // Demonstrate that we can build an index of modules.
         // $mIndex = new ModuleDiscoveryService(path_to_modules());
@@ -144,7 +144,14 @@ class Application {
 				list($module, $route, $params) = $this->init($uri);
 				$module->setRequest($req);
 
+
+				
+
         try {
+
+						if(isset($route["theme"])) {
+							\set_theme("Videos");
+						}
 
             $out = $this->getOutput($module, $route, $params);
             

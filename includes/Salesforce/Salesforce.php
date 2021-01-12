@@ -16,7 +16,7 @@ class Salesforce {
     private $oauth_config = array();
     private $reqBody = array();
 
-    private const MAX_LOGIN_ATTEMPTS = 3;
+    private const MAX_LOGIN_ATTEMPTS = 3; 
 
 
 		/**
@@ -178,7 +178,7 @@ class Salesforce {
     public function authorizeToSalesforce() {
     
     		// No need to re-authenticate.
-				if(isset($_SESSION["salesforce_access_token"])) return;
+				//if(isset($_SESSION["salesforce_access_token"])) return;
         $_SESSION["login_attempts"]++;
     
     		// Setup local var for convenience.
@@ -192,7 +192,7 @@ class Salesforce {
 
 
         
-        
+        //commented out to get around too many login errors~not sure why I am getting that message//
         if($_SESSION["login_attempts"] > self::MAX_LOGIN_ATTEMPTS) {
             throw new Exception ("OAUTH_AUTHENTICATION_ERROR: Too many login attempts.");
         }
@@ -234,7 +234,7 @@ class Salesforce {
 
 
   
-    public function createRecords($sObjectName,$records,$instance_url = null,$access_token = null){
+    public function createRecords($sObjectName, $records, $instance_url = null, $access_token = null){
         $pluralEndpoint = "/services/data/v49.0/composite/tree/".$sObjectName;
         $singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName;
         $plural = is_array($records) && isset($records[0]);
@@ -313,11 +313,33 @@ class Salesforce {
         return $resp->getBody();
     }
     
-    
-    
-    public function updateRecordFromSession($records, $sObject = null) {
-        return $this->updateRecordsFromSession($records, $sObject = null);
+
+
+
+    public function updateRecordFromSession($sObject = null,$record){
+        $authResult = $this->authorizeToSalesforce();
+        if (!$authResult->isSuccess()) {
+            throw new SalesforceAuthException("Not Authorized");
+        }
+        return $this->updateRecord($sObject, $record, $_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
+
+    public function updateRecord($sObject = null, $record, $instance_url = null, $access_token = null){
+        $apiVersion = "v50.0";
+        $id = $record->Id;
+        unset($record->Id);
+        //$endpoint = "/services/sobjects/";
+        //services/data/v50.0/sobjects/Account/001D000000INjVe
+        $endpoint = "/services/data/{$apiVersion}/sobjects/{$sObject}/{$id}"; 
+        //var_dump($record);
+        //exit;
+        //better way to do the trailing front slash
+        $resp = $this->sendRequest($endpoint."/","PATCH",$record);
+        
+        
+        return $resp->getBody();
+    }
+
 
 
 
@@ -328,9 +350,7 @@ class Salesforce {
         }
         return $this->updateRecords($records,$sObject,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
-    
-    
-    
+
     public function updateRecords($records, $sObject = null, $instance_url = null, $access_token = null){
         
         $singularEndpoint = "/services/sobjects/";
@@ -388,7 +408,7 @@ class Salesforce {
                 $endpoint = $endpoint.$value.",";
             return $endpoint."&allOrNone=false";
         };
-        //$singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName."/".$sObjectIds;
+        //$singularEndpoint = "/services/data/v50.0/sobjects/".$sObject."/".$sObjectIds;
         $endpoint = is_array($sObjectIds)? $pluralEndpoint."/" : "/services/data/v49.0/sobjects/".$sObject."/".$sObjectIds."/";
         $resp = $this->sendRequest($endpoint,"DELETE");
 
