@@ -135,10 +135,6 @@ class DefaultTheme extends Theme {
 			),
 			array(
 				"active" => true,
-				"href" => $path . "/css/menu.css?bust=001"
-			),
-			array(
-				"active" => true,
 				"href" => $path . "/css/main-menu.css?bust=001"
 			),
 			array(

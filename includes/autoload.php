@@ -85,7 +85,8 @@
 
 	require_once BASE_PATH.'/includes/Database/IDbResult.php';
 	require_once BASE_PATH.'/includes/Database/DbResult.php';
-	require_once BASE_PATH.'/includes/Database/MysqlDatabase.php';
+	require_once BASE_PATH.'/includes/Database/mysql/Database.php';
+	require_once BASE_PATH.'/includes/Database/salesforce/Database.php';
 	require_once BASE_PATH.'/includes/Database/DbSelectResult.php';
 	require_once BASE_PATH.'/includes/Database/DbInsertResult.php';
 	require_once BASE_PATH.'/includes/Database/DbUpdateResult.php';
