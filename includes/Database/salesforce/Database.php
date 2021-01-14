@@ -101,16 +101,32 @@ class Database {
 		
 	}
 
+	//step 2
 	public static function insert2($query){
 		global $oauth_config;
 
 		//OAuth
 		$salesforce = new \Salesforce($oauth_config);
 
+		list($sObjectName, $records) = self::parse($query);
+		//var_dump($sObjectName);
+		//var_dump($records);
 		
+		
+		//use For loop to loop through records
+		$batches = $salesforce->prepareBatchInsert($sObjectName, $records);
+		var_dump($batches);
+		
+		$variable2 = $salesforce->sendBatchFromSession($batches);
+		var_dump($variable2);
+		//return $salesforce->sendBatch();
 
-		
-		
+
+	}
+
+	//step 1
+	public static function parse($query){
+
 		$getRidofQuotes = function ($item) {
 			return trim($item, "\"'");
 		};
@@ -238,32 +254,11 @@ class Database {
 			$record = array_combine($keys, $values);
 			//want '' coming in input, but want to strip them out for output using trim(value, "'") using a foreach
 
-			
-			//array_map ( callable|null $callback , array $array , array ...$arrays )
 
-
-			// $record = array(
-			// 	"ResourceId__c"=>"'YtoqDF8EnsA'",
-			// 	"Name"=>"''",
-			// 	"Speakers__c"=>"''",
-			// 	"Description__c"=>"''",
-			// 	"IsPublic__c"=>true,
-			// 	"Published__c"=>true,
-			// 	"Date__c"=>"''"
-			// );
-
-			//$records[] = $record;
+			$records[] = $record;
 		}
 
-		//var_dump($records);
-		var_dump($record);
-
-		$record["sObjectName"] = $sObjectName;
-
-		var_dump($record);
-		var_dump($salesforce->addToBatch($record, "POST"));
-		var_dump($salesforce->sendBatch());
-		//return $salesforce->createRecordsFromSession($SObjectName, $records);
+		return array($sObjectName, $records);
 	}
 	
 	

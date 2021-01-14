@@ -109,6 +109,9 @@ class Salesforce {
 	public function sendRequest($endpoint, $method = "GET", $body = null, $contentType = "application/json"){
 
 			if (!$this->isOauthRequest($endpoint)){
+                if(!isset($_SESSION["salesforce_instance_url"])){
+                    $this->authorizeToSalesforce();
+                }
 					$endpoint = $_SESSION["salesforce_instance_url"] . $endpoint;
 					$token = new HttpHeader("Authorization", "Bearer " . $_SESSION["salesforce_access_token"]);
 			}
@@ -146,9 +149,13 @@ class Salesforce {
 					"ssl_verifypeer" => false
 			);
 
-			$http = new Http($config);
-			$response = $http->send($req);
-			
+            $http = new Http($config);
+            var_dump($req);
+            $response = $http->send($req);
+            var_dump($response);
+            
+            
+			//var_dump($response);
 			$result = new RestApiResult($response);
 
 			//trying to authenticate again if token exp or invalid
@@ -159,7 +166,7 @@ class Salesforce {
 					$this->sendRequest($endpoint,$method,$body,$contentType);
 			}
 					
-					
+				
 			 return $result;
 	}
     
@@ -176,9 +183,7 @@ class Salesforce {
     	* @return RespApiResult
     	*/
     public function authorizeToSalesforce() {
-    
-    		// No need to re-authenticate.
-				//if(isset($_SESSION["salesforce_access_token"])) return;
+ 
         $_SESSION["login_attempts"]++;
     
     		// Setup local var for convenience.
@@ -441,37 +446,27 @@ class Salesforce {
         //     }]
         // } 
 
+    public function prepareBatchInsert($sObjectName, $records){
+        //replace with for loop
+        $batches = array();
+        foreach($records as $record){
+            
+            $batches[] = $this->addToBatch($sObjectName, $record, "POST");
+        }
+        return $batches;
+    }
 
-    public function addToBatch($fields, $method = null){
+    public function addToBatch($sObjectName, $record, $method = null){
         $req = array();//final request to add to batch
 
-        if($method == "POST" && is_array($fields)){
-            $url = "v49.0/sobjects/".$fields["sObjectName"];
+        if($method == "POST"){
 
-            unset($fields["sObjectName"]);
             $req["method"] = $method;
-            $req["url"] = $url;
-            $req["richInput"] = $fields;
-
-            array_push($this->reqBody, $req);
-
-            var_dump($url);
-            return $this->reqBody;
+            $req["url"] = "v49.0/sobjects/".$sObjectName;
+            $req["richInput"] = $record;
         }
-
-
-
-
-        if(empty($fields) && (!is_array($fields) || !is_string($fields))){
-            throw new Exception("Invalid request");
-        }
-        if(!is_array($fields) && strpos($fields,"SELECT")){
-            $req["url"] = "v50.0/query/?q=".urlencode($fields);
-            $req["method"] = "GET";
-            array_push($req);
-            return $this->reqBody;
-        }
-
+        
+        return $req;
 
 
         // if($req["method"] == "PATCH" &&  strpos($req["url"],"v50.0/sobjects/")){//if its calling the update
@@ -549,32 +544,21 @@ class Salesforce {
 
 
 
-    public function sendBatchFromSession($reqBody = null){
-        $authResult = $this->authorizeToSalesforce();
-        if (!$authResult->isSuccess()) {
-            throw new SalesforceAuthException("Not Authorized");
-        }
-        return $this->deleteRecords($reqBody,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+    public function sendBatchFromSession($reqBody){
+        return $this->sendBatch($reqBody,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
     }
 
 
 
-    public function sendBatch($reqBody = null, $instance_url = null, $access_token = null) {
-        if(empty($reqBody)){
-            $reqBody = $this->reqBody;
-        }
+    public function sendBatch($reqBody, $instance_url = null, $access_token = null) {
         if (!is_array($reqBody)){
             throw new Exception("request body is not an array");
         }
-        
 
-        $endpoint = "/services/data/v50.0/composite/batch/";
-        $resp = $this->sendRequest($endpoint,"POST",array("batchRequests" => $reqBody));
-        if(strpos($resp->getBody(),"\"hasErrors\" : true")){
-            throw new Exception($resp->getBody());
-        }
-        
-        
+        $endpoint = "/services/data/v50.0/composite/batch";
+        $resp = $this->sendRequest($endpoint,"POST",array("batchRequests" => $reqBody));        
+    
+        var_dump($resp);
         return $resp->getBody();
     }
 
