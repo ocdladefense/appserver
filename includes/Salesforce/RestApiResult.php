@@ -75,9 +75,9 @@ class RestApiResult {
         return isset($body["access_token"]) && isset($body["instance_url"]);
     }
 
-
+    //commented out s.s. 1/9/21 error cannnot call this on a non object.//
     private static function getErrorMsg($statusCode) {
-        return $this->errorCodes[$statusCode];
+        //return $this->errorCodes[$statusCode];
     }
     
     

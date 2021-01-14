@@ -58,19 +58,32 @@ class Http {
 		// type from GET to POST *and we need
 		// to set the CURLOPT_POSTFIELDS options to the body
 		// of our request (JSON, etc.)
-		if($msg->isPost()) {
+		
+		$this->config->setMethod($msg->getMethod());
+		$methods = array(
+			"POST" => true,
+			"GET" => false,
+			"PUT" => true,
+			"DELETE" => false,
+			"PATCH" => true
+		);
+		
+
+		$method = $msg->getMethod();
+		$requires_body = $methods[$method];
+
+		if ($requires_body == true) {
+			
+			$this->config->setBody($msg->getBody());
+
 			if(gettype($msg->getBody()) != "string"){
 				throw new \Exception("INVALID_TYPE_ERROR: MESSAGE BODY MUST BE A STRING");
 			}
-
-			$this->config->setPost();
-			$this->config->setBody($msg->getBody());
-			
-		} elseif(!$msg->isGet()) {
-		
-			$this->config->setMethod($msg->getMethod());
 		}
-		
+
+		if($msg->isPost()) {
+			$this->config->setPost();
+		}
 		
 		
 		
