@@ -177,6 +177,7 @@ class Database {
 		//$SObjectKey[0] is Media__c
 		//$SObjectKey[1] is ResourceId__c,Name, Speakers__c, Description__c, IsPublic__c, Published__c, Date__c)
 
+		$sObjectName = trim($SObjectKey[0]);
 		printAll($SObjectKey, "SObject Keys string is:");
 
 
@@ -251,13 +252,18 @@ class Database {
 			// 	"Date__c"=>"''"
 			// );
 
-			$records[] = $record;
+			//$records[] = $record;
 		}
 
-		var_dump($records);
-		
+		//var_dump($records);
+		var_dump($record);
 
-		return $salesforce->createRecordsFromSession($SObjectName, $records);
+		$record["sObjectName"] = $sObjectName;
+
+		var_dump($record);
+		var_dump($salesforce->addToBatch($record, "POST"));
+		var_dump($salesforce->sendBatch());
+		//return $salesforce->createRecordsFromSession($SObjectName, $records);
 	}
 	
 	

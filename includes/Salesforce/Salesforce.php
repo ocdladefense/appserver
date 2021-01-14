@@ -245,8 +245,10 @@ class Salesforce {
         };
         $records = $plural ? array_map($fn,$records,array_keys($records)):$records;
         $records = $plural ? array("records" => $records ) : $records;
+        var_dump($records);
+        var_dump($endpoint);
         $resp = $this->sendRequest($endpoint,"POST",$records);
-        if (strpos($resp->getBody(),"hasErrors:true")){
+        if (strpos("hasErrors:true",$resp->getBody())){
             throw new Exception($resp->getBody());
         }
         $body = $resp->getBody();
@@ -427,10 +429,38 @@ class Salesforce {
         return true;
     }
 
+        // {
+        // "batchRequests" : [
+        //     {
+        //     "method" : "POST",
+        //     "url" : "/services/data/v49.0/sobjects/".$sObjectName",
+        //     "richInput" : {"Name" : "NewName"}
+        //     },{
+        //     "method" : "GET",
+        //     "url" : "v50.0/sobjects/account/001D000000K0fXOIAZ?fields=Name,BillingPostalCode"
+        //     }]
+        // } 
 
 
-    public function addToBatch($fields, $metod = null){
+    public function addToBatch($fields, $method = null){
         $req = array();//final request to add to batch
+
+        if($method == "POST" && is_array($fields)){
+            $url = "v49.0/sobjects/".$fields["sObjectName"];
+
+            unset($fields["sObjectName"]);
+            $req["method"] = $method;
+            $req["url"] = $url;
+            $req["richInput"] = $fields;
+
+            array_push($this->reqBody, $req);
+
+            var_dump($url);
+            return $this->reqBody;
+        }
+
+
+
 
         if(empty($fields) && (!is_array($fields) || !is_string($fields))){
             throw new Exception("Invalid request");
