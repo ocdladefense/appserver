@@ -66,8 +66,16 @@ class HttpRequest extends HttpMessage {
 	}
 
 
-	public function __construct($url) {
+	public function __construct($url = null) {
 		parent::__construct();
+		if(null != $url) {
+			$this->setUrl($url);
+		}
+	}
+	
+	
+	public function setUrl($url) {
+	
 		$this->url = $url;
 
 		list($this->host, $this->path) = self::parseHostname($this->url);
@@ -75,6 +83,7 @@ class HttpRequest extends HttpMessage {
 
 		$this->headers->addHeader(new HttpHeader("Host",$this->host));
 	}
+	
 	
 	public function setMethod($method) {
 		$this->method = $method;

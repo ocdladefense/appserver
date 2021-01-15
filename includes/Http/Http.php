@@ -91,8 +91,6 @@ class Http {
 		// Send using cURL with the 
 		$resp = Curl::send($msg->getUrl(), $this->config->getAsCurl());
 
-		//var_dump($resp);exit;
-		
 
 		$logArray = explode(" * ",$resp["log"]);
 		
@@ -115,6 +113,10 @@ class Http {
 
 	public function getSessionLog(){
 		return $this->httpSessionLog;
+	}
+	
+	public function printSessionLog() {
+		print "<pre>".print_r($this->httpSessionLog, true) . "</pre>";
 	}
 	
 
