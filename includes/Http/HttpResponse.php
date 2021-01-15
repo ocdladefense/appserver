@@ -70,8 +70,8 @@ class HttpResponse extends HttpMessage {
 		return $this->errorNum;
 	}
 
-	public function success(){
-		return $this->status == 200;
+	public function success() {
+		return $this->isSuccess();
 	}
 
     public function getPhpArray(){
