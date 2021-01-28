@@ -14,6 +14,10 @@ function dump($var) {
 	print "<pre>". print_r($var,true)."</pre>";
 }
 
+function getPathToConfig(){
+    return BASE_PATH . "/config";
+}
+
 function getPathToModules(){
     return  BASE_PATH . "/modules";
 }
