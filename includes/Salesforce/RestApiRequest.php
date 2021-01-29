@@ -54,7 +54,8 @@ class RestApiRequest extends HttpRequest {
 				
 				
 				if($this->body != null) {
-					$contentType = new HttpHeader("Content-Type", "application/json");
+                    $contentType = new HttpHeader("Content-Type", "application/json");
+                    $this->body = json_encode($this->body);
 					$this->addHeader($contentType);
 				}
 
@@ -67,7 +68,7 @@ class RestApiRequest extends HttpRequest {
 				);
 
 
-				$http = new Http($config);
+                $http = new Http($config);
 				
 				$resp = $http->send($this);
 				
