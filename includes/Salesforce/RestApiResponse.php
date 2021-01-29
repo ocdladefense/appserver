@@ -41,7 +41,9 @@ class RestApiResponse extends HttpResponse {
                     "Salesforce_Error"					=> $body["error"],
                     "Salesforce_Error_message"	=> $body["error_description"]
                 );
-            } else if($body["errorCode"] == "Session expired or invalid") {
+            } else if((isset($body["errorCode"]) && $body["errorCode"] == "INVALID_SESSION_ID") || 
+                        (isset($body["message"]) && $body["message"] == "Session expired or invalid")) {
+                            //        {"message": "Session expired or invalid","errorCode": "INVALID_SESSION_ID"}
                 $this->access_token_invalid = true;
             } else {
                 $this->error = array(
