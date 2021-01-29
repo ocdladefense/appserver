@@ -43,11 +43,11 @@ class DocumentParser extends DomDocument {
     }
 
 
-	public function fromTarget($selector, $url = null) {
+	public function fromTarget($selector) {
 			$target = $this->getElementById($selector);
 			if($target == null){
 
-				throw new Exception("DOM_DOCUMENT_ERROR: There are no nodes with the a class name of '{$selector}' on the page at '{$url}'");
+				throw new NodeNotFoundException("DOM_DOCUMENT_ERROR: There are no nodes for '{$selector}'");
 			} else {
 				$html = $this->saveHTML($target);				
 			}
@@ -55,11 +55,11 @@ class DocumentParser extends DomDocument {
 			return null == $target ? null : new DocumentParser($html);
 	}
 
-	public function fromNode($node, $url = null){
+	public function fromNode($node){
 
 		if($node == null){
 
-			throw new Exception("DOM_DOCUMENT_ERROR: Node cannot be null when parsing the page at '{$url}'");
+			throw new NodeNotFoundException("DOM_DOCUMENT_ERROR: There are no nodes for '{$selector}'");
 		}
 
 		$html = $this->saveHTML($node);	
@@ -67,13 +67,13 @@ class DocumentParser extends DomDocument {
 		return null == $node ? null : new DocumentParser($html);
 	}
 
-	public function getDocuments($selector, $url = null) {
+	public function getDocuments($selector) {
 
 		$nodes = $this->getElementsByClassName($selector);
 
 		if($nodes == null){
 
-			throw new Exception("DOM_DOCUMENT_ERROR: There are no nodes with the a class name of '{$selector}' on the page at '{$url}'");
+			throw new NodeNotFoundException("DOM_DOCUMENT_ERROR: There are no nodes for '{$selector}'");
 		}
 		$documents = array();
 
@@ -182,3 +182,5 @@ class DocumentParser extends DomDocument {
 		return strpos($string,"is a draft") !== false;
 	}
 }
+
+class NodeNotFoundException extends Exception{}
