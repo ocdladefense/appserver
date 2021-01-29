@@ -43,10 +43,11 @@ class DocumentParser extends DomDocument {
     }
 
 
-	public function fromTarget($selector) {
+	public function fromTarget($selector, $url = null) {
 			$target = $this->getElementById($selector);
-			if(null == $target) {
-				// throw new Exception("ELEM_NOT_FOUND_ERROR: No nodes found for <em>{$selector}</em>");
+			if($target == null){
+
+				throw new Exception("DOM_DOCUMENT_ERROR: There are no nodes with the a class name of '{$selector}' on the page at '{$url}'");
 			} else {
 				$html = $this->saveHTML($target);				
 			}
@@ -54,16 +55,26 @@ class DocumentParser extends DomDocument {
 			return null == $target ? null : new DocumentParser($html);
 	}
 
-	public function fromNode($node){
+	public function fromNode($node, $url = null){
+
+		if($node == null){
+
+			throw new Exception("DOM_DOCUMENT_ERROR: Node cannot be null when parsing the page at '{$url}'");
+		}
 
 		$html = $this->saveHTML($node);	
 		
 		return null == $node ? null : new DocumentParser($html);
 	}
 
-	public function getDocuments($selector) {
+	public function getDocuments($selector, $url = null) {
 
 		$nodes = $this->getElementsByClassName($selector);
+
+		if($nodes == null){
+
+			throw new Exception("DOM_DOCUMENT_ERROR: There are no nodes with the a class name of '{$selector}' on the page at '{$url}'");
+		}
 		$documents = array();
 
 		foreach($nodes as $node) {
