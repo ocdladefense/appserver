@@ -89,14 +89,18 @@ class Module {
     }
     protected function loadApi($apiName = null) {
     
-			global $oauth_config;
-    
-			$oauth = OAuthRequest::fromConfig($oauth_config);
+        global $oauth_config;
 
-			$resp = $oauth->authorize();
-			// var_dump($resp);
-		
-			return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+        $oauth = OAuthRequest::fromConfig($oauth_config);
+
+        $resp = $oauth->authorize();
+        
+        if($resp->hasError){
+
+            throw new Exception("OAUTH_RESPONSE_ERROR: {$resp->errorMessage}");
+        }
+    
+        return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
     }
 
 
