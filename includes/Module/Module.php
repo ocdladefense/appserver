@@ -84,10 +84,10 @@ class Module {
 
     }
     
-    protected function loadForceApi() {
-    	return $this->loadApi();
+    protected function loadForceApi($debug = false) {
+    	return $this->loadApi($debug);
     }
-    protected function loadApi($apiName = null) {
+    protected function loadApi($debug = false) {
     
         global $oauth_config;
 
@@ -97,6 +97,9 @@ class Module {
         
         if($resp->hasError){
 
+            if($debug){
+                var_dump($oauth);
+            }
             throw new Exception("OAUTH_RESPONSE_ERROR: {$resp->errorMessage}");
         }
     
