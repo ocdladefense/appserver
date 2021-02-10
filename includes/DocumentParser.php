@@ -59,7 +59,7 @@ class DocumentParser extends DomDocument {
 
 		if($node == null){
 
-			throw new NodeNotFoundException("DOM_DOCUMENT_ERROR: There are no nodes for '{$selector}'");
+			throw new NodeNotFoundException("DOM_DOCUMENT_ERROR: There are no nodes for '{$node}'");
 		}
 
 		$html = $this->saveHTML($node);	
