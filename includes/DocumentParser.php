@@ -45,8 +45,9 @@ class DocumentParser extends DomDocument {
 
 	public function fromTarget($selector) {
 			$target = $this->getElementById($selector);
-			if(null == $target) {
-				// throw new Exception("ELEM_NOT_FOUND_ERROR: No nodes found for <em>{$selector}</em>");
+			if($target == null){
+
+				throw new NodeNotFoundException("DOM_DOCUMENT_ERROR: There are no nodes for '{$selector}'");
 			} else {
 				$html = $this->saveHTML($target);				
 			}
@@ -56,6 +57,11 @@ class DocumentParser extends DomDocument {
 
 	public function fromNode($node){
 
+		if($node == null){
+
+			throw new NodeNotFoundException("DOM_DOCUMENT_ERROR: There are no nodes for '{$node}'");
+		}
+
 		$html = $this->saveHTML($node);	
 		
 		return null == $node ? null : new DocumentParser($html);
@@ -64,6 +70,11 @@ class DocumentParser extends DomDocument {
 	public function getDocuments($selector) {
 
 		$nodes = $this->getElementsByClassName($selector);
+
+		if($nodes == null){
+
+			throw new NodeNotFoundException("DOM_DOCUMENT_ERROR: There are no nodes for '{$selector}'");
+		}
 		$documents = array();
 
 		foreach($nodes as $node) {
@@ -171,3 +182,5 @@ class DocumentParser extends DomDocument {
 		return strpos($string,"is a draft") !== false;
 	}
 }
+
+class NodeNotFoundException extends Exception{}
