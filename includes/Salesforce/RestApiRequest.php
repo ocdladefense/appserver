@@ -79,28 +79,6 @@ class RestApiRequest extends HttpRequest {
 			return $resp;
 		}
 		
-		
-
-
-        $config = array(
-                "returntransfer" 		=> true,
-                "useragent" 				=> "Mozilla/5.0",
-                "followlocation" 		=> true,
-                "ssl_verifyhost" 		=> false,
-                "ssl_verifypeer" 		=> false
-        );
-
-
-        $http = new Http($config);
-        
-        $resp = $http->send($this);
-            
-        // $http->printSessionLog();
-        // var_dump($resp);
-        // exit;
-        return $resp;
-    }
-		
 
 
     public function query($soql) {
