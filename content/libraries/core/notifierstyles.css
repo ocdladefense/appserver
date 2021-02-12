@@ -1,0 +1,107 @@
+/* body {
+    background-color: #34495e;
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+} */
+
+.notification-container {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    pointer-events: none;
+    perspective: 1300px;
+    backface-visibility: hidden;
+}
+
+.notification-body {
+    background-color: #ecf0f1;
+    position: absolute;
+    right: 50px;
+    max-height: 100px;
+    max-width: 200px;
+    border-radius: 4px;
+    padding: 15px 2rem;
+    box-shadow: 2px 2px 5px 1px #2c3e50;
+    pointer-events: all;
+    cursor: default;
+}
+
+.notification-message {
+    margin: 0;
+    padding: 0;
+    max-height: 80px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #2c3e50;
+    display: -webkit-box;
+    -webkit-line-clamp: 4; 
+    -webkit-box-orient: vertical;
+}
+
+
+
+/* Notification Display Types */
+
+/* Drop Type */
+.notification-drop {
+    top: -200px;
+    transition: top 0.5s ease-in-out;
+}
+
+.notification-show-drop {
+    top: 100px;
+}
+
+
+/* Fade Slow Type */
+.notification-fade-slow {
+    top: 0px;
+    transition: opacity 0.75s ease-in-out;
+}
+
+.notification-show-fade-slow {
+    opacity: 1;
+}
+
+
+/* Fade Fast Type */
+.notification-fade-fast {
+    top: 0px;
+    transition: opacity 0.25s ease-in-out;
+}
+
+.notification-show-fade-fast {
+    opacity: 1;
+}
+
+
+/* Flip Type */
+.notification-flip {
+    top: -35px;
+    opacity: 0;
+    transform-origin: top;
+    transform-style: preserve-3d;
+    transition: transform 0.25s top 0.25s, ease-in-out;
+}
+
+.notification-show-flip {
+    opacity: 1;
+    top: 78px;
+    animation-fill-mode: forwards;
+    animation-name: flip;
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes flip {
+    0%   {transform: rotateX(-120deg);}
+    30%  {transform: rotateX(40deg);}
+    55%  {transform: rotateX(-25deg);}
+    70%  {transform: rotateX(15deg);}
+    81%  {transform: rotateX(-10deg);}
+    91%  {transform: rotateX(5deg);}
+    100% {transform: rotateX(0deg);}
+  }
