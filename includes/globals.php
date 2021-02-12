@@ -147,9 +147,17 @@ function user_get_initials() {
 }
 
 
-	function is_authenticated() {
-		return isset($_SESSION["userId"]);
-	}
+function is_authenticated() {
+	return isset($_SESSION["userId"]);
+}
+
+function getOauthConfig($index){
+
+	global $oauth_config;
+
+	return $oauth_config[$index];
+}
+
 
 
 
