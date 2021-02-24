@@ -48,7 +48,7 @@ class OAuthRequest extends HttpRequest {
 		 */
 		public static function fromConfig($config) {
 		
-				// self::validateConfig($config);
+
 				
 				$url = $config["oauth_url"];
 				

@@ -84,21 +84,28 @@ class Module {
 
     }
     
-    protected function loadForceApi() {
-    	return $this->loadApi();
+    protected function loadForceApi($debug = false) {
+    	return $this->loadApi($debug);
     }
-    protected function loadApi($apiName = null) {
+    protected function loadApi($debug = false) {
     
-			global $oauth_config;
-    
-			$oauth = OAuthRequest::fromConfig($oauth_config);
-			// var_dump($oauth);
-			
-			
-			
-			$resp = $oauth->authorize();
 
-			return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+        global $oauth_config;
+
+        $oauth = OAuthRequest::fromConfig($oauth_config);
+
+        $resp = $oauth->authorize();
+        
+        if($resp->hasError){
+
+            if($debug){
+                var_dump($oauth);
+            }
+            throw new Exception("OAUTH_RESPONSE_ERROR: {$resp->errorMessage}");
+        }
+    
+        return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+
     }
 
 
