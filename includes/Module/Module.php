@@ -92,10 +92,12 @@ class Module {
 			global $oauth_config;
     
 			$oauth = OAuthRequest::fromConfig($oauth_config);
-
+			// var_dump($oauth);
+			
+			
+			
 			$resp = $oauth->authorize();
-			// var_dump($resp);
-		
+
 			return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
     }
 

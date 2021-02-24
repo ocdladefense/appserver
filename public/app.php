@@ -1,4 +1,15 @@
 <?php
+$debug = false;
+
+if($debug) {
+var_dump($_POST);
+
+var_dump($_FILES);
+
+exit;
+
+}
+
 
 require '../bootstrap.php';     
 

@@ -19,7 +19,6 @@
 
 
 .column {
-	width:19%;
 	overflow-y:hidden;
 	display: inline-block;
 	background-color: #fff;
@@ -145,6 +144,10 @@ body {
 
 
 
+#search-form {
+	display:none;
+}
+
 
 
 
@@ -153,8 +156,13 @@ body {
 	display: block;
 	position: relative;
 	vertical-align: top;
-	width: 90%;
 	margin: 0 auto;
+}
+
+@media screen and(min-width:800px) {
+	#stage {
+		width: 90%;
+	}
 }
 
 

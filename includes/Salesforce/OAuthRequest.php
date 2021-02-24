@@ -48,7 +48,7 @@ class OAuthRequest extends HttpRequest {
 		 */
 		public static function fromConfig($config) {
 		
-				self::validateConfig($config);
+				// self::validateConfig($config);
 				
 				$url = $config["oauth_url"];
 				
@@ -157,49 +157,6 @@ class OAuthRequest extends HttpRequest {
     }
     
     
-
-
-
-
-
-
-		public static function validateConfig($config) {
-		
-				// Removed redirect_uri, security_token cuz it can be empty.
-				$check = array("oauth_url","client_id","client_secret","username","password");
-		
-		
-				// @TODO should it be 5 or 7; should be able to omit keys that aren't required
-				// and still have a valid OAuth config.
-				if(empty($config) || !is_array($config) || sizeof($config) < 7) {
-						throw new SalesforceAuthException("Invalid Auth config");
-				}
-
-
-				foreach($check as $key) {
-						$value = $config[$key];
-				
-						// None of the configs should be missing!
-						if(!array_key_exists($key,$config)) {
-								throw new SalesforceAuthException("Invalid OAuthConfig Parameter {$key}.");
-						}
-				
-						// Nothing important should be empty!
-						if(empty($value)) {
-								throw new SalesforceAuthException("Empty/null value in OAuthConfig Key Name: {$key}.");
-						}
-				}
-		
-		
-				if(!self::isValidSalesforceUsername($config["username"])) {
-					throw new SalesforceAuthException("Invalid OauthConfig Username: ".$config["username"]);
-				}
-		
-				if(!self::isValidOAuthTokenUrl($config["oauth_url"])) {
-					throw new SalesforceAuthException("Invalid OauthConfig Login Url: ".$config["oauth_url"]);
-				}
-		}
-
 
 
 		private static function isValidSalesforceUsername($username) {
