@@ -38,6 +38,20 @@ class Http {
 		$this->config = new CurlConfiguration($config);
 	}
 
+	// Move this config to config.php
+	public static function newSession(){
+
+        $config = array(
+            "verbose" => true,
+            "returntransfer" => true,
+            "ssl_verifyhost" => false,
+            "ssl_verifypeer" => false,
+            "useragent"	=> "Swagger-Codegen/1.0.0/php"
+        );
+            
+        return new Http($config);
+    }
+
 
 	// Send the specified HttpMessage, optionally
 	//   enable logging.

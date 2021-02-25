@@ -46,11 +46,14 @@ class OAuthResponse extends HttpResponse {
 
         $body = null != $body ? json_decode($body, true) : null;
 
+        if(!empty($body["error"])){
 
+            $this->hasError = true;
+            $this->errorMessage = $body["error_description"];
+        }
 
-
-				$this->accessToken = $body["access_token"];
-				$this->instanceUrl = $body["instance_url"];  
+        $this->accessToken = $body["access_token"];
+        $this->instanceUrl = $body["instance_url"];  
 
         
 				/*
@@ -76,23 +79,19 @@ class OAuthResponse extends HttpResponse {
 
 
 
+
+
 		
-		public static function resolveFromSession() {
-		
-  		if(empty($_SESSION["salesforce_instance_url"])) {
-  			throw new Exception("Instance URL is not set!");
-  		}
-  		
-  		if(empty($_SESSION["salesforce_access_token"])) {
-  			throw new Exception("Access token is not set!");
-  		}
-		}
+    public static function resolveFromSession() {
     
-    
-
-
-
-
+        if(empty($_SESSION["salesforce_instance_url"])) {
+            throw new Exception("Instance URL is not set!");
+        }
+        
+        if(empty($_SESSION["salesforce_access_token"])) {
+            throw new Exception("Access token is not set!");
+        }
+    }
 
     // Commented out s.s. 1/9/21 error cannnot call this on a non object.//
     private static function getErrorMsg($statusCode) {
@@ -114,6 +113,4 @@ class OAuthResponse extends HttpResponse {
     public function getError() {
         return $this->error;
     }
-
-
 }

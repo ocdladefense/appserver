@@ -161,11 +161,11 @@ class Notifier {
             this.hideNow(this.currentNotification);
         }
 
-        this.currentNnotification = this.getFromQueue(specificNotification);
+        this.currentNotification = this.getFromQueue(specificNotification);
 
-        this.show(this.currentNnotification);
+        this.show(this.currentNotification);
 
-        this.hide(this.currentNnotification);
+        this.hide(this.currentNotification);
     }
 
 

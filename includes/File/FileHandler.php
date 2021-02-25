@@ -44,10 +44,12 @@ class FileHandler {
     }
 
     public function createDirectory(){
+				$targetPath = $this->getTargetPath();
 
-        if(!file_exists($this->getTargetPath())){
 
-            mkdir($this->getTargetPath(), 0777, true);
+        if(!file_exists($targetPath)) {
+
+            mkdir($targetPath, 0777, true);
         }
     }
 
