@@ -56,6 +56,10 @@ class RestApiRequest extends HttpRequest {
 				
 				if($this->body != null) {
                     $contentType = new HttpHeader("Content-Type", "application/json");
+                    if($this->getMethod() == "GET")
+                   {
+                    $this->setPost();
+                   }
                     $this->body = json_encode($this->body);
 					$this->addHeader($contentType);
 				}
@@ -127,5 +131,43 @@ class RestApiRequest extends HttpRequest {
     
         //var_dump($resp);
         return $resp->getBody();
+    }
+//added this function from previousrestapi file//
+    public function createRecords($sObjectName, $records) {
+        $pluralEndpoint = "/services/data/v49.0/composite/tree/".$sObjectName;
+        $singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName;
+        $plural = is_array($records) && isset($records[0]);
+        $endpoint = $plural ? $pluralEndpoint : $singularEndpoint;
+        $fn = function ($record,$index) use($sObjectName){
+            $record["attributes"] = array("type"=>$sObjectName,"referenceId"=>"ref".++$index);
+            return $record;
+        };
+        $records = $plural ? array_map($fn,$records,array_keys($records)):$records;
+        $records = $plural ? array("records" => $records ) : $records;
+        $resp = $this->send($endpoint);
+        if (strpos($resp->getBody(),"hasErrors:true")){
+            throw new Exception($resp->getBody());
+        }
+        $body = $resp->getBody();
+
+
+        return $body;
+    }
+
+    public function insert($sObjectName, $record) {
+    
+        $endpoint = "/services/data/v49.0/sobjects/".$sObjectName;
+        $this->setBody($record);
+        $resp = $this->send($endpoint);
+
+        return $resp->getBody();
+    }
+
+    public function getAttachment($ContentVersionId) {
+           
+        $endpoint = "/services/data/v51.0/sobjects/ContentVersion/{$ContentVersionId}/VersionData";
+        $resp = $this->send($endpoint);
+
+        return $resp;
     }
 }
