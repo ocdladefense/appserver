@@ -162,7 +162,6 @@ class Application {
             $resp->setBody($handler->getOutput());
             $resp->addHeaders($handler->getHeaders());
             
-            http_response_code(500);
         }
         catch(Error $error){
             $handler = Handler::fromType($error, $route["content-type"]);
