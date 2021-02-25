@@ -163,12 +163,12 @@ class Application {
             $resp->addHeaders($handler->getHeaders());
             
         }
-        // Pass the exception to the appropriate handler.
-        catch(Exception $e) {
-            $handler = Handler::fromType($e, $route["content-type"]);
+        catch(Error $error){
+            $handler = Handler::fromType($error, $route["content-type"]);
 
             $resp->setBody($handler->getOutput());
             $resp->addHeaders($handler->getHeaders());
+            http_response_code(500);
         }
 
         return $resp;
