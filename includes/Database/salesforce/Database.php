@@ -90,6 +90,16 @@ class Database {
 		
 		return $salesforce->CreateQueryFromSession($query);
 	}
+
+	public static function delete2($query){
+		global $oauth_config;
+
+		//OAuth
+		$salesforce = new \Salesforce($oauth_config);
+
+		list($sObjectName, $records) = self::parseDelete($query);
+
+	}
 	
 	
 	// This is just an alias for "select".
@@ -108,7 +118,7 @@ class Database {
 		//OAuth
 		$salesforce = new \Salesforce($oauth_config);
 
-		list($sObjectName, $records) = self::parse($query);
+		list($sObjectName, $records) = self::parseInsert($query);
 		//var_dump($sObjectName);
 		//var_dump($records);
 		
@@ -121,17 +131,75 @@ class Database {
 		var_dump($variable2);
 		//return $salesforce->sendBatch();
 
-
+		return $variable2;
 	}
 
-	//step 1
-	public static function parse($query){
+	public static function parseWhere($clause){
+		$stmt = explode("WHERE", $clause);
+		// ResourceId__c = 'YtoqDF8EnsA' 
+		// ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
 
-		$getRidofQuotes = function ($item) {
+		$where = trim($stmt[1]);
+		//ResourceId__c = 'YtoqDF8EnsA'
+		//ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
+
+		$examp = "WHERE ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true";
+
+		$conditions = preg_split("/AND|OR/", $where);
+
+		var_dump($conditions);
+
+
+
+
+		$Obj = array(
+			"ResourceId__c" => "YtoqDF8EnsA",
+			"Published__c" => true
+		);
+	}
+
+	public static function parseDelete($query){
+		//"DELETE FROM Media__c WHERE ResourceId__c = 'YtoqDF8EnsA'"
+		//"DELETE FROM Media__c WHERE ResourceId__c = 'YtoqDF8EnsA' AND Publised__c = true"
+
+		$newQuery = trim($query, "\"'");
+		var_dump($newQuery);
+		//DELETE FROM Media__c WHERE ResourceId__c = 'YtoqDF8EnsA'
+		//DELETE FROM Media__c WHERE ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
+
+		$statement = explode("DELETE FROM", $newQuery);
+		//[1]: Media__c WHERE ResourceId__c = 'YtoqDF8EnsA'
+		//[1]: Media__c WHERE ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true		
+		
+		$SObjectState = explode("WHERE", $statement[1]);
+		//[0]: Media__c 
+		//[1]: ResourceId__c = 'YtoqDF8EnsA'
+		//[0]: Media__c 
+		//[1]: ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
+
+
+		$parsedWhere = self::parseWhere($statement[1]);
+
+		
+
+		$SObject = trim($SObjectState[0]);
+		//[0]:Media__c
+		//[0]:Media__c
+
+		$where = trim($SObjectState[1]);
+		//[1]:ResourceId__c = 'YtoqDF8EnsA'
+		//[1]:ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
+	}
+
+	
+	//step 1
+	public static function parseInsert($query){
+
+		$getRidOfQuotes = function ($item) {
 			return trim($item, "\"'");
 		};
 
-		$getRidofParen = function ($item) {
+		$getRidOfParen = function ($item) {
 			return trim($item, "()");
 		};
 
@@ -248,7 +316,7 @@ class Database {
 			
 
 			//array_map ( callable|null $callback , array $array , array ...$arrays )?
-			$trimmedValues = array_map($getRidofQuotes, $values);
+			$trimmedValues = array_map($getRidOfQuotes, $values);
 
 
 			$record = array_combine($keys, $values);
