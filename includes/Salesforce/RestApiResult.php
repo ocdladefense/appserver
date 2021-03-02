@@ -46,8 +46,8 @@ class RestApiResult {
                     "Salesforce_Error"					=> $body["error"],
                     "Salesforce_Error_message"	=> $body["error_description"]
                 );
-            } else if($body["errorCode"] == "Session expired or invalid") {
-                $this->access_token_invalid = true;
+            } else if($body[0]["errorCode"] == "INVALID_SESSION_ID" || $body[0]["message"] == "Session expired or invalid"){
+                return $this->access_token_invalid = true;
             } else {
                 $this->error = array (
                     "HttpStatusCode"=>$resp->getStatusCode(),

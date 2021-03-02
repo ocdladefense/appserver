@@ -150,24 +150,26 @@ class Salesforce {
 			);
 
             $http = new Http($config);
-            var_dump($req);
+            //var_dump($req);
             $response = $http->send($req);
-            var_dump($response);
+            //var_dump($response);
             
             
 			//var_dump($response);
 			$result = new RestApiResult($response);
 
 			//trying to authenticate again if token exp or invalid
-			// if(!$result->isSuccess() && !RestApiResult::isOauthRequest($endpoint)) {
-			
-			if($result->isTokenExpired() || $result->isTokenInvalid()) {
-					$this->authorizeToSalesforce();
-					$this->sendRequest($endpoint,$method,$body,$contentType);
-			}
-					
-				
-			 return $result;
+            if(!$response->isSuccess() && !$this->isOauthRequest($endpoint)){
+            
+                if($result->isTokenInvalid()){
+                    $this->authorizeToSalesforce();
+                    return $this->sendRequest($endpoint,$method,$body,$contentType);
+                }
+                else throw new Exception ("Error sending request ".$result->getError());
+            }else if($response->isSuccess() && $this->isOauthRequest($endpoint)){
+                return $result;
+            }
+             return $response;
 	}
     
     
@@ -274,14 +276,11 @@ class Salesforce {
     
 
     public function createQueryFromSession($soql){
-        $this->authorizeToSalesforce();
-        
-        return $this->createQuery($soql,$_SESSION["salesforce_instance_url"],$_SESSION["salesforce_access_token"]);
+        //preserved not to break old coding
+        return $this->createQuery($soql);
     }
 
-
-
-    public function createQuery($soql, $instance_url = null,$access_token = null){
+    public function createQuery($soql){
         $endpoint = "/services/data/v49.0/query/?q=";
 
         $resp = $this->sendRequest($endpoint . urlencode($soql));
