@@ -137,7 +137,7 @@
 	</head>
 	
 	<body style="background-color: rgba(191,161,46,1.0); color: rgba(255,255,255,1.0);">
-		<div style="height: 100%; width: 100%; background-color: #fff;">
+		<div style="min-height: 100%; min-width: 100%; background-color: #fff;">
 		<!--
 		<div id="babel-foo" style="position:absolute;top:0px;right:0px;background-color:#fff;z-index:101;max-width:325px;padding:10px;">&nbsp;</div>
 		<script type="text/babel">
@@ -363,7 +363,9 @@
 		
 		
 		<footer>
+			<div class="container">
 			&copy;&nbsp;Oregon Criminal Defense Lawyers Associaton 2020-2021
+			</div>
 		</footer>
 	</body>
 
