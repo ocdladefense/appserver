@@ -53,13 +53,21 @@
 
 
 #footer {
-	display:none;
+	display: none;
 	background-color: #232f3e;
-	padding:8px;
-	font-family:"Helvetica Neuve",Helvetica;
+	padding: 8px;
+	font-family: "Helvetica Neuve",Helvetica;
 }
 
+footer {
+    background-color: hsla(48, 55%, 46%, 1.0);
+    color: hsla(48, 38%, 89%, 1.0);
+    min-height: 50vh;
+}
 
+footer .container {
+    padding: 25px;
+}
 
 
 #btnAdd {
@@ -69,8 +77,9 @@
 
 
 #stage-content {
-	text-align:left;
-	padding: 25px;
+    text-align: left;
+    padding: 25px;
+    color: hsl(300,0%,47%);
 }
 
 
@@ -196,7 +205,6 @@ body {
 	
 	footer {
 		min-height: 200px;
-		margin-top:150px;
 	}
 	
 
