@@ -7,6 +7,7 @@ use \stdClass as stdClass;
 use File\FileHandler as FileHandler;
 use File\PhpFileUpload as PhpFileUpload;
 use File\FileList as FileList;
+use Http\BodyPart as BodyPart;
 
 
 class HttpRequest extends HttpMessage {
@@ -14,7 +15,8 @@ class HttpRequest extends HttpMessage {
 
 	protected $method = "GET";
 	
-	
+	protected $parts = array();
+
 	protected $host;
 		
 	
@@ -39,6 +41,16 @@ class HttpRequest extends HttpMessage {
 		"DELETE"
 	);
 
+	public function addPart(BodyPart $part){
+
+		$this->parts[] = $part;
+	}
+
+
+	public function resetParts(){
+
+		$this->parts = array();
+	}
 
 
 	public function setFiles($files) {
@@ -168,8 +180,45 @@ class HttpRequest extends HttpMessage {
 	}
 	
 	
+
 	public function getBody() {
+
+		$contentType = "multipart-form-data";
+
+		if($this->getContentType()  == $contentType){
+
+			return $this->getMultiPartBody();
+		}
+
 		return $this->body;
+	}
+
+	// addParts Method
+
+	public function getMultiPartBody(){
+
+		$body;
+		$contentTypeHeader = $this->getContentType();
+		$contentTypeHeaderParams = $contentTypeHeader->getParameters();
+		
+		if($contentTypeHeaderParams["boundary"] == null){
+
+			throw new Exception("No boundary parameter in Content-type header.");
+		}
+
+		$boundary = $contentTypeHeaderParams["boundary"];
+
+		// parse the contenttype Header to get the actual boundary.
+
+		foreach($this->parts as $part){
+
+			$body .= "--{$boundary}\n";
+			$body .= $part->__toString();
+		}
+
+		$body .= "--{$boundary}--";
+
+		return $body;
 	}
 	
 	/**
