@@ -29,10 +29,10 @@ class RestApiRequest extends HttpRequest {
 	
 	
 
-		/**
-		 * Prepare authentication parameters for the Salesforce REST API.
-		 *  Keep track of the number of login attempts.
-		 */
+    /**
+     * Prepare authentication parameters for the Salesforce REST API.
+     *  Keep track of the number of login attempts.
+     */
     public function __construct($instanceUrl, $accessToken) {
     
     	parent::__construct();
@@ -42,46 +42,42 @@ class RestApiRequest extends HttpRequest {
     }
 
 
+    public function send($endpoint) {
+    
+        $this->setUrl($this->instanceUrl . $endpoint);
+        $this->setAccept("\Salesforce\RestApiResponse"); // Use a custom HttpResponse class to represent the HttpResponse.
+        $token = new HttpHeader("Authorization", "Bearer " . $this->accessToken);
+        $this->addHeader($token);
+        
+        // Doesn't work with multipart form data.  Will need to adjust this.
+        if($this->body != null) {
+            $contentType = new HttpHeader("Content-Type", "application/json");
+            if($this->getMethod() == "GET")
+            {
+            $this->setPost();
+            }
+            $this->body = json_encode($this->body);
+            $this->addHeader($contentType);
+        }
 
-		
-	
-
-		public function send($endpoint) {
-		
-				$this->setUrl($this->instanceUrl . $endpoint);
-				$this->setAccept("\Salesforce\RestApiResponse"); // Use a custom HttpResponse class to represent the HttpResponse.
-				$token = new HttpHeader("Authorization", "Bearer " . $this->accessToken);
-				$this->addHeader($token);
-				
-				// Doesn't work with multipart form data.  Will need to adjust this.
-				if($this->body != null) {
-                    $contentType = new HttpHeader("Content-Type", "application/json");
-                    if($this->getMethod() == "GET")
-                   {
-                    $this->setPost();
-                   }
-                    $this->body = json_encode($this->body);
-					$this->addHeader($contentType);
-				}
-
-				$config = array(
-						"returntransfer" 		=> true,
-						"useragent" 				=> "Mozilla/5.0",
-						"followlocation" 		=> true,
-						"ssl_verifyhost" 		=> false,
-						"ssl_verifypeer" 		=> false
-				);
+        $config = array(
+                "returntransfer" 		=> true,
+                "useragent" 				=> "Mozilla/5.0",
+                "followlocation" 		=> true,
+                "ssl_verifyhost" 		=> false,
+                "ssl_verifypeer" 		=> false
+        );
 
 
-                $http = new Http($config);
-				
-				$resp = $http->send($this);
-				
-			// $http->printSessionLog();
-			// var_dump($resp);
-			// exit;
-			return $resp;
-		}
+        $http = new Http($config);
+        
+        $resp = $http->send($this);
+            
+        // $http->printSessionLog();
+        // var_dump($resp);
+        // exit;
+        return $resp;
+    }
 
     public function upload($filepath, $description = null){
 
@@ -98,6 +94,58 @@ class RestApiRequest extends HttpRequest {
     
 
         // Should be json sooner or later
+        // replace "folderId" with parent id of object....event remember that?
+
+        $metadata = array(
+            "Description" => "Marketing brochure for Q1 2011",
+            "Keywords" => "marketing,sales,update",
+            "FolderId" => "005D0000001GiU7",
+            "Name" => "Marketing Brochure Q1",
+            "Type" => "pdf"
+        );
+
+
+        $part1 = new BodyPart();
+        $part1->addHeader("Content-Disposition","form-data; name=\"entity_document");
+        $part1->addHeader("Content-Type", "application/json");
+
+        // Make the body part aware of the content type.  If the content type is application/json it should encode it for you
+        $part1->setContent($metadata);
+
+
+
+        $part2 = new BodyPart();
+        // File name shoud be the name of the file not the path
+        $part2->addHeader("Content-Disposition","form-data; name=\"Body\"; filename=\"{$filePath}\"");
+        $part2->addHeader("Content-Type", $fileType);
+        $part2->setContent($content);
+
+        $req->addPart($part1);
+        $req->addPart($part2);
+
+        return $this->send($endpoint);
+    }
+
+    public function uploadAttachment(){
+
+        // use a parent id that i know already exists in the system
+        // simple text file to upload.
+
+        $endpoint = "/services/data/v51.0/sobjects/Document/";
+    
+        // Might need to encode in base64 format
+        $content = file_get_contents($filePath);
+        $fileType = "application/pdf";  
+        $req = new HttpRequest($endpoint);
+    
+    
+        $req->setMethod("POST");
+        $req->addHeader(new HttpHeader("Content-type", "multipart/form-data; boundary=\"boundary\""));
+    
+
+        // Should be json sooner or later
+        // replace "folderId" with parent id of object....event remember that?
+        
         $metadata = array(
             "Description" => "Marketing brochure for Q1 2011",
             "Keywords" => "marketing,sales,update",
@@ -179,6 +227,7 @@ class RestApiRequest extends HttpRequest {
     }
 //added this function from previousrestapi file//
     public function createRecords($sObjectName, $records) {
+
         $pluralEndpoint = "/services/data/v49.0/composite/tree/".$sObjectName;
         $singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName;
         $plural = is_array($records) && isset($records[0]);
