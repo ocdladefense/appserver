@@ -53,7 +53,7 @@ class RestApiRequest extends HttpRequest {
 				$token = new HttpHeader("Authorization", "Bearer " . $this->accessToken);
 				$this->addHeader($token);
 				
-				
+				// Doesn't work with multipart form data.  Will need to adjust this.
 				if($this->body != null) {
                     $contentType = new HttpHeader("Content-Type", "application/json");
                     if($this->getMethod() == "GET")
@@ -82,6 +82,51 @@ class RestApiRequest extends HttpRequest {
 			// exit;
 			return $resp;
 		}
+
+    public function upload($filepath, $description = null){
+
+        $endpoint = "/services/data/v51.0/sobjects/Document/";
+    
+        // Might need to encode in base64 format
+        $content = file_get_contents($filePath);
+        $fileType = "application/pdf";  
+        $req = new HttpRequest($endpoint);
+    
+    
+        $req->setMethod("POST");
+        $req->addHeader(new HttpHeader("Content-type", "multipart/form-data; boundary=\"boundary\""));
+    
+
+        // Should be json sooner or later
+        $metadata = array(
+            "Description" => "Marketing brochure for Q1 2011",
+            "Keywords" => "marketing,sales,update",
+            "FolderId" => "005D0000001GiU7",
+            "Name" => "Marketing Brochure Q1",
+            "Type" => "pdf"
+        );
+
+
+        $part1 = new BodyPart();
+        $part1->addHeader("Content-Disposition","form-data; name=\"entity_document");
+        $part1->addHeader("Content-Type", "application/json");
+
+        // Make the body part aware of the content type.  If the content type is application/json it should encode it for you
+        $part1->setContent($metadata);
+
+
+
+        $part2 = new BodyPart();
+        // File name shoud be the name of the file not the path
+        $part2->addHeader("Content-Disposition","form-data; name=\"Body\"; filename=\"{$filePath}\"");
+        $part2->addHeader("Content-Type", $fileType);
+        $part2->setContent($content);
+
+        $req->addPart($part1);
+        $req->addPart($part2);
+
+        return $this->send($endpoint);
+    }
 		
 
 
