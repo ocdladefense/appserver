@@ -84,13 +84,18 @@ class Module {
 
     }
     
-    protected function loadForceApi($debug = false) {
-    	return $this->loadApi($debug);
+    protected function loadForceApi($org = null, $debug = false) {
+    	return $this->loadApi($org, $debug);
     }
-    protected function loadApi($debug = false) {
+    protected function loadApi($org = null, $debug = false) {
     
 
         global $oauth_config;
+
+        if($org != null){
+
+            setOauthConfig($org);
+        }
 
         $oauth = OAuthRequest::fromConfig($oauth_config);
 

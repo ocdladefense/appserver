@@ -11,8 +11,7 @@ use Http\HttpHeader;
 use Http\Http;
 use Http\HttpResponse;
 use phpDocumentor\Reflection\DocBlock\Tags\Throws;
-
-
+use Http\BodyPart;
 
 
 class RestApiRequest extends HttpRequest {
@@ -43,6 +42,8 @@ class RestApiRequest extends HttpRequest {
 
 
     public function send($endpoint) {
+
+        var_dump($this->getMethod());
     
         $this->setUrl($this->instanceUrl . $endpoint);
         $this->setAccept("\Salesforce\RestApiResponse"); // Use a custom HttpResponse class to represent the HttpResponse.
@@ -50,15 +51,15 @@ class RestApiRequest extends HttpRequest {
         $this->addHeader($token);
         
         // Doesn't work with multipart form data.  Will need to adjust this.
-        if($this->body != null) {
-            $contentType = new HttpHeader("Content-Type", "application/json");
-            if($this->getMethod() == "GET")
-            {
-            $this->setPost();
-            }
-            $this->body = json_encode($this->body);
-            $this->addHeader($contentType);
-        }
+        // if($this->body != null) {
+        //     $contentType = new HttpHeader("Content-Type", "application/json");
+        //     if($this->getMethod() == "GET")
+        //     {
+        //     $this->setPost();
+        //     }
+        //     $this->body = json_encode($this->body);
+        //     $this->addHeader($contentType);
+        // }
 
         $config = array(
                 "returntransfer" 		=> true,
@@ -73,7 +74,7 @@ class RestApiRequest extends HttpRequest {
         
         $resp = $http->send($this);
             
-        // $http->printSessionLog();
+        //$http->printSessionLog();exit;
         // var_dump($resp);
         // exit;
         return $resp;
@@ -126,52 +127,43 @@ class RestApiRequest extends HttpRequest {
         return $this->send($endpoint);
     }
 
-    public function uploadAttachment(){
+    public function uploadAttachment($filePath, $mimeType){
 
-        // use a parent id that i know already exists in the system
-        // simple text file to upload.
 
-        $endpoint = "/services/data/v51.0/sobjects/Document/";
-    
-        // Might need to encode in base64 format
-        $content = file_get_contents($filePath);
-        $fileType = "application/pdf";  
-        $req = new HttpRequest($endpoint);
-    
-    
-        $req->setMethod("POST");
-        $req->addHeader(new HttpHeader("Content-type", "multipart/form-data; boundary=\"boundary\""));
-    
+        $endpoint = "/services/data/v51.0/sobjects/Attachment/";
 
-        // Should be json sooner or later
-        // replace "folderId" with parent id of object....event remember that?
+        $fileParts = explode("/", $filePath);
+        $fileName = $fileParts[count($fileParts) - 1];
+        $fileContent = file_get_contents($filePath);
+
+        //$req = new HttpRequest($endpoint);
+        $this->setMethod("POST");
+        $this->addHeader(new HttpHeader("Content-Type", "multipart/form-data; boundary=\"boundary\""));
         
         $metadata = array(
-            "Description" => "Marketing brochure for Q1 2011",
-            "Keywords" => "marketing,sales,update",
-            "FolderId" => "005D0000001GiU7",
-            "Name" => "Marketing Brochure Q1",
-            "Type" => "pdf"
+            "Description" => "Annual Conference Related Document",
+            "ParentId" => "a1Kj0000000TordEAC",
+            "Name" => "{$fileName}"
         );
 
 
-        $part1 = new BodyPart();
-        $part1->addHeader("Content-Disposition","form-data; name=\"entity_document");
-        $part1->addHeader("Content-Type", "application/json");
 
-        // Make the body part aware of the content type.  If the content type is application/json it should encode it for you
+        $part1 = new BodyPart();
+        $part1->addHeader("Content-Disposition","form-data; name=\"entity_attachment");
+        $part1->addHeader("Content-Type", "application/json");
         $part1->setContent($metadata);
 
-
+        //print $part1->__toString();
 
         $part2 = new BodyPart();
-        // File name shoud be the name of the file not the path
-        $part2->addHeader("Content-Disposition","form-data; name=\"Body\"; filename=\"{$filePath}\"");
-        $part2->addHeader("Content-Type", $fileType);
-        $part2->setContent($content);
+        $part2->addHeader("Content-Disposition","form-data; name=\"Body\"; filename=\"{$fileName}\"");
+        $part2->addHeader("Content-Type", $mimeType);
+        $part2->setContent($fileContent);
 
-        $req->addPart($part1);
-        $req->addPart($part2);
+        //print $part2->__toString(); exit;
+
+        $this->addPart($part1);
+        $this->addPart($part2);
 
         return $this->send($endpoint);
     }

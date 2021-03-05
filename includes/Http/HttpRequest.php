@@ -183,22 +183,15 @@ class HttpRequest extends HttpMessage {
 
 	public function getBody() {
 
-		$contentType = "multipart-form-data";
-
-		if($this->getContentType()  == $contentType){
-
-			return $this->getMultiPartBody();
-		}
-
-		return $this->body;
+		return $this->isMultipart() == true ? $this->getMultiPartBody() : $this->body;
+		
 	}
 
-	// addParts Method
 
 	public function getMultiPartBody(){
 
 		$body;
-		$contentTypeHeader = $this->getContentType();
+		$contentTypeHeader = $this->getHeader("Content-Type");
 		$contentTypeHeaderParams = $contentTypeHeader->getParameters();
 		
 		if($contentTypeHeaderParams["boundary"] == null){
