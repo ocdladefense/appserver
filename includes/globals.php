@@ -158,6 +158,12 @@ function getOauthConfig($index){
 	return $oauth_config[$index];
 }
 
+function setOauthConfig($index){
+
+	global $oauth_config;
+	$GLOBALS["oauth_config"] = $oauth_config[$index];
+}
+
 
 
 

@@ -70,6 +70,11 @@ class HttpMessage {
 		return $this->getHeader('Content-Type')->getValue();
 	}
 
+	public function isMultiPart(){
+
+		return strpos($this->getHeader('Content-Type')->getValue(), "multipart/form-data") !== false;
+	}
+
 
 	//headers
 	public function getHeaderCollection(){

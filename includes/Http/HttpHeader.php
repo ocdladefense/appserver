@@ -49,10 +49,7 @@ class HttpHeader {
     public function getParameters(){
 
         $kvp = array();
-
-        // $params[0] = multipart/form-data
-        // $params[1] =  boundary="boundary_string"
-        // $params[2] =  boundary="foobar"
+        
         $params = explode(";", $this->value);
 
         foreach($params as $p){
