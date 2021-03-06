@@ -43,7 +43,6 @@ class RestApiRequest extends HttpRequest {
 
     public function send($endpoint) {
 
-        var_dump($this->getMethod());
     
         $this->setUrl($this->instanceUrl . $endpoint);
         $this->setAccept("\Salesforce\RestApiResponse"); // Use a custom HttpResponse class to represent the HttpResponse.
@@ -127,46 +126,83 @@ class RestApiRequest extends HttpRequest {
         return $this->send($endpoint);
     }
 
-    public function uploadAttachment($filePath, $mimeType){
+    public function uploadFiles(\File\FileList $list, $parentId){
 
 
-        $endpoint = "/services/data/v51.0/sobjects/Attachment/";
+        foreach($list->getFiles() as $file){
+            
+            $metadata = array(
+                "Description" => $file->getName(),
+                "ParentId" => $parentId,
+                "Name" => $file->getName()
+            );
+
+            return $this->uploadAttachment($file->getPath(), $metadata);
+        }
+
+        
+
+    }
+
+    public function uploadAttachment($filePath, $metadata){
 
         $fileParts = explode("/", $filePath);
         $fileName = $fileParts[count($fileParts) - 1];
+        $fileNameParts = explode(".", $fileName);
+        $fileExt = $fileNameParts[count($fileNameParts) - 1];
         $fileContent = file_get_contents($filePath);
 
-        //$req = new HttpRequest($endpoint);
+        $mimeType = $this->getMimeType($fileExt);
+        $endpoint = "/services/data/v51.0/sobjects/Attachment/";
+
         $this->setMethod("POST");
         $this->addHeader(new HttpHeader("Content-Type", "multipart/form-data; boundary=\"boundary\""));
-        
-        $metadata = array(
-            "Description" => "Annual Conference Related Document",
-            "ParentId" => "a1Kj0000000TordEAC",
-            "Name" => "{$fileName}"
-        );
-
-
 
         $part1 = new BodyPart();
         $part1->addHeader("Content-Disposition","form-data; name=\"entity_attachment");
         $part1->addHeader("Content-Type", "application/json");
         $part1->setContent($metadata);
 
-        //print $part1->__toString();
-
         $part2 = new BodyPart();
         $part2->addHeader("Content-Disposition","form-data; name=\"Body\"; filename=\"{$fileName}\"");
         $part2->addHeader("Content-Type", $mimeType);
         $part2->setContent($fileContent);
-
-        //print $part2->__toString(); exit;
 
         $this->addPart($part1);
         $this->addPart($part2);
 
         return $this->send($endpoint);
     }
+
+    public function getMimeType($fileExt){
+
+		switch($fileExt){
+
+			case "txt":
+				return "plain/text";
+				break;
+			case "png" || "jpg" || "jpeg" || "jpg" || "gif":
+				return "image/{$fileExt}";
+				break;
+			case "pdf":
+				return "application/pdf";
+				break;
+            case "doc":
+                return "application/msword";
+                break;
+            case "docx":
+                return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                break;
+            case "mp3":
+                return "audio/mpeg";
+                break;
+            case "mpeg":
+                return "video/mpeg";
+                break;
+            default:
+                throw new Exception("FILE_TYPE_ERROR:   File type/extension is not supported.");
+		}
+	}
 		
 
 
