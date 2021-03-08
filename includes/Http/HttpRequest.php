@@ -323,9 +323,9 @@ class HttpRequest extends HttpMessage {
 
 			try {
 
-				global $config;
+				global $fileConfig;
 				
-				$handler = new FileHandler($config);
+				$handler = new FileHandler($fileConfig);
 	
 				$handler->createDirectory();
 	

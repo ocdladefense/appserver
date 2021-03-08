@@ -44,8 +44,7 @@ class FileHandler {
     }
 
     public function createDirectory(){
-				$targetPath = $this->getTargetPath();
-
+        $targetPath = $this->getTargetPath();
 
         if(!file_exists($targetPath)) {
 

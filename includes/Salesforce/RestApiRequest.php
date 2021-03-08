@@ -128,6 +128,7 @@ class RestApiRequest extends HttpRequest {
 
     public function uploadFiles(\File\FileList $list, $parentId){
 
+        $responses = array();
 
         foreach($list->getFiles() as $file){
             
@@ -137,11 +138,10 @@ class RestApiRequest extends HttpRequest {
                 "Name" => $file->getName()
             );
 
-            return $this->uploadAttachment($file->getPath(), $metadata);
+            $responses[] = $this->uploadAttachment($file->getPath(), $metadata);
         }
 
-        
-
+        return $responses;
     }
 
     public function uploadAttachment($filePath, $metadata){
@@ -174,15 +174,15 @@ class RestApiRequest extends HttpRequest {
         return $this->send($endpoint);
     }
 
-    public function getMimeType($fileExt){
+    public function getMimeType($fileExtension){
 
-		switch($fileExt){
+		switch($fileExtension){
 
 			case "txt":
 				return "plain/text";
 				break;
 			case "png" || "jpg" || "jpeg" || "jpg" || "gif":
-				return "image/{$fileExt}";
+				return "image/{$fileExtension}";
 				break;
 			case "pdf":
 				return "application/pdf";

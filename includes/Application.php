@@ -9,9 +9,9 @@ use \Http\HttpRequest as HttpRequest;
 class Application {
     
     
-		private static $DEFAULT_HTTP_METHOD = Http\HTTP_METHOD_GET;
+    private static $DEFAULT_HTTP_METHOD = Http\HTTP_METHOD_GET;
 
-		private static $DEFAULT_CONTENT_TYPE = Http\MIME_TEXT_HTML;
+    private static $DEFAULT_CONTENT_TYPE = Http\MIME_TEXT_HTML;
 		
 		
 		
@@ -135,23 +135,18 @@ class Application {
         l("Processing {$uri}.");
     
         $resp = new HttpResponse();
-        
 
         session_start();
-    
 
-				// Will need to handle PageNotFoundExceptions here.
-				list($module, $route, $params) = $this->init($uri);
-				$module->setRequest($req);
-
-
-				
+        // Will need to handle PageNotFoundExceptions here.
+        list($module, $route, $params) = $this->init($uri);
+        $module->setRequest($req);
 
         try {
 
-						if(isset($route["theme"])) {
-							\set_theme("Videos");
-						}
+            if(isset($route["theme"])) {
+                \set_theme("Videos");
+            }
 
             $out = $this->getOutput($module, $route, $params);
             
