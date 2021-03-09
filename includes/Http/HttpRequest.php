@@ -335,9 +335,9 @@ class HttpRequest extends HttpMessage {
 	
 				$dFiles = $destList->getFiles();
 				$movedFiles = new FileList();
+
+				$i = 0;
 				foreach($tempList->getFiles() as $tFile){
-	
-					$i = 0;
 		
 					$dest = $handler->getTargetFile($dFiles[$i]);
 		

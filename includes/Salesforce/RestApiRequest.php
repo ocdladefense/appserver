@@ -128,81 +128,57 @@ class RestApiRequest extends HttpRequest {
 
     public function uploadFiles(\File\FileList $list, $parentId){
 
-        $responses = array();
-
-        foreach($list->getFiles() as $file){
-            
-            $metadata = array(
-                "Description" => $file->getName(),
-                "ParentId" => $parentId,
-                "Name" => $file->getName()
-            );
-
-            $responses[] = $this->uploadAttachment($file->getPath(), $metadata);
-        }
-
-        return $responses;
-    }
-
-    public function uploadAttachment($filePath, $metadata){
-
-        $fileParts = explode("/", $filePath);
-        $fileName = $fileParts[count($fileParts) - 1];
-        $fileNameParts = explode(".", $fileName);
-        $fileExt = $fileNameParts[count($fileNameParts) - 1];
-        $fileContent = file_get_contents($filePath);
-
-        $mimeType = $this->getMimeType($fileExt);
-        $endpoint = "/services/data/v51.0/sobjects/Attachment/";
+        $endpoint = "/services/data/v51.0/composite/sobjects/";
 
         $this->setMethod("POST");
         $this->addHeader(new HttpHeader("Content-Type", "multipart/form-data; boundary=\"boundary\""));
 
-        $part1 = new BodyPart();
-        $part1->addHeader("Content-Disposition","form-data; name=\"entity_attachment");
-        $part1->addHeader("Content-Type", "application/json");
-        $part1->setContent($metadata);
+        $metadata = $this->buildMetadata($list, $parentId);
 
-        $part2 = new BodyPart();
-        $part2->addHeader("Content-Disposition","form-data; name=\"Body\"; filename=\"{$fileName}\"");
-        $part2->addHeader("Content-Type", $mimeType);
-        $part2->setContent($fileContent);
+        $metaPart = new BodyPart();
+        $metaPart->addHeader("Content-Disposition","form-data; name=\"collection");
+        $metaPart->addHeader("Content-Type", "application/json");
+        $metaPart->setContent($metadata);
+        $this->addPart($metaPart);
 
-        $this->addPart($part1);
-        $this->addPart($part2);
+        $partIndex = 0;
+        foreach($list->getFiles() as $file){
+
+            $binaryPart = BodyPart::fromFile($file, $partIndex);
+            $this->addPart($binaryPart);
+            $partIndex++;
+        }
 
         return $this->send($endpoint);
     }
 
-    public function getMimeType($fileExtension){
+    public function buildMetadata($fileList, $parentId){
 
-		switch($fileExtension){
+        $metadata = array(
+            "allOrNone" => false,
+            "records"   => array()
+        );
 
-			case "txt":
-				return "plain/text";
-				break;
-			case "png" || "jpg" || "jpeg" || "jpg" || "gif":
-				return "image/{$fileExtension}";
-				break;
-			case "pdf":
-				return "application/pdf";
-				break;
-            case "doc":
-                return "application/msword";
-                break;
-            case "docx":
-                return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                break;
-            case "mp3":
-                return "audio/mpeg";
-                break;
-            case "mpeg":
-                return "video/mpeg";
-                break;
-            default:
-                throw new Exception("FILE_TYPE_ERROR:   File type/extension is not supported.");
-		}
-	}
+        for($i = 0; $i < $fileList->size(); $i++){
+
+            $file = $fileList->getFileAtIndex($i);
+
+            $metadata["records"][] = array(
+
+                "attributes" => array(
+                    "type"   => "Attachment",
+                    "binaryPartName" => "binaryPart{$i}",
+                    "binaryPartNameAlias" => "Body"
+                ),
+                "Description" => $file->getName(),
+                "ParentId"    => $parentId,
+                "Name"        => $file->getName()
+            );
+            
+        }
+
+        return $metadata;
+    }
 		
 
 

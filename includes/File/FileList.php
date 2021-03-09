@@ -55,6 +55,11 @@ class FileList implements IJson {
         return null;
     }
 
+    public function getFileAtIndex($index){
+
+        return $this->files[$index];
+    }
+
     public function size(){
 
         return count($this->files);
