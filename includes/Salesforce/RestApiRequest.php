@@ -154,6 +154,8 @@ class RestApiRequest extends HttpRequest {
 
     public function buildMetadata($fileList, $parentId){
 
+        // Probably want to pass in the type of SObject at some point.
+
         $metadata = array(
             "allOrNone" => false,
             "records"   => array()
@@ -174,7 +176,7 @@ class RestApiRequest extends HttpRequest {
                 "ParentId"    => $parentId,
                 "Name"        => $file->getName()
             );
-            
+
         }
 
         return $metadata;
