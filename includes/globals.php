@@ -147,22 +147,32 @@ function user_get_initials() {
 }
 
 
+
+
 function is_authenticated() {
 	return isset($_SESSION["userId"]);
 }
 
-function getOauthConfig($index){
+
+
+
+function getOAuthConfig($key = null) {
 
 	global $oauth_config;
 
-	return $oauth_config[$index];
+	if(null == $key) {
+		foreach($oauth_config as $connectedApp) {
+			$isdefault = $connectedApp["default"];
+			if($isdefault) return $connectedApp;
+		}
+		
+	} else {
+		return $oauth_config[$key];
+	}
+	
+	throw new Exception("HTTP_INIT_ERROR: No default Connected App / Org.  Check your configuration.");
 }
 
-function setOauthConfig($index){
-
-	global $oauth_config;
-	$GLOBALS["oauth_config"] = $oauth_config[$index];
-}
 
 
 

@@ -81,7 +81,7 @@ class OAuthRequest extends HttpRequest {
 
 
 		
-		public function authorize() {
+		public function authorize($debug = false) {
 			
 			// Use a custom HttpResponse class to represent the HttpResponse.
 
@@ -97,9 +97,11 @@ class OAuthRequest extends HttpRequest {
 			$http = new Http($config);
 			$resp = $http->send($this);
 			
-			// $http->printSessionLog();
-			// var_dump($resp);
-			// exit;
+			if($debug) {
+				var_dump($this);
+				$http->printSessionLog();
+				var_dump($resp);
+			}
 			
 			return $resp;
 		}

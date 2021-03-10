@@ -59,6 +59,10 @@ class FileList implements IJson {
 
         return $this->files[$index];
     }
+    
+    public function getFirst() {
+    	return $this->files[0];
+    }
 
     public function size(){
 
