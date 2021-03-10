@@ -73,7 +73,7 @@ class RestApiRequest extends HttpRequest {
         
         $resp = $http->send($this);
             
-        //$http->printSessionLog();exit;
+        // $http->printSessionLog();exit;
         // var_dump($resp);
         // exit;
         return $resp;
@@ -86,11 +86,10 @@ class RestApiRequest extends HttpRequest {
         // Might need to encode in base64 format
         $content = file_get_contents($filePath);
         $fileType = "application/pdf";  
-        $req = new HttpRequest($endpoint);
     
     
-        $req->setMethod("POST");
-        $req->addHeader(new HttpHeader("Content-type", "multipart/form-data; boundary=\"boundary\""));
+        $this->setMethod("POST");
+        $this->addHeader(new HttpHeader("Content-type", "multipart/form-data; boundary=\"boundary\""));
     
 
         // Should be json sooner or later
@@ -120,8 +119,8 @@ class RestApiRequest extends HttpRequest {
         $part2->addHeader("Content-Type", $fileType);
         $part2->setContent($content);
 
-        $req->addPart($part1);
-        $req->addPart($part2);
+        $this->addPart($part1);
+        $this->addPart($part2);
 
         return $this->send($endpoint);
     }
@@ -149,6 +148,8 @@ class RestApiRequest extends HttpRequest {
             $partIndex++;
         }
 
+				// var_dump($this);
+				
         return $this->send($endpoint);
     }
 

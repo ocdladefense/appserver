@@ -6,40 +6,35 @@
 define("ADMIN_USER", true);
 
 
+/**
+ * Connect to multiple endpoints, but
+ *  specify one as the "default."
+ *
+ * Example in a module:
+ * $api = $this->loadForceApi("ocdla-sandbox");
+ *
+ * to connect to the default use the existing syntax:
+ * $api = $this->loadForceApi();
+ */
 $oauth_config = array(
-    "oauth_url" => "https://test.salesforce.com/services/oauth2/token",
-    "client_id" => "",
-    "client_secret" => "",
-    "callback_url" => "",
-    "username" => "",
-    "password" => "",
-    "security_token" => ""
-);
-
-
-$orgs = array(
-	"trevor" => array(
+	"ocdla-sandbox" => array(
 		"default" => true,
-		"url" => "",
-		"username" => "jbernal@trevor.com",
-		"password" => "trevor123",
-		"token" => "ubzmL8CGoKgvwgWJcgKenIFwi",
-		"wsdl" => array(
-			"enterprise" => "enterprise",
-			"partner" => "",
-		)
-	),
-	"iabc-production" => array(
-	
-	),
-	"iabc-sandbox" => array(
-	
+		"oauth_url" => "https://test.salesforce.com/services/oauth2/token",
+		"client_id" => "",
+		"client_secret" => "",
+		"callback_url" => "https://localhost/resttest/oauth_callback.php",
+		"username" => "user@example.com",
+		"password" => "abcdefg12345",
+		"security_token" => ""
 	),
 	"ocdla-production" => array(
-	
-	),
-	"ocdla-sandbox" => array(
-	
+		"oauth_url" => "https://login.salesforce.com/services/oauth2/token",
+		"client_id" => "",
+		"client_secret" => "",
+		"callback_url" => "https://ocdla.app/home",
+		"username" => "user@example.com",
+		"password" => "abcdefg12345",
+		"security_token" => ""
 	)
 );
 
@@ -159,9 +154,11 @@ define("CYBERSOURCE_TRANSACTION_KEY_ACCESS_KEY","85339ed8a0543feeadeda49f0eeeefb
 define("CYBERSOURCE_TRANSACTION_KEY_SECRET_KEY","573ad151cf204f48a29fcc72f35b62be09b38baca24d4ea89906d920dde1cd1233327b34ed21418286f7a62f646760e6bd428ec8b8af481e886ae2a8fccbed590a20bf6bd3f648f081cf9f047709f61ff236d8b13b9e4a6c9cea6a50ab43399bd1a633a447014300a7b91b3c584e181ef30e053c39e846bf9597f074350c0cf8");
 
 
-//File List config example
-$config = array(
-	"path" 		=> __DIR__ . "../content/uploads",
+
+
+//File List 
+$fileConfig = array(
+	"path" 		=> path_to_uploads(),
 	"fileTypes" => array("pdf", "docx", "doc", "txt", "jpg", "json"),
 	"userId"    => "user123",//$postData->userId,
 	"appId"	    => "app123"//$postData->appId
