@@ -41,6 +41,12 @@ class HttpRequest extends HttpMessage {
 		"DELETE"
 	);
 
+	private $plataform;
+
+	public function setPlataform($plataform){
+		$this->$plataform = $plataform;
+	}
+
 	public function addPart(BodyPart $part){
 
 		$this->parts[] = $part;
@@ -183,7 +189,7 @@ class HttpRequest extends HttpMessage {
 
 	public function getBody() {
 
-		return $this->isMultipart() == true ? $this->getMultiPartBody() : $this->body;
+		return $this->isMultipart() && $this->plataform != "apache" ? $this->getMultiPartBody() : $this->body;
 		
 	}
 
@@ -295,6 +301,7 @@ class HttpRequest extends HttpMessage {
 
 		
 		$request = new self($env->server["requestUri"]);
+		$request->setPlataform($envkey);
 		$request->setMethod($env->server["requestMethod"]);
 		
 		// @todo see if this can't be moved into the constructor.
