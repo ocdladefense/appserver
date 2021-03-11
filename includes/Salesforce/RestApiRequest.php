@@ -255,6 +255,9 @@ class RestApiRequest extends HttpRequest {
         return $body;
     }
 
+
+
+
     public function insert($sObjectName, $record) {
     
         $endpoint = "/services/data/v49.0/sobjects/".$sObjectName;
@@ -264,7 +267,18 @@ class RestApiRequest extends HttpRequest {
         return $resp->getBody();
     }
 
-    public function getAttachment($ContentVersionId) {
+
+
+
+    public function getAttachment($id) {
+        $endpoint = "/services/data/v49.0/sobjects/Attachment/{$id}/body";
+        $resp = $this->send($endpoint);
+
+        return $resp;
+    }
+    
+    
+    public function getContentDocument($attachmentId) {
            
         $endpoint = "/services/data/v51.0/sobjects/ContentVersion/{$ContentVersionId}/VersionData";
         $resp = $this->send($endpoint);
