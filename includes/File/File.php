@@ -20,6 +20,8 @@ class File implements \JsonSerializable {
 
     private $content;
 
+    private $metadata;
+
     public function __construct($fileName, $path = null){
         $this->name = $fileName;
         $this->path = $path;
@@ -78,6 +80,17 @@ class File implements \JsonSerializable {
     public function setContent($content){
 
         $this->content = $content;
+    }
+
+    public function setMetadata($data){
+
+        var_dump($data);exit;
+
+        $this->metadata = array(
+            "Name" => $this->name,
+            "Type" => $this->getExt(),
+            $data["sobjectType"] => $data["id"]
+        );
     }
 
 
