@@ -79,7 +79,106 @@ class RestApiRequest extends HttpRequest {
         return $resp;
     }
 
-    public function upload($filepath, $description = null){
+    public function uploadFile(File $file, $sobjectType = "Attachment"){
+
+        $endpoint = "/services/data/v51.0/sobjects/{$sobjectType}/";
+
+        // $file = File::fromPath($filePath);
+    
+        $content = file_get_contents($filePath);
+
+        // Get this from the file extension.
+        $mimetype = "application/pdf";  
+    
+    
+        $this->setMethod("POST");
+        $this->addHeader(new HttpHeader("Content-type", "multipart/form-data; boundary=\"boundary\""));
+    
+
+        // Should be json sooner or later
+        // replace "folderId" with parent id of object....event remember that?
+
+        // $meatadata will be passed in.
+        // $metadata = array(
+        //     "Description" => "Marketing brochure for Q1 2011",
+        //     "Keywords" => "marketing,sales,update",
+        //     "FolderId" => "005D0000001GiU7",
+        //     "Name" => "Marketing Brochure Q1",
+        //     "Type" => "pdf"
+        // );
+
+        $metaContentDisposition = $isDocument ? "form-data; name=\"entity_document\"" : "form-data; name=\"entity_document\"";
+
+        $part1 = new BodyPart();
+        $part1->addHeader("Content-Disposition", $contentDisposition);
+        $part1->addHeader("Content-Type", "application/json");
+
+        // Make the body part aware of the content type.  If the content type is application/json it should encode it for you
+        $part1->setContent($metadata);
+
+
+        $binaryContentDisposition = $isDocument ? "form-data; name=\"Body\"; filename=\"{$filePath}\"" : "form-data; name=\"Body\"; filename=\"{$filePath}\"";
+
+        $part2 = new BodyPart();
+        // File name shoud be the name of the file not the path
+        $part2->addHeader("Content-Disposition", $binaryContentDisposition);
+        $part2->addHeader("Content-Type", $mimetype);
+        $part2->setContent($content);
+
+        $this->addPart($part1);
+        $this->addPart($part2);
+
+        return $this->send($endpoint);
+
+    }
+
+    public function uploadDocument($filepath, $description = null){
+
+        $endpoint = "/services/data/v51.0/sobjects/Document/";
+    
+        // Might need to encode in base64 format
+        $content = file_get_contents($filePath);
+        $fileType = "application/pdf";  
+    
+    
+        $this->setMethod("POST");
+        $this->addHeader(new HttpHeader("Content-type", "multipart/form-data; boundary=\"boundary\""));
+    
+
+        // Should be json sooner or later
+        // replace "folderId" with parent id of object....event remember that?
+
+        $metadata = array(
+            "Description" => "Marketing brochure for Q1 2011",
+            "Keywords" => "marketing,sales,update",
+            "FolderId" => "005D0000001GiU7",
+            "Name" => "Marketing Brochure Q1",
+            "Type" => "pdf"
+        );
+
+
+        $part1 = new BodyPart();
+        $part1->addHeader("Content-Disposition","form-data; name=\"entity_document");
+        $part1->addHeader("Content-Type", "application/json");
+
+        // Make the body part aware of the content type.  If the content type is application/json it should encode it for you
+        $part1->setContent($metadata);
+
+
+
+        $part2 = new BodyPart();
+        // File name shoud be the name of the file not the path
+        $part2->addHeader("Content-Disposition","form-data; name=\"Body\"; filename=\"{$filePath}\"");
+        $part2->addHeader("Content-Type", $fileType);
+        $part2->setContent($content);
+
+        $this->addPart($part1);
+        $this->addPart($part2);
+
+        return $this->send($endpoint);
+    }
+
+    public function uploadAttachment($filepath, $description = null){
 
         $endpoint = "/services/data/v51.0/sobjects/Document/";
     
@@ -292,13 +391,45 @@ class RestApiRequest extends HttpRequest {
 
         return $resp;
     }
+
+    public function getAttachments($parentId) {
+        $endpoint = "/services/data/v49.0/sobjects/Attachment/{$parentId}/body";
+        $resp = $this->send($endpoint);
+
+        return $resp;
+    }
+
+    public function getDocument($id) {
+        $endpoint = "/services/data/v49.0/sobjects/Document/{$id}/body";
+        $resp = $this->send($endpoint);
+
+        return $resp;
+    }
     
-    
-    /*public function getContentDocument($ContentDocumentID) {
+    public function getDocuments($parentId) {
+        $endpoint = "/services/data/v49.0/sobjects/Attachment/{$parentId}/body";
+        $resp = $this->send($endpoint);
+
+        return $resp;
+    }
+
+  
+    public function getContentDocument($id) {
+           
+        $endpoint = "/services/data/v51.0/sobjects/ContentVersion/{$ContentVersionId}/VersionData";
+        $resp = $this->send($endpoint);
+
+        return $resp;
+    }
+
+  
+  
+    public function getContentDocuments($parentId) {
+
            
         $endpoint = "/services/data/v51.0/sobjects/ContentDocumentLink/{$ContentDocumentID}";
         $resp = $this->send($endpoint);
 
         return $resp;
-    }*/
+    }
 }
