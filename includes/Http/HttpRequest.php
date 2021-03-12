@@ -46,7 +46,7 @@ class HttpRequest extends HttpMessage {
 	
 
 	public function setPlatform($env){
-		$this->$platform = $platform;
+		$this->platform = $platform;
 	}
 
 	public function addPart(BodyPart $part){
@@ -331,8 +331,8 @@ class HttpRequest extends HttpMessage {
 			$request->setBody((object)$_POST);
 
 
-			
-			if(!empty(reset($_FILES)["size"][0])){
+			//if first index is empty dont execute?
+			if(is_array($_FILES) && !empty($_FILES) ){
 					//try moving and uploading files
 				try {
 					global $fileConfig;
