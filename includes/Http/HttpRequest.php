@@ -31,6 +31,8 @@ class HttpRequest extends HttpMessage {
 	
 	private $files = null;
 
+	private $env = "";
+
 	
 	const ALLOWED_VERBS = array(
 		"GET",
@@ -41,10 +43,10 @@ class HttpRequest extends HttpMessage {
 		"DELETE"
 	);
 
-	private $plataform;
+	
 
-	public function setPlataform($plataform){
-		$this->$plataform = $plataform;
+	public function setPlataform($env){
+		$this->$env = $env;
 	}
 
 	public function addPart(BodyPart $part){
@@ -189,7 +191,9 @@ class HttpRequest extends HttpMessage {
 
 	public function getBody() {
 
-		return $this->isMultipart() && $this->plataform != "apache" ? $this->getMultiPartBody() : $this->body;
+		//temp fix so we dont reqrite the body on incoming requests
+		return $this->body;
+		//return $this->isMultipart() && $this->env != "apache" ? $this->getMultiPartBody() : $this->body;
 		
 	}
 
@@ -328,39 +332,43 @@ class HttpRequest extends HttpMessage {
 			$request->setBody((object)$_POST);
 
 
-			try {
-
-				global $fileConfig;
+			
+			if(!empty(reset($_FILES)["size"][0])){
+					//try moving and upoading files
+				try {
+					global $fileConfig;
 				
-				$handler = new FileHandler($fileConfig);
-	
-				$handler->createDirectory();
-	
-				$uploads = new PhpFileUpload($_FILES);
-				$tempList = $uploads->getTempFiles();
-				$destList = $uploads->getDestinationFiles();
-	
-				$dFiles = $destList->getFiles();
-				$movedFiles = new FileList();
-
-				$i = 0;
-				foreach($tempList->getFiles() as $tFile){
+					$handler = new FileHandler($fileConfig);
 		
-					$dest = $handler->getTargetFile($dFiles[$i]);
+					$handler->createDirectory();
 		
-					$handler->move($tFile, $dest);
-
-					$movedFiles->addFile($dest);
+					$uploads = new PhpFileUpload($_FILES);
+					$tempList = $uploads->getTempFiles();
+					$destList = $uploads->getDestinationFiles();
+		
+					$dFiles = $destList->getFiles();
+					$movedFiles = new FileList();
 	
-					$i++;
+					$i = 0;
+					foreach($tempList->getFiles() as $tFile){
+			
+						$dest = $handler->getTargetFile($dFiles[$i]);
+			
+						$handler->move($tFile, $dest);
+	
+						$movedFiles->addFile($dest);
+		
+						$i++;
+					}
+	
+					$request->setFiles($movedFiles);
+	
+				} catch(Exception $e){
+	
+					throw $e;
 				}
-
-				$request->setFiles($movedFiles);
-
-			} catch(Exception $e){
-
-				throw $e;
 			}
+
 
 	
 			
