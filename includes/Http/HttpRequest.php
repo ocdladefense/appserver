@@ -205,7 +205,7 @@ class HttpRequest extends HttpMessage {
 		
 		if($contentTypeHeaderParams["boundary"] == null){
 
-			throw new Exception("No boundary parameter in Content-type header.");
+			throw new \Exception("No boundary parameter in Content-type header.");
 		}
 
 		$boundary = $contentTypeHeaderParams["boundary"];
