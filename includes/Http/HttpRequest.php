@@ -41,10 +41,10 @@ class HttpRequest extends HttpMessage {
 		"DELETE"
 	);
 
-	private $plataform;
+	private $platform;
 
-	public function setPlataform($plataform){
-		$this->$plataform = $plataform;
+	public function setPlatform($platform){
+		$this->platform = $platform;
 	}
 
 	public function addPart(BodyPart $part){
@@ -68,7 +68,7 @@ class HttpRequest extends HttpMessage {
 	}
 	
 	public function headerLike($name, $value) {
-		return $this->getHeader($name)->equals($value);
+		return $this->getHeader($name) == null ? false : $this->getHeader($name)->equals($value);
 	}
 	
 	public function isJson() {
@@ -189,20 +189,20 @@ class HttpRequest extends HttpMessage {
 
 	public function getBody() {
 
-		return $this->isMultipart() && $this->plataform != "apache" ? $this->getMultiPartBody() : $this->body;
+		return $this->isMultipart() && $this->platform != "apache" ? $this->getMultiPartBody() : $this->body;
 		
 	}
 
 
 	public function getMultiPartBody(){
 
-		$body;
+		$body = "";
 		$contentTypeHeader = $this->getHeader("Content-Type");
 		$contentTypeHeaderParams = $contentTypeHeader->getParameters();
 		
 		if($contentTypeHeaderParams["boundary"] == null){
 
-			throw new Exception("No boundary parameter in Content-type header.");
+			throw new \Exception("No boundary parameter in Content-type header.");
 		}
 
 		$boundary = $contentTypeHeaderParams["boundary"];
@@ -301,7 +301,7 @@ class HttpRequest extends HttpMessage {
 
 		
 		$request = new self($env->server["requestUri"]);
-		$request->setPlataform($envkey);
+		$request->setPlatform($envkey);
 		$request->setMethod($env->server["requestMethod"]);
 		
 		// @todo see if this can't be moved into the constructor.
@@ -357,7 +357,7 @@ class HttpRequest extends HttpMessage {
 
 				$request->setFiles($movedFiles);
 
-			} catch(Exception $e){
+			} catch(\Exception $e){
 
 				throw $e;
 			}

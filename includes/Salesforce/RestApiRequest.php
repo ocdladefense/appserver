@@ -183,7 +183,7 @@ class RestApiRequest extends HttpRequest {
         $endpoint = "/services/data/v51.0/sobjects/Document/";
     
         // Might need to encode in base64 format
-        $content = file_get_contents($filePath);
+        $content = file_get_contents($filepath);
         $fileType = "application/pdf";  
     
     
@@ -214,7 +214,7 @@ class RestApiRequest extends HttpRequest {
 
         $part2 = new BodyPart();
         // File name shoud be the name of the file not the path
-        $part2->addHeader("Content-Disposition","form-data; name=\"Body\"; filename=\"{$filePath}\"");
+        $part2->addHeader("Content-Disposition","form-data; name=\"Body\"; filename=\"{$filepath}\"");
         $part2->addHeader("Content-Type", $fileType);
         $part2->setContent($content);
 
@@ -290,7 +290,8 @@ class RestApiRequest extends HttpRequest {
 				$endpoint .= urlencode($soql);
 
         $resp = $this->send($endpoint, "GET");
-        
+        //var_dump($resp);
+        //exit;
         return json_decode($resp->getBody(), true);
     }
 
@@ -331,42 +332,57 @@ class RestApiRequest extends HttpRequest {
         //var_dump($resp);
         return $resp->getBody();
     }
-//added this function from previousrestapi file//
-    public function createRecords($sObjectName, $records) {
-
-        $pluralEndpoint = "/services/data/v49.0/composite/tree/".$sObjectName;
-        $singularEndpoint = "/services/data/v49.0/sobjects/".$sObjectName;
-        $plural = is_array($records) && isset($records[0]);
-        $endpoint = $plural ? $pluralEndpoint : $singularEndpoint;
-        $fn = function ($record,$index) use($sObjectName){
-            $record["attributes"] = array("type"=>$sObjectName,"referenceId"=>"ref".++$index);
-            return $record;
-        };
-        $records = $plural ? array_map($fn,$records,array_keys($records)):$records;
-        $records = $plural ? array("records" => $records ) : $records;
-        $resp = $this->send($endpoint);
-        if (strpos($resp->getBody(),"hasErrors:true")){
-            throw new Exception($resp->getBody());
-        }
-        $body = $resp->getBody();
-
-
-        return $body;
-    }
-
-
 
 
     public function insert($sObjectName, $record) {
-    
-        $endpoint = "/services/data/v49.0/sobjects/".$sObjectName;
-        $this->setBody($record);
-        $resp = $this->send($endpoint);
 
+        $endpoint = "/services/data/v49.0/sobjects/".$sObjectName;
+
+        $contentType = new HttpHeader("Content-Type", "application/json");
+        $this->setPost();
+        $this->setBody(json_encode($record));
+        $this->addHeader($contentType);
+    
+        
+        $resp = $this->send($endpoint);
+       
+        return $resp->getBody();
+    }
+
+    public function update($sObjectName, $record)
+    {
+
+        //variables//
+        $apiVersion = "v50.0";
+        $id = $record->Id;
+
+        //unsets or removes the id from the body//
+        unset($record->Id);
+
+        $endpoint = "/services/data/{$apiVersion}/sobjects/{$sObjectName}/{$id}";
+
+        $contentType = new HttpHeader("Content-Type", "application/json");
+        $this->setPatch();
+        $this->setBody(json_encode($record));
+        $this->addHeader($contentType);
+
+        $resp = $this->send($endpoint);
+        
         return $resp->getBody();
     }
 
 
+    public function delete($sObject, $sObjectId)
+    {
+        $apiVersion = "v50.0";
+
+        $endpoint = "/services/data/{$apiVersion}/sobjects/{$sObject}/{$sObjectId}";
+
+        $this->setDelete();
+        $resp = $this->send($endpoint);
+
+        return true;
+    }
 
 
     public function getAttachment($id) {
@@ -396,7 +412,8 @@ class RestApiRequest extends HttpRequest {
 
         return $resp;
     }
-    
+
+  
     public function getContentDocument($id) {
            
         $endpoint = "/services/data/v51.0/sobjects/ContentVersion/{$ContentVersionId}/VersionData";
@@ -405,9 +422,12 @@ class RestApiRequest extends HttpRequest {
         return $resp;
     }
 
+  
+  
     public function getContentDocuments($parentId) {
+
            
-        $endpoint = "/services/data/v51.0/sobjects/ContentVersion/{$ContentVersionId}/VersionData";
+        $endpoint = "/services/data/v51.0/sobjects/ContentDocumentLink/{$ContentDocumentID}";
         $resp = $this->send($endpoint);
 
         return $resp;
