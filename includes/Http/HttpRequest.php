@@ -31,7 +31,7 @@ class HttpRequest extends HttpMessage {
 	
 	private $files = null;
 
-	private $env = "";
+	private $platform = "";
 
 	
 	const ALLOWED_VERBS = array(
@@ -45,8 +45,8 @@ class HttpRequest extends HttpMessage {
 
 	
 
-	public function setPlataform($env){
-		$this->$env = $env;
+	public function setPlatform($env){
+		$this->$platform = $platform;
 	}
 
 	public function addPart(BodyPart $part){
@@ -304,7 +304,7 @@ class HttpRequest extends HttpMessage {
 
 		
 		$request = new self($env->server["requestUri"]);
-		$request->setPlataform($envkey);
+		$request->setPlatform($envkey);
 		$request->setMethod($env->server["requestMethod"]);
 		
 		// @todo see if this can't be moved into the constructor.
