@@ -191,9 +191,8 @@ class HttpRequest extends HttpMessage {
 
 	public function getBody() {
 
-		//temp fix so we dont reqrite the body on incoming requests
-		return $this->body;
-		//return $this->isMultipart() && $this->env != "apache" ? $this->getMultiPartBody() : $this->body;
+		//temp fix so we dont rewrite the body on incoming requests
+		return $this->isMultipart() && $this->env != "apache" ? $this->getMultiPartBody() : $this->body;
 		
 	}
 
@@ -334,7 +333,7 @@ class HttpRequest extends HttpMessage {
 
 			
 			if(!empty(reset($_FILES)["size"][0])){
-					//try moving and upoading files
+					//try moving and uploading files
 				try {
 					global $fileConfig;
 				
