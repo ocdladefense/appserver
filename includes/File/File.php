@@ -84,13 +84,12 @@ class File implements \JsonSerializable {
 
     public function setMetadata($data){
 
-        var_dump($data);exit;
-
         $this->metadata = array(
             "Name" => $this->name,
-            "Type" => $this->getExt(),
-            $data["sobjectType"] => $data["id"]
+            "Type" => $this->getExt()
         );
+
+        $this->metadata
     }
 
 
@@ -98,6 +97,11 @@ class File implements \JsonSerializable {
     public function getName(){
 
         return  $this->name;
+    }
+
+    public function getMetadata(){
+
+        return $this->metadata;
     }
 
     public function getType(){

@@ -81,6 +81,8 @@ class RestApiRequest extends HttpRequest {
 
     public function uploadFile(File $file, $sobjectType = "Attachment"){
 
+        $sobjectType = get_class($file) == "SalesforceAttachment" ? "Attachment" : "Document";
+
         $endpoint = "/services/data/v51.0/sobjects/{$sobjectType}/";
 
         // $file = File::fromPath($filePath);
