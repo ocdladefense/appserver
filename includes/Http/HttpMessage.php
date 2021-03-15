@@ -25,7 +25,6 @@ class HttpMessage {
 	 */
 	protected $isSigned = false;
 	
-	
 	protected $params;
 	
 
@@ -34,45 +33,22 @@ class HttpMessage {
 		$this->headers = new HttpHeaderCollection();
 	}
 
-
 	public function getUrl(){
 
 		return $this->curlInfo["url"];
 	}
 
-
 	//body
-	public function setBody($body) {
-
-		/*
-		if(null != $body) 
-		{
-				if($contentType == "application/json"){
-						$body = json_encode($body);
-				}
-				else if($contentType == "application/x-www-form-urlencoded"){
-						$body = http_build_query($body);
-				}
-				$req->setBody($body);
-		}
-		*/
-		
+	public function setBody($body){
 		$this->body = $body;
 	}
-
 
 	public function getBody(){
 		return $this->body;
 	}
-
 	
 	public function getContentType(){
 		return $this->getHeader('Content-Type')->getValue();
-	}
-
-	public function isMultiPart(){
-
-		return strpos($this->getHeader('Content-Type')->getValue(), "multipart/form-data") !== false;
 	}
 
 
