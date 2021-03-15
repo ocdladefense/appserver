@@ -88,8 +88,6 @@ class File implements \JsonSerializable {
             "Name" => $this->name,
             "Type" => $this->getExt()
         );
-
-        $this->metadata
     }
 
 
