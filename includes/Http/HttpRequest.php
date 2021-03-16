@@ -381,11 +381,6 @@ class HttpRequest extends HttpMessage {
 
 				}
 			}
-		}
-
-
-	
-			
 		} else if(!$request->isGet()) {
 			$content = file_get_contents('php://input');
 			
