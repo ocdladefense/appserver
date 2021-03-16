@@ -27,7 +27,7 @@ class HttpHeader {
 			$parts = explode(self::PARAMS_MARKER, $this->value);
 			$base = $parts[0];
 			
-			return !$strict ? strToLower($base) == strToLower($value) : $value === $value;
+			return !$strict ? strToLower($base) == strToLower($value) : $base === $value;
 		}
 		
 

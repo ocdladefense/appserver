@@ -30,6 +30,8 @@ class HttpRequest extends HttpMessage {
 	
 	private $files = null;
 
+	private $platform = "";
+
 	
 	const ALLOWED_VERBS = array(
 		"GET",
@@ -40,9 +42,9 @@ class HttpRequest extends HttpMessage {
 		"DELETE"
 	);
 
-	private $platform;
 
-	public function setPlatform($platform){
+	public function setPlatform($env){
+
 		$this->platform = $platform;
 	}
 
@@ -79,7 +81,24 @@ class HttpRequest extends HttpMessage {
 	}
 	
 	public function isMultipart() {
-		return $this->headerLike("Content-Type", MIME_MULTIPART_FORM_DATA);	
+
+		$multipart = $this->headerLike("Content-Type", MIME_MULTIPART_FORM_DATA);
+
+		$header = $this->headers->getHeader("Content-Type", false);
+
+		$probably = $header->equals(MIME_MULTIPART_FORM_DATA);
+
+		if(!$multipart && $probably){
+
+			throw new \Exception("CONTENT_TYPE_ERROR: There is probably a typo in your 'Content-Type'.");
+		}
+
+		return $multipart;
+	}
+
+	public function setContentType($value){
+
+		$this->addHeader(new HttpHeader("Content-Type", $value));
 	}
 
 
@@ -187,6 +206,7 @@ class HttpRequest extends HttpMessage {
 	
 
 	public function getBody() {
+
 
 		return $this->isMultipart() && $this->platform != "apache" ? $this->getMultiPartBody() : $this->body;
 		
@@ -327,39 +347,44 @@ class HttpRequest extends HttpMessage {
 			$request->setBody((object)$_POST);
 
 
-			try {
-
-				global $fileConfig;
+			//if first index is empty dont execute?
+			if(is_array($_FILES) && !empty($_FILES) ){
+					//try moving and uploading files
+				try {
+					global $fileConfig;
 				
-				$handler = new FileHandler($fileConfig);
-	
-				$handler->createDirectory();
-	
-				$uploads = new PhpFileUpload($_FILES);
-				$tempList = $uploads->getTempFiles();
-				$destList = $uploads->getDestinationFiles();
-	
-				$dFiles = $destList->getFiles();
-				$movedFiles = new FileList();
-
-				$i = 0;
-				foreach($tempList->getFiles() as $tFile){
+					$handler = new FileHandler($fileConfig);
 		
-					$dest = $handler->getTargetFile($dFiles[$i]);
+					$handler->createDirectory();
 		
-					$handler->move($tFile, $dest);
-
-					$movedFiles->addFile($dest);
+					$uploads = new PhpFileUpload($_FILES);
+					$tempList = $uploads->getTempFiles();
+					$destList = $uploads->getDestinationFiles();
+		
+					$dFiles = $destList->getFiles();
+					$movedFiles = new FileList();
 	
-					$i++;
-				}
+					$i = 0;
+					foreach($tempList->getFiles() as $tFile){
+			
+						$dest = $handler->getTargetFile($dFiles[$i]);
+			
+						$handler->move($tFile, $dest);
+	
+						$movedFiles->addFile($dest);
+		
+						$i++;
+					}
+	
 
 				$request->setFiles($movedFiles);
 
 			} catch(\Exception $e){
 
 				throw $e;
+
 			}
+
 
 	
 			
