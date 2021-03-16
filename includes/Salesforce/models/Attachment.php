@@ -3,7 +3,7 @@ namespace Salesforce;
 
 use File\File as File;
 
-class Attachment extends File { // implements ISObject
+class Attachment extends SalesforceFile { // implements ISObject
 
     public $ParentId;
     public $Id;
