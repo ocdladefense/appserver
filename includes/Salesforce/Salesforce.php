@@ -17,7 +17,7 @@ class Salesforce
     private $oauth_config = array();
     private $reqBody = array();
 
-    private const MAX_LOGIN_ATTEMPTS = 3;
+   // private const MAX_LOGIN_ATTEMPTS = 3;
 
 
     /**
