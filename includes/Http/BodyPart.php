@@ -12,8 +12,14 @@ class BodyPart {
     public function setContent($content){
 
         if($this->getContentType() == 'application/json'){
+            
+            if(false && gettype($content) == "string"){
+
+                throw new Exception("JSON_ENCODING_ERROR: The content must not be a string if you are going to encode it.");
+            }
 
             $this->content = json_encode($content);
+
         } else {
 
             $this->content = $content;
@@ -37,7 +43,7 @@ class BodyPart {
         }
     }
 
-    public static function fromFile($file, $index){
+    public static function fromFile($file, $index = null){
         
         $fileContent = file_get_contents($file->getPath());
         

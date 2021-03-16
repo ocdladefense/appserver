@@ -80,7 +80,24 @@ class HttpRequest extends HttpMessage {
 	}
 	
 	public function isMultipart() {
-		return $this->headerLike("Content-Type", MIME_MULTIPART_FORM_DATA);	
+
+		$multipart = $this->headerLike("Content-Type", MIME_MULTIPART_FORM_DATA);
+
+		$header = $this->headers->getHeader("Content-Type", false);
+
+		$probably = $header->equals(MIME_MULTIPART_FORM_DATA);
+
+		if(!$multipart && $probably){
+
+			throw new \Exception("CONTENT_TYPE_ERROR: There is probably a typo in your 'Content-Type'.");
+		}
+
+		return $multipart;
+	}
+
+	public function setContentType($value){
+
+		$this->addHeader(new HttpHeader("Content-Type", $value));
 	}
 
 
