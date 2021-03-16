@@ -82,15 +82,6 @@ class File implements \JsonSerializable {
         $this->content = $content;
     }
 
-    public function setMetadata($data){
-
-        $this->metadata = array(
-            "Name" => $this->name,
-            "Type" => $this->getExt()
-        );
-
-        $this->metadata
-    }
 
 
     //GETTERS
@@ -177,7 +168,9 @@ class File implements \JsonSerializable {
         }
 
         return $bytes;
-}
+		}
+
+
 
     public function jsonSerialize()
     {
