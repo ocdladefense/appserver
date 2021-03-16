@@ -44,10 +44,13 @@ class HttpHeaderCollection {
 	 *  http spec supports multiple headers with the same name,
 	 *  however, multiple pseudo-headers of the same name are prohibited.
 	 */
-	public function getHeader( $name ) {
+	public function getHeader($name, $strict = true) {
 
-		$filter = function($header) use ($name) {
-			return $name == $header->getName();			
+
+		$filter = function($header) use ($name, $strict) {
+
+			return $strict ? $name == $header->getName() : strToLower($name) == strToLower($header->getName());
+
 		}; 
 		
 		$tmp = array_filter($this->headers, $filter);
@@ -55,7 +58,6 @@ class HttpHeaderCollection {
 		if(null == $tmp || count($tmp) < 1) return null;
 		
 		$arrange = array_values($tmp);
-		
 
 		return $arrange[count($arrange)-1];
 	}

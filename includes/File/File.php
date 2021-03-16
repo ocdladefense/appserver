@@ -4,26 +4,25 @@ namespace File;
 
 class File implements \JsonSerializable {
 
-    private $name;
+    public $name;
 
-    private $type;
+    public $type;
 
-    private $size;
+    public $size;
 
-    private $ext;
+    public $ext;
 
-    private $path;
+    public $path;
 
-    private $error;
+    public $error;
 
-    private $creationDate;
+    public $creationDate;
 
-    private $content;
+    public $content;
 
-    private $metadata;
-
-    public function __construct($fileName, $path = null){
-        $this->name = $fileName;
+    public function __construct($path){
+        $pathParts = explode("/", $path);
+        $this->name = $pathParts[count($pathParts) -1];
         $this->path = $path;
     }
 
@@ -45,10 +44,7 @@ class File implements \JsonSerializable {
     //then our file path is going to be /path/to/foobar.csv
     public static function fromPath($path){
 
-        $pathParts = explode("/", $path);
-        $file = new File($pathParts[count($pathParts) -1], $path);
-
-        return $file;
+        return new File($path);
     }
 
     //SETTERS
@@ -82,25 +78,13 @@ class File implements \JsonSerializable {
         $this->content = $content;
     }
 
-    public function setMetadata($data){
-
-        $this->metadata = array(
-            "Name" => $this->name,
-            "Type" => $this->getExt()
-        );
-    }
-
 
     //GETTERS
     public function getName(){
 
         return  $this->name;
     }
-
-    public function getMetadata(){
-
-        return $this->metadata;
-    }
+    
 
     public function getType(){
 
@@ -137,7 +121,25 @@ class File implements \JsonSerializable {
 
     public function getContent(){
 
-        return $this->content;
+        $contents = null != $this->content ? $this->content : file_get_contents($this->path);
+
+        if($contents === false){
+
+            throw new Exception("FILE_CONTENTS_ERROR: File path could not be opened.");
+        }
+    }
+
+    public function getMetadata(){
+
+        return array(
+            "name" => $this->name,
+            "type" => $this->getType(),
+            "size" => $this->size,
+            "ext"  => $this->getExt(),
+            "path" => $this->getPath(),
+            "creationDate" => $this->getCreationDate(),
+            "content" => $this->getContent()
+        );
     }
 
     //ADDITIONAL METHODS
