@@ -104,12 +104,13 @@
 
 	require_once BASE_PATH.'/includes/Salesforce/Salesforce.php';
 	require_once BASE_PATH.'/includes/Salesforce/RestApiResult.php';	
-
 	require_once BASE_PATH.'/includes/Salesforce/OAuthRequest.php';
 	require_once BASE_PATH.'/includes/Salesforce/OAuthResponse.php';
 	require_once BASE_PATH.'/includes/Salesforce/RestApiRequest.php';
 	require_once BASE_PATH.'/includes/Salesforce/RestApiResponse.php';
-
+	require_once BASE_PATH.'/includes/Salesforce/SalesforceAttachment.php';
+	require_once BASE_PATH.'/includes/Salesforce/SalesforceDocument.php';
+	require_once BASE_PATH.'/includes/Salesforce/SalesforceContentDocument.php';
 	
 	require_once BASE_PATH.'/includes/Store/Product.php';
 	require_once BASE_PATH. '/includes/Database/QueryStringParser.php';

@@ -43,9 +43,9 @@ class HttpRequest extends HttpMessage {
 		"DELETE"
 	);
 
-	
 
 	public function setPlatform($env){
+
 		$this->platform = $platform;
 	}
 
@@ -70,7 +70,7 @@ class HttpRequest extends HttpMessage {
 	}
 	
 	public function headerLike($name, $value) {
-		return $this->getHeader($name)->equals($value);
+		return $this->getHeader($name) == null ? false : $this->getHeader($name)->equals($value);
 	}
 	
 	public function isJson() {
@@ -82,7 +82,24 @@ class HttpRequest extends HttpMessage {
 	}
 	
 	public function isMultipart() {
-		return $this->headerLike("Content-Type", MIME_MULTIPART_FORM_DATA);	
+
+		$multipart = $this->headerLike("Content-Type", MIME_MULTIPART_FORM_DATA);
+
+		$header = $this->headers->getHeader("Content-Type", false);
+
+		$probably = $header->equals(MIME_MULTIPART_FORM_DATA);
+
+		if(!$multipart && $probably){
+
+			throw new \Exception("CONTENT_TYPE_ERROR: There is probably a typo in your 'Content-Type'.");
+		}
+
+		return $multipart;
+	}
+
+	public function setContentType($value){
+
+		$this->addHeader(new HttpHeader("Content-Type", $value));
 	}
 
 
@@ -191,15 +208,15 @@ class HttpRequest extends HttpMessage {
 
 	public function getBody() {
 
-		//temp fix so we dont rewrite the body on incoming requests
-		return $this->isMultipart() && $this->env != "apache" ? $this->getMultiPartBody() : $this->body;
+
+		return $this->isMultipart() && $this->platform != "apache" ? $this->getMultiPartBody() : $this->body;
 		
 	}
 
 
 	public function getMultiPartBody(){
 
-		$body;
+		$body = "";
 		$contentTypeHeader = $this->getHeader("Content-Type");
 		$contentTypeHeaderParams = $contentTypeHeader->getParameters();
 		
@@ -360,12 +377,13 @@ class HttpRequest extends HttpMessage {
 						$i++;
 					}
 	
-					$request->setFiles($movedFiles);
-	
-				} catch(Exception $e){
-	
-					throw $e;
-				}
+
+				$request->setFiles($movedFiles);
+
+			} catch(\Exception $e){
+
+				throw $e;
+
 			}
 
 
