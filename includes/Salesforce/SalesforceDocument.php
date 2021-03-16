@@ -1,6 +1,9 @@
-<?php 
+<?php
+use File\File as File;
 
-class SalesforceDocument{
+class SalesforceDocument extends File{
+
+    public $parentId;
 
     private $metadata = array(
         "Description" => "Marketing brochure for Q1 2011",
@@ -9,4 +12,22 @@ class SalesforceDocument{
         "Name" => "Marketing Brochure Q1",
         "Type" => "pdf"
     );
+
+    public function __construct($path){
+
+        parent::__construct($path);
+    }
+
+    public function setParentId($id){
+
+        $this->parentId = $id;
+    }
+
+    public function getMetadata(){
+
+        return array(
+            "Name" => $this->getName(),
+            "ParentId" => $this->parentId
+        );
+    }
 }
