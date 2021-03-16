@@ -1,7 +1,9 @@
 <?php
+namespace Salesforce;
+
 use File\File as File;
 
-class SalesforceContentDocument extends File{
+class SalesforceDocument extends File{
 
     public $parentId;
 

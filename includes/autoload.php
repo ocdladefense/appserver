@@ -108,9 +108,14 @@
 	require_once BASE_PATH.'/includes/Salesforce/OAuthResponse.php';
 	require_once BASE_PATH.'/includes/Salesforce/RestApiRequest.php';
 	require_once BASE_PATH.'/includes/Salesforce/RestApiResponse.php';
-	require_once BASE_PATH.'/includes/Salesforce/models/SalesforceAttachment.php';
-	require_once BASE_PATH.'/includes/Salesforce/models/SalesforceDocument.php';
-	require_once BASE_PATH.'/includes/Salesforce/models/SalesforceContentDocument.php';
+	require_once BASE_PATH.'/includes/Salesforce/SObject.php';
+	require_once BASE_PATH.'/includes/Salesforce/SalesforceFile.php';
+
+	$files = array("Attachment","Document", "ContentDocument");
+
+	foreach($files as $file) {
+		require_once(BASE_PATH.'/includes/Salesforce/models/'.$file.".php");
+	}
 	
 	require_once BASE_PATH.'/includes/Store/Product.php';
 	require_once BASE_PATH. '/includes/Database/QueryStringParser.php';
