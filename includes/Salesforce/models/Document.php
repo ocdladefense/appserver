@@ -3,7 +3,7 @@ namespace Salesforce;
 
 use File\File as File;
 
-class SalesforceDocument extends File{
+class Document extends SalesforceFile{
 
     public $parentId;
 

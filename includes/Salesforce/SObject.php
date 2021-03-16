@@ -6,6 +6,12 @@ abstract class SObject {
 
     protected $Name;
 
+    protected $SObjectName;
+
+    public function getSObjectName(){
+        return $this->SObjectName;
+    }
+
 
     public function getSObject() {
 

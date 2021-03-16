@@ -119,6 +119,7 @@ class Http {
 		// Return a new instance of HttpResponse(); 
 		return self::newHttpResponse(
 			$accept,
+			$msg->getUrl(),//endpoint
 			$resp["headers"],
 			$resp["body"],
 			$resp["info"]
@@ -134,9 +135,10 @@ class Http {
 	}
 	
 
-	private static function newHttpResponse($accept,$headers,$body,$info,$log = null){
+	private static function newHttpResponse($accept,$endpoint,$headers,$body,$info,$log = null){
 		$resp = new $accept($body);
 		$resp->setHeaders(HttpHeader::fromArray($headers));
+		$resp->addHeader(new HttpHeader("X-Request-Endpoint",$endpoint));
 		$resp->setCurlInfo($info);
 		$resp->setStatusCode($info["http_code"]);
 		return $resp;

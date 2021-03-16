@@ -12,6 +12,8 @@ use Http\HttpResponse;
 class RestApiResponse extends HttpResponse {
 
     private $error;
+
+    private $sObjects;
     
     private static $errorCodes = array(
         0 => "Invalid URl",
@@ -24,6 +26,9 @@ class RestApiResponse extends HttpResponse {
     );
 
 
+    public function getSObjects(){
+        return $this->sObjects;
+    }
 
     public function __construct($body) {
     		parent::__construct($body);
@@ -31,7 +36,17 @@ class RestApiResponse extends HttpResponse {
         
         $body = null != $this->getBody() ? json_decode($this->getBody(), true) : null;
         
-        
+        //if the request is successful we can opt use the X-Request-Endpoint header to create the sobject class(s) or an array of them
+        //new HttpHeader("X-Request-Endpoint",$endpoint)
+        if($this->isSuccess() && false){
+            //sep function
+            $header = $this->getHeader("X-Request-Endpoint");
+            //determine the correct sobject to instanciate
+            $sObjectName = "Document";
+            $model = new $sObjectName($body);
+            $this->sObjects = array($model);
+        }
+
         if(!$this->isSuccess()) {
 
             if(isset($body["error"]) || isset($body["error_description"])){
