@@ -31,7 +31,6 @@ class HttpRequest extends HttpMessage {
 	private $files = null;
 
 	private $platform = "";
-
 	
 	const ALLOWED_VERBS = array(
 		"GET",
@@ -45,7 +44,7 @@ class HttpRequest extends HttpMessage {
 
 	public function setPlatform($env){
 
-		$this->platform = $platform;
+		$this->platform = $env;
 	}
 
 	public function addPart(BodyPart $part){
@@ -177,9 +176,6 @@ class HttpRequest extends HttpMessage {
 		return $this->method == HTTP_METHOD_POST;
 	}
 	
-
-	
-	
 	public function setPatch(){
 		$this->method = HTTP_METHOD_PATCH;
 	}
@@ -206,7 +202,6 @@ class HttpRequest extends HttpMessage {
 	
 
 	public function getBody() {
-
 
 		return $this->isMultipart() && $this->platform != "apache" ? $this->getMultiPartBody() : $this->body;
 		
@@ -385,6 +380,7 @@ class HttpRequest extends HttpMessage {
 
 				}
 			}
+		}
 
 
 	

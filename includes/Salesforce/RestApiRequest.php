@@ -50,17 +50,6 @@ class RestApiRequest extends HttpRequest {
         $token = new HttpHeader("Authorization", "Bearer " . $this->accessToken);
         $this->addHeader($token);
         
-        // Doesn't work with multipart form data.  Will need to adjust this.
-        // if($this->body != null) {
-        //     $contentType = new HttpHeader("Content-Type", "application/json");
-        //     if($this->getMethod() == "GET")
-        //     {
-        //     $this->setPost();
-        //     }
-        //     $this->body = json_encode($this->body);
-        //     $this->addHeader($contentType);
-        // }
-
         $config = array(
                 "returntransfer" 		=> true,
                 "useragent" 				=> "Mozilla/5.0",
@@ -73,22 +62,19 @@ class RestApiRequest extends HttpRequest {
         $http = new Http($config);
         
         $resp = $http->send($this);
-            
-        // $http->printSessionLog();exit;
-        // var_dump($resp);
-        // exit;
+
         return $resp;
     }
 
-    public function uploadFile(File $file){
+    public function uploadFile(SalesforceFile $file){
 
-        $isAttachment = get_class($file) == "SalesforceAttachment";
+        $sObjectName = $file->getSObjectName();
 
-        $sobjectType = $isAttachment == true ? "Attachment" : "Document";
+        $isAttachment = $sObjectName == "Attachment";
 
-        $endpoint = "/services/data/v51.0/sobjects/{$sobjectType}/";
+        $endpoint = "/services/data/v51.0/sobjects/{$file->getSObjectName()}/";
     
-        $this->setMethod("POST");
+        $this->setMethod($file->getId() != null ? "PATCH": "POST");
         $this->setContentType("multipart/form-data; boundary=\"boundary\"");
     
 
@@ -97,19 +83,20 @@ class RestApiRequest extends HttpRequest {
         $metaPart = new BodyPart();
         $metaPart->addHeader("Content-Disposition", $metaContentDisposition);
         $metaPart->addHeader("Content-Type", "application/json");
-        $metaPart->setContent($file->getMetadata());
+        $metaPart->setContent($file->getSObject());
 
         $binaryContentDisposition = $isAttachment ? "form-data; name=\"Body\"; filename=\"{$file->getName()}\"" : "form-data; name=\"Body\"; filename=\"{$file->getName()}\"";
 
         $binaryPart = new BodyPart();
         $binaryPart->addHeader("Content-Disposition", $binaryContentDisposition);
-        $binaryPart->addHeader("Content-Type", $file->getType());
+        $binaryPart->addHeader("Content-Type", $file->getType()); 
         $binaryPart->setContent($file->getContent());
 
         $this->addPart($metaPart);
         $this->addPart($binaryPart);
 
         return $this->send($endpoint);
+        
     }
 
 
@@ -123,7 +110,7 @@ class RestApiRequest extends HttpRequest {
         $metadata = $this->buildMetadata($list, $parentId);
 
         $metaPart = new BodyPart();
-        $metaPart->addHeader("Content-Disposition","form-data; name=\"collection");
+        $metaPart->addHeader("Content-Disposition","form-data; name=\"collection\"");
         $metaPart->addHeader("Content-Type", "application/json");
         $metaPart->setContent($metadata);
         $this->addPart($metaPart);
