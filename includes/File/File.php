@@ -79,6 +79,7 @@ class File implements \JsonSerializable {
     }
 
 
+
     //GETTERS
     public function getName(){
 
@@ -177,7 +178,9 @@ class File implements \JsonSerializable {
         }
 
         return $bytes;
-}
+		}
+
+
 
     public function jsonSerialize()
     {
