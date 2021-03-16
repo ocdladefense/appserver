@@ -377,12 +377,13 @@ class HttpRequest extends HttpMessage {
 					}
 	
 
-				$request->setFiles($movedFiles);
+					$request->setFiles($movedFiles);
 
-			} catch(\Exception $e){
+				} catch(\Exception $e){
 
-				throw $e;
+					throw $e;
 
+				}
 			}
 
 
