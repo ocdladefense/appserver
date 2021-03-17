@@ -24,7 +24,7 @@ class RestApiResponse extends HttpResponse {
         405 => "Method type not allowed",
         406 => "Request content not acceptable"
     );
-
+    private $SObject;
 
     public function getSObjects(){
         return $this->sObjects;
@@ -39,12 +39,22 @@ class RestApiResponse extends HttpResponse {
         //if the request is successful we can opt use the X-Request-Endpoint header to create the sobject class(s) or an array of them
         //new HttpHeader("X-Request-Endpoint",$endpoint)
         if($this->isSuccess() && false){
-            //sep function
-            $header = $this->getHeader("X-Request-Endpoint");
-            //determine the correct sobject to instanciate
-            $sObjectName = "Document";
-            $model = new $sObjectName($body);
-            $this->sObjects = array($model);
+            try{
+                //sep function
+                $requestEndpoint = $this->getHeader("X-Request-Endpoint")->getValue();
+                //determine the correct sobject to instanciate
+                $reqClass = new RestApiRequest ();
+                $sobjectName = $reqClass->getEndpoint($requestEndpoint,true);
+                if($sobjectName == "sObject"){
+                    
+                }
+                $model = new $sObjectName($body);
+                $this->sObjects = array($model);
+
+            }catch(Exception $e){
+                $SObject = null;
+            }
+
         }
 
         if(!$this->isSuccess()) {
@@ -72,7 +82,9 @@ class RestApiResponse extends HttpResponse {
 
 
 
-    
+    public function getSObject(){
+        return $SObject;
+    }
 
     
     private static function isOAuthResponse($body = null) {

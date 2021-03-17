@@ -69,7 +69,9 @@ class OAuthRequest extends HttpRequest {
 				$req->setBody($body);
 				$req->setMethod("POST");
 				// $req->addHeaders($headers);
-				$req->setAccept("\Salesforce\OAuthResponse");
+				// Sending a HttpResponse class as a Header to represent the HttpResponse.
+				$req->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse")); 
+				//setAccept("\Salesforce\OAuthResponse");//
 				
 				// return a redirect under which circumstances?
 				// $config["callback_url"]

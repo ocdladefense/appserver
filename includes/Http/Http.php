@@ -103,6 +103,7 @@ class Http {
 		
 		// print_r(HttpHeader::toArray($msg->getHeaders()));
 		// Send using cURL with the 
+		//might need to strip out custom header before the request
 		$resp = Curl::send($msg->getUrl(), $this->config->getAsCurl());
 
 
@@ -113,12 +114,12 @@ class Http {
 		// $logMessage = implode("<br />",$logArray);
 		$this->httpSessionLog = $logArray;
 
-		$accept = $msg->getAccept() == null ? "Http\HttpResponse" : $msg->getAccept();
+		$responseClass = $msg->getHeader("X-HttpClient-ResponseClass") == null ? "Http\HttpResponse" : $msg->getHeader("X-HttpClient-ResponseClass")->getValue();
 		
 		
 		// Return a new instance of HttpResponse(); 
 		return self::newHttpResponse(
-			$accept,
+			$responseClass,
 			$msg->getUrl(),//endpoint
 			$resp["headers"],
 			$resp["body"],
@@ -135,8 +136,8 @@ class Http {
 	}
 	
 
-	private static function newHttpResponse($accept,$endpoint,$headers,$body,$info,$log = null){
-		$resp = new $accept($body);
+	private static function newHttpResponse($responseClass,$endpoint,$headers,$body,$info,$log = null){
+		$resp = new $responseClass($body);
 		$resp->setHeaders(HttpHeader::fromArray($headers));
 		$resp->addHeader(new HttpHeader("X-Request-Endpoint",$endpoint));
 		$resp->setCurlInfo($info);

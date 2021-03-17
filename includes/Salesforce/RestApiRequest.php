@@ -27,7 +27,10 @@ class RestApiRequest extends HttpRequest {
 	private $contentType;
 	
 	
-	
+	public const ENDPOINTS = array(
+        "sObject" => "/services/data/v51.0/sobjects/",
+        "query" => "/services/data/v51.0/query/?q="
+    );
 
     /**
      * Prepare authentication parameters for the Salesforce REST API.
@@ -46,7 +49,7 @@ class RestApiRequest extends HttpRequest {
 
     
         $this->setUrl($this->instanceUrl . $endpoint);
-        $this->setAccept("\Salesforce\RestApiResponse"); // Use a custom HttpResponse class to represent the HttpResponse.
+        $this->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\RestApiResponse")); // Use a custom HttpResponse class to represent the HttpResponse.
         $token = new HttpHeader("Authorization", "Bearer " . $this->accessToken);
         $this->addHeader($token);
         
@@ -64,6 +67,18 @@ class RestApiRequest extends HttpRequest {
         $resp = $http->send($this);
 
         return $resp;
+    }
+
+
+    public function getEndpoint($sObject, $getIndex = false){
+        if($getIndex){
+            foreach (ENDPOINTS as $sObjectName => $endpoint) {
+                if($sObject == $endpoint){
+                    return $sObjectName;
+                }
+            }
+        }
+        return ENDPOINT[$sobject];
     }
 
     public function uploadFile(SalesforceFile $file){
