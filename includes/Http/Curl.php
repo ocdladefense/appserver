@@ -24,7 +24,7 @@ class Curl {
 
 		// If set, start logging the request.
 		$out  =  fopen(self::$LOG_FILE,"w+");
-		if( !$out ) throw new \Exception("Could not open PHP output stream.");
+		//if( !$out ) throw new \Exception("Could not open PHP output stream.");
 
 		
 				

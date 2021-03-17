@@ -29,7 +29,7 @@ class OAuthRequest extends HttpRequest {
     // private $reqBody = array();
 
 
-    private const MAX_LOGIN_ATTEMPTS = 3; 
+    //private const MAX_LOGIN_ATTEMPTS = 3; 
 
 
 

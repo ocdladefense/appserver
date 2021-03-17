@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Http;
 
 use \stdClass as stdClass;
