@@ -26,10 +26,25 @@ class RestApiRequest extends HttpRequest {
 	
 	private $contentType;
 	
-	
+	public $resourcePrefix = "/services/data";
+
+
 	public const ENDPOINTS = array(
-        "sObject" => "/services/data/v51.0/sobjects/",
-        "query" => "/services/data/v51.0/query/?q="
+        "sObject Basic Information" => array(
+            "endpoint" => "/%apiVersion/sobjects/%sObject/",
+            "parameters" => array(
+                "version" => 0,
+                "sObjectName" => 2
+            )
+        ),
+        
+        "Query" => array(
+            "endpoint" => "/%apiVersion/query/?q=",
+            "parameters" => array(
+                "version" => 0,
+                "soql" => "q"
+            )
+        )
     );
 
     /**
@@ -70,15 +85,8 @@ class RestApiRequest extends HttpRequest {
     }
 
 
-    public function getEndpoint($sObject, $getIndex = false){
-        if($getIndex){
-            foreach (ENDPOINTS as $sObjectName => $endpoint) {
-                if($sObject == $endpoint){
-                    return $sObjectName;
-                }
-            }
-        }
-        return ENDPOINT[$sobject];
+    public function getEndpoint($target, $version = "v51.0" , $getIndex = false){
+        return ENDPOINT[$target][$version];
     }
 
     public function uploadFile(SalesforceFile $file){
