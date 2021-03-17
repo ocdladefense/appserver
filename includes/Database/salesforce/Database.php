@@ -136,8 +136,8 @@ class Database {
 
 	public static function parseWhere($clause){
 		$stmt = explode("WHERE", $clause);
-		// ResourceId__c = 'YtoqDF8EnsA' 
-		// ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
+		//[1]: ResourceId__c = 'YtoqDF8EnsA' 
+		//[1]: ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
 
 		$where = trim($stmt[1]);
 		//ResourceId__c = 'YtoqDF8EnsA'
@@ -150,7 +150,7 @@ class Database {
 		var_dump($conditions);
 
 
-
+		//MAKE IT LOOK LIKE THIS
 
 		$Obj = array(
 			"ResourceId__c" => "YtoqDF8EnsA",
