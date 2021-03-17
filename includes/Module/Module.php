@@ -91,7 +91,6 @@ class Module {
     
 
         $oauth_config = getOauthConfig($org);
-
         $oauth = OAuthRequest::fromConfig($oauth_config);
 
         $resp = $oauth->authorize();

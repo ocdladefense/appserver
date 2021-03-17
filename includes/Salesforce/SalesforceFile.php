@@ -6,11 +6,14 @@ use File\File;
 
 class SalesforceFile extends File {
 
+    public $isLocal;
+
     protected $SObjectName;
 
     protected $Id;
 
     protected $Name;
+
 
     public function getId(){
 
@@ -19,6 +22,11 @@ class SalesforceFile extends File {
 
     public function getSObjectName(){
         return $this->SObjectName;
+    }
+
+    public function getInstanceName(){
+
+        return get_class($this);
     }
 
     public function getSObject() {
