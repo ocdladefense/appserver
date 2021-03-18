@@ -208,6 +208,8 @@ class RestApiRequest extends HttpRequest {
         $baseUrl = "/services/data/v49.0/sobjects/" . $sobjectName;
         $endpoint = $record->Id == null || $record->Id == "" ? $baseUrl : $baseUrl . "/" . $record->Id;
 
+        $record = self::formatJson($record);
+
         // Set up the request.
         $record->Id == null || $record->Id == "" ? $this->setPost() : $this->setPatch();
         $this->setContentType("application/json");
@@ -215,10 +217,7 @@ class RestApiRequest extends HttpRequest {
         $this->setBody(json_encode($record));
 
         // Send the request.
-        $resp = $this->send($endpoint);
-        
-        // Return the body of the response.
-        return $resp->getBody();
+        return $this->send($endpoint);
     }
 
 
@@ -231,6 +230,22 @@ class RestApiRequest extends HttpRequest {
         $resp = $this->send($endpoint);
 
         return $resp;
+    }
+
+    public static function formatJson($record){
+
+        foreach($record as $key => $value){
+
+            if(trim($value) == ""){
+
+                $record->$key = null;
+            }
+            if(trim($value) == "on"){
+
+                $record->$key = True;
+            }
+        }
+        return $record;
     }
 
 
