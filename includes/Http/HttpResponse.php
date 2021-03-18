@@ -4,6 +4,8 @@ namespace Http;
 
 
 class HttpResponse extends HttpMessage {
+
+    private $statusCode;
 	
     
     public function __construct($body = null){
@@ -33,7 +35,14 @@ class HttpResponse extends HttpMessage {
     }
 
     public function setStatusCode($code){
+
+        if(isset($this->statusCode)) {
+
+            throw new Exception("QUIT TRYING TO SET THE STATUS CODE TWICE.  ITS RUDE!");
+        }
+
     	$this->statusCode = $code;
+
     }
     
     public function setErrorStatus(){
@@ -54,7 +63,9 @@ class HttpResponse extends HttpMessage {
     }
 
     public function isSuccess(){
-        return $this->getStatusCode() == 200 || $this->getStatusCode() == 201;
+        $myDecimal = $this->statusCode / 100;
+        $myInteger = round ($myDecimal, 0, PHP_ROUND_HALF_DOWN);
+        return $myInteger === 2;
     }
 
     //Getters

@@ -11,7 +11,7 @@ use Http\HttpResponse;
 
 class RestApiResponse extends HttpResponse {
 
-    private $error;
+    private $errorMessage;
 
     private $sObjects;
     
@@ -35,6 +35,7 @@ class RestApiResponse extends HttpResponse {
         
         
         $body = null != $this->getBody() ? json_decode($this->getBody(), true) : null;
+
         
         //if the request is successful we can opt use the X-Request-Endpoint header to create the sobject class(s) or an array of them
         //new HttpHeader("X-Request-Endpoint",$endpoint)
@@ -60,30 +61,42 @@ class RestApiResponse extends HttpResponse {
 
         }
 
+        // isSuccess is not working.  The status code is getting lost somehow.
         if(!$this->isSuccess()) {
 
-            if(isset($body["error"]) || isset($body["error_description"])){
-                $this->error = array(
-                    "HttpStatusCode"						=> $this->getStatusCode(),
-                    "HttpStatusMessage"					=> self::getErrorMsg($this->getStatusCode()),
-                    "Salesforce_Error"					=> $body["error"],
-                    "Salesforce_Error_message"	=> $body["error_description"]
-                );
-            } else if((isset($body["errorCode"]) && $body["errorCode"] == "INVALID_SESSION_ID") || 
-                        (isset($body["message"]) && $body["message"] == "Session expired or invalid")) {
-                            //        {"message": "Session expired or invalid","errorCode": "INVALID_SESSION_ID"}
-                $this->access_token_invalid = true;
-            } else {
-                $this->error = array(
-                    "HttpStatusCode" 						=> $this->getStatusCode(),
-                    "HttpStatusMessage"					=> $this->getErrorMsg($this->getStatusCode())
-                );
-            }
+            $this->errors = RestApiErrorCollection::fromJson($this->getBody());
+            
         }
         
     }
 
 
+    public function foobar(){
+
+        // if(isset($body["error"]) || isset($body["error_description"])){
+        //     $this->error = array(
+        //         "HttpStatusCode"						=> $this->getStatusCode(),
+        //         "HttpStatusMessage"					=> self::getErrorMsg($this->getStatusCode()),
+        //         "Salesforce_Error"					=> $body["error"],
+        //         "Salesforce_Error_message"	=> $body["error_description"]
+        //     );
+        // } else if((isset($body["errorCode"]) && $body["errorCode"] == "INVALID_SESSION_ID") || 
+        //             (isset($body["message"]) && $body["message"] == "Session expired or invalid")) {
+        //                 //        {"message": "Session expired or invalid","errorCode": "INVALID_SESSION_ID"}
+        //     $this->access_token_invalid = true;
+        // } else if(isset($body["errorCode"])) {
+
+        //     $this->error = array(
+        //         "message" => $body[""]
+        //     )
+
+        // } else {
+        //     $this->error = array(
+        //         "HttpStatusCode" 						=> $this->getStatusCode(),
+        //         "HttpStatusMessage"					=> $this->getErrorMsg($this->getStatusCode())
+        //     );
+        // }
+    }
 
     public function getSObject(){
         return $SObject;
@@ -99,16 +112,53 @@ class RestApiResponse extends HttpResponse {
 
 
     // Commented out s.s. 1/9/21 error cannnot call this on a non object.//
-    private static function getErrorMsg($statusCode) {
-			return self::$errorCodes[$statusCode];
+    public function getErrorMessage() {
+
+        return $this->errors->getFirst()->getMessage();
     }
     
     
-    
-    
-    public function getError() {
-        return $this->error;
+}
+
+class RestApiError {
+
+    private $message;
+    private $errorCode;
+
+
+    public function __construct($message, $errorCode){
+
+        $this->message = $message;
+        $this->errorCode = $errorCode;
     }
-    
-    
+
+    public function getMessage(){
+
+        return $this->message;
+    }
+}
+
+class RestApiErrorCollection {
+
+    public $errorObjects;
+
+    public static function fromJson($json){
+
+        $collection = new RestApiErrorCollection();
+
+        $errorObjs = json_decode($json);
+
+        foreach($errorObjs as $obj){
+
+            $collection->errorObjects[] = new RestApiError($obj->message, $obj->errorCode);
+        }
+
+        return $collection;
+    }
+
+    public function getFirst(){
+
+        return $this->errorObjects[0];
+    }
+
 }

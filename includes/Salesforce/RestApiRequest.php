@@ -179,21 +179,6 @@ class RestApiRequest extends HttpRequest {
         return $metadata;
     }
 		
-
-
-    public function query($soql) {
-
-        $endpoint = "/services/data/v49.0/query/?q=";
-				$endpoint .= urlencode($soql);
-
-        $resp = $this->send($endpoint, "GET");
-        //var_dump($resp);
-        //exit;
-        return json_decode($resp->getBody(), true);
-    }
-
-
-
     public function addToBatch($sObjectName, $record, $method = null){
         $req = array();//final request to add to batch
 
@@ -230,47 +215,36 @@ class RestApiRequest extends HttpRequest {
         return $resp->getBody();
     }
 
+    public function query($soql) {
 
-    public function insert($sObjectName, $record) {
+        $endpoint = "/services/data/v49.0/query/?q=";
+        $endpoint .= urlencode($soql);
 
-        $endpoint = "/services/data/v49.0/sobjects/".$sObjectName;
+        $resp = $this->send($endpoint, "GET");
 
-        $contentType = new HttpHeader("Content-Type", "application/json");
-        $this->setPost();
-        $this->setBody(json_encode($record));
-        $this->addHeader($contentType);
-    
-        
-        $resp = $this->send($endpoint);
-       
-        return $resp->getBody();
+        return json_decode($resp->getBody(), true);
     }
 
-    public function update($sObjectName, $record)
-    {
+    public function upsert($sobjectName, $record){
 
-        //variables//
-        $apiVersion = "v50.0";
-        $id = $record->Id;
+        // Set up the endpoint.
+        $baseUrl = "/services/data/v49.0/sobjects/" . $sobjectName;
+        $endpoint = $record->Id == null || $record->Id == "" ? $baseUrl : $baseUrl . "/" . $record->Id;
 
-        //unsets or removes the id from the body//
+        $record = self::formatJson($record);
+
+        // Set up the request.
+        $record->Id == null || $record->Id == "" ? $this->setPost() : $this->setPatch();
+        $this->setContentType("application/json");
         unset($record->Id);
-
-        $endpoint = "/services/data/{$apiVersion}/sobjects/{$sObjectName}/{$id}";
-
-        $contentType = new HttpHeader("Content-Type", "application/json");
-        $this->setPatch();
         $this->setBody(json_encode($record));
-        $this->addHeader($contentType);
 
-        $resp = $this->send($endpoint);
-        
-        return $resp->getBody();
+        // Send the request.
+        return $this->send($endpoint);
     }
 
 
-    public function delete($sObject, $sObjectId)
-    {
+    public function delete($sObject, $sObjectId){
         $apiVersion = "v50.0";
 
         $endpoint = "/services/data/{$apiVersion}/sobjects/{$sObject}/{$sObjectId}";
@@ -278,7 +252,23 @@ class RestApiRequest extends HttpRequest {
         $this->setDelete();
         $resp = $this->send($endpoint);
 
-        return true;
+        return $resp;
+    }
+
+    public static function formatJson($record){
+
+        foreach($record as $key => $value){
+
+            if(trim($value) == ""){
+
+                $record->$key = null;
+            }
+            if(trim($value) == "on"){
+
+                $record->$key = True;
+            }
+        }
+        return $record;
     }
 
 
