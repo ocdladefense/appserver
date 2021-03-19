@@ -31,13 +31,14 @@ class RestApiResponse extends HttpResponse {
     }
 
     public function __construct($body) {
-    		parent::__construct($body);
-        
-        
-        $body = null != $this->getBody() ? json_decode($this->getBody(), true) : null;
 
+        parent::__construct($body);
         
-        //if the request is successful we can opt use the X-Request-Endpoint header to create the sobject class(s) or an array of them
+    }
+
+    public function other(){
+
+                //if the request is successful we can opt use the X-Request-Endpoint header to create the sobject class(s) or an array of them
         //new HttpHeader("X-Request-Endpoint",$endpoint)
         if($this->isSuccess() && false){
             try{
@@ -46,7 +47,6 @@ class RestApiResponse extends HttpResponse {
                 //determine the correct sobject to instanciate
                 $reqClass = new RestApiRequest ();
                 $reqEndpoint = explode("salesforce.com", $requestUrl)[1];//truncating the instance url and getting the endpoint
-                $
                 $sobjectName = $reqClass->getEndpoint($reqEndpoint,true);
                 
                 if($sobjectName == "sObject"){
@@ -61,13 +61,6 @@ class RestApiResponse extends HttpResponse {
 
         }
 
-        // isSuccess is not working.  The status code is getting lost somehow.
-        if(!$this->isSuccess()) {
-
-            $this->errors = RestApiErrorCollection::fromJson($this->getBody());
-            
-        }
-        
     }
 
 
@@ -114,7 +107,13 @@ class RestApiResponse extends HttpResponse {
     // Commented out s.s. 1/9/21 error cannnot call this on a non object.//
     public function getErrorMessage() {
 
-        return $this->errors->getFirst()->getMessage();
+        if(!$this->isSuccess()) {
+
+            $this->errors = RestApiErrorCollection::fromJson($this->getBody());
+            return $this->errors->getFirst()->getMessage();   
+        }
+
+        return null;
     }
     
     

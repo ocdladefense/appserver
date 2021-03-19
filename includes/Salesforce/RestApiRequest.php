@@ -24,8 +24,6 @@ class RestApiRequest extends HttpRequest {
 	private $accessToken;
 	
 	
-	private $contentType;
-	
 	public $resourcePrefix = "/services/data";
 
 
@@ -78,8 +76,12 @@ class RestApiRequest extends HttpRequest {
 
 
         $http = new Http($config);
+
+        //var_dump($this);exit;
         
-        $resp = $http->send($this);
+        $resp = $http->send($this, true);
+
+        // $http->printSessionLog(); exit;
 
         return $resp;
     }
@@ -235,6 +237,7 @@ class RestApiRequest extends HttpRequest {
 
         // Set up the request.
         $record->Id == null || $record->Id == "" ? $this->setPost() : $this->setPatch();
+        //$this->addHeader(new HttpHeader("Content-Type", "application/json"));
         $this->setContentType("application/json");
         unset($record->Id);
         $this->setBody(json_encode($record));
@@ -259,7 +262,7 @@ class RestApiRequest extends HttpRequest {
 
         foreach($record as $key => $value){
 
-            if(trim($value) == ""){
+            if(is_string($value) && trim($value) == ""){
 
                 $record->$key = null;
             }
@@ -268,6 +271,7 @@ class RestApiRequest extends HttpRequest {
                 $record->$key = True;
             }
         }
+
         return $record;
     }
 

@@ -38,7 +38,7 @@ class HttpResponse extends HttpMessage {
 
         if(isset($this->statusCode)) {
 
-            throw new Exception("QUIT TRYING TO SET THE STATUS CODE TWICE.  ITS RUDE!");
+            throw new Exception("QUIT TRYING TO SET THE STATUS CODE TWICE.");
         }
 
     	$this->statusCode = $code;
@@ -62,10 +62,14 @@ class HttpResponse extends HttpMessage {
     	$this->headers->addHeader(new HttpHeader("Location",$url));
     }
 
-    public function isSuccess(){
-        $myDecimal = $this->statusCode / 100;
-        $myInteger = round ($myDecimal, 0, PHP_ROUND_HALF_DOWN);
-        return $myInteger === 2;
+    public function isSuccess() {
+
+        if($this->statusCode == null){
+
+            throw new \Exception("STATUS_CODE_ERROR: The status code is null for this response");
+        }
+        
+        return $this->statusCode >= 200 && $this->statusCode < 300;
     }
 
     //Getters

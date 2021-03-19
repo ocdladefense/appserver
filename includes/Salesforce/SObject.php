@@ -1,5 +1,9 @@
 <?php
 
+namespace Salesforce;
+
+
+
 abstract class SObject {
 
     protected $Id;
