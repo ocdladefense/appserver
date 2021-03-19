@@ -37,6 +37,16 @@ class Attachment extends SalesforceFile { // implements ISObject
         return $sfFile;
     }
 
+    public static function fromJson($json){
+
+        $obj = json_decode($json);
+
+        $sfFile = new Attachment();
+        $sfFile->Id = $ojb->id;
+
+        return $sfFile;
+    }
+
     // Always produce an object that is compatible with the salesforce simple object endpoint.
     public function getSObject(){ 
 
