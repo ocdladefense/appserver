@@ -128,6 +128,8 @@ class File implements \JsonSerializable {
 
             throw new Exception("FILE_CONTENTS_ERROR: File path could not be opened.");
         }
+        
+        return $contents;
     }
 
     public function getMetadata(){
