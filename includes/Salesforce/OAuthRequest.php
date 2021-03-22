@@ -22,6 +22,12 @@ use Http\HttpResponse;
 class OAuthRequest extends HttpRequest {
 
 
+		const WEB_SERVER_FLOW = 0x001;
+		
+		const USERNAME_PASSWORD_FLOW = 0x000;
+		
+		
+
     private $oauth_config = array();
     
     // Per Gino, but by extending HttpRequest
@@ -50,6 +56,20 @@ class OAuthRequest extends HttpRequest {
 		
 
 				
+				$flow = $config["flow"] ?: "usernamepassword"; 
+				
+				switch ($flow) {
+					case "webserver":
+						return self::newWebServerFlow($config);
+					default:
+						return self::newUsernamePasswordFlow($config);
+				}
+		}
+		
+		
+		
+		public static function newUsernamePasswordFlow($config) {
+		
 				$url = $config["oauth_url"];
 				
 				$req = new OAuthRequest($url);
@@ -76,6 +96,14 @@ class OAuthRequest extends HttpRequest {
 				// return a redirect under which circumstances?
 				// $config["callback_url"]
 				return $req;
+		}
+		
+		
+		
+		public static function newWebServerFlow($config) {
+		
+		
+		
 		}
 
 
