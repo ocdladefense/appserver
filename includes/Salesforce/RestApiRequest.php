@@ -26,26 +26,26 @@ class RestApiRequest extends HttpRequest {
 	
 	private $contentType;
 	
-	public $resourcePrefix = "/services/data";
+	// public $resourcePrefix = "/services/data";
 
 
-	public const ENDPOINTS = array(
-        "sObject Basic Information" => array(
-            "endpoint" => "/%apiVersion/sobjects/%sObject/",
-            "parameters" => array(
-                "version" => 0,
-                "sObjectName" => 2
-            )
-        ),
+	// public const ENDPOINTS = array(
+    //     "sObject Basic Information" => array(
+    //         "endpoint" => "/%apiVersion/sobjects/%sObject/",
+    //         "parameters" => array(
+    //             "version" => 0,
+    //             "sObjectName" => 2
+    //         )
+    //     ),
         
-        "Query" => array(
-            "endpoint" => "/%apiVersion/query/?q=",
-            "parameters" => array(
-                "version" => 0,
-                "soql" => "q"
-            )
-        )
-    );
+    //     "Query" => array(
+    //         "endpoint" => "/%apiVersion/query/?q=",
+    //         "parameters" => array(
+    //             "version" => 0,
+    //             "soql" => "q"
+    //         )
+    //     )
+    // );
 
     /**
      * Prepare authentication parameters for the Salesforce REST API.
@@ -85,8 +85,9 @@ class RestApiRequest extends HttpRequest {
     }
 
 
-    public function getEndpoint($target, $version = "v51.0" , $getIndex = false){
-        return ENDPOINT[$target][$version];
+    public function getEndpoint($target){
+        return null;
+
     }
 
     public function uploadFile(SalesforceFile $file){

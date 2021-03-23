@@ -45,12 +45,9 @@ class RestApiResponse extends HttpResponse {
                 //determine the correct sobject to instanciate
                 $reqClass = new RestApiRequest ();
                 $reqEndpoint = explode("salesforce.com", $requestUrl)[1];//truncating the instance url and getting the endpoint
-                $
-                $sobjectName = $reqClass->getEndpoint($reqEndpoint,true);
                 
-                if($sobjectName == "sObject"){
-                    
-                }
+                $sobjectName = $reqClass->getEndpoint($reqEndpoint,true);
+                //
                 $model = new $sObjectName($body);
                 $this->sObjects = array($model);
 
