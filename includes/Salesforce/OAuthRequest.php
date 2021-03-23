@@ -102,22 +102,24 @@ class OAuthRequest extends HttpRequest {
 		
 		public static function newWebServerFlow($config) {
 
-			$url = $config["oauth_url"];
+			$endpoint = "https://test.salesforce.com/services/oauth2/token";	// The config in use sets 'oauth-url' to authorize instead of token.
+			$redirect = "http://localhost/test/webserver/flow/accessToken/granted";
 
 			$params = array(
+				"grant_type"	=> "authorization_code",
 				"client_id"		=> $config["client_id"],
-				"redirect_uri"	=> $config["redirect_uri"],
-				"response_type" => "code"
+				"client_secret" => $config["client_secret"],
+				"code" => $_SESSION["authorization_code"],
+				"redirect_uri"	=> $redirect
 			);
 
-			$url .= "?" . http_build_query($params);
+			$body = http_build_query($params);
 
-			// https://test.salesforce.com?client_id=kjdfsa;ljkafjio04ipoh&redirect_uri=someredirecturi&response_code=code
-				
-			$req = new OAuthRequest($url);
+			$req = new OAuthRequest($endpoint);
 			
-			$req->setMethod("GET");
-			$req->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse")); 
+			$req->setMethod("POST");
+			$req->setBody($body);
+			$req->addHeader(new HttpHeader("Content-Type","application/x-www-form-urlencoded")); 
 
 			return $req;
 		}
