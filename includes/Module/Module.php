@@ -94,8 +94,7 @@ class Module {
         $oauth = OAuthRequest::fromConfig($oauth_config);
 
         $resp = $oauth->authorize();
-		
-		
+        
 				if($debug) {
 						var_dump($oauth);
 				}

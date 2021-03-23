@@ -149,6 +149,11 @@ class Application {
             }
 
             $out = $this->getOutput($module, $route, $params);
+
+            if(is_subclass_of($out, "Http\HttpResponse", False)){
+
+                return $out;
+            }
             
             if(null == $out) throw new Exception("Callback function returned NULL!");
             

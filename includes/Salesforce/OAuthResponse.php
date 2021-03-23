@@ -6,6 +6,7 @@ namespace Salesforce;
 
 
 use Http\HttpResponse;
+use Http\HttpHeader as HttpHeader;
 
 
 
@@ -40,8 +41,9 @@ class OAuthResponse extends HttpResponse {
 		}
 
 
-    public function __construct($body) {
-    		parent::__construct($body);
+    public function __construct($body = null) {
+        
+        parent::__construct($body);
     		
 
         $body = null != $body ? json_decode($body, true) : null;
@@ -52,8 +54,13 @@ class OAuthResponse extends HttpResponse {
             $this->errorMessage = $body["error_description"];
         }
 
-        $this->accessToken = $body["access_token"];
-        $this->instanceUrl = $body["instance_url"];  
+        if($body != null){
+
+            $this->accessToken = $body["access_token"];
+            $this->instanceUrl = $body["instance_url"]; 
+        }
+
+ 
 
         
 				/*
@@ -77,7 +84,24 @@ class OAuthResponse extends HttpResponse {
         
     }
 
+    public static function newWebServerFlow($config) {
 
+        $resp = new OAuthResponse();
+
+        $url = $config["oauth_url"];
+
+        $params = array(
+            "client_id"		=> $config["client_id"],
+            "redirect_uri"	=> $config["redirect_uri"],
+            "response_type" => "code"
+        );
+
+        $url .= "?" . http_build_query($params);
+
+        $resp->addHeader(new HttpHeader("Location", $url));
+
+        return $resp;
+    }
 
 
 

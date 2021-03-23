@@ -70,40 +70,56 @@ class OAuthRequest extends HttpRequest {
 		
 		public static function newUsernamePasswordFlow($config) {
 		
-				$url = $config["oauth_url"];
-				
-				$req = new OAuthRequest($url);
+			$url = $config["oauth_url"];
+			
+			$req = new OAuthRequest($url);
 
-        $body = array(
-            "grant_type" 			=> "password",
-            "client_id" 			=> $config["client_id"],
-            "client_secret"		=> $config["client_secret"],
-            "username"				=> $config["username"],
-            "password"				=> $config["password"] . $config["security_token"]
-        );
-        
-				$body = http_build_query($body);
-				$contentType = new HttpHeader("Content-Type", "application/x-www-form-urlencoded");
-				$req->addHeader($contentType);
-				
-				$req->setBody($body);
-				$req->setMethod("POST");
-				// $req->addHeaders($headers);
-				// Sending a HttpResponse class as a Header to represent the HttpResponse.
-				$req->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse")); 
-				//setAccept("\Salesforce\OAuthResponse");//
-				
-				// return a redirect under which circumstances?
-				// $config["callback_url"]
-				return $req;
+			$body = array(
+				"grant_type" 			=> "password",
+				"client_id" 			=> $config["client_id"],
+				"client_secret"		=> $config["client_secret"],
+				"username"				=> $config["username"],
+				"password"				=> $config["password"] . $config["security_token"]
+			);
+			
+			$body = http_build_query($body);
+			$contentType = new HttpHeader("Content-Type", "application/x-www-form-urlencoded");
+			$req->addHeader($contentType);
+			
+			$req->setBody($body);
+			$req->setMethod("POST");
+			// $req->addHeaders($headers);
+			// Sending a HttpResponse class as a Header to represent the HttpResponse.
+			$req->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse")); 
+			//setAccept("\Salesforce\OAuthResponse");//
+			
+			// return a redirect under which circumstances?
+			// $config["callback_url"]
+			return $req;
 		}
 		
 		
 		
 		public static function newWebServerFlow($config) {
-		
-		
-		
+
+			$url = $config["oauth_url"];
+
+			$params = array(
+				"client_id"		=> $config["client_id"],
+				"redirect_uri"	=> $config["redirect_uri"],
+				"response_type" => "code"
+			);
+
+			$url .= "?" . http_build_query($params);
+
+			// https://test.salesforce.com?client_id=kjdfsa;ljkafjio04ipoh&redirect_uri=someredirecturi&response_code=code
+				
+			$req = new OAuthRequest($url);
+			
+			$req->setMethod("GET");
+			$req->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse")); 
+
+			return $req;
 		}
 
 
