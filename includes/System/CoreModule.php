@@ -59,6 +59,7 @@ class CoreModule extends Module {
 		$configName = "ocdla-jobs";
 
 		$config = getOauthConfig($configName);
+
 		$config["state"] = $configName;
 
 		return OAuth::start($config);
@@ -83,10 +84,11 @@ class CoreModule extends Module {
 		$_SESSION["access_token"] = $resp->getAccessToken();
 		$_SESSION["instance_url"] = $resp->getInstanceUrl();
 
+		//  After you get your access token, you can call userinfo() on the api
+		$_SESSION["userId"] = $config["client_id"];
+
 		$resp2 = new HttpResponse();
 		$resp2->addHeader(new HttpHeader("Location", $config['final_redirect_uri']));
-
-		//var_dump($config);exit;
 
 		return $resp2;
 	}

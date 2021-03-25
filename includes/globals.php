@@ -91,11 +91,50 @@ function stringContains($haystack, $needle){
 
 }
 
-// Decided which oauth flow to use.  Takes....
+// Decided which oauth flow to use.
 function user_require_auth($route, $module) {
 
-	doSAMLAuthorization();
+	// Get the allowed authorization flow types from the module.
+	$modAuthTypes = $module["authorization"];
+
+	//  Lets interprite these as preferred authorization types
+	if(in_array("ouathwebserverflow", $modAuthTypes) || in_array("oauthusernamepasswordflow", $modAuthTypes)) {
+
+		header("Location:/oauth/start");  // return a new response with the location header.
+
+	} else {
+
+		doSAMLAuthorization();
+	}
 }
+
+function user_has_access($route, $module) {
+
+	// Define in config/config.php.
+	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
+	
+	
+	$access = $route["access"];
+	$args = $route["access_args"];
+	
+	
+	if(!isset($access) ) {
+		return true;
+		
+	} else if( true === $access ) {
+		return true;
+		
+	} else if(function_exists($access)) {
+
+		return null == $args ? call_user_func($access) : call_user_func_array($access, $args);
+	}
+}
+
+function is_authenticated() {
+	
+	return isset($_SESSION["userId"]);
+}
+
 
 function doSAMLAuthorization(){
 
@@ -123,38 +162,8 @@ function doSAMLAuthorization(){
 }
 
 
-function user_has_access($route) {
-
-	// Define in config/config.php.
-	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
-	
-	
-	$access = $route["access"];
-	$args = $route["access_args"];
-	
-	
-	if(!isset($access) ) {
-		return true;
-		
-	} else if( true === $access ) {
-		return true;
-		
-	} else if(function_exists($access)) {
-
-		return null == $args ? call_user_func($access) : call_user_func_array($access, $args);
-	}
-}
-
-
 function user_get_initials() {
 	return !is_authenticated() ? "G" : ucfirst(substr($_SESSION["username"], 0, 1));
-}
-
-
-
-
-function is_authenticated() {
-	return isset($_SESSION["userId"]);
 }
 
 

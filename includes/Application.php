@@ -30,6 +30,8 @@ class Application {
     // Outgoing response.
     private $resp;
 
+    private $modules;
+
 	
 	
 		
@@ -62,11 +64,9 @@ class Application {
         // dump($defs);
 
         // Build an index for modules.
-        $modules = $defs->indexBy(function($def) {
+        $this->modules = $defs->indexBy(function($def) {
             return $def["name"];
         });
-
-        //dump($modules);exit;
 
         $coreDef = array(
             "comment"      => "The core module",
@@ -116,14 +116,12 @@ class Application {
             
         );
 
-        $modules->put("core", $coreDef);
+        $this->modules->put("core", $coreDef);
 
-        $this->loader = new ModuleLoader($modules->getArray());
-
-        //dump($modules);exit;
+        $this->loader = new ModuleLoader($this->modules->getArray());
 
         // Build an index for routes.
-        $this->routes = $modules->map(function($def) {
+        $this->routes = $this->modules->map(function($def) {
             $routes = $def["routes"];
             $name = $def["name"];
 
@@ -137,8 +135,6 @@ class Application {
 
             return $routes;
         },false)->flatten();
-
-        //dump($this->routes);exit;
     }
 
 
@@ -195,68 +191,55 @@ class Application {
         
         return $this->getOutput($module, $route, $params);
     }
-		
-		
-		// incoming request: maps
+        
+        
+        // incoming request: maps
     public function init($uri) {
 
+        $router = new Router();
+        $path = $router->match($uri, array_keys($this->routes));
 
-			
-			$router = new Router();
-			$path = $router->match($uri, array_keys($this->routes));
+        l("Executing application...");
+        l("Exec located route: {$path}.");
+        l("FINISHED");
 
-			l("Executing application...");
-			l("Exec located route: {$path}.");
-			l("FINISHED");
-			if(false === $path) {
-				throw new Exception("Could not locate {$uri}.");
-			}
+        if(false === $path) {
 
-			
-			$route = $this->routes[$path->__toString()];
+            throw new Exception("Could not locate {$uri}.");
+        }
 
+        $route = $this->routes[$path->__toString()];
 
-			
-			
-			$params = $path->getParams();
+        $params = $path->getParams();
 
-			l("Will execute $path: </p><pre>".print_r($route,true)."</pre>");
-			
-			$moduleName = $route["module"];
-			l("Module is: {$moduleName}.");
+        l("Will execute $path: </p><pre>".print_r($route,true)."</pre>");
+        
+        $moduleName = $route["module"];
+        l("Module is: {$moduleName}.");
 
+        // Check access here.
+        $access = $route["access"];
+        $access_args = $route["access_args"];
+        
+        // Check the module and the route for any access requirements.  If the user needs to be authorized, start the oauth process.
+        $module = $this->modules->getArray()[$moduleName];
+        if(!user_has_access($route, $module)) {
 
+            user_require_auth($route, $module);
+        }
 
-			// Check access here.
-			$access = $route["access"];
-			$access_args = $route["access_args"];
-			
-			
-			if(!user_has_access($route)) {
-				user_require_auth();
-			}
-			
+        l("Loading Module...");
+        $loader = $this->getLoader();
 
 
+        // Demonstrate that we can instantiate a module
+        //  and begin using it.
+        $object = $loader->loadObject($moduleName);
+        $func = $route["callback"];
 
-
-			l("Loading Module...");
-			$loader = $this->getLoader();
-
- 
-			// Demonstrate that we can instantiate a module
-			//  and begin using it.
-			$object = $loader->loadObject($moduleName);
-    	$func = $route["callback"];
-
-			l("Executing route...<br />Module: {$moduleName}<br />Callback: {$func}.");
-
-    	// dump($object);
-    	// Load the routes files, if any.
-			// $target->loadFiles();
-
-    	
-    	return array($object, $route, $params);
+        l("Executing route...<br />Module: {$moduleName}<br />Callback: {$func}.");
+        
+        return array($object, $route, $params);
     }
     	
     	
@@ -281,39 +264,18 @@ class Application {
      *  webserver context.
      */
     public function run($path) {
+
     	return $this->runHttp($path);
-    	// $this->runCli($cmd, $flags);
     } 
 
 
 
-    private function handleErrors() {
-		
-			/* 
-      } catch(PageNotFoundException $e) {
-        $resp->setNotFoundStatus();
-        $resp->setBody($e->getMessage());
-        
-      } catch(Exception $e) {
-
-        if($contentType == Http\MIME_APPLICATION_JSON){
-            $error = new StdClass();
-            $error->error = $e->getMessage();
-            $body = json_encode($error);
-        } else {
-            $body = $e->getMessage();
-        }
-
-        $resp->setErrorStatus();
-        $resp->setBody($body);
-      }
-      */
-		
-		}
+    private function handleErrors() {}
     
 
 
-		public function doParameters($module,$route) {
+    public function doParameters($module,$route) {
+        
         $expectedRouteParams = $route->getParameters();
         $urlNamedParameters = $this->request->getUrlNamedParameters();
         $args = $this->request->getArguments();
@@ -324,23 +286,30 @@ class Application {
         //if the parameter is defined by name then use the value for that name otherwise use the value at the current index
         //Determine which kind of paramter to give preference to.
         if(!empty($urlNamedParameters) && empty($args)){
+
             for($i = 0; $i < count($expectedRouteParams); $i++){
+
                 if(in_array($namedParamKeys[$i],$expectedRouteParams)){
+
                     $params[] = $urlNamedParameters[$namedParamKeys[$i]];
                 }
+
                 if(count($params) == 0){
+
                     $params = $args;
                 }
             }
         } else {
+
             $params = $args;
         }
-		}
+    }
 
 
 
     //Other Methods
     public function secure() { 
+
         $header = $this->resp->getHeader("Content-Type");
         $cType = null;
         
@@ -352,6 +321,7 @@ class Application {
         $accept = "*/*";
 
         if(!$this->request->isSupportedContentType("*/*")){
+
             throw new Exception("The content type of the requested resource '$contentType' does not match the accepted content type '$accept', which is set by the requesting entity.");
         }
     }
