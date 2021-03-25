@@ -1,8 +1,8 @@
 <?php
 
-
 use Salesforce\OAuthRequest;
 use Salesforce\RestApiRequest;
+use Salesforce\OAuth;
 
 
 class Module {
@@ -88,16 +88,17 @@ class Module {
     	return $this->loadApi($org, $debug);
     }
     protected function loadApi($org = null, $debug = false) {
-    
 
+        // We wont want to restart the oauth flow under conditions where the user has already authorized and we have a valid access token.
+        // We need to check the session for the access token.  If it exists skip the rest of this function.
         $oauth_config = getOauthConfig($org);
-        $oauth = OAuthRequest::fromConfig($oauth_config);
+        $oauth = OAuth::start($oauth_config);
 
         $resp = $oauth->authorize();
         
-				if($debug) {
-						var_dump($oauth);
-				}
+        if($debug) {
+                var_dump($oauth);
+        }
         
         
         if($resp->hasError) {

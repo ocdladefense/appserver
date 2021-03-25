@@ -1,33 +1,18 @@
 <?php
 
-
-
-
 namespace Salesforce;
-
-
 
 use Http\HttpRequest;
 use Http\HttpHeader;
 use Http\Http;
 use Http\HttpResponse;
-// use phpDocumentor\Reflection\DocBlock\Tags\Throws;
-
-
-
-
-
-
 
 class OAuthRequest extends HttpRequest {
 
-
-		const WEB_SERVER_FLOW = 0x001;
+	const WEB_SERVER_FLOW = 0x001;
+	
+	const USERNAME_PASSWORD_FLOW = 0x000;
 		
-		const USERNAME_PASSWORD_FLOW = 0x000;
-		
-		
-
     private $oauth_config = array();
     
     // Per Gino, but by extending HttpRequest
@@ -41,122 +26,106 @@ class OAuthRequest extends HttpRequest {
 
     public function __construct($url) {
         parent::__construct($url);
-				// $loginAttempts = !isset($_SESSION["login_attempts"]) ? 0 : $_SESSION["login_attempts"] + 1;
-				
-				// $_SESSION["login_attempts"] = $loginAttempts;
+		// $loginAttempts = !isset($_SESSION["login_attempts"]) ? 0 : $_SESSION["login_attempts"] + 1;
+		
+		// $_SESSION["login_attempts"] = $loginAttempts;
     }
 
 
 
-		/**
-		 * Prepare authentication parameters for the Salesforce REST API.
-		 *  Keep track of the number of login attempts.
-		 */
-		public static function fromConfig($config) {
-		
+	/**
+	 * Prepare authentication parameters for the Salesforce REST API.
+	 *  Keep track of the number of login attempts.
+	 */
 
-				
-				$flow = $config["flow"] ?: "usernamepassword"; 
-				
-				switch ($flow) {
-					case "webserver":
-						return self::newWebServerFlow($config);
-					default:
-						return self::newUsernamePasswordFlow($config);
-				}
+	
+	
+	
+	public static function usernamePasswordFlowAccessTokenRequest($config) {
+	
+		$url = $config["oauth_url"];
+		
+		$req = new OAuthRequest($url);
+
+		$body = array(
+			"grant_type" 			=> "password",
+			"client_id" 			=> $config["client_id"],
+			"client_secret"		=> $config["client_secret"],
+			"username"				=> $config["username"],
+			"password"				=> $config["password"] . $config["security_token"]
+		);
+		
+		$body = http_build_query($body);
+		$contentType = new HttpHeader("Content-Type", "application/x-www-form-urlencoded");
+		$req->addHeader($contentType);
+		
+		$req->setBody($body);
+		$req->setMethod("POST");
+		// $req->addHeaders($headers);
+		// Sending a HttpResponse class as a Header to represent the HttpResponse.
+		$req->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse")); 
+		//setAccept("\Salesforce\OAuthResponse");//
+		
+		// return a redirect under which circumstances?
+		// $config["callback_url"]
+		return $req;
+	}
+	
+	// Figure out which flow to return.
+	public static function newAccessTokenRequest($config){
+
+		return $config["flow"] == "webserver" ? self::webServerFlowAccessTokenRequest($config) : self::usernamePasswordFlowAccessTokenRequest($config);
+
+	}
+	
+	public static function webServerFlowAccessTokenRequest($config) {
+
+		$params = array(
+			"grant_type"	=> "authorization_code",
+			"client_id"		=> $config["client_id"],
+			"client_secret" => $config["client_secret"],
+			"code" => $config["authorization_code"],
+			"redirect_uri"	=> $config["final_redirect_uri"]
+		);
+
+		$body = http_build_query($params);
+
+		$req = new OAuthRequest($config["token_url"]);
+		
+		$req->setMethod("POST");
+		$req->setBody($body);
+		$req->addHeader(new HttpHeader("Content-Type","application/x-www-form-urlencoded")); 
+
+		return $req;
+	}
+
+
+	public function authorize($debug = false) {
+		
+		// Use a custom HttpResponse class to represent the HttpResponse.
+
+		$config = array(
+				"returntransfer" => true,
+				"useragent" => "Mozilla/5.0",
+				"followlocation" => true,
+				"ssl_verifyhost" => false,
+				"ssl_verifypeer" => false
+		);
+
+		$this->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse"));
+
+		$http = new Http($config);
+		$resp = $http->send($this);
+		
+		if($debug) {
+			var_dump($this);
+			$http->printSessionLog();
+			var_dump($resp);
 		}
 		
+		return $resp;
+	}
 		
-		
-		public static function newUsernamePasswordFlow($config) {
-		
-			$url = $config["oauth_url"];
-			
-			$req = new OAuthRequest($url);
-
-			$body = array(
-				"grant_type" 			=> "password",
-				"client_id" 			=> $config["client_id"],
-				"client_secret"		=> $config["client_secret"],
-				"username"				=> $config["username"],
-				"password"				=> $config["password"] . $config["security_token"]
-			);
-			
-			$body = http_build_query($body);
-			$contentType = new HttpHeader("Content-Type", "application/x-www-form-urlencoded");
-			$req->addHeader($contentType);
-			
-			$req->setBody($body);
-			$req->setMethod("POST");
-			// $req->addHeaders($headers);
-			// Sending a HttpResponse class as a Header to represent the HttpResponse.
-			$req->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse")); 
-			//setAccept("\Salesforce\OAuthResponse");//
-			
-			// return a redirect under which circumstances?
-			// $config["callback_url"]
-			return $req;
-		}
-		
-		
-		
-		public static function newWebServerFlow($config) {
-
-			$endpoint = "https://test.salesforce.com/services/oauth2/token";	// The config in use sets 'oauth-url' to authorize instead of token.
-			$redirect = "http://localhost/test/webserver/flow/accessToken/granted";
-
-			$params = array(
-				"grant_type"	=> "authorization_code",
-				"client_id"		=> $config["client_id"],
-				"client_secret" => $config["client_secret"],
-				"code" => $_SESSION["authorization_code"],
-				"redirect_uri"	=> $redirect
-			);
-
-			$body = http_build_query($params);
-
-			$req = new OAuthRequest($endpoint);
-			
-			$req->setMethod("POST");
-			$req->setBody($body);
-			$req->addHeader(new HttpHeader("Content-Type","application/x-www-form-urlencoded")); 
-
-			return $req;
-		}
-
-
-
-
-
-		
-		public function authorize($debug = false) {
-			
-			// Use a custom HttpResponse class to represent the HttpResponse.
-
-			$config = array(
-					"returntransfer" => true,
-					"useragent" => "Mozilla/5.0",
-					"followlocation" => true,
-					"ssl_verifyhost" => false,
-					"ssl_verifypeer" => false
-			);
-
-
-			$http = new Http($config);
-			$resp = $http->send($this);
-			
-			if($debug) {
-				var_dump($this);
-				$http->printSessionLog();
-				var_dump($resp);
-			}
-			
-			return $resp;
-		}
-		
-    
-
-
     
     /**
     	* Use an OAuth 2.0 username/password flow 
@@ -170,15 +139,15 @@ class OAuthRequest extends HttpRequest {
     	*/
     public static function init() {
     
-    		$resp = new HttpResponse();
-    		
-    		$body = new stdClass();
-    		// $body->
-    
-    		// No need to re-authenticate.
-				if(!empty($_SESSION["salesforce_access_token"])) {
-				
-				}
+		$resp = new HttpResponse();
+		
+		$body = new stdClass();
+		// $body->
+
+		// No need to re-authenticate.
+		if(!empty($_SESSION["salesforce_access_token"])) {
+		
+		}
         $_SESSION["login_attempts"]++;
     
 				// We're authenticating, so reset any previous variables.
@@ -192,9 +161,6 @@ class OAuthRequest extends HttpRequest {
         }
 
 
-
-
-
         if($resp->isSuccess()) {
             $_SESSION["login_attempts"] = 0;
             $_SESSION["salesforce_instance_url"] = $resp->getInstanceUrl();
@@ -202,24 +168,21 @@ class OAuthRequest extends HttpRequest {
         } else {
             throw new SalesforceAuthException("Not Authorized");
         }
-        
-        
     }
     
-    
 
 
-		private static function isValidSalesforceUsername($username) {
-					//checking username for @ and .
-					return strpos($username,"@") !== false && strpos($username,".") !== false;
-		}
+	private static function isValidSalesforceUsername($username) {
+		//checking username for @ and .
+		return strpos($username,"@") !== false && strpos($username,".") !== false;
+	}
 
 
 
-		private static function isValidOAuthTokenUrl($url) {
+	private static function isValidOAuthTokenUrl($url) {
 
-			//checking oauth url for .salesforce.com/services/oauth2/token
-			return strpos(strtolower($url),".salesforce.com/services/oauth2/token") !== false;
-		}
+		//checking oauth url for .salesforce.com/services/oauth2/token
+		return strpos(strtolower($url),".salesforce.com/services/oauth2/token") !== false;
+	}
 
 }

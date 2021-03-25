@@ -14,15 +14,18 @@
 	}
 
 
-	
-	require_once BASE_PATH.'/includes/System/ClassName.php';
-	require_once BASE_PATH.'/includes/System/XList.php';
-	require_once BASE_PATH.'/includes/System/IJson.php';
-	require_once BASE_PATH.'/includes/System/DateRange.php';
+	require_once(BASE_PATH.'/includes/Module/Module.php');
 
-	
+	// Require all of the files in the includes/System directory.
+	$systemFiles = array("ClassName","XList", "IJson", "DateRange", "CoreModule");
+
+	foreach($systemFiles as $file) {
+		require_once(BASE_PATH.'/includes/System/'.$file.".php");
+	}
 
 
+
+	// Require all of the files in the includes/File directory.
 	$files = array("FileSystem","File", "FileList", "FileHandler", "PhpFileUpload");
 
 	foreach($files as $file) {
@@ -102,14 +105,22 @@
 
 	require_once BASE_PATH.'/includes/Application.php';
 
-	require_once BASE_PATH.'/includes/Salesforce/Salesforce.php';
-	require_once BASE_PATH.'/includes/Salesforce/RestApiResult.php';	
-	require_once BASE_PATH.'/includes/Salesforce/OAuthRequest.php';
-	require_once BASE_PATH.'/includes/Salesforce/OAuthResponse.php';
-	require_once BASE_PATH.'/includes/Salesforce/RestApiRequest.php';
-	require_once BASE_PATH.'/includes/Salesforce/RestApiResponse.php';
-	require_once BASE_PATH.'/includes/Salesforce/SObject.php';
-	require_once BASE_PATH.'/includes/Salesforce/SalesforceFile.php';
+	// require_once BASE_PATH.'/includes/Salesforce/Salesforce.php';
+	// require_once BASE_PATH.'/includes/Salesforce/RestApiResult.php';	
+	// require_once BASE_PATH.'/includes/Salesforce/OAuthRequest.php';
+	// require_once BASE_PATH.'/includes/Salesforce/OAuthResponse.php';
+	// require_once BASE_PATH.'/includes/Salesforce/RestApiRequest.php';
+	// require_once BASE_PATH.'/includes/Salesforce/RestApiResponse.php';
+	// require_once BASE_PATH.'/includes/Salesforce/SObject.php';
+	// require_once BASE_PATH.'/includes/Salesforce/SalesforceFile.php';
+
+	// Require all of the files in the includes/Salesforce direcory.
+	$sfFiles = array("Salesforce","RestApiResult", "OAuthRequest","OAuthResponse","RestApiRequest",
+					"RestApiResponse","SObject","SalesforceFile","OAuth");
+
+	foreach($sfFiles as $file) {
+		require_once(BASE_PATH.'/includes/Salesforce/'.$file.".php");
+	}
 
 	$files = array("Attachment","Document", "ContentDocument");
 

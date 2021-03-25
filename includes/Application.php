@@ -94,6 +94,20 @@ class Application {
                     "path"          => "list/files",
                     "module"        => "core",
                     "method"        => "get"
+                ),
+                "oauth/start" => array(
+                    "callback"      => "oauthFlowStart",
+                    "content-type"  => "application/json",
+                    "path"          => "oauth/start",
+                    "module"        => "core",
+                    "method"        => "get"
+                ),
+                "oauth/api/request" => array(
+                    "callback"      => "oauthFlowAccessToken",
+                    "content-type"  => "application/json",
+                    "path"          => "oauth/api/request",
+                    "module"        => "core",
+                    "method"        => "get"
                 )
             ),
 						//If the path is null the module loader will not try to load the file
@@ -149,8 +163,9 @@ class Application {
             }
 
             $out = $this->getOutput($module, $route, $params);
+            
 
-            if(is_subclass_of($out, "Http\HttpResponse", False)){
+            if(is_object($out) && (get_class($out) === "Http\HttpResponse" || is_subclass_of($out, "Http\HttpResponse", False))){
 
                 return $out;
             }

@@ -91,31 +91,35 @@ function stringContains($haystack, $needle){
 
 }
 
+// Decided which oauth flow to use.  Takes....
+function user_require_auth($route, $module) {
 
-function user_require_auth() {
+	doSAMLAuthorization();
+}
 
-		header("Location: /login", true, 302);
-		exit;
-		
-		
-		$as = new \SimpleSAML\Auth\Simple('default-sp');
+function doSAMLAuthorization(){
 
-		$as->requireAuth();
-
-		$attributes = $as->getAttributes();
-		// print_r($attributes);
+	header("Location: /login", true, 302);
+	exit;
 	
-		// This session will be a SimpleSAML session.
-		// print_r($_SESSION);
 	
-		// This session will be a PHP session.
-		// cleanup the SimpleSAML session; also restores the previous session.
-		$session = \SimpleSAML\Session::getSessionFromRequest();
-		$session->cleanup();
-	
-		$_SESSION["saml"] = $attributes;
-		// print_r($_SESSION);
+	$as = new \SimpleSAML\Auth\Simple('default-sp');
 
+	$as->requireAuth();
+
+	$attributes = $as->getAttributes();
+	// print_r($attributes);
+
+	// This session will be a SimpleSAML session.
+	// print_r($_SESSION);
+
+	// This session will be a PHP session.
+	// cleanup the SimpleSAML session; also restores the previous session.
+	$session = \SimpleSAML\Session::getSessionFromRequest();
+	$session->cleanup();
+
+	$_SESSION["saml"] = $attributes;
+	// print_r($_SESSION);
 }
 
 
@@ -154,8 +158,6 @@ function is_authenticated() {
 }
 
 
-
-
 function getOAuthConfig($key = null) {
 
 	global $oauth_config;
@@ -172,6 +174,7 @@ function getOAuthConfig($key = null) {
 	
 	throw new Exception("HTTP_INIT_ERROR: No default Connected App / Org.  Check your configuration.");
 }
+
 
 
 

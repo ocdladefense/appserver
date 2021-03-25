@@ -1,21 +1,12 @@
 <?php
 
-
-
 namespace Salesforce;
-
 
 use Http\HttpResponse;
 use Http\HttpHeader as HttpHeader;
 
-
-
-
-
-
 class OAuthResponse extends HttpResponse {
 
-    
     private $instanceUrl;
     
     private $accessToken;
@@ -32,13 +23,13 @@ class OAuthResponse extends HttpResponse {
 
 
 
-		public static function fromSession() {
-			$body = array();
-			$body["access_token"] = $_SESSION["salesforce_access_token"];
-			$body["instance_url"] = $_SESSION["salesforce_instance_url"];
-			
-			return new OAuthResponse($body);
-		}
+    public static function fromSession() {
+        $body = array();
+        $body["access_token"] = $_SESSION["salesforce_access_token"];
+        $body["instance_url"] = $_SESSION["salesforce_instance_url"];
+        
+        return new OAuthResponse($body);
+    }
 
 
     public function __construct($body = null) {
@@ -59,53 +50,9 @@ class OAuthResponse extends HttpResponse {
             $this->accessToken = $body["access_token"];
             $this->instanceUrl = $body["instance_url"]; 
         }
-
- 
-
-        
-				/*
-
-            if(isset($body["error"]) || isset($body["error_description"])){
-                $this->error = array(
-                    "HttpStatusCode"						=> $this->getStatusCode(),
-                    "HttpStatusMessage"					=> self::getErrorMsg($this->getStatusCode()),
-                    "Salesforce_Error"					=> $body["error"],
-                    "Salesforce_Error_message"	=> $body["error_description"]
-                );
-            } else if($body["errorCode"] == "Session expired or invalid") {
-                $this->access_token_invalid = true;
-            } else {
-                $this->error = array(
-                    "HttpStatusCode" 						=> $this->getStatusCode(),
-                    "HttpStatusMessage"					=> $this->getErrorMsg($this->getStatusCode())
-                );
-            }
-				*/
-        
     }
 
-    public static function newWebServerFlow($config) {
-
-        $resp = new OAuthResponse();
-
-        $url = $config["oauth_url"];
-
-        $params = array(
-            "client_id"		=> $config["client_id"],
-            "redirect_uri"	=> $config["redirect_uri"],
-            "response_type" => "code"
-        );
-
-        $url .= "?" . http_build_query($params);
-
-        $resp->addHeader(new HttpHeader("Location", $url));
-
-        return $resp;
-    }
-
-
-
-		
+	
     public static function resolveFromSession() {
     
         if(empty($_SESSION["salesforce_instance_url"])) {
@@ -121,7 +68,6 @@ class OAuthResponse extends HttpResponse {
     private static function getErrorMsg($statusCode) {
 			return self::$errorCodes[$statusCode];
     }
-    
     
     
     public function getAccessToken() {
