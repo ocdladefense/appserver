@@ -94,15 +94,28 @@ function stringContains($haystack, $needle){
 // Decided which oauth flow to use.
 function user_require_auth($route, $module) {
 
+	//  Preferred types of authorization flows.
+	$preferredTypes = array("ouathwebserverflow","oauthusernamepasswordflow");
+
 	// Get the allowed authorization flow types from the module.
 	$modAuthTypes = $module["authorization"];
 
-	//  Lets interprite these as preferred authorization types
-	if(in_array("ouathwebserverflow", $modAuthTypes) || in_array("oauthusernamepasswordflow", $modAuthTypes)) {
+	$oauthAccepted;
+	foreach($preferredTypes as $type){
 
-		header("Location:/oauth/start");  // return a new response with the location header.
+		if(in_array($type, $modAuthTypes)){
 
-	} else {
+			header("Location:/oauth/start");  // return a new response with the location header.
+			$oauthAccepted = true;
+
+			// $resp = new Http\HttpResponse();
+			// $resp->addHeader(new Http\HttpHeader("Location", "/oauth/start"));
+
+			// return $resp;
+		}
+	}
+
+	if(!$oauthAccepted){
 
 		doSAMLAuthorization();
 	}
