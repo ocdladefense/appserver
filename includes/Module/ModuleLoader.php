@@ -31,29 +31,31 @@ class ModuleLoader {
     	if(!isset($this->index[$name])) {
     		throw new Exception("MODULE_NOT_FOUND_ERROR: {$name}.");
     	}
-    	$module = $this->index[$name];
-    	$path = $module["path"];
+    	$info = $this->index[$name];
+    	$path = $info["path"];
         
         if($path == null) return;
         
     	require_once($path."/module.php");
     	
-    	foreach($module["files"] as $file) {
+    	foreach($info["files"] as $file) {
     		require($path . "/src/" . $file);
     	}
+        
+        return $info;
     }
     
     
     
     public function loadObject($name) {
-    	$this->load($name);
-    	return self::getInstance($name);
+    	$info = $this->load($name);
+    	return self::getInstance($name, $info);
     }
     
     
     
     // Require each of the dependencies for each module
-    public static function getInstance($moduleName) {
+    public static function getInstance($moduleName, $info = null) {
     		if(empty($moduleName)) {
     			throw new Exception("MODULE_ERROR: Cannot instantiate empty module class.");
     		}
@@ -61,6 +63,7 @@ class ModuleLoader {
         $className = ucwords($moduleName,"-\t\r\n\f\v");
         $className = str_replace("-","",$className)."Module";
         $moduleClass = new $className();
+        $moduleClass->setInfo($info);
         $dependencies = $moduleClass->getDependencies();
 
         foreach($dependencies as $d){

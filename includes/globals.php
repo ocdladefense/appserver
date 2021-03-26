@@ -98,20 +98,17 @@ function user_require_auth($route, $module) {
 	$preferredTypes = array("ouathwebserverflow","oauthusernamepasswordflow");
 
 	// Get the allowed authorization flow types from the module.
-	$modAuthTypes = $module["authorization"];
+	$modAuthTypes = $module->get("authorization");
 
 	$oauthAccepted;
 	foreach($preferredTypes as $type){
 
 		if(in_array($type, $modAuthTypes)){
 
-			header("Location:/oauth/start");  // return a new response with the location header.
-			$oauthAccepted = true;
+			$resp = new Http\HttpResponse();
+			$resp->addHeader(new Http\HttpHeader("Location", "/oauth/start"));
 
-			// $resp = new Http\HttpResponse();
-			// $resp->addHeader(new Http\HttpHeader("Location", "/oauth/start"));
-
-			// return $resp;
+			return $resp;
 		}
 	}
 
@@ -185,13 +182,17 @@ function getOAuthConfig($key = null) {
 	global $oauth_config;
 
 	if(null == $key) {
-		foreach($oauth_config as $connectedApp) {
+		foreach($oauth_config as $key => $connectedApp) {
+			$connectedApp["name"] = $key;
 			$isdefault = $connectedApp["default"];
 			if($isdefault) return $connectedApp;
 		}
 		
 	} else {
-		return $oauth_config[$key];
+		$config = $oauth_config[$key];
+		$config["name"] = $key;
+
+		return $config;
 	}
 	
 	throw new Exception("HTTP_INIT_ERROR: No default Connected App / Org.  Check your configuration.");

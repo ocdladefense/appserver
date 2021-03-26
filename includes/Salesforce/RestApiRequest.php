@@ -49,12 +49,12 @@ class RestApiRequest extends HttpRequest {
      * Prepare authentication parameters for the Salesforce REST API.
      *  Keep track of the number of login attempts.
      */
-    public function __construct($instanceUrl = null, $accessToken = null) {
+    public function __construct($instanceUrl, $accessToken) {
     
     	parent::__construct();
     	
-    	$this->instanceUrl = $instanceUrl == null ? $_SESSION["instance_url"] : $instanceUrl;
-    	$this->accessToken = $accessToken == null ? $_SESSION["access_token"] : $accessToken;
+    	$this->instanceUrl = $instanceUrl;
+    	$this->accessToken = $accessToken;
     }
 
 

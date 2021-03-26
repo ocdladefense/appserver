@@ -17,7 +17,7 @@
 	require_once(BASE_PATH.'/includes/Module/Module.php');
 
 	// Require all of the files in the includes/System directory.
-	$systemFiles = array("ClassName","XList", "IJson", "DateRange", "CoreModule");
+	$systemFiles = array("ClassName","XList", "IJson", "DateRange", "CoreModule","Session");
 
 	foreach($systemFiles as $file) {
 		require_once(BASE_PATH.'/includes/System/'.$file.".php");

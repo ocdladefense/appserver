@@ -22,7 +22,7 @@ class OAuth {
             "client_id"		=> $config["client_id"],
             "redirect_uri"	=> $config["auth_redirect_uri"],
             "response_type" => "code",
-            "state"         => $config["state"]
+            "state"         => $config["name"]
         );
 
         $url .= "?" . http_build_query($params);
@@ -41,4 +41,10 @@ class OAuth {
 				return OAuthRequest::usernamePasswordFlowAccessTokenRequest($config);
 		}
 	}
+
+    public static function setSession($connectedApp, $config, $resp){
+
+        \Session::set($connectedApp, "access_token", $resp->getAccessToken());
+        \Session::set($connectedApp, "instance_url", $resp->getInstanceUrl());
+    }
 }

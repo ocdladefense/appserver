@@ -60,15 +60,15 @@ class CoreModule extends Module {
 
 		$config = getOauthConfig($configName);
 
-		$config["state"] = $configName;
-
 		return OAuth::start($config);
 	}
 
 	// Get the access token and save it to the session variables.
 	public function oauthFlowAccessToken(){
 
-		$config = getOauthConfig($_GET["state"]);
+		$connectedApp = $_GET["state"];
+
+		$config = getOauthConfig($connectedApp);
 
 		$config["authorization_code"] = $_GET["code"];
 
@@ -81,10 +81,10 @@ class CoreModule extends Module {
 			throw new Exception("OAUTH_ERROR: {$resp->errorMessage}.");
 		}
 
-		$_SESSION["access_token"] = $resp->getAccessToken();
-		$_SESSION["instance_url"] = $resp->getInstanceUrl();
+		OAuth::setSession($connectedApp, $config, $resp);
 
 		//  After you get your access token, you can call userinfo() on the api
+		// https://login.salesforce.com/services/oauth2/userinfo
 		$_SESSION["userId"] = $config["client_id"];
 
 		$resp2 = new HttpResponse();

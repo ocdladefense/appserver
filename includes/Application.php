@@ -4,6 +4,7 @@ use \Http as Http;
 use \Http\HttpHeader as HttpHeader; 
 use \Http\HttpResponse as HttpResponse;
 use \Http\HttpRequest as HttpRequest;
+use Salesforce\Oauth;
 
 
 class Application {
@@ -150,6 +151,40 @@ class Application {
 
         // Will need to handle PageNotFoundExceptions here.
         list($module, $route, $params) = $this->init($uri);
+
+
+        //  Start the OAuth flow using the connected app set on the module.
+        $connectedApp = $module->get("connectedApp");
+        if($connectedApp != null){
+
+            $config = getOauthConfig($connectedApp);
+
+            $httpMessage = OAuth::start($config);
+
+            if(self::isHttpResponse($httpMessage)){
+
+                return $httpMessage;
+            } else {
+
+                $oauthResp = $httpMessage->authorize();
+                OAuth::setSession($connectedApp, $config, $oauthResp);
+            }
+            
+        }
+
+        if(!user_has_access($route, $module)) {
+
+            $resp = user_require_auth($route, $module);
+
+            if($resp == null){
+
+                throw new Exception("AUTHORIZATION_ERROR:");
+            } else {
+
+                return $resp;
+            }
+        }
+
         $module->setRequest($req);
 
         try {
@@ -159,9 +194,8 @@ class Application {
             }
 
             $out = $this->getOutput($module, $route, $params);
-            
 
-            if(is_object($out) && (get_class($out) === "Http\HttpResponse" || is_subclass_of($out, "Http\HttpResponse", False))){
+            if(self::isHttpResponse($out)){
 
                 return $out;
             }
@@ -220,13 +254,7 @@ class Application {
         // Check access here.
         $access = $route["access"];
         $access_args = $route["access_args"];
-        
-        // Check the module and the route for any access requirements.  If the user needs to be authorized, start the oauth process.
-        $module = $this->modules->getArray()[$moduleName];
-        if(!user_has_access($route, $module)) {
 
-            user_require_auth($route, $module);
-        }
 
         l("Loading Module...");
         $loader = $this->getLoader();
@@ -234,12 +262,12 @@ class Application {
 
         // Demonstrate that we can instantiate a module
         //  and begin using it.
-        $object = $loader->loadObject($moduleName);
+        $module = $loader->loadObject($moduleName);
         $func = $route["callback"];
 
         l("Executing route...<br />Module: {$moduleName}<br />Callback: {$func}.");
         
-        return array($object, $route, $params);
+        return array($module, $route, $params);
     }
     	
     	
@@ -392,6 +420,12 @@ class Application {
     
     public function getModules(){
         return $this->loader->getModules();
+    }
+
+    public static function isHttpResponse($object) {
+
+        return is_object($object) && (get_class($object) === "Http\HttpResponse" || is_subclass_of($object, "Http\HttpResponse", False));
+
     }
     
 

@@ -15,6 +15,9 @@ class Module {
 
 
     protected $files = array();
+
+
+    protected $info;
     
     
     protected $name;
@@ -84,28 +87,18 @@ class Module {
 
     }
     
-    protected function loadForceApi($org = null, $debug = false) {
-    	return $this->loadApi($org, $debug);
+    protected function loadForceApi($app = null, $debug = false) {
+    	return $this->loadApi($app, $debug);
     }
-    protected function loadApi($org = null, $debug = false) {
+    protected function loadApi($app = null, $debug = false) {
 
-        // We wont want to restart the oauth flow under conditions where the user has already authorized and we have a valid access token.
-        // We need to check the session for the access token.  If it exists skip the rest of this function.
-        $oauth_config = getOauthConfig($org);
-        $oauth = OAuth::start($oauth_config);
+        $config = getOauthConfig($app);
+        $accessToken = Session::get($config["name"], "access_token");
+        $instanceUrl = Session::get($config["name"], "instance_url");
 
-        $resp = $oauth->authorize();
-        
-        if($debug) {
-                var_dump($oauth);
-        }
-        
-        
-        if($resp->hasError) {
-            throw new Exception("OAUTH_RESPONSE_ERROR: {$resp->errorMessage}");
-        }
-    
-        return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+        $req = new RestApiRequest($instanceUrl, $accessToken);
+
+        return $req;
     }
 
 
@@ -131,7 +124,21 @@ class Module {
             $this->loadFile($file);
         }
     }
+
+    public function setInfo($info){
+
+        $this->info = $info;
+    }
+
+    public function getInfo(){
+
+        return $this->info;
+    }
     
+    public function get($key){
+
+        return $this->info[$key];
+    }
     public function toJson() {
 
 
