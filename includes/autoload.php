@@ -42,7 +42,7 @@
 
 	
 	$http = array("HttpConstants","CurlConfiguration","Curl","Http","HttpHeader","HttpHeaderCollection","HttpMessage","HttpRequest","HttpResponse","HttpRedirect","IHttpCache",
-	"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag","BodyPart");
+	"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag","BodyPart","HttpException");
 	
 	foreach($http as $file) {
 		require_once(BASE_PATH.'/includes/Http/'.$file.".php");
@@ -66,7 +66,8 @@
 		
 	require_once BASE_PATH.'/includes/Exception/PageNotFoundException.php';
 	require_once BASE_PATH.'/includes/Exception/SalesforceAccessException.php';
-	require_once BASE_PATH.'/includes/Exception/SalesforceAuthException.php';		
+	require_once BASE_PATH.'/includes/Exception/SalesforceAuthException.php';
+
 
 
 
@@ -116,7 +117,7 @@
 
 	// Require all of the files in the includes/Salesforce direcory.
 	$sfFiles = array("Salesforce","RestApiResult", "OAuthRequest","OAuthResponse","RestApiRequest",
-					"RestApiResponse","SObject","SalesforceFile","OAuth");
+					"RestApiResponse","SObject","SalesforceFile","OAuth","RestApiException");
 
 	foreach($sfFiles as $file) {
 		require_once(BASE_PATH.'/includes/Salesforce/'.$file.".php");

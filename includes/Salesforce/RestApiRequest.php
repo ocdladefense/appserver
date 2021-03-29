@@ -10,6 +10,7 @@ use Http\HttpRequest;
 use Http\HttpHeader;
 use Http\Http;
 use Http\HttpResponse;
+use Http\HttpException;
 use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 use Http\BodyPart;
 use File\File;
@@ -52,13 +53,22 @@ class RestApiRequest extends HttpRequest {
     public function __construct($instanceUrl, $accessToken) {
     
     	parent::__construct();
-    	
+
     	$this->instanceUrl = $instanceUrl;
     	$this->accessToken = $accessToken;
     }
 
 
     public function send($endpoint) {
+
+        if(empty($this->instanceUrl)){
+
+            throw new HttpException("NULL URL");
+        }
+        if(empty($this->accessToken)){
+
+            throw new RestApiException("REST_API_ERROR:  The access token cannot be null.");
+        }
 
     
         $this->setUrl($this->instanceUrl . $endpoint);
