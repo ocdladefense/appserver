@@ -83,13 +83,28 @@ class CoreModule extends Module {
 
 		OAuth::setSession($connectedApp, $config, $resp);
 
-		//  After you get your access token, you can call userinfo() on the api
-		// https://login.salesforce.com/services/oauth2/userinfo
-		$_SESSION["userId"] = $config["client_id"];
+		$_SESSION["userId"] = $this->getUserId();
 
 		$resp2 = new HttpResponse();
-		$resp2->addHeader(new HttpHeader("Location", $config['final_redirect_uri']));
+		$flowConfig = $config["auth"]["oauth"]["webserver"];
+		$resp2->addHeader(new HttpHeader("Location", $flowConfig['final_redirect_url']));
 
 		return $resp2;
+	}
+
+	public function getUserId(){
+
+		$accessToken = Session::get("ocdla-jobs", "access_token");
+		$instanceUrl = Session::get("ocdla-jobs", "instance_url");
+
+		$url = "/services/oauth2/userinfo?access_token={$accessToken}";
+
+		$req = new RestApiRequest($instanceUrl, $accessToken);
+
+		$resp = $req->send($url);
+
+		$body = json_decode($resp->getBody());
+		
+		return $body->user_id;
 	}
 }

@@ -92,33 +92,19 @@ function stringContains($haystack, $needle){
 }
 
 // Decided which oauth flow to use.
-function user_require_auth($route, $module) {
+function user_require_auth($module, $route) {
 
-	//  Preferred types of authorization flows.
-	$preferredTypes = array("ouathwebserverflow","oauthusernamepasswordflow");
+	$connectedAppName = $module["connectedApp"];
 
-	// Get the allowed authorization flow types from the module.
-	$modAuthTypes = $module->get("authorization");
+	$authFlow = $route["authorization"];
 
-	$oauthAccepted;
-	foreach($preferredTypes as $type){
+	$config = getOauthConfig($connectedAppName);
 
-		if(in_array($type, $modAuthTypes)){
-
-			$resp = new Http\HttpResponse();
-			$resp->addHeader(new Http\HttpHeader("Location", "/oauth/start"));
-
-			return $resp;
-		}
-	}
-
-	if(!$oauthAccepted){
-
-		doSAMLAuthorization();
-	}
+	// Start now takes two parameters.
+	return Salesforce\OAuth::start($config, $authFlow);
 }
 
-function user_has_access($route, $module) {
+function user_has_access($module, $route) {
 
 	// Define in config/config.php.
 	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
@@ -183,7 +169,7 @@ function getOAuthConfig($key = null) {
 
 	global $oauth_config;
 
-	if(null == $key) {
+	if(null == $key || $key == "default") {
 		foreach($oauth_config as $key => $connectedApp) {
 			$connectedApp["name"] = $key;
 			$isdefault = $connectedApp["default"];

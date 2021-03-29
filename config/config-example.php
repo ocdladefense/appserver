@@ -6,37 +6,31 @@
 define("ADMIN_USER", true);
 
 
-/**
- * Connect to multiple endpoints, but
- *  specify one as the "default."
- *
- * Example in a module:
- * $api = $this->loadForceApi("ocdla-sandbox");
- *
- * to connect to the default use the existing syntax:
- * $api = $this->loadForceApi();
- */
-$oauth_config = array(
-	"ocdla-sandbox" => array(
-		"default" => true,
-		"oauth_url" => "https://test.salesforce.com/services/oauth2/token",
-		"client_id" => "",
-		"client_secret" => "",
-		"callback_url" => "https://localhost/resttest/oauth_callback.php",
-		"username" => "user@example.com",
-		"password" => "abcdefg12345",
-		"security_token" => ""
+//  This is an example the new structure for a salesforce connected app configuration
+"ocdla-jobs" => array(
+	"default" => true,
+	"is_sandbox" => true, // Might be used to determine domain for urls
+	"auth" => array(
+		"saml" => array(),
+		"oauth" => array(
+			"webserver" => array(
+				"auth_url" => "https://test.salesforce.com/services/oauth2/authorize",	// Web server ouath flow has two oauth urls.
+				"token_url" => "https://test.salesforce.com/services/oauth2/token",
+				"auth_redirect_url" => "http://localhost/oauth/api/request",
+				"final_redirect_url" => "http://localhost/jobs",
+			),
+			"usernamePassword" => array(
+				"username" => "username",
+				"password" => "password",
+				"token_url" => "https://test.salesforce.com/services/oauth2/token",
+				"callback_url" => "https://localhost/resttest/oauth_callback.php",
+				"security_token" => "5jA8ndQ3hm2xlFkK0xvtcdTR"
+			)
+		)
 	),
-	"ocdla-production" => array(
-		"oauth_url" => "https://login.salesforce.com/services/oauth2/token",
-		"client_id" => "",
-		"client_secret" => "",
-		"callback_url" => "https://ocdla.app/home",
-		"username" => "user@example.com",
-		"password" => "abcdefg12345",
-		"security_token" => ""
-	)
-);
+	"client_id" => "3MVG92DxHaawSd0luAabE5ir8xj_3jxv27T6JDrVpjKyw8vPkoEQ7KYSly6z_KMga9j5LsN94NfZUqQN8mQzP",
+	"client_secret" => "A99EB8D41130CFCD61932FCABCB7BD63891BFAAAA4BCE87958A0AC838ED80784"
+)
 
 // MySQL Database Connection.
 //  Can also use MariaDB.

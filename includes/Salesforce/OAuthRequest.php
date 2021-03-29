@@ -42,17 +42,17 @@ class OAuthRequest extends HttpRequest {
 	
 	
 	public static function usernamePasswordFlowAccessTokenRequest($config) {
-	
-		$url = $config["oauth_url"];
+
+		$flowConfig = $config["auth"]["oauth"]["usernamePassword"];
 		
-		$req = new OAuthRequest($url);
+		$req = new OAuthRequest($flowConfig["token_url"]);
 
 		$body = array(
 			"grant_type" 			=> "password",
 			"client_id" 			=> $config["client_id"],
 			"client_secret"		=> $config["client_secret"],
-			"username"				=> $config["username"],
-			"password"				=> $config["password"] . $config["security_token"]
+			"username"				=> $flowConfig["username"],
+			"password"				=> $flowConfig["password"] . $flowConfig["security_token"]
 		);
 		
 		$body = http_build_query($body);
@@ -61,13 +61,9 @@ class OAuthRequest extends HttpRequest {
 		
 		$req->setBody($body);
 		$req->setMethod("POST");
-		// $req->addHeaders($headers);
 		// Sending a HttpResponse class as a Header to represent the HttpResponse.
 		$req->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse")); 
-		//setAccept("\Salesforce\OAuthResponse");//
-		
-		// return a redirect under which circumstances?
-		// $config["callback_url"]
+
 		return $req;
 	}
 	
@@ -80,17 +76,19 @@ class OAuthRequest extends HttpRequest {
 	
 	public static function webServerFlowAccessTokenRequest($config) {
 
+		$flowConfig = $flowConfig = $config["auth"]["oauth"]["webserver"];
+
 		$params = array(
 			"grant_type"	=> "authorization_code",
 			"client_id"		=> $config["client_id"],
 			"client_secret" => $config["client_secret"],
 			"code" => $config["authorization_code"],
-			"redirect_uri"	=> $config["final_redirect_uri"]
+			"redirect_uri"	=> $flowConfig["final_redirect_url"]
 		);
 
 		$body = http_build_query($params);
 
-		$req = new OAuthRequest($config["token_url"]);
+		$req = new OAuthRequest($flowConfig["token_url"]);
 		
 		$req->setMethod("POST");
 		$req->setBody($body);
