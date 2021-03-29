@@ -141,6 +141,8 @@ function user_has_access($route, $module) {
 }
 
 function is_authenticated() {
+
+	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
 	
 	return isset($_SESSION["userId"]);
 }
