@@ -45,7 +45,7 @@ class OAuthRequest extends HttpRequest {
 
 		$flowConfig = $config["auth"]["oauth"]["usernamePassword"];
 		
-		$req = new OAuthRequest($flowConfig["token_url"]);
+		$req = new OAuthRequest($config["token_url"]);
 
 		$body = array(
 			"grant_type" 			=> "password",
@@ -68,9 +68,9 @@ class OAuthRequest extends HttpRequest {
 	}
 	
 	// Figure out which flow to return.
-	public static function newAccessTokenRequest($config){
+	public static function newAccessTokenRequest($config, $flow){
 
-		return $config["flow"] == "webserver" ? self::webServerFlowAccessTokenRequest($config) : self::usernamePasswordFlowAccessTokenRequest($config);
+		return $flow == "webserver" ? self::webServerFlowAccessTokenRequest($config) : self::usernamePasswordFlowAccessTokenRequest($config);
 
 	}
 	
@@ -88,7 +88,7 @@ class OAuthRequest extends HttpRequest {
 
 		$body = http_build_query($params);
 
-		$req = new OAuthRequest($flowConfig["token_url"]);
+		$req = new OAuthRequest($config["token_url"]);
 		
 		$req->setMethod("POST");
 		$req->setBody($body);

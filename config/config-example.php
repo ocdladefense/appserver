@@ -15,19 +15,18 @@ define("ADMIN_USER", true);
 		"oauth" => array(
 			"webserver" => array(
 				"auth_url" => "https://test.salesforce.com/services/oauth2/authorize",	// Web server ouath flow has two oauth urls.
-				"token_url" => "https://test.salesforce.com/services/oauth2/token",
 				"auth_redirect_url" => "http://localhost/oauth/api/request",
 				"final_redirect_url" => "http://localhost/jobs",
 			),
 			"usernamePassword" => array(
 				"username" => "username",
 				"password" => "password",
-				"token_url" => "https://test.salesforce.com/services/oauth2/token",
 				"callback_url" => "https://localhost/resttest/oauth_callback.php",
 				"security_token" => "5jA8ndQ3hm2xlFkK0xvtcdTR"
 			)
 		)
 	),
+	"token_url" => "https://test.salesforce.com/services/oauth2/token",
 	"client_id" => "3MVG92DxHaawSd0luAabE5ir8xj_3jxv27T6JDrVpjKyw8vPkoEQ7KYSly6z_KMga9j5LsN94NfZUqQN8mQzP",
 	"client_secret" => "A99EB8D41130CFCD61932FCABCB7BD63891BFAAAA4BCE87958A0AC838ED80784"
 )

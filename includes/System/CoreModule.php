@@ -72,7 +72,7 @@ class CoreModule extends Module {
 
 		$config["authorization_code"] = $_GET["code"];
 
-		$oauth = OAuthRequest::newAccessTokenRequest($config);
+		$oauth = OAuthRequest::newAccessTokenRequest($config, "webserver");
 
 		$resp = $oauth->authorize();
 
