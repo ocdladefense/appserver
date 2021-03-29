@@ -154,10 +154,13 @@ class Application {
 
 
         //  Start the OAuth flow using the connected app set on the module.
-        $connectedApp = $module->get("connectedApp");
-        if($connectedApp != null){
+        $connectedAppName = $module->get("connectedApp");
+        if($connectedAppName != null){
 
-            $config = getOauthConfig($connectedApp);
+            $connectedAppName = $connectedAppName == "default" ? null : $connectedAppName;
+
+            // Get ouath conig should be able to take default as a paramter.
+            $config = getOauthConfig($connectedAppName);
 
             $httpMessage = OAuth::start($config);
 
@@ -167,7 +170,7 @@ class Application {
             } else {
 
                 $oauthResp = $httpMessage->authorize();
-                OAuth::setSession($connectedApp, $config, $oauthResp);
+                OAuth::setSession($config["name"], $config, $oauthResp);
             }
             
         }
