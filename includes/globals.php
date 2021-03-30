@@ -129,8 +129,10 @@ function user_has_access($module, $route) {
 function is_authenticated() {
 
 	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
+
+	$connectedAppName = $_SESSION["connected_app_name"];
 	
-	return isset($_SESSION["userId"]);
+	return isset($_SESSION[$connectedAppName]["userId"]);
 }
 
 

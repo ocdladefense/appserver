@@ -83,7 +83,9 @@ class CoreModule extends Module {
 
 		OAuth::setSession($connectedApp, $config, $resp);
 
-		$_SESSION["userId"] = $this->getUserId();
+		// Make the session aware of the name of the connected app so that 'is_authorized can check if the user is authorized for current connected app.
+		$_SESSION["connected_app_name"] = $connectedApp;
+		Session::set($connectedApp, "userId", $this->getUserId());
 
 		$resp2 = new HttpResponse();
 		$flowConfig = $config["auth"]["oauth"]["webserver"];
@@ -94,8 +96,10 @@ class CoreModule extends Module {
 
 	public function getUserId(){
 
-		$accessToken = Session::get("ocdla-jobs", "access_token");
-		$instanceUrl = Session::get("ocdla-jobs", "instance_url");
+		$connectedAppName = $_SESSION["connected_app_name"];
+
+		$accessToken = Session::get($connectedAppName, "access_token");
+		$instanceUrl = Session::get($connectedAppName, "instance_url");
 
 		$url = "/services/oauth2/userinfo?access_token={$accessToken}";
 
@@ -103,8 +107,8 @@ class CoreModule extends Module {
 
 		$resp = $req->send($url);
 
-		$body = json_decode($resp->getBody());
+		$userInfo = json_decode($resp->getBody());
 		
-		return $body->user_id;
+		return $userInfo->user_id;
 	}
 }
