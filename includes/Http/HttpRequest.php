@@ -1,12 +1,12 @@
 <?php
 
-
 namespace Http;
 
 use \stdClass as stdClass;
 use File\FileHandler as FileHandler;
 use File\PhpFileUpload as PhpFileUpload;
 use File\FileList as FileList;
+use Http\BodyPart as BodyPart;
 
 
 class HttpRequest extends HttpMessage {
@@ -14,7 +14,8 @@ class HttpRequest extends HttpMessage {
 
 	protected $method = "GET";
 	
-	
+	protected $parts = array();
+
 	protected $host;
 		
 	
@@ -29,6 +30,7 @@ class HttpRequest extends HttpMessage {
 	
 	private $files = null;
 
+	private $platform = "";
 	
 	const ALLOWED_VERBS = array(
 		"GET",
@@ -40,6 +42,22 @@ class HttpRequest extends HttpMessage {
 	);
 
 
+	public function setPlatform($env){
+
+		$this->platform = $env;
+	}
+
+	public function addPart(BodyPart $part){
+
+		$this->parts[] = $part;
+	}
+
+
+	public function resetParts(){
+
+		$this->parts = array();
+	}
+
 
 	public function setFiles($files) {
 		$this->files = $files;
@@ -50,7 +68,7 @@ class HttpRequest extends HttpMessage {
 	}
 	
 	public function headerLike($name, $value) {
-		return $this->getHeader($name)->equals($value);
+		return $this->getHeader($name) == null ? false : $this->getHeader($name)->equals($value);
 	}
 	
 	public function isJson() {
@@ -62,12 +80,37 @@ class HttpRequest extends HttpMessage {
 	}
 	
 	public function isMultipart() {
-		return $this->headerLike("Content-Type", MIME_MULTIPART_FORM_DATA);	
+
+		$multipart = $this->headerLike("Content-Type", MIME_MULTIPART_FORM_DATA);
+
+		$header = $this->headers->getHeader("Content-Type", false);
+
+		$probably = $header->equals(MIME_MULTIPART_FORM_DATA);
+
+		if(!$multipart && $probably){
+
+			throw new \Exception("CONTENT_TYPE_ERROR: There is probably a typo in your 'Content-Type'.");
+		}
+
+		return $multipart;
+	}
+
+	public function setContentType($value){
+
+		$this->addHeader(new HttpHeader("Content-Type", $value));
 	}
 
 
-	public function __construct($url) {
+	public function __construct($url = null) {
 		parent::__construct();
+		if(null != $url) {
+			$this->setUrl($url);
+		}
+	}
+	
+	
+	public function setUrl($url) {
+	
 		$this->url = $url;
 
 		list($this->host, $this->path) = self::parseHostname($this->url);
@@ -75,6 +118,7 @@ class HttpRequest extends HttpMessage {
 
 		$this->headers->addHeader(new HttpHeader("Host",$this->host));
 	}
+	
 	
 	public function setMethod($method) {
 		$this->method = $method;
@@ -132,9 +176,6 @@ class HttpRequest extends HttpMessage {
 		return $this->method == HTTP_METHOD_POST;
 	}
 	
-
-	
-	
 	public function setPatch(){
 		$this->method = HTTP_METHOD_PATCH;
 	}
@@ -159,8 +200,38 @@ class HttpRequest extends HttpMessage {
 	}
 	
 	
+
 	public function getBody() {
-		return $this->body;
+
+		return $this->isMultipart() && $this->platform != "apache" ? $this->getMultiPartBody() : $this->body;
+		
+	}
+
+
+	public function getMultiPartBody(){
+
+		$body = "";
+		$contentTypeHeader = $this->getHeader("Content-Type");
+		$contentTypeHeaderParams = $contentTypeHeader->getParameters();
+		
+		if($contentTypeHeaderParams["boundary"] == null){
+
+			throw new \Exception("No boundary parameter in Content-type header.");
+		}
+
+		$boundary = $contentTypeHeaderParams["boundary"];
+
+		// parse the contenttype Header to get the actual boundary.
+
+		foreach($this->parts as $part){
+
+			$body .= "--{$boundary}\n";
+			$body .= $part->__toString();
+		}
+
+		$body .= "--{$boundary}--";
+
+		return $body;
 	}
 	
 	/**
@@ -244,6 +315,7 @@ class HttpRequest extends HttpMessage {
 
 		
 		$request = new self($env->server["requestUri"]);
+		$request->setPlatform($envkey);
 		$request->setMethod($env->server["requestMethod"]);
 		
 		// @todo see if this can't be moved into the constructor.
@@ -270,42 +342,44 @@ class HttpRequest extends HttpMessage {
 			$request->setBody((object)$_POST);
 
 
-			try {
-
-				global $config;
+			//if first index is empty dont execute?
+			if(is_array($_FILES) && !empty($_FILES) ){
+					//try moving and uploading files
+				try {
+					global $fileConfig;
 				
-				$handler = new FileHandler($config);
-	
-				$handler->createDirectory();
-	
-				$uploads = new PhpFileUpload($_FILES);
-				$tempList = $uploads->getTempFiles();
-				$destList = $uploads->getDestinationFiles();
-	
-				$dFiles = $destList->getFiles();
-				$movedFiles = new FileList();
-				foreach($tempList->getFiles() as $tFile){
+					$handler = new FileHandler($fileConfig);
+		
+					$handler->createDirectory();
+		
+					$uploads = new PhpFileUpload($_FILES);
+					$tempList = $uploads->getTempFiles();
+					$destList = $uploads->getDestinationFiles();
+		
+					$dFiles = $destList->getFiles();
+					$movedFiles = new FileList();
 	
 					$i = 0;
-		
-					$dest = $handler->getTargetFile($dFiles[$i]);
-		
-					$handler->move($tFile, $dest);
-
-					$movedFiles->addFile($dest);
-	
-					$i++;
-				}
-
-				$request->setFiles($movedFiles);
-
-			} catch(Exception $e){
-
-				throw $e;
-			}
-
-	
+					foreach($tempList->getFiles() as $tFile){
 			
+						$dest = $handler->getTargetFile($dFiles[$i]);
+			
+						$handler->move($tFile, $dest);
+	
+						$movedFiles->addFile($dest);
+		
+						$i++;
+					}
+	
+
+					$request->setFiles($movedFiles);
+
+				} catch(\Exception $e){
+
+					throw $e;
+
+				}
+			}
 		} else if(!$request->isGet()) {
 			$content = file_get_contents('php://input');
 			

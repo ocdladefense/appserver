@@ -27,7 +27,7 @@ class HttpHeader {
 			$parts = explode(self::PARAMS_MARKER, $this->value);
 			$base = $parts[0];
 			
-			return !$strict ? strToLower($base) == strToLower($value) : $value === $value;
+			return !$strict ? strToLower($base) == strToLower($value) : $base === $value;
 		}
 		
 
@@ -46,6 +46,29 @@ class HttpHeader {
     	return $this->value;
     }
     
+    public function getParameters(){
+
+        $kvp = array();
+        
+        $params = explode(";", $this->value);
+
+        foreach($params as $p){
+
+            $temp1 = trim($p);
+
+            $temp2 = explode("=", $temp1);
+
+            if(count($temp2) < 2) continue;
+
+            $key = $temp2[0];
+            $value = trim($temp2[1], '"');
+
+            $kvp[$key] = $value;
+
+        }
+
+        return $kvp;
+    }
     	
     public static function fromArray($headers) {
         $tmp = array();

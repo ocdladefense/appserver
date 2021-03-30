@@ -1,4 +1,10 @@
 <?php
+
+
+use Salesforce\OAuthRequest;
+use Salesforce\RestApiRequest;
+
+
 class Module {
 
 
@@ -76,6 +82,31 @@ class Module {
 
     public function requireDependencies() {
 
+    }
+    
+    protected function loadForceApi($org = null, $debug = false) {
+    	return $this->loadApi($org, $debug);
+    }
+    protected function loadApi($org = null, $debug = false) {
+    
+
+        $oauth_config = getOauthConfig($org);
+
+        $oauth = OAuthRequest::fromConfig($oauth_config);
+
+        $resp = $oauth->authorize();
+		
+		
+				if($debug) {
+						var_dump($oauth);
+				}
+        
+        
+        if($resp->hasError) {
+            throw new Exception("OAUTH_RESPONSE_ERROR: {$resp->errorMessage}");
+        }
+    
+        return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
     }
 
 

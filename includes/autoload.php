@@ -39,7 +39,7 @@
 
 	
 	$http = array("HttpConstants","CurlConfiguration","Curl","Http","HttpHeader","HttpHeaderCollection","HttpMessage","HttpRequest","HttpResponse","HttpRedirect","IHttpCache",
-	"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag");
+	"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag","BodyPart");
 	
 	foreach($http as $file) {
 		require_once(BASE_PATH.'/includes/Http/'.$file.".php");
@@ -103,10 +103,24 @@
 	require_once BASE_PATH.'/includes/Application.php';
 
 	require_once BASE_PATH.'/includes/Salesforce/Salesforce.php';
-	require_once BASE_PATH.'/includes/Salesforce/RestApiResult.php';
+	require_once BASE_PATH.'/includes/Salesforce/RestApiResult.php';	
+	require_once BASE_PATH.'/includes/Salesforce/OAuthRequest.php';
+	require_once BASE_PATH.'/includes/Salesforce/OAuthResponse.php';
+	require_once BASE_PATH.'/includes/Salesforce/RestApiRequest.php';
+	require_once BASE_PATH.'/includes/Salesforce/RestApiResponse.php';
+	require_once BASE_PATH.'/includes/Salesforce/SObject.php';
+	require_once BASE_PATH.'/includes/Salesforce/SalesforceFile.php';
+
+	$files = array("Attachment","Document", "ContentDocument");
+
+	foreach($files as $file) {
+		require_once(BASE_PATH.'/includes/Salesforce/models/'.$file.".php");
+	}
+	
 	require_once BASE_PATH.'/includes/Store/Product.php';
 	require_once BASE_PATH. '/includes/Database/QueryStringParser.php';
 	require_once BASE_PATH. '/includes/Exception/QueryException.php';
+
 	//to be modules
 	require_once BASE_PATH.'/includes/Store/Salesforce/ShoppingCart.php'; 
 	require_once BASE_PATH.'/includes/Store/Salesforce/PaymentProcessor.php'; 
