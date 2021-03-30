@@ -149,6 +149,11 @@ class Application {
             }
 
             $out = $this->getOutput($module, $route, $params);
+
+            if(self::isHttpResponse($out)){
+
+                return $out;
+            }
             
             if(null == $out) throw new Exception("Callback function returned NULL!");
             
@@ -402,6 +407,12 @@ class Application {
     
     public function getModules(){
         return $this->loader->getModules();
+    }
+
+    public static function isHttpResponse($object) {
+
+        return is_object($object) && (get_class($object) === "Http\HttpResponse" || is_subclass_of($object, "Http\HttpResponse", False));
+
     }
     
 
