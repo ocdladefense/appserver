@@ -30,19 +30,11 @@ class OAuthRequest extends HttpRequest {
 		
 		// $_SESSION["login_attempts"] = $loginAttempts;
     }
-
-
-
-	/**
-	 * Prepare authentication parameters for the Salesforce REST API.
-	 *  Keep track of the number of login attempts.
-	 */
-
 	
-	
-	
+
 	public static function usernamePasswordFlowAccessTokenRequest($config) {
 
+		//  Get the config at the index of usernamePassword
 		$flowConfig = $config["auth"]["oauth"]["usernamePassword"];
 		
 		$req = new OAuthRequest($config["token_url"]);
