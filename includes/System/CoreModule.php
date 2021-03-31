@@ -54,19 +54,13 @@ class CoreModule extends Module {
 		return $fList;
 	}
 
-	public function oauthFlowStart($configName = null){
-
-		$configName = "ocdla-jobs";
-
-		$config = getOauthConfig($configName);
-
-		return OAuth::start($config);
-	}
 
 	// Get the access token and save it to the session variables.
 	public function oauthFlowAccessToken(){
 
-		$connectedApp = $_GET["state"];
+		$info = json_decode($_GET["state"], true);
+		$connectedApp = $info["connected_app_name"];
+		$flow = $info["flow"];
 
 		$config = getOauthConfig($connectedApp);
 
@@ -81,34 +75,14 @@ class CoreModule extends Module {
 			throw new Exception("OAUTH_ERROR: {$resp->errorMessage}.");
 		}
 
-		OAuth::setSession($connectedApp, $config, $resp);
+		OAuth::setSession($connectedApp, $flow, $resp);
 
-		// Make the session aware of the name of the connected app so that 'is_authorized can check if the user is authorized for current connected app.
-		$_SESSION["connected_app_name"] = $connectedApp;
-		Session::set($connectedApp, "userId", $this->getUserId());
+		Session::set($connectedApp, $flow, "userId", OAuth::getUserId($connectedApp, $flow));
 
 		$resp2 = new HttpResponse();
-		$flowConfig = $config["auth"]["oauth"]["webserver"];
+		$flowConfig = $config["auth"]["oauth"][$flow];
 		$resp2->addHeader(new HttpHeader("Location", $flowConfig['final_redirect_url']));
 
 		return $resp2;
-	}
-
-	public function getUserId(){
-
-		$connectedAppName = $_SESSION["connected_app_name"];
-
-		$accessToken = Session::get($connectedAppName, "access_token");
-		$instanceUrl = Session::get($connectedAppName, "instance_url");
-
-		$url = "/services/oauth2/userinfo?access_token={$accessToken}";
-
-		$req = new RestApiRequest($instanceUrl, $accessToken);
-
-		$resp = $req->send($url);
-
-		$userInfo = json_decode($resp->getBody());
-		
-		return $userInfo->user_id;
 	}
 }

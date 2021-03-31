@@ -79,6 +79,7 @@ class HttpRequest extends HttpMessage {
 		return $this->headerLike("Content-Type", MIME_FORM_URLENCODED);	
 	}
 	
+	
 	public function isMultipart() {
 
 		$multipart = $this->headerLike("Content-Type", MIME_MULTIPART_FORM_DATA);

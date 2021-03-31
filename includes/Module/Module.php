@@ -93,8 +93,15 @@ class Module {
     protected function loadApi($app = null, $debug = false) {
 
         $config = getOauthConfig($app);
-        $accessToken = Session::get($config["name"], "access_token");
-        $instanceUrl = Session::get($config["name"], "instance_url");
+
+        $requstedRoute = explode("/", $this->getRequest()->url)[1];
+        $routes = $this->getInfo()["routes"];
+        $route = $routes[$requestedRoute];
+
+        $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamePassword";  // This is questionable.
+        
+        $accessToken = Session::get($config["name"], $flow, "access_token");
+        $instanceUrl = Session::get($config["name"], $flow, "instance_url");
 
         $req = new RestApiRequest($instanceUrl, $accessToken);
 

@@ -155,12 +155,13 @@ class Application {
 
         //  Start the OAuth flow using the connected app set on the module.
         $connectedAppName = $module->get("connectedApp");
-        if($connectedAppName != null && !is_authenticated()){
+        if($connectedAppName != null && !is_authenticated($module, $route)){
 
             // Get ouath conig should be able to take default as a paramter.
             $config = getOauthConfig($connectedAppName);
+            $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamePassword";  //  This is questionable.
 
-            $httpMessage = OAuth::start($config, $route["authorization"]);
+            $httpMessage = OAuth::start($config, $flow);
 
             if(self::isHttpResponse($httpMessage)){
 
@@ -168,12 +169,12 @@ class Application {
             } else {
 
                 $oauthResp = $httpMessage->authorize();
-                OAuth::setSession($config["name"], $config, $oauthResp);
+                OAuth::setSession($config["name"], $flow, $oauthResp);
             }
             
         }
 
-        if(!user_has_access($module, $route)) {
+        if(!user_has_access($module, $route) && isset($route["authorization"])) {
 
             $resp = user_require_auth($module, $route);
 
@@ -184,6 +185,12 @@ class Application {
 
                 return $resp;
             }
+        } else if(!user_has_access($module, $route)){
+
+            $resp = new HttpResponse();
+            $resp->setStatusCode(401);
+            $resp->setBody("Access Denied!");
+            return $resp;
         }
 
         $module->setRequest($req);

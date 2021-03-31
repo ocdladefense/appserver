@@ -32,10 +32,10 @@ class OAuthRequest extends HttpRequest {
     }
 	
 
-	public static function usernamePasswordFlowAccessTokenRequest($config) {
+	public static function usernamePasswordFlowAccessTokenRequest($config, $flow) {
 
 		//  Get the config at the index of usernamePassword
-		$flowConfig = $config["auth"]["oauth"]["usernamePassword"];
+		$flowConfig = $config["auth"]["oauth"][$flow];
 		
 		$req = new OAuthRequest($config["token_url"]);
 
@@ -54,7 +54,7 @@ class OAuthRequest extends HttpRequest {
 		$req->setBody($body);
 		$req->setMethod("POST");
 		// Sending a HttpResponse class as a Header to represent the HttpResponse.
-		$req->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse")); 
+		$req->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse"));
 
 		return $req;
 	}

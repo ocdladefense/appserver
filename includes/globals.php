@@ -94,7 +94,10 @@ function stringContains($haystack, $needle){
 // Decided which oauth flow to use.
 function user_require_auth($module, $route) {
 
-	var_dump($module,$route);exit;
+	if((isset($route["access"]) || $route["access"] == true) && !isset($route["authorization"])){
+
+		throw new Exception("ROUTE_AUTHORIZATION_ERROR:You must set an authoriztion key that is set to a flow, when executing a route that has an access modifier.");
+	}
 
 	$connectedAppName = $module["connectedApp"];
 
@@ -108,11 +111,6 @@ function user_require_auth($module, $route) {
 
 function user_has_access($module, $route) {
 
-	if(isset($route["access"]) && !isset($route["authorization"])){
-
-		throw new Exception("ROUTE_AUTHORIZATION_ERROR:You must set an authoriztion key that is set to a flow, when executing a route that has an access modifier.");
-	}
-
 	// Define in config/config.php.
 	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
 	
@@ -125,21 +123,30 @@ function user_has_access($module, $route) {
 		return true;
 		
 	} else if( true === $access ) {
+
 		return true;
+
+	} else if(false === $access) {
+
+		return false;
 		
 	} else if(function_exists($access)) {
+
+		$args = array($module, $route);
 
 		return null == $args ? call_user_func($access) : call_user_func_array($access, $args);
 	}
 }
 
-function is_authenticated() {
+function is_authenticated($module, $route) {
+	
+	$connectedAppSetting = $module->getInfo()["connectedApp"];
+	$connectedAppName = getOAuthConfig($connectedAppSetting)["name"];
+	$flow = $route["authorization"];
 
 	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
-
-	$connectedAppName = $_SESSION["connected_app_name"];
 	
-	return isset($_SESSION[$connectedAppName]["userId"]);
+	return isset($_SESSION[$connectedAppName][$flow]["userId"]);
 }
 
 
@@ -170,7 +177,8 @@ function doSAMLAuthorization(){
 
 
 function user_get_initials() {
-	return !is_authenticated() ? "G" : ucfirst(substr($_SESSION["username"], 0, 1));
+	//return !is_authenticated() ? "G" : ucfirst(substr($_SESSION["username"], 0, 1));
+	return "G";
 }
 
 
