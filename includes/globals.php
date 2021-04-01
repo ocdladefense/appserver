@@ -109,46 +109,6 @@ function user_require_auth($module, $route) {
 	return Salesforce\OAuth::start($config, $authFlow);
 }
 
-function user_has_access($module, $route) {
-
-	// Define in config/config.php.
-	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
-	
-	
-	$access = $route["access"];
-	$args = $route["access_args"];
-	
-	
-	if(!isset($access) ) {
-		return true;
-		
-	} else if( true === $access ) {
-
-		return true;
-
-	} else if(false === $access) {
-
-		return false;
-		
-	} else if(function_exists($access)) {
-
-		$args = array($module, $route);
-
-		return null == $args ? call_user_func($access) : call_user_func_array($access, $args);
-	}
-}
-
-function is_authenticated($module, $route) {
-	
-	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = getOAuthConfig($connectedAppSetting)["name"];
-	$flow = $route["authorization"];
-
-	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
-	
-	return isset($_SESSION[$connectedAppName][$flow]["userId"]);
-}
-
 
 function doSAMLAuthorization(){
 
@@ -203,6 +163,130 @@ function getOAuthConfig($key = null) {
 	throw new Exception("HTTP_INIT_ERROR: No default Connected App / Org.  Check your configuration.");
 }
 
+
+// Determine if the user has already authorized against a oauth flow.
+function is_module_authorized($module) {
+	
+	// Necessary because key can be "default".
+	$connectedAppSetting = $module->getInfo()["connectedApp"];
+	$connectedAppName = getOAuthConfig($connectedAppSetting)["name"];
+	$flow = "usernamePassword";
+
+	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
+}
+
+// Determine if the user has already authorized against a oauth flow.
+function is_route_authorized($module, $route) {
+	
+	// Necessary because key can be "default".
+	$connectedAppSetting = $module->getInfo()["connectedApp"];
+	$connectedAppName = getOAuthConfig($connectedAppSetting)["name"];
+	$flow = $route["authorization"];
+
+	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// These are our access related functions.
+function user_has_access($module, $route) {
+
+	// Define in config/config.php.
+	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
+	
+	
+	$access = $route["access"];
+	$args = $route["access_args"];
+	
+	
+	if(!isset($access) ) {
+		return true;
+		
+	} else if( true === $access ) {
+
+		return true;
+
+	} else if(false === $access) {
+
+		return false;
+		
+	} else if(function_exists($access)) {
+
+		$args = array($module, $route);
+
+		return null == $args ? call_user_func($access) : call_user_func_array($access, $args);
+	}
+}
+
+function is_authenticated($module, $route) {
+	
+	$connectedAppSetting = $module->getInfo()["connectedApp"];
+	$connectedAppName = getOAuthConfig($connectedAppSetting)["name"];
+	$flow = $route["authorization"];
+	
+	return !empty(\Session::get($connectedAppName, $flow, "userId"));
+}
 
 
 
