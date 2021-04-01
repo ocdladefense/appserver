@@ -70,9 +70,9 @@ class CoreModule extends Module {
 
 		$resp = $oauth->authorize();
 
-		if($resp->hasError){
+		if(!$resp->success()){
 
-			throw new Exception("OAUTH_ERROR: {$resp->errorMessage}.");
+			throw new OAuthException($resp->getErrorMessage());
 		}
 
 		OAuth::setSession($connectedApp, $flow, $resp->getInstanceUrl(), $resp->getAccessToken());

@@ -10,6 +10,8 @@ class OAuthResponse extends HttpResponse {
     private $instanceUrl;
     
     private $accessToken;
+
+    private $hasError;
     
     protected static $errorCodes = array(
         0 => "Invalid URl",
@@ -40,7 +42,9 @@ class OAuthResponse extends HttpResponse {
 
         if(!empty($body["error"])){
 
-            throw new OAuthException(strtoupper($body["error"]) . "_ERROR:   " . $body["error_description"]);
+            $this->hasError = true;
+            $this->error = $body["error"];
+            $this->errorMessage = $body["error_description"];
         }
 
         if($body != null){
@@ -61,11 +65,6 @@ class OAuthResponse extends HttpResponse {
             throw new Exception("Access token is not set!");
         }
     }
-
-    // Commented out s.s. 1/9/21 error cannnot call this on a non object.//
-    private static function getErrorMsg($statusCode) {
-			return self::$errorCodes[$statusCode];
-    }
     
     
     public function getAccessToken() {
@@ -76,9 +75,14 @@ class OAuthResponse extends HttpResponse {
     public function getInstanceUrl() {
         return $this->instanceUrl;
     }
-    
-    
-    public function getError() {
-        return $this->error;
+
+    public function success(){
+
+        return !$this->hasError;
+    }
+
+    public function getErrorMessage(){
+
+        return strtoupper($this->error . "_ERROR:" . $this->errorMessage);
     }
 }

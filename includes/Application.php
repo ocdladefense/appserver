@@ -170,8 +170,8 @@ class Application {
             } else {
 
                 $oauthResp = $httpMessage->authorize();
-                if($oauthResp->getAccessToken() == null) throw new OAuthException("OAUTH_ERROR:  The access token cannot be null.");
-                if($oauthResp->getInstanceUrl() == null) throw new OAuthException("OAUTH_ERROR:  The instance url cannot be null.");
+
+                if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
 
                 OAuth::setSession($config["name"], $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
             }
