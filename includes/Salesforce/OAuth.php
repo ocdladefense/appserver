@@ -36,10 +36,10 @@ class OAuth {
         return $resp;
     }
 
-    public static function setSession($connectedApp, $flow, $resp){
+    public static function setSession($connectedApp, $flow, $instanceUrl, $accessToken){
 
-        \Session::set($connectedApp, $flow, "access_token", $resp->getAccessToken());
-        \Session::set($connectedApp, $flow, "instance_url", $resp->getInstanceUrl());
+        \Session::set($connectedApp, $flow, "instance_url", $instanceUrl);
+        \Session::set($connectedApp, $flow, "access_token", $accessToken);
         \Session::set($connectedApp, $flow, "userId", OAuth::getUserId($connectedApp, $flow));
     }
 

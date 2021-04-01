@@ -4,7 +4,8 @@ use \Http as Http;
 use \Http\HttpHeader as HttpHeader; 
 use \Http\HttpResponse as HttpResponse;
 use \Http\HttpRequest as HttpRequest;
-use Salesforce\Oauth;
+use Salesforce\OAuth;
+use Salesforce\OAuthException;
 
 
 class Application {
@@ -169,7 +170,10 @@ class Application {
             } else {
 
                 $oauthResp = $httpMessage->authorize();
-                OAuth::setSession($config["name"], $flow, $oauthResp);
+                if($oauthResp->getAccessToken() == null) throw new OAuthException("OAUTH_ERROR:  The access token cannot be null.");
+                if($oauthResp->getInstanceUrl() == null) throw new OAuthException("OAUTH_ERROR:  The instance url cannot be null.");
+
+                OAuth::setSession($config["name"], $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
             }
             
         }

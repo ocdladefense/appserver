@@ -34,15 +34,13 @@ class OAuthResponse extends HttpResponse {
 
     public function __construct($body = null) {
         
-        parent::__construct($body);
-    		
+        parent::__construct($body);	
 
         $body = null != $body ? json_decode($body, true) : null;
 
         if(!empty($body["error"])){
 
-            $this->hasError = true;
-            $this->errorMessage = $body["error_description"];
+            throw new OAuthException(strtoupper($body["error"]) . "_ERROR:   " . $body["error_description"]);
         }
 
         if($body != null){

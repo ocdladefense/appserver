@@ -75,9 +75,7 @@ class CoreModule extends Module {
 			throw new Exception("OAUTH_ERROR: {$resp->errorMessage}.");
 		}
 
-		OAuth::setSession($connectedApp, $flow, $resp);
-
-		Session::set($connectedApp, $flow, "userId", OAuth::getUserId($connectedApp, $flow));
+		OAuth::setSession($connectedApp, $flow, $resp->getInstanceUrl(), $resp->getAccessToken());
 
 		$resp2 = new HttpResponse();
 		$flowConfig = $config["auth"]["oauth"][$flow];
