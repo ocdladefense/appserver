@@ -160,7 +160,7 @@ class Application {
 
         if($connectedAppName != null && !is_module_authorized($module)){
 
-            // What if we decide to set authorization at the module level?
+            // What if we decide to set authorization at the module level?                                                     
             $flow = $moudle["authorization"] != null ? $module["authorization"] : "usernamePassword";  //  This is questionable.
 
             $httpMessage = OAuth::start($config, $flow);
