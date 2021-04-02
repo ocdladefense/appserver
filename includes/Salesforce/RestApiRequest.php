@@ -60,6 +60,9 @@ class RestApiRequest extends HttpRequest {
 
     public function send($endpoint) {
 
+        if(empty($this->instanceUrl)) throw new \Exception("REST_API_ERROR:  The instance url cannot be null.");
+        if(empty($this->accessToken)) throw new \Exception("REST_API_ERROR:  The access token cannot be null.");
+
     
         $this->setUrl($this->instanceUrl . $endpoint);
         $this->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\RestApiResponse")); // Use a custom HttpResponse class to represent the HttpResponse.
