@@ -29,6 +29,8 @@ class OAuth {
             "state"         => json_encode($state)
         );
 
+        //var_dump($params);exit;
+
         $url .= "?" . http_build_query($params);
 
         $resp->addHeader(new HttpHeader("Location", $url));

@@ -156,12 +156,13 @@ class Application {
 
         //  This is the module flow not the route flow
         $connectedAppName = $module->get("connectedApp");
+        $config = getOauthConfig($connectedAppName);
 
         if($connectedAppName != null && !is_module_authorized($module)){
 
             // Get ouath conig should be able to take default as a paramter.
-            $config = getOauthConfig($connectedAppName);
-            $flow = "usernamePassword";  //  This is questionable.
+            //$config = getOauthConfig($connectedAppName);
+            $flow = $route["authorization"] != null ? $route["authorization"] : "usernamePassword";  //  This is questionable.
 
             $httpMessage = OAuth::start($config, $flow);
 
@@ -181,7 +182,9 @@ class Application {
 
 
         // This is the route flow not the module flow.
-        if(!user_has_access($module, $route) && isset($route["authorization"])) {
+        // $connectedAppName = getOauthConfig($module->getInfo()["connectedApp"])["name"];
+        if(!is_route_authorized($config["name"], $route)){
+        //if(!user_has_access($module, $route) && isset($route["authorization"])) {
 
             $resp = user_require_auth($module, $route);
 

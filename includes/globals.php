@@ -98,8 +98,9 @@ function user_require_auth($module, $route) {
 
 		throw new Exception("ROUTE_AUTHORIZATION_ERROR:You must set an authoriztion key that is set to a flow, when executing a route that has an access modifier.");
 	}
+	
 
-	$connectedAppName = $module["connectedApp"];
+	$connectedAppName = $module->getInfo()["connectedApp"];
 
 	$authFlow = $route["authorization"];
 
@@ -176,66 +177,17 @@ function is_module_authorized($module) {
 }
 
 // Determine if the user has already authorized against a oauth flow.
-function is_route_authorized($module, $route) {
+function is_route_authorized($connectedAppName, $route) {
 	
-	// Necessary because key can be "default".
-	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = getOAuthConfig($connectedAppSetting)["name"];
-	$flow = $route["authorization"];
+	$flow = isset($route["authorization"]) ? $route["authorization"] : "usernamePassword";
 
 	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
 }
 
+function is_admin_user(){
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	return defined("ADMIN_USER") && ADMIN_USER === true;
+}
 
 
 
@@ -253,7 +205,7 @@ function is_route_authorized($module, $route) {
 function user_has_access($module, $route) {
 
 	// Define in config/config.php.
-	if(defined("ADMIN_USER") && ADMIN_USER === true) return true;
+	if(is_admin_user()) return true;
 	
 	
 	$access = $route["access"];

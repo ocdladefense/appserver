@@ -61,14 +61,8 @@ class RestApiRequest extends HttpRequest {
 
     public function send($endpoint) {
 
-        if(empty($this->instanceUrl)){
-
-            throw new HttpException("NULL URL");
-        }
-        if(empty($this->accessToken)){
-
-            throw new RestApiException("REST_API_ERROR:  The access token cannot be null.");
-        }
+        if(empty($this->instanceUrl)) throw new HttpException("REST_API_ERROR:  The instance url cannot be null.");
+        if(empty($this->accessToken)) throw new RestApiException("REST_API_ERROR:  The access token cannot be null.");
 
     
         $this->setUrl($this->instanceUrl . $endpoint);
