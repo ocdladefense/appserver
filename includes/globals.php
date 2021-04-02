@@ -92,15 +92,12 @@ function stringContains($haystack, $needle){
 }
 
 // Decided which oauth flow to use.
-function user_require_auth($module, $route) {
+function user_require_auth($connectedAppName, $route) {
 
-	if((isset($route["access"]) || $route["access"] == true) && !isset($route["authorization"])){
+	if(isset($route["access"]) && $route["access"] != true && $route["access"] != false && !isset($route["authorization"]){
 
 		throw new Exception("ROUTE_AUTHORIZATION_ERROR:You must set an authoriztion key that is set to a flow, when executing a route that has an access modifier.");
 	}
-	
-
-	$connectedAppName = $module->getInfo()["connectedApp"];
 
 	$authFlow = $route["authorization"];
 

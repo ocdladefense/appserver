@@ -182,11 +182,9 @@ class Application {
 
 
         // This is the route flow not the module flow.
-        // $connectedAppName = getOauthConfig($module->getInfo()["connectedApp"])["name"];
         if(!is_route_authorized($config["name"], $route)){
-        //if(!user_has_access($module, $route) && isset($route["authorization"])) {
 
-            $resp = user_require_auth($module, $route);
+            $resp = user_require_auth($config["name"], $route);
 
             if($resp == null){
 
