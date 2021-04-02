@@ -160,9 +160,8 @@ class Application {
 
         if($connectedAppName != null && !is_module_authorized($module)){
 
-            // Get ouath conig should be able to take default as a paramter.
-            //$config = getOauthConfig($connectedAppName);
-            $flow = $route["authorization"] != null ? $route["authorization"] : "usernamePassword";  //  This is questionable.
+            // What if we decide to set authorization at the module level?
+            $flow = $moudle["authorization"] != null ? $module["authorization"] : "usernamePassword";  //  This is questionable.
 
             $httpMessage = OAuth::start($config, $flow);
 
