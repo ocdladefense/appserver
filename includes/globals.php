@@ -175,6 +175,8 @@ function is_module_authorized($module) {
 
 // Determine if the user has already authorized against a oauth flow.
 function is_route_authorized($connectedAppName, $route) {
+
+	if(!isset($route["access"])) return true;
 	
 	$flow = isset($route["authorization"]) ? $route["authorization"] : "usernamePassword";
 
