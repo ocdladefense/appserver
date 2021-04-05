@@ -58,6 +58,11 @@ class RestApiRequest extends HttpRequest {
     	$this->accessToken = $accessToken;
     }
 
+    // public function setBody($body){
+
+    //     is_string($body) ? $this->setBody($body) : $this->setBody(json_encode($body));
+    // }
+
 
     public function send($endpoint) {
 

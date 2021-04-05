@@ -11,6 +11,10 @@ use Http\HttpResponse;
 
 class RestApiResponse extends HttpResponse {
 
+    const DEFAULT_DECODING_SCHEME = "associative_array";
+    const OBJECT_DECODING_SCHEME = "object";
+    const JSON_DECODING_SCHEME = "json";
+
     private $errorMessage;
 
     private $errorCode;
@@ -61,6 +65,21 @@ class RestApiResponse extends HttpResponse {
     // get body, getarray, getobject from the body;  returns default prefernce of type.
 
     // default decoding scheme = associative  php_associative_array.
+
+    public function getBody($scheme = null){
+
+        switch($scheme) {
+
+            case self::JSON_DECODING_SCHEME:
+                return json_encode($this->body);
+                break;
+            case self::OBJECT_DECODING_SCHEME:
+                return json_decode(json_encode($this->body));
+                break;
+            default:
+                return $this->body;
+        }
+    }
 
     public function getRecords(){
 
