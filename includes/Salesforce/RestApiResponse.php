@@ -58,6 +58,10 @@ class RestApiResponse extends HttpResponse {
         }
     }
 
+    // get body, getarray, getobject from the body;  returns default prefernce of type.
+
+    // default decoding scheme = associative  php_associative_array.
+
     public function getRecords(){
 
         if($this->isSuccess() && $this->body["records"] != null){
