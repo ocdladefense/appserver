@@ -40,9 +40,9 @@ class RestApiResponse extends HttpResponse {
 
     public function __construct($body) {
 
-        parent::__construct($body);
-
         $body = null != $body ? json_decode($body, true) : null;
+
+        parent::__construct($body);
 
         if(!empty($body["errorCode"]) || !empty($body["error"])){
 
@@ -57,6 +57,15 @@ class RestApiResponse extends HttpResponse {
             $this->instanceUrl = $body["instance_url"]; 
         }
     }
+
+    public function getRecords(){
+
+        if($this->isSuccess() && $this->body["records"] != null){
+
+            return $this->body["records"];
+        }
+    }
+
 
     public function other(){
 
