@@ -66,6 +66,11 @@ class RestApiResponse extends HttpResponse {
         }
     }
 
+    public function getRecord($index = null){
+
+        return $index == null ? $this->body["records"][0] : $this->body["records"][$index];
+    }
+
     public function other(){
 
                 //if the request is successful we can opt use the X-Request-Endpoint header to create the sobject class(s) or an array of them
@@ -139,7 +144,7 @@ class RestApiResponse extends HttpResponse {
 
         if(!$this->isSuccess()) {
 
-            $this->errors = RestApiErrorCollection::fromJson($this->getBody());
+            $this->errors = RestApiErrorCollection::fromArray($this->getBody());
             return $this->errors->getFirst()->getMessage();   
         }
 
@@ -171,15 +176,14 @@ class RestApiErrorCollection {
 
     public $errorObjects;
 
-    public static function fromJson($json){
+    public static function fromArray($errorObjs){
+
 
         $collection = new RestApiErrorCollection();
 
-        $errorObjs = json_decode($json);
-
         foreach($errorObjs as $obj){
 
-            $collection->errorObjects[] = new RestApiError($obj->message, $obj->errorCode);
+            $collection->errorObjects[] = new RestApiError($obj["message"], $obj["errorCode"]);
         }
 
         return $collection;
