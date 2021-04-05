@@ -226,9 +226,7 @@ class RestApiRequest extends HttpRequest {
         $endpoint = "/services/data/v49.0/query/?q=";
         $endpoint .= urlencode($soql);
 
-        $resp = $this->send($endpoint, "GET");
-
-        return json_decode($resp->getBody(), true);
+        return $this->send($endpoint, "GET");
     }
 
     public function upsert($sobjectName, $record){
