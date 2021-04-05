@@ -56,7 +56,7 @@ class OAuth {
 
 		$resp = $req->send($url);
 
-		$userInfo = json_decode($resp->getBody());
+		$userInfo = $resp->getBody();
 		
 		return $userInfo->user_id;
 	}
