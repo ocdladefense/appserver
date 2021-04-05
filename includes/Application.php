@@ -158,7 +158,7 @@ class Application {
         $connectedAppName = $module->get("connectedApp");
         $config = getOauthConfig($connectedAppName);
 
-        if($connectedAppName != null && !is_module_authorized($module)){
+        if(!is_user_authorized($module)){
 
             // What if we decide to set authorization at the module level?                                                     
             $flow = $moudle["authorization"] != null ? $module["authorization"] : "usernamePassword";  //  This is questionable.
@@ -181,7 +181,7 @@ class Application {
 
 
         // This is the route flow not the module flow.
-        if(!is_route_authorized($config["name"], $route)){
+        if(!is_user_authorized($module, $route)){
 
             $resp = user_require_auth($config["name"], $route);
 
@@ -192,7 +192,9 @@ class Application {
 
                 return $resp;
             }
-        } else if(!user_has_access($module, $route)){
+        }
+        
+        if(!user_has_access($module, $route)){
 
             $resp = new HttpResponse();
             $resp->setStatusCode(401);
@@ -278,6 +280,7 @@ class Application {
         // Demonstrate that we can instantiate a module
         //  and begin using it.
         $module = $loader->loadObject($moduleName);
+        
         $func = $route["callback"];
 
         l("Executing route...<br />Module: {$moduleName}<br />Callback: {$func}.");

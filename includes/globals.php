@@ -163,7 +163,24 @@ function getOAuthConfig($key = null) {
 
 
 // Determine if the user has already authorized against a oauth flow.
+
+function module_requires_authorization($module){
+
+	// If the module has no connected app set, the user is authorized for the module.
+	return isset($module->getInfo()["connectedApp"]);
+}
+
+function is_user_authorized($module, $route = null){
+
+	$connectedAppSetting = $module->getInfo()["connectedApp"];
+	$connectedAppName = getOAuthConfig($connectedAppSetting)["name"];
+	return $route == null ? is_module_authorized($module) : is_route_authorized($connectedAppName, $route);
+
+}
 function is_module_authorized($module) {
+
+	// If the module has no connected app set, the user is authorized for the module.
+	if(!isset($module->getInfo()["connectedApp"])) return true;
 	
 	// Necessary because key can be "default".
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
@@ -176,9 +193,10 @@ function is_module_authorized($module) {
 // Determine if the user has already authorized against a oauth flow.
 function is_route_authorized($connectedAppName, $route) {
 
-	if(!isset($route["access"])) return true;
+	// If the route has no authorization flow set, the user is authorized for the route.
+	if(!isset($route["authorization"])) return true;
 	
-	$flow = isset($route["authorization"]) ? $route["authorization"] : "usernamePassword";
+	$flow = $route["authorization"];
 
 	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
 }
@@ -203,12 +221,13 @@ function is_admin_user(){
 /// These are our access related functions.
 function user_has_access($module, $route) {
 
-	// Define in config/config.php.
-	if(is_admin_user()) return true;
-	
-	
 	$access = $route["access"];
 	$args = $route["access_args"];
+	
+	if($access === false) return false;
+
+	// Define in config/config.php.
+	if(is_admin_user()) return true;
 	
 	
 	if(!isset($access) ) {
