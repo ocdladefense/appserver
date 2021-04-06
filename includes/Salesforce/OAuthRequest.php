@@ -31,16 +31,17 @@ class OAuthRequest extends HttpRequest {
 
 	public static function fromConfig($config) {
 
-		$url = $config["token_url"];
-		
-		$req = new OAuthRequest($url);
+		$config = new OAuthConfig($config);
+
+		$tokenUrl = $config->getTokenUrl();
+		$req = new OAuthRequest($tokenUrl);
 
 		$body = array(
 			"grant_type" 			=> "password",
-			"client_id" 			=> $config["client_id"],
-			"client_secret"		=> $config["client_secret"],
-			"username"				=> $config["username"],
-			"password"				=> $config["password"] . $config["security_token"]
+			"client_id" 			=> $config->getClientId(),
+			"client_secret"		=> $config->getClientSecret(),
+			"username"				=> $config->getUserName(),
+			"password"				=> $config->getPasswordAndSecurityToken()
 		);
 	
 		$body = http_build_query($body);
@@ -49,13 +50,11 @@ class OAuthRequest extends HttpRequest {
 		
 		$req->setBody($body);
 		$req->setMethod("POST");
-		// $req->addHeaders($headers);
+		
 		// Sending a HttpResponse class as a Header to represent the HttpResponse.
 		$req->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\OAuthResponse")); 
 		//setAccept("\Salesforce\OAuthResponse");//
 		
-		// return a redirect under which circumstances?
-		// $config["callback_url"]
 		return $req;
 	}
 

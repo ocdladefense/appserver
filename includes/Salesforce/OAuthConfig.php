@@ -16,6 +16,7 @@ class OAuthConfig extends Config{
     public function __construct($config){
 
         parent::__construct($config);
+
         $this->username = $config["username"];
         $this->password = $config["password"];
         $this->securityToken = $config["security_token"];
@@ -35,6 +36,11 @@ class OAuthConfig extends Config{
     public function getSecurityToken(){
 
         return $this->securityToken;
+    }
+
+    public function getPasswordAndSecurityToken(){
+
+        return $this->password . $this->securityToken;
     }
     
     public function getCallbackUrl(){
