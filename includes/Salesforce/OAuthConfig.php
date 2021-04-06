@@ -2,36 +2,25 @@
 
 namespace Salesforce;
 
-class OAuthConfig {
-
-    private $config;
-
-    private $clientId;
-
-    private $clientSecret;
+class OAuthConfig extends Config{
 
     private $username;
 
     private $password;
 
-    private $authorizationUrl;
-
-    private $authorizationRedirectUrl;
-
-    private $tokenUrl;
-
-    private $finalRedirectUrl;
+    private $securityToken;
 
     private $callbackUrl;
 
 
     public function __construct($config){
 
-        var_dump($config);exit;
+        parent::__construct($config);
 
-        $this->config = $config;
-
-
+        $this->username = $config["username"];
+        $this->password = $config["password"];
+        $this->securityToken = $config["security_token"];
+        $this->callback = $config["callback_url"];
     }
 
     public function getUsername(){
@@ -39,53 +28,23 @@ class OAuthConfig {
         return $this->username;
     }
 
-    public function getClientId(){
-
-        return $this->clientId;
-    }
-
-    public function getClientSecret(){
-
-        return $this->clientSecret;
-    }
-
     public function getPassword(){
 
         return $this->password;
     }
 
-    public function getTokenUrl(){
+    public function getSecurityToken(){
 
-        return $this->tokenUrl;
+        return $this->securityToken;
     }
 
-    public function getAuthorizationUrl(){
+    public function getPasswordAndSecurityToken(){
 
-        return $this->authorizationUrl;
-    }
-
-    public function getAuthorizationRedirectUrl(){
-
-        return $this->authorizationRedirectUrl;
-    }
-
-    public function getFinalRedirectUrl(){
-
-        return $this->finalRedirectUrl;
+        return $this->password . $this->securityToken;
     }
     
     public function getCallbackUrl(){
 
         return $this->callbackUrl;
-    }
-
-    public function getConfig(){
-
-        return $this->config;
-    }
-
-    public function getFlowConfig($flow){
-
-        `
     }
 }
