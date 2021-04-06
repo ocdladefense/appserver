@@ -155,19 +155,22 @@ function is_authenticated() {
 
 
 
-
 function getOAuthConfig($key = null) {
 
 	global $oauth_config;
 
-	if(null == $key) {
-		foreach($oauth_config as $connectedApp) {
+	if(null == $key || $key == "default") {
+		foreach($oauth_config as $key => $connectedApp) {
+			$connectedApp["name"] = $key;
 			$isdefault = $connectedApp["default"];
 			if($isdefault) return $connectedApp;
 		}
 		
 	} else {
-		return $oauth_config[$key];
+		$config = $oauth_config[$key];
+		$config["name"] = $key;
+
+		return $config;
 	}
 	
 	throw new Exception("HTTP_INIT_ERROR: No default Connected App / Org.  Check your configuration.");
