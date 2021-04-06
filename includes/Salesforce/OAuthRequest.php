@@ -50,7 +50,7 @@ class OAuthRequest extends HttpRequest {
 		
 
 				
-				$url = $config["oauth_url"];
+				$url = $config["token_url"];
 				
 				$req = new OAuthRequest($url);
 

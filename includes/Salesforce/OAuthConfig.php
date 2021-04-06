@@ -4,8 +4,6 @@ namespace Salesforce;
 
 class OAuthConfig extends Config{
 
-    private $config;
-
     private $username;
 
     private $password;
@@ -17,10 +15,7 @@ class OAuthConfig extends Config{
 
     public function __construct($config){
 
-        $this->config = $config;
-        $this->clientId = $config["client_id"];
-        $this->clientSecret = $config["client_secret"];
-        $this->tokenUrl = $config["token_url"];
+        parent::__construct($config);
         $this->username = $config["username"];
         $this->password = $config["password"];
         $this->securityToken = $config["security_token"];
