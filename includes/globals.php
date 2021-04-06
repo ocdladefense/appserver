@@ -163,14 +163,17 @@ function getOAuthConfig($key = null) {
 		foreach($oauth_config as $key => $connectedApp) {
 			$connectedApp["name"] = $key;
 			$isdefault = $connectedApp["default"];
-			if($isdefault) return $connectedApp;
+			if($isdefault) {
+
+				return new Salesforce\OAuthConfig($config);
+			}
 		}
 		
 	} else {
 		$config = $oauth_config[$key];
 		$config["name"] = $key;
 
-		return $config;
+		return new Salesforce\OAuthConfig($config);
 	}
 	
 	throw new Exception("HTTP_INIT_ERROR: No default Connected App / Org.  Check your configuration.");
