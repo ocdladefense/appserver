@@ -31,17 +31,17 @@ class OAuthRequest extends HttpRequest {
 
 	public static function fromConfig($config) {
 
-		$config = new OAuthConfig($config);
+		$req = new OAuthRequest($config->getTokenUrl());
 
-		$tokenUrl = $config->getTokenUrl();
-		$req = new OAuthRequest($tokenUrl);
+		$flowConfig = $config->getFlowConfig();
+
 
 		$body = array(
 			"grant_type" 			=> "password",
 			"client_id" 			=> $config->getClientId(),
-			"client_secret"		=> $config->getClientSecret(),
-			"username"				=> $config->getUserName(),
-			"password"				=> $config->getPasswordAndSecurityToken()
+			"client_secret"			=> $config->getClientSecret(),
+			"username"				=> $flowConfig->getUserName(),
+			"password"				=> $flowConfig->getPassword() . $flowConfig->getSecurityToken()
 		);
 	
 		$body = http_build_query($body);

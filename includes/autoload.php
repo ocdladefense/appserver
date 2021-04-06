@@ -110,9 +110,8 @@
 	require_once BASE_PATH.'/includes/Salesforce/RestApiResponse.php';
 	require_once BASE_PATH.'/includes/Salesforce/SObject.php';
 	require_once BASE_PATH.'/includes/Salesforce/SalesforceFile.php';
-
-	require_once BASE_PATH.'/includes/Salesforce/Config.php';
 	require_once BASE_PATH.'/includes/Salesforce/OAuthConfig.php';
+	require_once BASE_PATH.'/includes/Salesforce/OAuthFlowConfig.php';
 
 	$files = array("Attachment","Document", "ContentDocument");
 

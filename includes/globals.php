@@ -165,7 +165,7 @@ function getOAuthConfig($key = null) {
 			$isdefault = $connectedApp["default"];
 			if($isdefault) {
 
-				return new Salesforce\OAuthConfig($config);
+				return new Salesforce\OAuthConfig($connectedApp);
 			}
 		}
 		
