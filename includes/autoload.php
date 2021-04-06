@@ -116,7 +116,7 @@
 	// require_once BASE_PATH.'/includes/Salesforce/SalesforceFile.php';
 
 	// Require all of the files in the includes/Salesforce direcory.
-	$sfFiles = array("Salesforce","RestApiResult", "OAuthRequest","OAuthResponse","RestApiRequest",
+	$sfFiles = array("Salesforce","RestApiResult", "OAuthRequest","OAuthResponse","RestApiRequest","OAuthConfig",
 					"RestApiResponse","SObject","SalesforceFile","OAuth","RestApiException","OAuthException");
 
 	foreach($sfFiles as $file) {

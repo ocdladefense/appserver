@@ -14,6 +14,7 @@ class OAuth {
 
     public static function newOAuthResponse($config,$flow) {
 
+        // $flowConfig = $config->getFlowConfig($flow);
         $flowConfig = $config["auth"]["oauth"][$flow];
 
         $resp = new OAuthResponse();

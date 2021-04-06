@@ -34,17 +34,17 @@ class OAuthRequest extends HttpRequest {
 
 	public static function usernamePasswordFlowAccessTokenRequest($config, $flow) {
 
-		//  Get the config at the index of usernamePassword
+		// $flowConfig = $config->getFlowConfig($flow);
 		$flowConfig = $config["auth"]["oauth"][$flow];
-		
-		$req = new OAuthRequest($config["token_url"]);
+
+		$req = new OAuthRequest($config["token_url"]); // $config->getTokenUrl()
 
 		$body = array(
 			"grant_type" 			=> "password",
-			"client_id" 			=> $config["client_id"],
-			"client_secret"		=> $config["client_secret"],
-			"username"				=> $flowConfig["username"],
-			"password"				=> $flowConfig["password"] . $flowConfig["security_token"]
+			"client_id" 			=> $config["client_id"], // $config->getClientId()
+			"client_secret"			=> $config["client_secret"],// $config->getClientSecret()
+			"username"				=> $flowConfig["username"], // $config->getUsername()
+			"password"				=> $flowConfig["password"] . $flowConfig["security_token"]// $config->getPassword();
 		);
 		
 		$body = http_build_query($body);
@@ -68,14 +68,14 @@ class OAuthRequest extends HttpRequest {
 	
 	public static function webServerFlowAccessTokenRequest($config) {
 
-		$flowConfig = $flowConfig = $config["auth"]["oauth"]["webserver"];
+		$flowConfig = $config["auth"]["oauth"]["webserver"];
 
 		$params = array(
-			"grant_type"	=> "authorization_code",
-			"client_id"		=> $config["client_id"],
-			"client_secret" => $config["client_secret"],
-			"code" => $config["authorization_code"],
-			"redirect_uri"	=> $flowConfig["final_redirect_url"]
+			"grant_type"		=> "authorization_code",
+			"client_id"			=> $config["client_id"],
+			"client_secret" 	=> $config["client_secret"],
+			"code" 				=> $config["authorization_code"],
+			"redirect_uri"		=> $flowConfig["final_redirect_url"]
 		);
 
 		$body = http_build_query($params);
