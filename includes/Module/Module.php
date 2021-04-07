@@ -95,10 +95,7 @@ class Module {
 
         $resp = $oauth->authorize();
 		
-		
-				if($debug) {
-						var_dump($oauth);
-				}
+	    if($debug) var_dump($config, $oauth, $resp);
         
         
         if($resp->hasError) {

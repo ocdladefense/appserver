@@ -35,7 +35,6 @@ class OAuthRequest extends HttpRequest {
 
 		$flowConfig = $config->getFlowConfig();
 
-
 		$body = array(
 			"grant_type" 			=> "password",
 			"client_id" 			=> $config->getClientId(),
