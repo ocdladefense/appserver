@@ -33,7 +33,7 @@ class OAuthConfig {
         $this->sandbox = $config["sandbox"];
         $this->clientId = $config["client_id"];
         $this->clientSecret = $config["client_secret"];
-        $this->tokenUrl = $config["token_url"];
+        $this->tokenUrl = $config["oauth_url"];
 
         $this->callbackUrl = $config["callback_url"];
 
