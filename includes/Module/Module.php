@@ -90,8 +90,8 @@ class Module {
     protected function loadApi($org = null, $debug = false) {
     
 
-        $oauth_config = getOauthConfig($org);
-        $oauth = OAuthRequest::fromConfig($oauth_config);
+        $config = getOAuthConfig($org);
+        $oauth = OAuthRequest::fromConfig($config);
 
         $resp = $oauth->authorize();
 		
