@@ -1,6 +1,6 @@
 <?php
 
-namespace Salesforce;
+namespace RestApiRequest;
 
 
 class Database {
@@ -63,7 +63,7 @@ class Database {
 	
 			$selectQuery = buildSelectFromUpdate($sql);
 			
-			$force = new Salesforce();
+			$force = new RestApiRequest();
 			$records = $force->createQueryFromSession($selectQuery);
 			
 			// parse the UPDATE to get the props.
@@ -80,25 +80,31 @@ class Database {
 	*/
 	
 	
-	function delete($records) {}
-	
 	function select($query) {
 		global $oauth_config;
 
 		//OAuth
-		$salesforce = new \Salesforce($oauth_config);
+		$salesforce = new \RestApiRequest($oauth_config);
 		
 		return $salesforce->CreateQueryFromSession($query);
 	}
 
-	public static function delete2($query){
+	public static function delete($query){
 		global $oauth_config;
 
+		var_dump(list($sObjectName, $records) = self::parseDelete($query));
+
+		//1 Get conditions
+
+		//2 Issue Query   specifically the ID using the given sObjectName
+
+		//3 returns list of results
+
+		//4 Pass the IDs from the results to the API call
+
+
 		//OAuth
-		$salesforce = new \Salesforce($oauth_config);
-
-		list($sObjectName, $records) = self::parseDelete($query);
-
+		$salesforce = new \RestApiRequest($oauth_config);
 	}
 	
 	
@@ -116,7 +122,7 @@ class Database {
 		global $oauth_config;
 
 		//OAuth
-		$salesforce = new \Salesforce($oauth_config);
+		$salesforce = new \RestApiRequest($oauth_config);
 
 		list($sObjectName, $records) = self::parseInsert($query);
 		//var_dump($sObjectName);
@@ -134,61 +140,101 @@ class Database {
 		return $variable2;
 	}
 
-	public static function parseWhere($clause){
-		$stmt = explode("WHERE", $clause);
-		//[1]: ResourceId__c = 'YtoqDF8EnsA' 
-		//[1]: ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
+	public static function getConditions($sql){
+		
+		$stmt = explode("WHERE", $sql);
+		
+		$conds = Count($stmt) > 1 ? $stmt[1] : null;
 
-		$where = trim($stmt[1]);
-		//ResourceId__c = 'YtoqDF8EnsA'
-		//ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
+		if($conds == null)
+			return null;
+		
+		// ResourceId__c = 'YtoqDF8EnsA' OR ResourceId__c = 'EtoqHACEnsQ'"
+		//$conds2 = trim($conds, "\"'");
 
-		$examp = "WHERE ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true";
+		// ResourceId__c = 'YtoqDF8EnsA' OR IsPublished__c = true AND ResourceId__c = 'EtoqHACEnsQ'
+		
+		$numOrs = preg_split("/\s+OR\s+/", $conds); //split by OR first
+		$numANDs = preg_split("/\s+AND\s+/", $conds);
+		//split each index of $conds3 by AND next
+		if(Count($numORs) > 1 && Count($numANDs) > 1){
+			//throw exception
+			throw new Exception("We cannot process conditons with ANDs and ORs");
+		}
+		else if(Count($numORs) == 1 && Count($numANDs) == 1){
+			//1 condition
+		}
+		else if(Count($numORs) > 1){
+			//all ORs
+		}		
+		else if(Count($numANDs) > 1){
+			//all ANDs
+		}
+		
 
-		$conditions = preg_split("/AND|OR/", $where);
 
+		//split each section by = then trim spaces using array_map
+
+		
+		$conditions = array();
+		$values = array();
+		foreach($conds3 as $cond){
+
+
+			$fieldValue = explode("=", $cond);
+
+			var_dump($fieldValue);
+
+			//trim each index of $fieldValue and turn $field into an array
+			$field = trim($fieldValue[0]);
+			$preValue = trim($fieldValue[1]);
+
+			//trim single quotes from $preValue and turn it into an array
+			$value = trim($preValue, "'");
+
+			//want '' coming in input, but want to strip them out for output using trim(value, "'") using a foreach
+
+			$values[] = $value;
+			$conditions[$field]= $values;
+
+		}
 		var_dump($conditions);
 
+		
 
-		//MAKE IT LOOK LIKE THIS
 
-		$Obj = array(
-			"ResourceId__c" => "YtoqDF8EnsA",
-			"Published__c" => true
+		//return the conditons as an array
+		return array(
+			"op" => "OR",//optional
+			"conditions" => array(
+				"ResourceId__c" => "YtoqDF8EnsA",
+				"ResourceId__c" => "EtoqHACEnsQ"
+			)
 		);
+		
 	}
 
-	public static function parseDelete($query){
-		//"DELETE FROM Media__c WHERE ResourceId__c = 'YtoqDF8EnsA'"
-		//"DELETE FROM Media__c WHERE ResourceId__c = 'YtoqDF8EnsA' AND Publised__c = true"
+	public static function parseDelete($sql){
+		$conditions = self::getConditions($sql);
+		//use a select to select the IDs that match the where clause
 
-		$newQuery = trim($query, "\"'");
-		var_dump($newQuery);
-		//DELETE FROM Media__c WHERE ResourceId__c = 'YtoqDF8EnsA'
-		//DELETE FROM Media__c WHERE ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
+		//pass IDs to batch endpoint
 
-		$statement = explode("DELETE FROM", $newQuery);
-		//[1]: Media__c WHERE ResourceId__c = 'YtoqDF8EnsA'
-		//[1]: Media__c WHERE ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true		
+		$tmp = explode("WHERE", $sql);
+
+		//[0]:  "DELETE FROM Media__c 
+		//[1]: CONDITIONS
+
+		$tmp2 = explode("FROM", $tmp[0]);
+
+		//[1]: Media__c 
+
+		$SObject = trim($tmp2[1]);
 		
-		$SObjectState = explode("WHERE", $statement[1]);
-		//[0]: Media__c 
-		//[1]: ResourceId__c = 'YtoqDF8EnsA'
-		//[0]: Media__c 
-		//[1]: ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
+		var_dump($SObject);
 
-
-		$parsedWhere = self::parseWhere($statement[1]);
-
-		
-
-		$SObject = trim($SObjectState[0]);
-		//[0]:Media__c
-		//[0]:Media__c
-
-		$where = trim($SObjectState[1]);
-		//[1]:ResourceId__c = 'YtoqDF8EnsA'
-		//[1]:ResourceId__c = 'YtoqDF8EnsA' AND Published__c = true
+		//array with keys
+		return array("sobject"=>$SObject, "conditions"=>$conditions);
 	}
 
 	
@@ -236,9 +282,9 @@ class Database {
 		
 
 		$protoKeyValues = explode("VALUES", $statement);
-
+		
 		printAll($protoKeyValues, "Keys and values.");
-
+		
 		$valueString = preg_replace("/\)\s*,\s*\(/", "),(", $protoKeyValues[1]);  //standardizing multiple records
 		//look up preg_replace on php.net!
 		//IF THERE IS NO PATTERN THEN IT WILL RETURN NULL!!
