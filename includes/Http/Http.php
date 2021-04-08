@@ -57,6 +57,11 @@ class Http {
 	//   enable logging.
 	public function send(HttpMessage $msg, $log = false) {
 
+		if(is_subclass_of($msg, "Http\HttpRequest") && $msg->getUrl == null){
+
+			throw new HttpException("ENDPOINT_ERROR: The endpoint/url cannot be null");
+		}
+
 		
 		// Static context so need to reset headers before further processing.
 		self::$headersSent = null;
