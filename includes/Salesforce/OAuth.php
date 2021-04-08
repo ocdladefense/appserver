@@ -31,8 +31,6 @@ class OAuth {
 
         $url .= "?" . http_build_query($body);
 
-        var_dump($body, $resp);
-
         $resp->addHeader(new HttpHeader("Location", $url));
 
         return $resp;
