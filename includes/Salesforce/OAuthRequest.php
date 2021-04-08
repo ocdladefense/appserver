@@ -34,8 +34,9 @@ class OAuthRequest extends HttpRequest {
 
 	public static function usernamePasswordFlowAccessTokenRequest($config, $flow) {
 
-		// $flowConfig = $config->getFlowConfig($flow);
-		$flowConfig = $config["auth"]["oauth"][$flow];
+		var_dump($config);exit;
+
+		$flowConfig = $config->getFlowConfig($flow);
 
 		$req = new OAuthRequest($config["token_url"]); // $config->getTokenUrl()
 
@@ -46,6 +47,8 @@ class OAuthRequest extends HttpRequest {
 			"username"				=> $flowConfig["username"], // $config->getUsername()
 			"password"				=> $flowConfig["password"] . $flowConfig["security_token"]// $config->getPassword();
 		);
+
+		var_dump($body);exit;
 		
 		$body = http_build_query($body);
 		$contentType = new HttpHeader("Content-Type", "application/x-www-form-urlencoded");

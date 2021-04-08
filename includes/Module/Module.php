@@ -98,6 +98,8 @@ class Module {
         $routes = $this->getInfo()["routes"];
         $route = $routes[$requestedRoute];
 
+        var_dump($config);exit;
+
         $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamePassword";  // This is questionable.
         
         $accessToken = Session::get($config["name"], $flow, "access_token");
