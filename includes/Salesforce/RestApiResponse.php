@@ -13,7 +13,15 @@ class RestApiResponse extends HttpResponse {
 
     private $errorMessage;
 
+    private $errorCode;
+
+    private $errordFields;
+
+    private $hasError;
+
     private $sObjects;
+
+
     
     private static $errorCodes = array(
         0 => "Invalid URl",
@@ -32,9 +40,32 @@ class RestApiResponse extends HttpResponse {
 
     public function __construct($body) {
 
+        $body = null != $body ? json_decode($body, true) : null;
+
         parent::__construct($body);
-        
+
+        if(!empty($body["errorCode"]) || !empty($body["error"])){
+
+            $this->hasError = true;
+            $this->error = $body["error"];
+            $this->errorMessage = $body["error_description"];
+        }
+
+        if($body != null){
+
+            $this->accessToken = $body["access_token"];
+            $this->instanceUrl = $body["instance_url"]; 
+        }
     }
+
+    public function getRecords(){
+
+        if($this->isSuccess() && $this->body["records"] != null){
+
+            return $this->body["records"];
+        }
+    }
+
 
     public function other(){
 
