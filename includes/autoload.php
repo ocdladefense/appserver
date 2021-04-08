@@ -110,8 +110,8 @@
 	require_once BASE_PATH.'/includes/Salesforce/RestApiResponse.php';
 	require_once BASE_PATH.'/includes/Salesforce/SObject.php';
 	require_once BASE_PATH.'/includes/Salesforce/SalesforceFile.php';
-	// require_once BASE_PATH.'/includes/Salesforce/OAuthConfig.php';
-	// require_once BASE_PATH.'/includes/Salesforce/OAuthFlowConfig.php';
+	require_once BASE_PATH.'/includes/Salesforce/OAuthConfig.php';
+	require_once BASE_PATH.'/includes/Salesforce/OAuthFlowConfig.php';
 
 	$files = array("Attachment","Document", "ContentDocument");
 
@@ -133,5 +133,5 @@
 
 
 	if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
-		include BASE_PATH.'/vendor/autoload.php';
+		// include BASE_PATH.'/vendor/autoload.php';
 	}
