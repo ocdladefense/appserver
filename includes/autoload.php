@@ -106,17 +106,9 @@
 
 	require_once BASE_PATH.'/includes/Application.php';
 
-	// require_once BASE_PATH.'/includes/Salesforce/Salesforce.php';
-	// require_once BASE_PATH.'/includes/Salesforce/RestApiResult.php';	
-	// require_once BASE_PATH.'/includes/Salesforce/OAuthRequest.php';
-	// require_once BASE_PATH.'/includes/Salesforce/OAuthResponse.php';
-	// require_once BASE_PATH.'/includes/Salesforce/RestApiRequest.php';
-	// require_once BASE_PATH.'/includes/Salesforce/RestApiResponse.php';
-	// require_once BASE_PATH.'/includes/Salesforce/SObject.php';
-	// require_once BASE_PATH.'/includes/Salesforce/SalesforceFile.php';
 
 	// Require all of the files in the includes/Salesforce direcory.
-	$sfFiles = array("Salesforce","RestApiResult", "OAuthRequest","OAuthResponse","RestApiRequest","OAuthConfig",
+	$sfFiles = array("Salesforce","RestApiResult", "OAuthRequest","OAuthResponse","RestApiRequest",
 					"RestApiResponse","SObject","SalesforceFile","OAuth","RestApiException","OAuthException");
 
 	foreach($sfFiles as $file) {

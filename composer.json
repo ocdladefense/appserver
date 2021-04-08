@@ -4,13 +4,13 @@
     "type": "wordpress-theme",
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "require-dev": {},
     "extra": {
     	"installer-paths": {
     		"saml":["simplesamlphp/simplesamlphp"]
     	}
     },
     "require": {
-        "composer/installers":"~1.0"
+        "composer/installers":"~1.0",
+        "ocdladefense/lib-oauth-config": "dev-main"
     }
 }
