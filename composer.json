@@ -4,7 +4,6 @@
     "type": "wordpress-theme",
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "require-dev": {},
     "extra": {
     	"installer-paths": {
     		"saml":["simplesamlphp/simplesamlphp"]
@@ -12,6 +11,6 @@
     },
     "require": {
         "composer/installers":"~1.0",
-        "ocdladefense/lib-oauth-config": "9999999-dev"
+        "ocdladefense/lib-oauth-config": "1.0"
     }
 }
