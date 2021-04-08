@@ -188,7 +188,7 @@ function is_module_authorized($module) {
 	// Necessary because key can be "default".
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
 	$connectedAppName = getOAuthConfig($connectedAppSetting)->getName();
-	$flow = "usernamePassword";
+	$flow = "usernamepassword";
 
 	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
 }

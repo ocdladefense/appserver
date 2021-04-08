@@ -18,7 +18,7 @@ define("ADMIN_USER", true);
 				"auth_redirect_url" => "http://localhost/oauth/api/request",
 				"final_redirect_url" => "http://localhost/jobs",
 			),
-			"usernamePassword" => array(
+			"usernamepassword" => array(
 				"username" => "username",
 				"password" => "password",
 				"callback_url" => "https://localhost/resttest/oauth_callback.php",

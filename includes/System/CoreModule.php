@@ -10,6 +10,7 @@ use Salesforce\OAuthResponse as OAuthResponse;
 use Salesforce\OAuthRequest as OAuthRequest;
 use Salesforce\RestApiRequest as RestApiRequest;
 use Salesforce\OAuth as OAuth;
+use Salesforce\OAuthException;
 
 class CoreModule extends Module {
 
@@ -64,7 +65,7 @@ class CoreModule extends Module {
 
 		$config = getOauthConfig($connectedApp);
 
-		$config["authorization_code"] = $_GET["code"];
+		$config->setAuthorizationCode($_GET["code"]);
 
 		$oauth = OAuthRequest::newAccessTokenRequest($config, "webserver");
 
@@ -78,8 +79,10 @@ class CoreModule extends Module {
 		OAuth::setSession($connectedApp, $flow, $resp->getInstanceUrl(), $resp->getAccessToken());
 
 		$resp2 = new HttpResponse();
-		$flowConfig = $config["auth"]["oauth"][$flow];
-		$resp2->addHeader(new HttpHeader("Location", $flowConfig['final_redirect_url']));
+
+		$flowConfig = $config->getFlowConfig($flow);
+
+		$resp2->addHeader(new HttpHeader("Location", $flowConfig->getCallbackUrl()));
 
 		return $resp2;
 	}

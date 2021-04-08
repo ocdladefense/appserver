@@ -14,25 +14,24 @@ class OAuth {
 
     public static function newOAuthResponse($config,$flow) {
 
-        // $flowConfig = $config->getFlowConfig($flow);
-        $flowConfig = $config["auth"]["oauth"][$flow];
+        $flowConfig = $config->getFlowConfig($flow);
 
         $resp = new OAuthResponse();
 
-        $url = $flowConfig["auth_url"];  // Since this is a web server oauth, there will be two oauth urls in the config.
+        $url = $flowConfig->getAuthorizationUrl();  // Since this is a web server oauth, there will be two oauth urls in the config.
 
-        $state = array("connected_app_name" => $config["name"], "flow" => $flow);
+        $state = array("connected_app_name" => $config->getName(), "flow" => $flow);
 
-        $params = array(
-            "client_id"		=> $config["client_id"],
-            "redirect_uri"	=> $flowConfig["auth_redirect_url"],
+        $body = array(
+            "client_id"		=> $config->getClientId(),
+            "redirect_uri"	=> $flowConfig->getAuthorizationRedirect(),
             "response_type" => "code",
             "state"         => json_encode($state)
         );
 
-        //var_dump($params);exit;
+        $url .= "?" . http_build_query($body);
 
-        $url .= "?" . http_build_query($params);
+        var_dump($body, $resp);
 
         $resp->addHeader(new HttpHeader("Location", $url));
 
