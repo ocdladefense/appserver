@@ -262,8 +262,3 @@ function is_authenticated($module, $route) {
 	return !empty(\Session::get($connectedAppName, $flow, "userId"));
 }
 
-
-
-
-
-

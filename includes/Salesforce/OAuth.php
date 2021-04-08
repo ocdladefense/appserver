@@ -58,6 +58,6 @@ class OAuth {
 
 		$userInfo = $resp->getBody();
 		
-		return $userInfo->user_id;
+		return $userInfo["user_id"];
 	}
 }

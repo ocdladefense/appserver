@@ -40,6 +40,7 @@ class OAuthResponse extends HttpResponse {
 
         $body = null != $body ? json_decode($body, true) : null;
 
+
         if(!empty($body["error"])){
 
             $this->hasError = true;
