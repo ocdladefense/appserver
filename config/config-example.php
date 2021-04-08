@@ -6,30 +6,42 @@
 define("ADMIN_USER", true);
 
 
-//  This is an example the new structure for a salesforce connected app configuration
-"ocdla-jobs" => array(
-	"default" => true,
-	"is_sandbox" => true, // Might be used to determine domain for urls
-	"auth" => array(
-		"saml" => array(),
-		"oauth" => array(
-			"webserver" => array(
-				"auth_url" => "https://test.salesforce.com/services/oauth2/authorize",	// Web server ouath flow has two oauth urls.
-				"auth_redirect_url" => "http://localhost/oauth/api/request",
-				"final_redirect_url" => "http://localhost/jobs",
-			),
-			"usernamepassword" => array(
-				"username" => "username",
-				"password" => "password",
-				"callback_url" => "https://localhost/resttest/oauth_callback.php",
-				"security_token" => "5jA8ndQ3hm2xlFkK0xvtcdTR"
-			)
-		)
+// These are really connected applications
+$oauth_config = array(
+
+	"connected-app-name" => array(
+		"default" => false,
+		"sandbox" => true,
+		"token_url" => "https://login.salesforce.com/services/oauth2/token",
+		"client_id" => "your client id",
+		"client_secret" => "your client secret",
+		"username" => "your username",
+		"password" => "our password",
+		"security_token" => "your security token"
 	),
-	"token_url" => "https://test.salesforce.com/services/oauth2/token",
-	"client_id" => "3MVG92DxHaawSd0luAabE5ir8xj_3jxv27T6JDrVpjKyw8vPkoEQ7KYSly6z_KMga9j5LsN94NfZUqQN8mQzP",
-	"client_secret" => "A99EB8D41130CFCD61932FCABCB7BD63891BFAAAA4BCE87958A0AC838ED80784"
-)
+	"connected-app-name" => array(
+		"default" => true,
+		"is_sandbox" => true, // Might be used to determine domain for urls
+		"auth" => array(
+			"saml" => array(),
+			"oauth" => array(
+				"webserver" => array(
+					"auth_url" => "https://login.salesforce.com/services/oauth2/authorize",	// Web server ouath flow has two oauth urls.
+					"redirect_url" => "redirect to second step of web server flow authorization",
+					"callback_url" => "redirect to your final callback function",
+				),
+				"usernamepassword" => array(
+					"username" => "your username",
+					"password" => "your password",
+					"security_token" => "your security token"
+				)
+			)
+		),
+		"token_url" => "https://login.salesforce.com/services/oauth2/token",
+		"client_id" => "your client id",
+		"client_secret" => "your client secret",
+	)
+);
 
 // MySQL Database Connection.
 //  Can also use MariaDB.
