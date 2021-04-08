@@ -254,8 +254,9 @@ function user_has_access($module, $route) {
 
 function is_authenticated($module, $route) {
 	
+	// The connected app setting can also be "default"
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = getOAuthConfig($connectedAppSetting)["name"];
+	$connectedAppName = getOAuthConfig($connectedAppSetting)->getName();
 	$flow = $route["authorization"];
 	
 	return !empty(\Session::get($connectedAppName, $flow, "userId"));
