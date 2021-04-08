@@ -161,7 +161,7 @@ class Application {
         if(!is_user_authorized($module)){
 
             // What if we decide to set authorization at the module level?                                                     
-            $flow = $moudle["authorization"] != null ? $module["authorization"] : "usernamePassword";  //  This is questionable.
+            $flow = "usernamePassword";
 
             $httpMessage = OAuth::start($config, $flow);
 
@@ -174,7 +174,7 @@ class Application {
 
                 if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
 
-                OAuth::setSession($config["name"], $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
+                OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
             }
             
         }
@@ -183,7 +183,7 @@ class Application {
         // This is the route flow not the module flow.
         if(!is_user_authorized($module, $route)){
 
-            $resp = user_require_auth($config["name"], $route);
+            $resp = user_require_auth($config->getName(), $route);
 
             if($resp == null){
 

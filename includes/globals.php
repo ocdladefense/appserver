@@ -176,7 +176,7 @@ function module_requires_authorization($module){
 function is_user_authorized($module, $route = null){
 
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = getOAuthConfig($connectedAppSetting)["name"];
+	$connectedAppName = getOAuthConfig($connectedAppSetting)->getName();
 	return $route == null ? is_module_authorized($module) : is_route_authorized($connectedAppName, $route);
 
 }
@@ -187,7 +187,7 @@ function is_module_authorized($module) {
 	
 	// Necessary because key can be "default".
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = getOAuthConfig($connectedAppSetting)["name"];
+	$connectedAppName = getOAuthConfig($connectedAppSetting)->getName();
 	$flow = "usernamePassword";
 
 	return !empty(\Session::get($connectedAppName, $flow, "access_token"));

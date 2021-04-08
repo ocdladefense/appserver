@@ -98,12 +98,10 @@ class Module {
         $routes = $this->getInfo()["routes"];
         $route = $routes[$requestedRoute];
 
-        var_dump($config);exit;
-
         $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamePassword";  // This is questionable.
         
-        $accessToken = Session::get($config["name"], $flow, "access_token");
-        $instanceUrl = Session::get($config["name"], $flow, "instance_url");
+        $accessToken = Session::get($config->getName(), $flow, "access_token");
+        $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
 
         $req = new RestApiRequest($instanceUrl, $accessToken);
 
