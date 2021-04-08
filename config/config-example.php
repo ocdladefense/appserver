@@ -21,7 +21,7 @@ $oauth_config = array(
 	),
 	"connected-app-name" => array(
 		"default" => true,
-		"is_sandbox" => true, // Might be used to determine domain for urls
+		"sandbox" => true, // Might be used to determine domain for urls
 		"auth" => array(
 			"saml" => array(),
 			"oauth" => array(
