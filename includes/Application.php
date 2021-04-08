@@ -161,8 +161,9 @@ class Application {
         if(!is_user_authorized($module)){
 
             // What if we decide to set authorization at the module level?                                                     
-            $flow = "usernamepassword";
+            $flow = isset($module->getInfo()["authorizationFlow"]) ? $module->getInfo()["authorizationFlow"] : "usernamepassword";
 
+            //$flow = "usernamepassword";
             $httpMessage = OAuth::start($config, $flow);
 
             if(self::isHttpResponse($httpMessage)){

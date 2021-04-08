@@ -36,7 +36,7 @@ class OAuthRequest extends HttpRequest {
 
 		$flowConfig = $config->getFlowConfig($flow);
 
-		$req = new OAuthRequest($config->getTokenUrl()); // $config->getTokenUrl()
+		$req = new OAuthRequest($flowConfig->getTokenUrl());
 
 		$body = array(
 			"grant_type" 			=> "password",
@@ -81,7 +81,7 @@ class OAuthRequest extends HttpRequest {
 
 		$body = http_build_query($body);
 
-		$req = new OAuthRequest($config->getTokenUrl());
+		$req = new OAuthRequest($flowConfig->getTokenUrl());
 		
 		$req->setMethod("POST");
 		$req->setBody($body);

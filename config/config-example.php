@@ -19,27 +19,28 @@ $oauth_config = array(
 		"password" => "our password",
 		"security_token" => "your security token"
 	),
-	"connected-app-name" => array(
+	"trevors-dev-hub" => array(
 		"default" => true,
 		"sandbox" => true, // Might be used to determine domain for urls
+		"client_id" => "",
+		"client_secret" => "",
 		"auth" => array(
 			"saml" => array(),
 			"oauth" => array(
-				"webserver" => array(
-					"auth_url" => "https://login.salesforce.com/services/oauth2/authorize",	// Web server ouath flow has two oauth urls.
-					"redirect_url" => "redirect to second step of web server flow authorization",
-					"callback_url" => "redirect to your final callback function",
-				),
 				"usernamepassword" => array(
-					"username" => "your username",
-					"password" => "your password",
-					"security_token" => "your security token"
+					"token_url" => "https://login.salesforce.com/services/oauth2/token",
+					"username" => "",
+					"password" => "",
+					"security_token" => ""
+				),
+				"webserver" => array(
+					"token_url" => "https://login.trevoruehlin-developer-edition.na85.force.com/services/oauth2/token",
+					"auth_url" => "https://trevoruehlin-developer-edition.na85.force.com/services/oauth2/authorize",	// Web server ouath flow has two oauth urls.
+					"redirect_url" => "http://localhost/oauth/api/request",
+					"callback_url" => "http://localhost/test/1",
 				)
 			)
-		),
-		"token_url" => "https://login.salesforce.com/services/oauth2/token",
-		"client_id" => "your client id",
-		"client_secret" => "your client secret",
+		)
 	)
 );
 
