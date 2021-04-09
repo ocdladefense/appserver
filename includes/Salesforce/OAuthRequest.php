@@ -14,22 +14,31 @@ class OAuthRequest extends HttpRequest {
 	const USERNAME_PASSWORD_FLOW = 0x000;
 		
     private $oauth_config = array();
-    
-    // Per Gino, but by extending HttpRequest
-    // we get $this->body for free.
-    // private $reqBody = array();
-
-
-    //private const MAX_LOGIN_ATTEMPTS = 3; 
 
 
 
     public function __construct($url) {
+
         parent::__construct($url);
-		// $loginAttempts = !isset($_SESSION["login_attempts"]) ? 0 : $_SESSION["login_attempts"] + 1;
-		
-		// $_SESSION["login_attempts"] = $loginAttempts;
+
     }
+
+	// Figure out which flow to return.
+	public static function newAccessTokenRequest($config, $flow){
+
+		switch($flow){
+			case "usernamepassword":
+				return self::usernamePasswordFlowAccessTokenRequest($config, $flow);
+				break;
+			case "webserver":
+				return self::webServerFlowAccessTokenRequest($config, $flow);
+				break;
+			case "refreshtoken":
+				return self::refreshAccessTokenRequest($config, $flow);
+			default:
+				throw new \Exception("ACCESS_TOKEN_REQUEST_ERROR: No built in functionality for {$flow} OAuth flow");
+		}
+	}
 	
 
 	public static function usernamePasswordFlowAccessTokenRequest($config, $flow) {
@@ -58,12 +67,6 @@ class OAuthRequest extends HttpRequest {
 		return $req;
 	}
 	
-	// Figure out which flow to return.
-	public static function newAccessTokenRequest($config, $flow){
-
-		return $flow == "webserver" ? self::webServerFlowAccessTokenRequest($config, $flow) : self::usernamePasswordFlowAccessTokenRequest($config);
-
-	}
 	
 	public static function webServerFlowAccessTokenRequest($config, $flow) {
 
@@ -98,10 +101,8 @@ class OAuthRequest extends HttpRequest {
 			"grant_type"		=> "refresh_token",
 			"client_id"			=> $config->getClientId(),
 			"client_secret" 	=> $config->getClientSecret(),
-			"refresh_token" 	=> "The refresh token here."
+			"refresh_token" 	=> \Session::get($config->getName(), $flow, "refresh_token")
 		);
-
-		//var_dump($body);exit;
 
 		$body = http_build_query($body);
 
