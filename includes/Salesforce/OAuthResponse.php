@@ -40,6 +40,8 @@ class OAuthResponse extends HttpResponse {
 
         $body = null != $body ? json_decode($body, true) : null;
 
+        var_dump($body, $_SESSION);exit;
+
 
         if(!empty($body["error"])){
 

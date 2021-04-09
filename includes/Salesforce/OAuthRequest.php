@@ -90,6 +90,30 @@ class OAuthRequest extends HttpRequest {
 		return $req;
 	}
 
+	public static function refreshAccessTokenRequest($config, $flow) {
+
+		$flowConfig = $config->getFlowConfig($flow);
+
+		$body = array(
+			"grant_type"		=> "refresh_token",
+			"client_id"			=> $config->getClientId(),
+			"client_secret" 	=> $config->getClientSecret(),
+			"refresh_token" 	=> "The refresh token here."
+		);
+
+		//var_dump($body);exit;
+
+		$body = http_build_query($body);
+
+		$req = new OAuthRequest($flowConfig->getTokenUrl());
+		
+		$req->setMethod("POST");
+		$req->setBody($body);
+		$req->addHeader(new HttpHeader("Content-Type","application/x-www-form-urlencoded")); 
+
+		return $req;
+	}
+
 
 	public function authorize($debug = false) {
 		
