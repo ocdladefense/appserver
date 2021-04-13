@@ -1,35 +1,84 @@
 <?php
-
 namespace Salesforce;
+
 use File\File as File;
 
-class ContentDocument extends SalesforceFile{
+class ContentDocument extends SalesforceFile { // implements ISObject
 
-    public $parentId;
+    public $SObjectName = "ContentVersion";
 
-    private $metadata = array(
-        "Description" => "Marketing brochure for Q1 2011",
-        "Keywords" => "marketing,sales,update",
-        "FolderId" => "005D0000001GiU7",
-        "Name" => "Marketing Brochure Q1",
-        "Type" => "pdf"
-    );
+    protected $Id;
 
-    public function __construct($path){
+    private $ContentDocumentId;
 
-        parent::__construct($path);
+    private $ParentId;
+
+    public $isLocal = false;
+
+    public function __construct($id = null){ // Maybe the default constructor takes the Id.
+
+        $this->Id = $id;
+    }
+
+    public function setId($id){
+
+        $this->Id = $id;
     }
 
     public function setParentId($id){
 
-        $this->parentId = $id;
+        $this->ParentId = $id;
     }
 
-    public function getMetadata(){
+    public function setContentDocumentId($id){
+
+        $this->ContentDocumentId = $id;
+    }
+
+    public function getId(){
+
+        return $this->Id;
+    }
+
+    public function getContentDocumentId(){
+
+        return $this->ContentDocumentId;
+    }
+    public static function fromFile(File $file){
+
+        $sfFile = new ContentDocument();
+        $sfFile->setPath($file->getPath());
+        $sfFile->setName($file->getName());
+        $sfFile->isLocal = true;
+
+        return $sfFile;
+    }
+
+    public static function fromArray($obj){
+
+        $sfFile = new Attachment();
+        $sfFile->Id = $ojb["id"];
+
+        return $sfFile;
+    }
+
+    public static function fromJson($json){
+
+        $obj = json_decode($json);
+
+        $sfFile = new Attachment();
+        $sfFile->Id = $ojb->id;
+
+        return $sfFile;
+    }
+
+    // Always produce an object that is compatible with the salesforce simple object endpoint.
+    public function getSObject(){ 
 
         return array(
-            "Name" => $this->getName(),
-            "ParentId" => $this->parentId
+            "Title"              => $this->getName(),
+            "ContentDocumentId"  => $this->getContentDocumentId(),
+            "PathOnClient"       => $this->getPath()
         );
     }
 }

@@ -97,6 +97,11 @@ class RestApiResponse extends HttpResponse {
         return $index == null ? $this->body["records"][0] : $this->body["records"][$index];
     }
 
+    public function getRecordCount(){
+
+        return count($this->getRecords());
+    }
+
     public function other(){
 
                 //if the request is successful we can opt use the X-Request-Endpoint header to create the sobject class(s) or an array of them
