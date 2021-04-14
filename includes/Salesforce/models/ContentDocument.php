@@ -11,7 +11,7 @@ class ContentDocument extends SalesforceFile { // implements ISObject
 
     private $ContentDocumentId;
 
-    private $ParentId;
+    private $LinkedEntityId;
 
     public $isLocal = false;
 
@@ -25,9 +25,9 @@ class ContentDocument extends SalesforceFile { // implements ISObject
         $this->Id = $id;
     }
 
-    public function setParentId($id){
+    public function setLinkedEntityId($id){
 
-        $this->ParentId = $id;
+        $this->LinkedEntityId = $id;
     }
 
     public function setContentDocumentId($id){
@@ -38,6 +38,11 @@ class ContentDocument extends SalesforceFile { // implements ISObject
     public function getId(){
 
         return $this->Id;
+    }
+
+    public function getLinkedEntityId(){
+
+        return $this->LinkedEntityId;
     }
 
     public function getContentDocumentId(){

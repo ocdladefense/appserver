@@ -109,7 +109,18 @@ class RestApiRequest extends HttpRequest {
 
         $endpoint = "/services/data/v51.0/sobjects/{$file->getSObjectName()}/";
     
-        $this->setMethod($file->getId() != null ? "PATCH": "POST");
+        $method = "POST"; // By default we will insert new records.
+
+        if($isAttachment && $file->getId() != null){
+
+            $method = "PATCH";
+
+        } else if(!$isAttachment && $file->getContentDocumentId() != null){ //You cant do patch request for content versions.
+
+            $method = "POST";
+        }
+        
+        $this->setMethod($method);
         $this->setContentType("multipart/form-data; boundary=\"boundary\"");
     
 
@@ -130,9 +141,15 @@ class RestApiRequest extends HttpRequest {
         $this->addPart($metaPart);
         $this->addPart($binaryPart);
 
-        //var_dump($this->getBody());exit;
+        $resp = $this->send($endpoint);
 
-        return $this->send($endpoint);
+        if(!$resp->isSuccess()){
+
+			$message = $resp->getErrorMessage();
+			throw new \Exception($message);
+		}
+
+        return $resp;
         
     }
 
@@ -241,7 +258,7 @@ class RestApiRequest extends HttpRequest {
         if(!$resp->isSuccess()){
 
 			$message = $resp->getErrorMessage();
-			throw new Exception($message);
+			throw new \Exception($message);
 		}
 
         return $resp;
