@@ -62,10 +62,8 @@ class Theme {
 	 */
 	public function renderTemplate(Template $tpl) {
 
-		
 		$this->addScripts($tpl->getScripts());
 		$this->addStyles($tpl->getStyles());
-		
 		
 		return $tpl->isRendered() ? $tpl->getOutput() : $tpl->render();
 	}
