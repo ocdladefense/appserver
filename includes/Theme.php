@@ -1,12 +1,5 @@
 <?php
 
-
-
-
-
-
-
-
 class Theme {
 
 
@@ -36,11 +29,12 @@ class Theme {
 	}
 	
 	public function addScript($js) {
-		$this->scripts []= $js;
+		$this->scripts[] = $js;
 	}
 	
 	public function addStyles($styles) {
 		$this->styles = array_merge($this->styles,$styles);
+		$testStyles = $this->styles;
 	}
 	
 	public function addStyle($css) {

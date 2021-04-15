@@ -53,6 +53,11 @@ class Template {
 	public function __construct($name = null) {
 		$this->name = $name;
 	}
+
+	public function getName(){
+
+		return $this->name;
+	}
 	
 	public function setContent($content) {
 		$this->content = $content;
@@ -112,6 +117,7 @@ class Template {
 	}
 	
 	public static function isTemplate($obj) {
+
 		return is_object($obj) && (get_parent_class($obj) == "Template" || get_class($obj) == "Template");
 	}
 
