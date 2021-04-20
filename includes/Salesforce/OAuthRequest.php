@@ -36,6 +36,11 @@ class OAuthRequest extends HttpRequest {
 
 		$flowConfig = $config->getFlowConfig($flow);
 
+		if($flowConfig->getTokenUrl() == null){
+
+			throw new \Exception("null token url");
+		}
+
 		$req = new OAuthRequest($flowConfig->getTokenUrl());
 
 		$body = array(
