@@ -63,7 +63,7 @@ class CoreModule extends Module {
 		$connectedApp = $info["connected_app_name"];
 		$flow = $info["flow"];
 
-		$config = getOauthConfig($connectedApp);
+		$config = get_oauth_config($connectedApp);
 
 		$config->setAuthorizationCode($_GET["code"]);
 

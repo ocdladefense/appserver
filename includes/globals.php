@@ -101,7 +101,7 @@ function user_require_auth($connectedAppName, $route) {
 
 	$authFlow = $route["authorization"];
 
-	$config = getOauthConfig($connectedAppName);
+	$config = get_oauth_config($connectedAppName);
 
 	// Start now takes two parameters.
 	return Salesforce\OAuth::start($config, $authFlow);
@@ -140,7 +140,7 @@ function user_get_initials() {
 }
 
 
-function getOAuthConfig($key = null) {
+function get_oauth_config($key = null) {
 
 	global $oauth_config;
 
@@ -188,7 +188,7 @@ function module_requires_authorization($module){
 function is_user_authorized($module, $route = null){
 
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = getOAuthConfig($connectedAppSetting)->getName();
+	$connectedAppName = get_oauth_config($connectedAppSetting)->getName();
 	return $route == null ? is_module_authorized($module) : is_route_authorized($connectedAppName, $route);
 
 }
@@ -199,7 +199,7 @@ function is_module_authorized($module) {
 	
 	// Necessary because key can be "default".
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = getOAuthConfig($connectedAppSetting)->getName();
+	$connectedAppName = get_oauth_config($connectedAppSetting)->getName();
 	$flow = "usernamepassword";
 
 	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
@@ -268,7 +268,7 @@ function is_authenticated($module, $route) {
 	
 	// The connected app setting can also be "default"
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = getOAuthConfig($connectedAppSetting)->getName();
+	$connectedAppName = get_oauth_config($connectedAppSetting)->getName();
 	$flow = $route["authorization"];
 	
 	return !empty(\Session::get($connectedAppName, $flow, "userId"));

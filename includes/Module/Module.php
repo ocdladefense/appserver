@@ -92,7 +92,7 @@ class Module {
     }
     protected function loadApi($app = null, $debug = false) {
 
-        $config = getOauthConfig($app);
+        $config = get_oauth_config($app);
 
         $requstedRoute = explode("/", $this->getRequest()->url)[1];
         $routes = $this->getInfo()["routes"];
