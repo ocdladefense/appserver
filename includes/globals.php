@@ -151,15 +151,14 @@ function get_oauth_config($key = null) {
 		foreach($oauth_config as $key => $connectedApp) {
 
 			$connectedApp["name"] = $key;
-			$isdefault = $connectedApp["default"];
 
-			if($isdefault) {
+			if($connectedApp["default"]) {
 
 				$defaultConfigs[] = $connectedApp;
 			}
 		}
 
-        if(count($defaultConfigs) > 1) throw new Exception("CONFIG_ERROR: Only one connected app can be set to default in you configuration.");
+        //if(count($defaultConfigs) > 1) throw new Exception("CONFIG_ERROR: Only one connected app can be set to default in you configuration.");
         if(count($defaultConfigs) == 0) throw new Exception("CONFIG_ERROR: No connected app is set to default in your configuration, and no connected app is set on the module.");
 
         return new Salesforce\OAuthConfig($defaultConfigs[0]);

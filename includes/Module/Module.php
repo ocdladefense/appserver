@@ -104,6 +104,7 @@ class Module {
         $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
 
         $req = new RestApiRequest($instanceUrl, $accessToken);
+        $req->setConfig($config);
 
         return $req;
     }
