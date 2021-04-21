@@ -98,7 +98,7 @@ class RestApiResponse extends HttpResponse {
 
     public function getConfig(){
 
-        return $this->config->getName();
+        return $this->config != null ? $this->config->getName() : null;
     }
 
     public function setConfig($config){

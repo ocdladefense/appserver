@@ -99,8 +99,8 @@ class RestApiRequest extends HttpRequest {
     }
 
     public function getConfig(){
-
-        return $this->config->getName();
+        
+        return $this->config != null ? $this->config->getName() : null;
     }
 
     public function setConfig($config){
