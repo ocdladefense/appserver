@@ -1,0 +1,91 @@
+
+
+body {
+	font-family:"Helvetica Neuve",Helvetica;
+	background-color: #ECEFF2;
+	color: #fff;
+	position:relative;
+	line-height:normal;
+	padding:0px;
+	margin:0px;
+}
+
+
+
+
+
+
+
+#header {
+	padding-bottom:0px;
+	border-bottom:1px solid #ccc;
+	overflow-y:visible;
+	/* background-color:#232f3e; */
+	color: #000;
+}
+	
+
+
+
+
+
+#footer .content {
+	width:100%;
+	color:#ddd;
+}
+
+
+
+
+#stage h2 {
+	color: rgba(0,0,0,0.6);
+}
+
+.form-item {
+	margin:8px;
+}
+
+
+
+
+h1 {
+	font-size: 2.3em;
+	
+}
+h2.event-title {
+	font-size: 1.6em;
+}
+
+
+
+
+
+
+.toc-entry {
+	cursor: pointer;
+	margin-top:1.0rem;
+	line-height:1.1rem;
+}
+
+.level-1 {
+	padding-left: 1.0rem;
+}
+
+.toc-entry:hover {
+	text-decoration: underline;
+}
+
+#context-menu-container {
+	display: none;
+}
+
+#doc-header {
+	display: none;
+}
+
+#doc-top {
+	line-height: 1.3em;
+}
+
+
+

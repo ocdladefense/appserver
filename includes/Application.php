@@ -1,31 +1,395 @@
 <?php
 
 use \Http as Http;
+use \Http\HttpHeader as HttpHeader; 
+use \Http\HttpResponse as HttpResponse;
+use \Http\HttpRequest as HttpRequest;
 
 
 class Application {
     
-    private $moduleLoader;
     
-    private $fileSystemService;
+    private static $DEFAULT_HTTP_METHOD = Http\HTTP_METHOD_GET;
+
+    private static $DEFAULT_CONTENT_TYPE = Http\MIME_TEXT_HTML;
+		
+		
+		
+    // The Module Loader.
+    private $loader;
     
-    private $request;
     
+    // Available routes/commands.
+    private $routes = array();
+    
+    
+    // Incoming request.
+    private $req;
+    
+    
+    // Outgoing response.
     private $resp;
 
-		private $activeRoute; 
+	
+	
+		
+    public function __construct() {
+		
+        // Demonstrate that we can build an index of modules.
+        // $mIndex = new ModuleDiscoveryService(path_to_modules());
+        // $list = XList::fromFileSystem(path_to_modules());
+        $list = new XList(XList::getDirContents(path_to_modules()));        
+        // dump($list);exit;
+        
+        // Only include folders with the magic module.json file.
+        $only = $list->filter(function($folder) {
+            $file = $folder . "/module.json";
+            return file_exists($file);
+        });
+        
+        
+
+        // Build the complete list of module definitions specified by 
+        //  module.json files.
+        $defs = $only->map(function($path) {
+            $file = $path . "/module.json";
+            $json = file_exists($file) ? file_get_contents($file) : "{}";
+            $def = json_decode($json, true);
+            $def["path"] = $path;
+            return $def;
+        });
+           
+        // dump($defs);
+
+        // Build an index for modules.
+        $modules = $defs->indexBy(function($def) {
+            return $def["name"];
+        });
+
+        //dump($modules);exit;
+
+        $coreDef = array(
+            "comment"      => "The core module",
+            "name"         => "core",
+            "description"  => "holds routes for core functionality",
+            "files"        => array(),
+            "routes"       => array(
+                "file/upload" => array(
+                    "callback"      => "upload",
+                    "content-type"  => "application/json",
+                    "path"          => "upload",
+                    "module"        => "core",
+                    "method"        => "get"
+                ),
+                "file/download/%filename" => array(
+                    "callback"      => "download",
+                    "content-type"  => "application/json",
+                    "path"          => "download",
+                    "module"        => "core",
+                    "method"        => "get"
+                ),
+                "file/list" => array(
+                    "callback"      => "list",
+                    "content-type"  => "application/json",
+                    "path"          => "list/files",
+                    "module"        => "core",
+                    "method"        => "get"
+                )
+            ),
+						//If the path is null the module loader will not try to load the file
+						//core module is loaded in autoloader.php
+						"path"     => null
+            
+        );
+
+        $modules->put("core", $coreDef);
+
+        $this->loader = new ModuleLoader($modules->getArray());
+
+        //dump($modules);exit;
+
+        // Build an index for routes.
+        $this->routes = $modules->map(function($def) {
+            $routes = $def["routes"];
+            $name = $def["name"];
+
+            
+            foreach($routes as $path => &$route) {
+                $route["path"] = $path;
+                $route["module"] = $name;
+                $route["method"] = $route["method"] ?: self::$DEFAULT_HTTP_METHOD;
+                $route["content-type"] = $route["content-type"] ?: self::$DEFAULT_CONTENT_TYPE;
+            }
+
+            return $routes;
+        },false)->flatten();
+
+        //dump($this->routes);exit;
+    }
+
+
+    
+    public function runHttp($req) {
+
+        $uri = $req->getRequestUri();
+        l("Processing {$uri}.");
+    
+        $resp = new HttpResponse();
+
+        session_start();
+
+        // Will need to handle PageNotFoundExceptions here.
+        list($module, $route, $params) = $this->init($uri);
+        $module->setRequest($req);
+
+        try {
+
+            if(isset($route["theme"])) {
+                \set_theme("Videos");
+            }
+
+            $out = $this->getOutput($module, $route, $params);
+
+            if(self::isHttpResponse($out)){
+
+                return $out;
+            }
+            
+            if(null == $out) throw new Exception("Callback function returned NULL!");
+            
+            $handler = Handler::fromType($out, $route["content-type"]);
+
+            $resp->setBody($handler->getOutput());
+            $resp->addHeaders($handler->getHeaders());
+            
+        } catch(Error $error) {
+            $handler = Handler::fromType($error, $route["content-type"]);
+
+            $resp->setBody($handler->getOutput());
+            $resp->addHeaders($handler->getHeaders());
+            http_response_code(500);
+        }
+
+        return $resp;
+    }
+    
+    
+    
+    public function exec($uri) {
+        list($module, $route, $params) = $this->init($uri);
+        
+        return $this->getOutput($module, $route, $params);
+    }
 		
 		
+		// incoming request: maps
+    public function init($uri) {
+
+
+			
+			$router = new Router();
+			$path = $router->match($uri, array_keys($this->routes));
+
+			l("Executing application...");
+			l("Exec located route: {$path}.");
+			l("FINISHED");
+			if(false === $path) {
+				throw new Exception("Could not locate {$uri}.");
+			}
+
+			
+			$route = $this->routes[$path->__toString()];
+
+
+			
+			
+			$params = $path->getParams();
+
+			l("Will execute $path: </p><pre>".print_r($route,true)."</pre>");
+			
+			$moduleName = $route["module"];
+			l("Module is: {$moduleName}.");
+
+
+
+			// Check access here.
+			$access = $route["access"];
+			$access_args = $route["access_args"];
+			
+			
+			if(!user_has_access($route)) {
+				user_require_auth();
+			}
+			
+
+
+
+
+			l("Loading Module...");
+			$loader = $this->getLoader();
+
+ 
+			// Demonstrate that we can instantiate a module
+			//  and begin using it.
+			$object = $loader->loadObject($moduleName);
+    	$func = $route["callback"];
+
+			l("Executing route...<br />Module: {$moduleName}<br />Callback: {$func}.");
+
+    	// dump($object);
+    	// Load the routes files, if any.
+			// $target->loadFiles();
+
+    	
+    	return array($object, $route, $params);
+    }
+    	
+    	
+    	
+    /**
+     * Actually call the route's callback
+     *  Retrieve the output,
+     *  then decide what to do with the output
+     *  depending on the context.
+     */
+    public function getOutput($module, $route, $params) {
+    
+			return call_user_func_array(array($module,$route["callback"]),$params);
+    }
+    
+    
+    
+    
+    /**
+     * For HTTP contexts,
+     *  `run` should return an HttpResponse object that will be returned to the
+     *  webserver context.
+     */
+    public function run($path) {
+    	return $this->runHttp($path);
+    	// $this->runCli($cmd, $flags);
+    } 
+
+
+
+    private function handleErrors() {
 		
-    public function __construct(){}
+			/* 
+      } catch(PageNotFoundException $e) {
+        $resp->setNotFoundStatus();
+        $resp->setBody($e->getMessage());
+        
+      } catch(Exception $e) {
+
+        if($contentType == Http\MIME_APPLICATION_JSON){
+            $error = new StdClass();
+            $error->error = $e->getMessage();
+            $body = json_encode($error);
+        } else {
+            $body = $e->getMessage();
+        }
+
+        $resp->setErrorStatus();
+        $resp->setBody($body);
+      }
+      */
+		
+		}
+    
+
+
+		public function doParameters($module,$route) {
+        $expectedRouteParams = $route->getParameters();
+        $urlNamedParameters = $this->request->getUrlNamedParameters();
+        $args = $this->request->getArguments();
+        $namedParamKeys = array_keys($urlNamedParameters);
+        $params = array();
+
+
+        //if the parameter is defined by name then use the value for that name otherwise use the value at the current index
+        //Determine which kind of paramter to give preference to.
+        if(!empty($urlNamedParameters) && empty($args)){
+            for($i = 0; $i < count($expectedRouteParams); $i++){
+                if(in_array($namedParamKeys[$i],$expectedRouteParams)){
+                    $params[] = $urlNamedParameters[$namedParamKeys[$i]];
+                }
+                if(count($params) == 0){
+                    $params = $args;
+                }
+            }
+        } else {
+            $params = $args;
+        }
+		}
+
+
+
+    //Other Methods
+    public function secure() { 
+        $header = $this->resp->getHeader("Content-Type");
+        $cType = null;
+        
+        
+        if(null != $cType) {
+            $cType = $header->getValue();
+        }
+        
+        $accept = "*/*";
+
+        if(!$this->request->isSupportedContentType("*/*")){
+            throw new Exception("The content type of the requested resource '$contentType' does not match the accepted content type '$accept', which is set by the requesting entity.");
+        }
+    }
+    
+    public function send($resp) {
+
+        $content = $resp->getBody();
+
+        
+        $collection = $resp->getHeaderCollection();
+        foreach($collection->getHeaders() as $header) {
+            header($header->getName() . ": " . $header->getValue());
+        }
+
+
+        http_response_code($resp->getStatusCode());
+
+        if($resp->isFile()) {
+
+            $file = $resp->getBody();
+            if($file->exists()) {
+
+                readfile($file->getPath());
+
+            } else {
+
+                $content = $file->getContent();
+                
+            }
+        }
+
+        print $content;
+    }
+    
+    
+    
+
+
+		public function getLoader() {
+			return $this->loader;
+		}
+
+		public function getRoutes() {
+			return $this->routes;
+		}
 
     //Setters
     public function setModuleLoader($loader){
-        $this->moduleLoader = $loader;
+        $this->loader = $loader;
     }
     
-    public function setRequest($request){
-        $this->request = $request;
+    public function setRequest($req){
+        $this->req = $req;
     }
     
     public function setResponse($resp) {
@@ -38,115 +402,19 @@ class Application {
 
     //Getters
     public function getInstance($moduleName){
-        return $this->moduleLoader->getInstance($moduleName);
+        return $this->loader->getInstance($moduleName);
     }
     
     public function getModules(){
-        return $this->moduleLoader->getModules();
-    }
-    
-    public function getRequestHeader($headerName){
-        return $this->request->getHeader($headerName);
-    }
-    
-
-    
-    public function run($path) {
-    	$this->activeRoute = $this->router->match($path);
-    	
-      $this->activeModule = ModuleLoader::getInstance($this->activeRoute->getModule());
-      
-      $this->activeModule->loadFiles();
-
-      $this->requireRouteFiles($this->activeRoute);
-
-			return $this->doCallback($this->activeModule,$this->activeRoute);
-    }
-    
-    
-    
-    
-    //require all of the necessary file in the route at the key of 'files'
-    public function requireRouteFiles($route){
-        if(null == $route->getFiles())
-            return;
-            
-        foreach($route->getFiles() as $file){
-            $this->requireModuleFile($file);
-        }
+        return $this->loader->getModules();
     }
 
+    public static function isHttpResponse($object) {
 
-    
-    public function requireModuleFile($file){
-        $path = getPathToModules()."/{$this->activeRoute->getModule()}/src/".$file;
-				require_once($path);
-    }
+        return is_object($object) && (get_class($object) === "Http\HttpResponse" || is_subclass_of($object, "Http\HttpResponse", False));
 
-
-
-
-    public function doCallback($module,$route){
-    		if(method_exists($module,$route->getCallback())) {
-    			return call_user_func_array(array($module,$route->getCallback()),$route->getArgs());
-    		}
-    		
-        if($route->getMethod() == "post") {
-            //should be set to request->getBody();
-
-            //check the content type of the request if json decode it and pass json to the callback
-            $entityBody = file_get_contents('php://input');
-            return call_user_func_array($route->getCallback(),array($entityBody));   
-        } else {
-            return call_user_func_array($route->getCallback(),$route->getArgs());
-        }
     }
     
-    
-    
-    
-    public function getAsHttpResponse($data) {
-			$resp = new HttpResponse();
-			
-			// Set up the HttpResponse object
-			// Should be in Application or another class.
-			// $resp->setHeaders($this->activeRoute->headers);
-			
-			//Add the preferred content type to the headers array
-			if(strpos($this->activeRoute->getContentType(),"json") !== false)
-			{
-					$contentType = Http\MIME_APPLICATION_JSON;
-			}
-			else
-			{
-				$contentType = Http\MIME_TEXT_HTML;
-			}
 
-			
-			$resp->setContentType($contentType);
-			
-			$out = Http\formatResponseBody($data, $contentType);
-			
-			$resp->setBody($out);
-			
-			
-			return $resp;
-    }
 
-    //Other Methods
-    public function secure(){ 
-        $routeContentType = $this->resp->getHeader("Content-Type");
-        $requestAcceptType = $this->request->getHeader("Accept");
-
-        if(!$this->request->isSupportedContentType($routeContentType)){
-            throw new Exception("The content type of the requested resource '$routeContentType' does not match the accepted content type '$requestAcceptType', which is set by the requesting entity.");
-        }
-    }
-    
-    public function send(){
-        $this->resp->sendHeaders();
-        $content = $this->resp->getBody();
-        
-        print $content;
-    }
 }

@@ -1,78 +1,94 @@
 <?php
-class HttpResponse
-{
-    private $body;
+
+namespace Http;
+
+
+class HttpResponse extends HttpMessage {
+
+    private $statusCode;
+	
     
-    private $headers = array();
-
-		private $statusCode;
-		
-		
-
     public function __construct($body = null){
-    	$this->body = $body;
+
+        parent::__construct();
+
+        $this->body = $body;
     }
 
-		public function setCurlInfo($info) {
-			$this->info = $info;
-		}
-    //Setters
-    public function setBody($content){
-        $this->body = $content;
+
+    public function getFile(){
+
+        return $this->isFile() ? $this->body : null;
     }
+
+    public function isFile(){
+
+        return $this->body != null && gettype($this->body) == "object" && get_class($this->body) == "File\File";
+    }
+
+    //Setters
     
     public function setContentType($contentType){
-			$this->headers["Content-Type"] = $contentType;
+            $header = new HttpHeader("Content-Type", $contentType);
+
+            $this->headers->addHeader($header);
     }
-    
-    public function setHeaders($headers){
-        $this->headers = $headers;
-    }
-    
-    public function setHeader($name,$value) {
-    	$this->headers[$name] = $value;
-    }
-    
-    public function setStatusCode($code) {
+
+    public function setStatusCode($code){
+
+        if(isset($this->statusCode)) {
+
+            throw new Exception("QUIT TRYING TO SET THE STATUS CODE TWICE.");
+        }
+
     	$this->statusCode = $code;
+
     }
     
     public function setErrorStatus(){
-    	$this->statusCode = "HTTP/1.1 500 Internal Server Error";
+        $this->setStatusCode(500);
+        $this->statusMessage = "HTTP/1.1 500 Internal Server Error";
+        
     }
     
     public function setNotFoundStatus(){
-    	$this->statusCode = "HTTP/1.1 404 Page Not Found";
+        $this->setStatusCode(404);
+    	$this->statusMessage = "HTTP/1.1 404 Page Not Found";
     }
     
     public function setRedirect($url){
-    	$this->statusCode = "HTTP/1.1 301 Moved Permanently";
-    	$this->headers["Location"] = $url;
+        $this->setStatusCode(301);
+    	$this->statusMessage = "HTTP/1.1 301 Moved Permanently";
+    	$this->headers->addHeader(new HttpHeader("Location",$url));
+    }
+
+    public function isSuccess() {
+
+        if($this->statusCode == null){
+
+            throw new \Exception("STATUS_CODE_ERROR: The status code is null for this response");
+        }
+        
+        return $this->statusCode >= 200 && $this->statusCode < 300;
     }
 
     //Getters
-    public function getBody(){
-        return $this->body;
-    }
-
     public function getStatusCode(){
         return $this->statusCode;
     }
-    
-    public function getHeader($headerName){
-    	if(!isset($this->headers[$headerName])) {
-    		return null;
-    	}
-    	
-			return $this->headers[$headerName];
-    }
-    
-    
-    public function getHeaders(){
-        return $this->headers;
-    }
-    
-    
+	
+	public function getError(){
+		return $this->errorString;
+	}
+
+	public function getErrorNum(){
+		return $this->errorNum;
+	}
+
+	public function success() {
+		return $this->isSuccess();
+	}
+
     public function getPhpArray(){
         // Parsing the HTTP Response; by parsing we just mean the data has a known format and we can retrieve certain things from the Response.
 			return json_decode($this->body, true);
@@ -80,16 +96,6 @@ class HttpResponse
 
     //other methods
 
-    //Send the value of the headers array at the key of content-type 
-    public function sendHeaders(){
-
-			foreach($this->headers as $headerName => $headerValue){
-				header($headerName.": ".$headerValue);
-			}
-			if($this->statusCode != null){
-				header($this->statusCode);
-			}
-    }
     public function __toString(){
         return $this->body;
     }

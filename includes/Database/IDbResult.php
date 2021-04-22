@@ -1,0 +1,2 @@
+<?php 
+Interface IDbResult{}

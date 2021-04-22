@@ -1,75 +1,197 @@
 <?php
-class HttpRequest
-{
-	private $handle = null;
 
-	private $params = array();
+namespace Http;
+
+use \stdClass as stdClass;
+use File\FileHandler as FileHandler;
+use File\PhpFileUpload as PhpFileUpload;
+use File\FileList as FileList;
+use Http\BodyPart as BodyPart;
+
+
+class HttpRequest extends HttpMessage {
+
+
+	protected $method = "GET";
 	
-	private $status; 
+	protected $parts = array();
+
+	protected $host;
+		
 	
-	private $errorString = null;
-	
-	private $errorNum = null;
-	
-	private $headers = array();
-	
-	private $requestType = "GET";
-	
-	private $info;
-	
-	private $body;
+	protected $path;
+
 	
 	private $port;
 	
 	
+	protected $params = array();
 	
-	 
-	public function __construct($endpoint){
-		// Return a handle to a process that can make an HTTP Request.
-		$this->handle = curl_init($endpoint);
+	
+	private $files = null;
+
+	private $platform = "";
+	
+	const ALLOWED_VERBS = array(
+		"GET",
+		"OPTIONS",
+		"POST",
+		"PUT",
+		"PATCH",
+		"DELETE"
+	);
+
+
+	public function setPlatform($env){
+
+		$this->platform = $env;
+	}
+
+	public function addPart(BodyPart $part){
+
+		$this->parts[] = $part;
 	}
 
 
-	// Set our HTTP Request parameters.
-	// $params = "code=" . $code . "&grant_type = authorization_code&client_id=" 
-	//. CLIENT_ID. "&client_secret=" . CLIENT_SECRET. "&redirect_uri=" .urlencode(REDIRECT_URI);
-	public function setParams($p){
-	  // name/value pairs
-	  // each name/value pair is separate by ampersand
-	  // each name/value pair is set by an `=` sign
-	  if(is_array($p)){
-		$_params = array();
-		foreach($p as $key=>$value){
-			$_params[] = $key ."=".$value;
-		}		
-		$this->params = implode('&',$_params);
-	  }
-	  else{
-		  $this->params = $p;
-	  }
+	public function resetParts(){
 
+		$this->parts = array();
+	}
+
+
+	public function setFiles($files) {
+		$this->files = $files;
+	}
+
+	public function getRequestUri() {
+		return $this->getHeader("Request-URI")->getValue();
 	}
 	
+	public function headerLike($name, $value) {
+		return $this->getHeader($name) == null ? false : $this->getHeader($name)->equals($value);
+	}
+	
+	public function isJson() {
+		return $this->headerLike("Content-Type", "application/json");
+	}
+	
+	public function isForm() {
+		return $this->headerLike("Content-Type", MIME_FORM_URLENCODED);	
+	}
+	
+	public function isMultipart() {
 
+		$multipart = $this->headerLike("Content-Type", MIME_MULTIPART_FORM_DATA);
+
+		$header = $this->headers->getHeader("Content-Type", false);
+
+		$probably = $header->equals(MIME_MULTIPART_FORM_DATA);
+
+		if(!$multipart && $probably){
+
+			throw new \Exception("CONTENT_TYPE_ERROR: There is probably a typo in your 'Content-Type'.");
+		}
+
+		return $multipart;
+	}
+
+	public function setContentType($value){
+
+		$this->addHeader(new HttpHeader("Content-Type", $value));
+	}
+
+
+	public function __construct($url = null) {
+		parent::__construct();
+		if(null != $url) {
+			$this->setUrl($url);
+		}
+	}
 	
 	
+	public function setUrl($url) {
+	
+		$this->url = $url;
+
+		list($this->host, $this->path) = self::parseHostname($this->url);
+
+
+		$this->headers->addHeader(new HttpHeader("Host",$this->host));
+	}
+	
+	
+	public function setMethod($method) {
+		$this->method = $method;
+	}
+	
+	public function getMethod() {
+		return $this->method;
+	}
+
+
+	public function getUrl() {
+		return $this->url;
+	}
+
+	public function getArguments(){
+		$url = new \Url($this->url);
+
+		return $url->getArguments();
+	}
+
+	public function getUrlNamedParameters(){
+		$url = new \Url($this->url);
+
+		return $url->getNamedParameters();
+	}
+
+
+	private static function parseHostname($url) {
+		list($scheme,$address) = explode("://",$url);
+
+		$parts = explode("/",$address);
+
+		$host = array_shift($parts);
+		return array($host, "/".implode("/",$parts));
+	}
+
+
+	public function getHost() {
+		return $this->host;
+	}
+
 	public function setPost(){
-		$this->requestType = "POST";
+		$this->method = HTTP_METHOD_POST;
+	}
+
+	public function setPut(){
+		$this->method = HTTP_METHOD_PUT;
 	}
 	
+	public function isGet() {
+		return $this->method == HTTP_METHOD_GET;
+	}
+	
+	public function isPost(){
+		return $this->method == HTTP_METHOD_POST;
+	}
 	
 	public function setPatch(){
-		$this->requestType = "PATCH";
+		$this->method = HTTP_METHOD_PATCH;
 	}
-	
 	
 	public function setDelete(){
-		$this->requestType = "DELETE";
+		$this->method =  HTTP_METHOD_DELETE;
 	}
 	
+	// @deprecated
+	// Instead use getRequestMethod()
+	public function getRequestType() {
+		return $this->method;
+	}
 	
-	public function getRequestType(){
-		return $this->requestType;
+	public function getRequestMethod() {
+		return $this->method;
 	}
 	
 	
@@ -77,178 +199,206 @@ class HttpRequest
 		$this->port = $port;
 	}
 	
-	public function setOpt($opt,$value) {
-		curl_setopt($this->handle, $opt, $value);
+	
+
+	public function getBody() {
+
+		return $this->isMultipart() && $this->platform != "apache" ? $this->getMultiPartBody() : $this->body;
+		
 	}
-	
-	public function setOptions($params){
-		// Set various options for our HTTP Request.
-		curl_setopt($this->handle, CURLOPT_HEADER, false);
-		curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($this->handle, CURLOPT_FOLLOWLOCATION, true);
-		if($this->getRequestType() == "POST")
-		{
-			curl_setopt($this->handle, CURLOPT_POST, true);
-			curl_setopt($this->handle, CURLOPT_POSTFIELDS, $params);
-		}
-		if($this->getRequestType() == "PATCH")
-		{
-			curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "PATCH");
-			curl_setopt($this->handle, CURLOPT_POSTFIELDS, $params);
-		}
-		if($this->getRequestType() == "DELETE")
-		{
-			curl_setopt($this->handle, CURLOPT_CUSTOMREQUEST, "DELETE");
-			curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, false);
-		}
 
-		if(count($this->headers)>0)
-		{
-			foreach($this->headers as $key => $value) {
-				$header = $key . ": ".$value;
-				curl_setopt($this->handle, CURLOPT_HTTPHEADER, array($header));			
-			}
 
-		}
+	public function getMultiPartBody(){
+
+		$body = "";
+		$contentTypeHeader = $this->getHeader("Content-Type");
+		$contentTypeHeaderParams = $contentTypeHeader->getParameters();
 		
-		curl_setopt($this->handle, CURLOPT_TIMEOUT, 10);
+		if($contentTypeHeaderParams["boundary"] == null){
+
+			throw new \Exception("No boundary parameter in Content-type header.");
+		}
+
+		$boundary = $contentTypeHeaderParams["boundary"];
+
+		// parse the contenttype Header to get the actual boundary.
+
+		foreach($this->parts as $part){
+
+			$body .= "--{$boundary}\n";
+			$body .= $part->__toString();
+		}
+
+		$body .= "--{$boundary}--";
+
+		return $body;
 	}
-	
-	
-
-	public function makeHttpRequest(){
-		$this->setOptions($this->params);
-		$this->ignoreSSLVerification();
-		// Make the actual HTTP Request AND it returns an HTTP Response.
-		if(null != $this->port) {
-			curl_setopt($this->handle,CURLOPT_PORT,$this->port);
-		}
-
-		$_response = curl_exec($this->handle);
-		
-		$resp = new HttpResponse($_response);
-		$resp->setStatusCode(curl_getinfo($this->handle, CURLINFO_HTTP_CODE));
-		$resp->setContentType(curl_getinfo($this->handle, CURLINFO_CONTENT_TYPE));
-		$resp->setCurlInfo(curl_getinfo($this->handle));
-		
-		
-		$this->info = curl_getinfo($this->handle);
-
-		
-		$this->close();
-
-		return $resp;	
-	}
-	
 	
 	/**
-	 * Alias for makeHttpRequest.
+	 * @todo needs to return an MessageBody object,
+	 *   that has ->text(), ->json(), ->value()->, and ->files() methods.
 	 */
-	public function send() {
-		return $this->makeHttpRequest();
-	}
-	
-
-	public function getStatus(){
-		// Returns the status, e.g., 404 Not Found, 500 Internal Server Error of our HTTP Response.
-		return $this->status;
+	public function getFiles() {
+		return $this->files;
 	}
 
-
-	public function getInfo() {
-		return $this->info;
-	}
 
 	
-	public function getBody() {
-		return $this->body;
-	}
-
-
-	public function close(){
-		// Closing the HTTP connection.
-		curl_close($this->handle);
-	}
 	
-	
-	public function getError(){
-		return $this->errorString;
-	}
-
-	public function getErrorNum(){
-		return $this->errorNum;
-	}
-
-	public function success(){
-		return $this->status == 200;
-	}
-	
-
 	
 	public function isSupportedContentType($contentType){
-		if($this->getHeader("Accept") == $contentType || stringContains($this->headers["Accept"], "*/*")){
-			return true;
-		}
-		return false;
-	}
-	
-	
-	public function getHeader($headerName){
-		//throw an exception
-		return $this->headers[$headerName];
-	}
-	
-	
-	public function getHeaders(){
-		return $this->headers;
-	}
-	
-	
-	public function setHeader($name,$value) {
-		$this->headers[$name] = $value;
-	}
-	
-	
-	public function setHeaders($headers){
-		$this->headers = $headers;
-	}
-	
 
-	
-	public function getRequestUri(){
-		return $this->headers["Request-URI"];
-	}
+		return true;
 
-
-	public function ignoreSSLVerification(){
-		//Ignore the SSL vaification
-		// https://curl.haxx.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html
-		curl_setopt($this->handle,CURLOPT_SSL_VERIFYHOST, false); 
-		curl_setopt($this->handle,CURLOPT_SSL_VERIFYPEER, false);
-	}
-
-
-
-	
-	public static function newFromEnvironment(){
-		$request = new self($_SERVER["REQUEST_URI"]);
 		
-		$request->headers = apache_request_headers();
-		$request->headers["Request-URI"] = $_SERVER["REQUEST_URI"];
-            
-		$request->body = file_get_contents('php://input');
+		$accept = $this->getHeader("Accept")->getValue();
+
+		return $accept == $contentType || stringContains($accept, "*/*");
+	}
+	
+
+
+
+
+	
+	
+	
+	public function getPath(){
+
+	}
+
+	public function setParams($p){
+		if(is_array($p)) {
+			  $_params = array();
+			  foreach($p as $key=>$value){
+				  $_params[] = $key ."=".$value;
+			  }		
+			  $this->params = implode('&',$_params);
+		}
+		else {
+			$this->params = $p;
+		}
+  
+	}
+
+
+	public static function newFromApacheEnvironment() {
+		$env = new stdClass();
+		$server = new stdClass();
+		
+		
+		$http = new stdClass();
+		$http->headers = apache_request_headers();
+		
+		$server = array(
+			"requestUri" => $_SERVER["REQUEST_URI"],
+			"requestMethod" => $_SERVER["REQUEST_METHOD"]
+		);
+		
+		$env->server = $server;
+		$env->http = $http;
+		
+		return $env;
+	}
+
+
+	/**
+	 * @newFromEnvironment
+	 *
+	 * @description
+	 *   We can reconstruct the environment from the $envkey.
+	 *  Currently only supports $envkey="apache".
+	 */
+	public static function newFromEnvironment($envkey = "apache") {
+		
+		$env = self::newFromApacheEnvironment();
+
+		
+		$request = new self($env->server["requestUri"]);
+		$request->setPlatform($envkey);
+		$request->setMethod($env->server["requestMethod"]);
+		
+		// @todo see if this can't be moved into the constructor.
+		$request->addHeader(new HttpHeader("Request-URI", $env->server["requestUri"]));
+
+		if($request->isPost()) {
+			$request->addHeader(new HttpHeader("Content-Type", $env->http->headers["Content-Type"]));
+		}
+
+
+		// GET requests cannot have a body.
+		// Otherwise determine the data structure that best represents the message body.
+		// Prevents us from having to continually call json_decode, etc,
+		// so $request will just get the data structure.
+		// @todo - May need a new MessageBody class.
+		if($request->isGet()) {
+			$request->setBody(null);
+			
+		} else if($request->isPost() && $request->isForm()) {
+			$request->setBody((object)$_POST);
+			
+		} else if($request->isPost() && $request->isMultipart()) {
+
+			$request->setBody((object)$_POST);
+
+
+			//if first index is empty dont execute?
+			if(is_array($_FILES) && !empty($_FILES) ){
+					//try moving and uploading files
+				try {
+					global $fileConfig;
+				
+					$handler = new FileHandler($fileConfig);
+		
+					$handler->createDirectory();
+		
+					$uploads = new PhpFileUpload($_FILES);
+					$tempList = $uploads->getTempFiles();
+					$destList = $uploads->getDestinationFiles();
+		
+					$dFiles = $destList->getFiles();
+					$movedFiles = new FileList();
+	
+					$i = 0;
+					foreach($tempList->getFiles() as $tFile){
+			
+						$dest = $handler->getTargetFile($dFiles[$i]);
+			
+						$handler->move($tFile, $dest);
+	
+						$movedFiles->addFile($dest);
+		
+						$i++;
+					}
+	
+
+					$request->setFiles($movedFiles);
+
+				} catch(\Exception $e){
+
+					throw $e;
+
+				}
+			}
+		} else if(!$request->isGet()) {
+			$content = file_get_contents('php://input');
+			
+			$body = $request->isJson() ? json_decode($content) : $content;
+			
+			$request->setBody($body);
+			
+		} else {
+			$request->setBody(null);
+		}
+			
 		return $request;
 	}
-	
-	
-	public static function newAuthorization($url,$user,$pass) {
-		$req = new HttpRequest($url);
-		$req->setPost();
-		$req->setOpt(CURLOPT_HTTPAUTH,CURLAUTH_BASIC);
-		// curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		$base64 = base64_encode($user.":".$pass);
-		$req->setOpt(CURLOPT_USERPWD, $user.":".$pass);// credentials goes here
-		
-		return $req;
+
+
+
+	public function addParameter($name, $value){
+		$this->params[] .= $name ."=". $value;
 	}
+	
+	
 }

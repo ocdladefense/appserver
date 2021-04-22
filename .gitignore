@@ -1,4 +1,4 @@
-
+log/
 
 # Ignore .htaccess; prefer .htaccess-example
 .htaccess
@@ -8,6 +8,10 @@ settings.php
 settings.js
 config.php
 config.js
+
+login.xml
+soap-login-community-user.xml
+soap-login-admin-user.xml
 
 .vscode/
 
@@ -43,8 +47,18 @@ node_modules/*
 # Moduls get their own projects.
 
 #ignore content directory
-content/*
-
+content/uploads
+content/modules
+content/emails
+content/ors
+content/output
 
 # Ignore any logging files.
 phplog*
+
+#ignore the log directory
+/log/
+log/*
+
+test.php
+content/themes/highscope

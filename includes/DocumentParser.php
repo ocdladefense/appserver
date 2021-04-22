@@ -17,66 +17,116 @@ class DocumentParser extends DomDocument {
     public function __construct($body){
         parent::__construct();
 
-				// $encoded = mb_convert_encoding($body, 'HTML-ENTITIES', 'UTF-8');
+		$body = mb_convert_encoding($body, 'HTML-ENTITIES', 'UTF-8');
 
         libxml_use_internal_errors(true);
         
-        $this->loadHTML($body);
+		$this->loadHTML($body);
         
         $bodies = $this->getElementsByTagName("body");
         
+        
         if($bodies->length > 0) {
         	$html = $this->saveHTML($bodies[0]);
-					$html = "<!doctype html><html><head><meta charset='utf-8' /><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head>".$html."</html>";
+					$html = "<!doctype html><html><head><meta someRandomMeta /><meta charset='utf-8' /><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head>".$html."</html>";
         } else {
         	$html = $this->saveHTML();
 					$html = "<!doctype html><html><head><meta charset='utf-8' /><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /></head><body>".$html."</body></html>";
-        }
-
-				$this->loadHTML($html);
+		}
+		
+		$this->loadHTML($html);
 				
         libxml_clear_errors();
         
-				$this->xpath = new DomXPath($this);
+		$this->xpath = new DomXPath($this);
+
     }
 
 
-		public function fromTarget($selector) {
-				$target = $this->getElementById($selector);
-				if(null == $target) {
-					// throw new Exception("ELEM_NOT_FOUND_ERROR: No nodes found for <em>{$selector}</em>");
-				} else {
-					$html = $this->saveHTML($target);				
-				}
+	public function fromTarget($selector) {
+			$target = $this->getElementById($selector);
+			if($target == null){
 
-				
-				return null == $target ? null : new DocumentParser($html);
+				throw new NodeNotFoundException("DOM_DOCUMENT_ERROR: There are no nodes for '{$selector}'");
+			} else {
+				$html = $this->saveHTML($target);				
+			}
+			
+			return null == $target ? null : new DocumentParser($html);
+	}
+
+	public function fromNode($node){
+
+		if($node == null){
+
+			throw new NodeNotFoundException("DOM_DOCUMENT_ERROR: There are no nodes for '{$node}'");
 		}
 
+		$html = $this->saveHTML($node);	
+		
+		return null == $node ? null : new DocumentParser($html);
+	}
+
+	public function getDocuments($selector) {
+
+		$nodes = $this->getElementsByClassName($selector);
+
+		if($nodes == null){
+
+			throw new NodeNotFoundException("DOM_DOCUMENT_ERROR: There are no nodes for '{$selector}'");
+		}
+		$documents = array();
+
+		foreach($nodes as $node) {
+
+			$documents[] = $this->fromNode($node);
+		}
+
+		return $documents;
+	}
+
+		
 
 
-		public function getValue($selector) {
-			$elems = $this->getElementsByClassName($selector);
-		
-			return $elems->length > 0 ? $elems->item(0)->nodeValue : null;
-		}
-		
-		
-		public function getText($selector) {
-			$elems = $this->getElementsByClassName($selector);
-		
-			return $elems->length > 0 ? $elems->item(0)->textContent : "";
-		}
+
+	public function getValue($selector) {
+		$elems = $this->getElementsByClassName($selector);
+	
+		return $elems->length > 0 ? $elems->item(0)->nodeValue : null;
+	}
 	
 	
+	public function getText($selector) {
+		$elems = $this->getElementsByClassName($selector);
 	
-		// https://www.webperformance.com/
-			// load-testing-tools/blog/articles/real-browser-manual/
-				// building-a-testcase/how-locate-element-the-page/xpath-locator-examples/
-		public function getElementsByClassName($name) {
-			$selector = "//div[contains(@class,'{$name}')]";
-			return $this->xpath->query($selector);
+		return $elems->length > 0 ? $elems->item(0)->textContent : "";
+	}
+
+	public function query($tagName = "div", $attr = null, $value = null) {
+
+		if($value == null){
+			$selector = "//{$tagName}[@{$attr}]";
+		} else {
+			$selector = "//{$tagName}[contains(@{$attr},'{$value}')]";
 		}
+		return $this->xpath->query($selector);
+	}
+
+
+	// https://www.webperformance.com/
+		// load-testing-tools/blog/articles/real-browser-manual/
+			// building-a-testcase/how-locate-element-the-page/xpath-locator-examples/
+	public function getElementsByClassName($value, $tagName = "div") {
+
+		return $this->query($tagName, "class", $value);
+	}
+
+	public function getElementByClassName($value, $tagName = "div") {
+
+		$nodeList = $this->getElementsByClassName($value, $tagName);
+
+		return $nodeList->count() == 0 ? null : $nodeList->item(0);
+	}
 
 
 
@@ -124,6 +174,13 @@ class DocumentParser extends DomDocument {
     
     private static function isEmpty($str) {
 			return "" == trim($str);
-    }
+	}
+	
+	public function isDraft(){
+		$string = $this->saveHtml();
 
+		return strpos($string,"is a draft") !== false;
+	}
 }
+
+class NodeNotFoundException extends Exception{}

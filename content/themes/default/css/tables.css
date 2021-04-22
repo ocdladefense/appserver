@@ -1,0 +1,29 @@
+
+
+
+
+@media screen and (min-width: 800px) {
+
+	.table {
+		display:table;
+	}
+
+
+	.table-row {
+		display:table-row;
+	}
+
+
+
+	.table-header, .table-cell {
+		display:table-cell;
+		padding:3px;
+		border-bottom: 1px solid #ccc;
+	}
+
+	.table-header {
+		font-weight: bold;
+	}
+
+
+}
