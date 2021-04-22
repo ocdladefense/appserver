@@ -10,7 +10,7 @@ PHP >=5.6 and the php-curl extension
 Apache config:
 sudo a2enmod headers
 
-## Setting up the "appserver" so that it works with the latest version of the "lib-oauth-config" package.
+## Updating your installation of the "appserver" so that it works with the latest version of the "lib-oauth-config" package.
 ### Steps
 1) In your terminal, checkout the development branch of the appserver repository.
 2) Run the "git pull" command.
