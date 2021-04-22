@@ -26,6 +26,8 @@ class RestApiResponse extends HttpResponse {
 
     private $sObjects;
 
+    private $config;
+
 
     
     private static $errorCodes = array(
@@ -97,9 +99,19 @@ class RestApiResponse extends HttpResponse {
         return $index == null ? $this->body["records"][0] : $this->body["records"][$index];
     }
 
+
     public function getRecordCount(){
 
         return count($this->getRecords());
+    }
+    public function getConfig(){
+
+        return $this->config != null ? $this->config->getName() : null;
+    }
+
+    public function setConfig($config){
+
+        $this->config = $config;
     }
 
     public function other(){

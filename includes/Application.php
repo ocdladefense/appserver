@@ -156,7 +156,7 @@ class Application {
 
         //  This is the module flow not the route flow
         $connectedAppName = $module->get("connectedApp");
-        $config = getOauthConfig($connectedAppName);
+        $config = get_oauth_config($connectedAppName);
 
         if(!is_user_authorized($module)){
 

@@ -92,7 +92,7 @@ class Module {
     }
     protected function loadApi($app = null, $debug = false) {
 
-        $config = getOauthConfig($app);
+        $config = get_oauth_config($app);
 
 
         $requstedRoute = explode("/", $this->getRequest()->url)[1];
@@ -105,6 +105,7 @@ class Module {
         $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
 
         $req = new RestApiRequest($instanceUrl, $accessToken);
+        $req->setConfig($config);
 
         return $req;
     }

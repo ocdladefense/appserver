@@ -27,6 +27,8 @@ class RestApiRequest extends HttpRequest {
 	
 	public $resourcePrefix = "/services/data";
 
+    private $config;
+
 
 	public const ENDPOINTS = array(
         "sObject Basic Information" => array(
@@ -89,10 +91,21 @@ class RestApiRequest extends HttpRequest {
         //var_dump($this);exit;
         
         $resp = $http->send($this, true);
+        $resp->setConfig($this->getConfig());
 
         // $http->printSessionLog(); exit;
 
         return $resp;
+    }
+
+    public function getConfig(){
+        
+        return $this->config != null ? $this->config->getName() : null;
+    }
+
+    public function setConfig($config){
+
+        $this->config = $config;
     }
 
 

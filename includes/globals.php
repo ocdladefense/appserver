@@ -101,7 +101,7 @@ function user_require_auth($connectedAppName, $route) {
 
 	$authFlow = $route["authorization"];
 
-	$config = getOauthConfig($connectedAppName);
+	$config = get_oauth_config($connectedAppName);
 
 	// Start now takes two parameters.
 	return Salesforce\OAuth::start($config, $authFlow);
@@ -140,21 +140,32 @@ function user_get_initials() {
 }
 
 
-function getOAuthConfig($key = null) {
+function get_oauth_config($key = null) {
 
 	global $oauth_config;
 
 	if(null == $key || $key == "default") {
-		foreach($oauth_config as $key => $connectedApp) {
-			$connectedApp["name"] = $key;
-			$isdefault = $connectedApp["default"];
-			if($isdefault) {
 
-				return new Salesforce\OAuthConfig($connectedApp);
+		$defaultConfigs = array();
+
+		foreach($oauth_config as $key => $connectedApp) {
+
+			$connectedApp["name"] = $key;
+
+			if($connectedApp["default"]) {
+
+				$defaultConfigs[] = $connectedApp;
 			}
 		}
+
+        //if(count($defaultConfigs) > 1) throw new Exception("CONFIG_ERROR: Only one connected app can be set to default in you configuration.");
+        if(count($defaultConfigs) == 0) throw new Exception("CONFIG_ERROR: No connected app is set to default in your configuration, and no connected app is set on the module.");
+
+        return new Salesforce\OAuthConfig($defaultConfigs[0]);
+
 		
 	} else {
+
 		$config = $oauth_config[$key];
 		$config["name"] = $key;
 
@@ -176,7 +187,7 @@ function module_requires_authorization($module){
 function is_user_authorized($module, $route = null){
 
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = getOAuthConfig($connectedAppSetting)->getName();
+	$connectedAppName = get_oauth_config($connectedAppSetting)->getName();
 	return $route == null ? is_module_authorized($module) : is_route_authorized($connectedAppName, $route);
 
 }
@@ -187,7 +198,7 @@ function is_module_authorized($module) {
 	
 	// Necessary because key can be "default".
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = getOAuthConfig($connectedAppSetting)->getName();
+	$connectedAppName = get_oauth_config($connectedAppSetting)->getName();
 	$flow = "usernamepassword";
 
 	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
@@ -256,7 +267,7 @@ function is_authenticated($module, $route) {
 	
 	// The connected app setting can also be "default"
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = getOAuthConfig($connectedAppSetting)->getName();
+	$connectedAppName = get_oauth_config($connectedAppSetting)->getName();
 	$flow = $route["authorization"];
 	
 	return !empty(\Session::get($connectedAppName, $flow, "userId"));
