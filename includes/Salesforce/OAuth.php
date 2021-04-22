@@ -8,7 +8,7 @@ class OAuth {
 
     public static function start($config, $flow){
 
-        return $flow == "webserver" ? self::newOAuthResponse($config,$flow) : OAuthRequest::usernamePasswordFlowAccessTokenRequest($config,$flow);
+        return $flow == "webserver" ? self::newOAuthResponse($config,$flow) : OAuthRequest::newAccessTokenRequest($config,$flow);
     }
 
 
@@ -36,8 +36,9 @@ class OAuth {
         return $resp;
     }
 
-    public static function setSession($connectedApp, $flow, $instanceUrl, $accessToken){
+    public static function setSession($connectedApp, $flow, $instanceUrl, $accessToken, $refreshToken = null){
 
+        if($refreshToken != null) \Session::set($connectedApp, $flow, "refresh_token", $refreshToken);
         \Session::set($connectedApp, $flow, "instance_url", $instanceUrl);
         \Session::set($connectedApp, $flow, "access_token", $accessToken);
         \Session::set($connectedApp, $flow, "userId", OAuth::getUserId($connectedApp, $flow));

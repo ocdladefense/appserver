@@ -113,6 +113,7 @@ class Module {
 
         $config = get_oauth_config($app);
 
+
         $requstedRoute = explode("/", $this->getRequest()->url)[1];
         $routes = $this->getInfo()["routes"];
         $route = $routes[$requestedRoute];
