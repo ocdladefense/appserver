@@ -11,6 +11,8 @@ class OAuthResponse extends HttpResponse {
     
     private $accessToken;
 
+    private $refreshToken;
+
     private $hasError;
     
     protected static $errorCodes = array(
@@ -40,6 +42,8 @@ class OAuthResponse extends HttpResponse {
 
         $body = null != $body ? json_decode($body, true) : null;
 
+        //var_dump($body, $_SESSION);exit;
+
 
         if(!empty($body["error"])){
 
@@ -51,7 +55,12 @@ class OAuthResponse extends HttpResponse {
         if($body != null){
 
             $this->accessToken = $body["access_token"];
-            $this->instanceUrl = $body["instance_url"]; 
+            $this->instanceUrl = $body["instance_url"];
+            
+            if($body["refresh_token"] != null){
+
+                $this->refreshToken = $body["refresh_token"];
+            }
         }
     }
 
@@ -70,6 +79,10 @@ class OAuthResponse extends HttpResponse {
     
     public function getAccessToken() {
         return $this->accessToken;
+    }
+    
+    public function getRefreshToken() {
+        return $this->refreshToken;
     }
     
     

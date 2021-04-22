@@ -14,6 +14,7 @@ class RestApiResponse extends HttpResponse {
     const DEFAULT_DECODING_SCHEME = "associative_array";
     const OBJECT_DECODING_SCHEME = "object";
     const JSON_DECODING_SCHEME = "json";
+    const SESSION_ACCESS_TOKEN_EXPIRED_ERROR_CODE = "INVALID_SESSION_ID";
 
     private $errorMessage;
 
@@ -50,7 +51,9 @@ class RestApiResponse extends HttpResponse {
 
         parent::__construct($body);
 
-        if(!empty($body["errorCode"]) || !empty($body["error"])){
+
+
+        if(!empty($this->getBody()["errorCode"]) || !empty($this->getBody()["error"])){
 
             $this->hasError = true;
             $this->error = $body["error"];
@@ -96,6 +99,11 @@ class RestApiResponse extends HttpResponse {
         return $index == null ? $this->body["records"][0] : $this->body["records"][$index];
     }
 
+
+    public function getRecordCount(){
+
+        return count($this->getRecords());
+    }
     public function getConfig(){
 
         return $this->config != null ? $this->config->getName() : null;
