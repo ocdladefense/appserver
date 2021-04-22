@@ -11,6 +11,6 @@
     },
     "require": {
         "composer/installers":"~1.0",
-        "ocdladefense/lib-oauth-config": "~2.1.0"
+        "ocdladefense/lib-oauth-config": "~2.0"
     }
 }
