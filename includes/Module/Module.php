@@ -90,7 +90,26 @@ class Module {
     protected function loadForceApi($app = null, $debug = false) {
     	return $this->loadApi($app, $debug);
     }
+
     protected function loadApi($app = null, $debug = false) {
+    
+
+        $config = get_oauth_config($app);
+        $oauth = OAuthRequest::usernamePasswordFlowAccessTokenRequest($config, "usernamepassword");
+
+        $resp = $oauth->authorize();
+		
+	    if($debug) var_dump($config, $oauth, $resp);
+        
+        
+        if(!$resp->success()) {
+            throw new Exception("OAUTH_RESPONSE_ERROR: {$resp->getErrorMessage()}");
+        }
+    
+        return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+    }
+
+    protected function loadApiV2($app = null, $debug = false) {
 
         $config = get_oauth_config($app);
 
