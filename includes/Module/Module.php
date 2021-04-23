@@ -1,8 +1,8 @@
 <?php
 
-
 use Salesforce\OAuthRequest;
 use Salesforce\RestApiRequest;
+use Salesforce\OAuth;
 
 
 class Module {
@@ -15,6 +15,9 @@ class Module {
 
 
     protected $files = array();
+
+
+    protected $info;
     
     
     protected $name;
@@ -84,25 +87,47 @@ class Module {
 
     }
     
-    protected function loadForceApi($org = null, $debug = false) {
-    	return $this->loadApi($org, $debug);
+    protected function loadForceApi($app = null, $debug = false) {
+    	return $this->loadApi($app, $debug);
     }
-    protected function loadApi($org = null, $debug = false) {
+
+    protected function loadApi($app = null, $debug = false) {
     
 
-        $config = getOAuthConfig($org);
-        $oauth = OAuthRequest::fromConfig($config);
+
+        $config = get_oauth_config($app);
+        $oauth = OAuthRequest::usernamePasswordFlowAccessTokenRequest($config, "usernamepassword");
 
         $resp = $oauth->authorize();
 		
 	    if($debug) var_dump($config, $oauth, $resp);
         
         
-        if($resp->hasError) {
-            throw new Exception("OAUTH_RESPONSE_ERROR: {$resp->errorMessage}");
+        if(!$resp->success()) {
+            throw new Exception("OAUTH_RESPONSE_ERROR: {$resp->getErrorMessage()}");
         }
     
         return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+    }
+
+    protected function loadApiV2($app = null, $debug = false) {
+
+        $config = get_oauth_config($app);
+
+
+        $requstedRoute = explode("/", $this->getRequest()->url)[1];
+        $routes = $this->getInfo()["routes"];
+        $route = $routes[$requestedRoute];
+
+        $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamepassword";  // This is questionable.
+        
+        $accessToken = Session::get($config->getName(), $flow, "access_token");
+        $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
+
+        $req = new RestApiRequest($instanceUrl, $accessToken);
+        $req->setConfig($config);
+
+        return $req;
     }
 
 
@@ -128,7 +153,21 @@ class Module {
             $this->loadFile($file);
         }
     }
+
+    public function setInfo($info){
+
+        $this->info = $info;
+    }
+
+    public function getInfo(){
+
+        return $this->info;
+    }
     
+    public function get($key){
+
+        return $this->info[$key];
+    }
     public function toJson() {
 
 

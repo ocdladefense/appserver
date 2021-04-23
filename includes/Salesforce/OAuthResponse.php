@@ -1,23 +1,19 @@
 <?php
 
-
-
 namespace Salesforce;
 
-
 use Http\HttpResponse;
-
-
-
-
-
+use Http\HttpHeader as HttpHeader;
 
 class OAuthResponse extends HttpResponse {
 
-    
     private $instanceUrl;
     
     private $accessToken;
+
+    private $refreshToken;
+
+    private $hasError;
     
     protected static $errorCodes = array(
         0 => "Invalid URl",
@@ -31,57 +27,44 @@ class OAuthResponse extends HttpResponse {
 
 
 
-		public static function fromSession() {
-			$body = array();
-			$body["access_token"] = $_SESSION["salesforce_access_token"];
-			$body["instance_url"] = $_SESSION["salesforce_instance_url"];
-			
-			return new OAuthResponse($body);
-		}
+    public static function fromSession() {
+        $body = array();
+        $body["access_token"] = $_SESSION["salesforce_access_token"];
+        $body["instance_url"] = $_SESSION["salesforce_instance_url"];
+        
+        return new OAuthResponse($body);
+    }
 
 
-    public function __construct($body) {
-    		parent::__construct($body);
-    		
+    public function __construct($body = null) {
+        
+        parent::__construct($body);	
 
         $body = null != $body ? json_decode($body, true) : null;
+
+        //var_dump($body, $_SESSION);exit;
+
 
         if(!empty($body["error"])){
 
             $this->hasError = true;
+            $this->error = $body["error"];
             $this->errorMessage = $body["error_description"];
         }
 
-        $this->accessToken = $body["access_token"];
-        $this->instanceUrl = $body["instance_url"];  
+        if($body != null){
 
-        
-				/*
+            $this->accessToken = $body["access_token"];
+            $this->instanceUrl = $body["instance_url"];
+            
+            if($body["refresh_token"] != null){
 
-            if(isset($body["error"]) || isset($body["error_description"])){
-                $this->error = array(
-                    "HttpStatusCode"						=> $this->getStatusCode(),
-                    "HttpStatusMessage"					=> self::getErrorMsg($this->getStatusCode()),
-                    "Salesforce_Error"					=> $body["error"],
-                    "Salesforce_Error_message"	=> $body["error_description"]
-                );
-            } else if($body["errorCode"] == "Session expired or invalid") {
-                $this->access_token_invalid = true;
-            } else {
-                $this->error = array(
-                    "HttpStatusCode" 						=> $this->getStatusCode(),
-                    "HttpStatusMessage"					=> $this->getErrorMsg($this->getStatusCode())
-                );
+                $this->refreshToken = $body["refresh_token"];
             }
-				*/
-        
+        }
     }
 
-
-
-
-
-		
+	
     public static function resolveFromSession() {
     
         if(empty($_SESSION["salesforce_instance_url"])) {
@@ -92,25 +75,28 @@ class OAuthResponse extends HttpResponse {
             throw new Exception("Access token is not set!");
         }
     }
-
-    // Commented out s.s. 1/9/21 error cannnot call this on a non object.//
-    private static function getErrorMsg($statusCode) {
-			return self::$errorCodes[$statusCode];
-    }
-    
     
     
     public function getAccessToken() {
         return $this->accessToken;
     }
     
+    public function getRefreshToken() {
+        return $this->refreshToken;
+    }
+    
     
     public function getInstanceUrl() {
         return $this->instanceUrl;
     }
-    
-    
-    public function getError() {
-        return $this->error;
+
+    public function success(){
+
+        return !$this->hasError;
+    }
+
+    public function getErrorMessage(){
+
+        return strtoupper($this->error . "_ERROR:" . $this->errorMessage);
     }
 }

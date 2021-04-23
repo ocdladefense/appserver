@@ -11,6 +11,11 @@ use Http\HttpResponse;
 
 class RestApiResponse extends HttpResponse {
 
+    const DEFAULT_DECODING_SCHEME = "associative_array";
+    const OBJECT_DECODING_SCHEME = "object";
+    const JSON_DECODING_SCHEME = "json";
+    const SESSION_ACCESS_TOKEN_EXPIRED_ERROR_CODE = "INVALID_SESSION_ID";
+
     private $errorMessage;
 
     private $errorCode;
@@ -21,6 +26,7 @@ class RestApiResponse extends HttpResponse {
 
     private $sObjects;
 
+    private $config;
 
     
     private static $errorCodes = array(
@@ -44,7 +50,10 @@ class RestApiResponse extends HttpResponse {
 
         parent::__construct($body);
 
-        if(!empty($body["errorCode"]) || !empty($body["error"])){
+
+
+        if(!empty($this->getBody()["errorCode"]) || !empty($this->getBody()["error"])){
+
 
             $this->hasError = true;
             $this->error = $body["error"];
@@ -56,6 +65,53 @@ class RestApiResponse extends HttpResponse {
             $this->accessToken = $body["access_token"];
             $this->instanceUrl = $body["instance_url"]; 
         }
+    }
+
+    // get body, getarray, getobject from the body;  returns default prefernce of type.
+
+    // default decoding scheme = associative  php_associative_array.
+
+    public function getBody($scheme = null){
+
+        switch($scheme) {
+
+            case self::JSON_DECODING_SCHEME:
+                return json_encode($this->body);
+                break;
+            case self::OBJECT_DECODING_SCHEME:
+                return json_decode(json_encode($this->body));
+                break;
+            default:
+                return $this->body;
+        }
+    }
+
+    public function getRecords(){
+
+        if($this->isSuccess() && $this->body["records"] != null){
+
+            return $this->body["records"];
+        }
+    }
+
+    public function getRecord($index = null){
+
+        return $index == null ? $this->body["records"][0] : $this->body["records"][$index];
+    }
+
+
+    public function getRecordCount(){
+
+        return count($this->getRecords());
+    }
+    public function getConfig(){
+
+        return $this->config != null ? $this->config->getName() : null;
+    }
+
+    public function setConfig($config){
+
+        $this->config = $config;
     }
 
     public function getRecords(){
@@ -140,7 +196,7 @@ class RestApiResponse extends HttpResponse {
 
         if(!$this->isSuccess()) {
 
-            $this->errors = RestApiErrorCollection::fromJson($this->getBody());
+            $this->errors = RestApiErrorCollection::fromArray($this->getBody());
             return $this->errors->getFirst()->getMessage();   
         }
 
@@ -172,15 +228,14 @@ class RestApiErrorCollection {
 
     public $errorObjects;
 
-    public static function fromJson($json){
+    public static function fromArray($errorObjs){
+
 
         $collection = new RestApiErrorCollection();
 
-        $errorObjs = json_decode($json);
-
         foreach($errorObjs as $obj){
 
-            $collection->errorObjects[] = new RestApiError($obj->message, $obj->errorCode);
+            $collection->errorObjects[] = new RestApiError($obj["message"], $obj["errorCode"]);
         }
 
         return $collection;

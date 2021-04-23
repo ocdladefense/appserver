@@ -1,8 +1,16 @@
 <?php
+
 use File\FileHandler as FileHandler;
 use File\PhpFileUpload as PhpFileUpload;
 use File\File as File;
 use File\FileLIst as FileList;
+use Http\HttpHeader as HttpHeader;
+use Http\HttpResponse;
+use Salesforce\OAuthResponse as OAuthResponse;
+use Salesforce\OAuthRequest as OAuthRequest;
+use Salesforce\RestApiRequest as RestApiRequest;
+use Salesforce\OAuth as OAuth;
+use Salesforce\OAuthException;
 
 class CoreModule extends Module {
 
@@ -48,90 +56,34 @@ class CoreModule extends Module {
 	}
 
 
+	// Get the access token and save it to the session variables.
+	public function oauthFlowAccessToken(){
 
+		$info = json_decode($_GET["state"], true);
+		$connectedApp = $info["connected_app_name"];
+		$flow = $info["flow"];
 
-    // //Rewrite this so that it handles core uploads.  Gonna look in the core upload spot for the files to delete
-	// public function delete(){
-	// 	$postData = $this->request->getBody();
-	// 	$fileName = $postData->filename;
-	// 	$config = array(
-	// 		"appId"		=> $postData->appId,
-	// 		"userId" 	=> $postData->userId,
-	// 		"path"		=> getUploadPath()
-	// 	);
+		$config = get_oauth_config($connectedApp);
 
-	// 	$handler = new FileHandler($config);
+		$config->setAuthorizationCode($_GET["code"]);
 
-	// 	if (unlink($handler->getTargetPath() . $fileName)) {
-	// 		return 'success';
-	// 	} else {
-	// 		return 'fail';
-	// 	}
-	// }
-        
+		$oauth = OAuthRequest::newAccessTokenRequest($config, "webserver");
+
+		$resp = $oauth->authorize();
+
+		if(!$resp->success()){
+
+			throw new OAuthException($resp->getErrorMessage());
+		}
+
+		OAuth::setSession($connectedApp, $flow, $resp->getInstanceUrl(), $resp->getAccessToken(), $resp->getRefreshToken());
+
+		$resp2 = new HttpResponse();
+
+		$flowConfig = $config->getFlowConfig($flow);
+
+		$resp2->addHeader(new HttpHeader("Location", $flowConfig->getCallbackUrl()));
+
+		return $resp2;
+	}
 }
-
-	// //Return a json object representing files related to the given appId and userId.
-	// public function listFilesRoute(){
-
-	// 	$postData = $this->request->getBody();
-
-	// 	return $this->listFiles($postData->appId, $postData->userId);
-	// }
-
-	// public function listFiles($appId, $userId){
-
-	// 	$config = array(
-	// 		"path" 		=> getUploadPath(),
-	// 		"userId"    => $userId,
-	// 		"appId"	    => $appId
-	// 	);
-
-
-	// 	$handler = new FileHandler($config);
-
-	// 	$fList = FileList::fromHandler($handler);
-
-	// 	return $fList;
-	// }
-
-	// public function listFilesRouteExample(){
-
-	// 	$appId = "app123";
-	// 	$userId = "user123";
-	// 	return $this->listFiles($appId, $userId);
-	// }
-
-	// public function alteredDownloadExample($fileName, $filePath, $handler, $appId, $userId, $config){
-
-	// 	$postData = $this->request->getBody();
-	// 	$fileName = $postData->filename;
-
-	// 	global $config;
-
-	// 	$handler = new FileHandler($config);
-
-	// 	$file = File::fromPath($handler->getTargetPath(). "/" . "Invoice.pdf");
-	// 	$file->setType(mime_content_type($file->getPath()));
-	// 	var_dump($file);exit;
-				
-	// 	return $file;
-	// }
-
-	// public function alteredDeleteExample(){
-	// 	$postData = $this->request->getBody();
-	// 	$fileName = $postData->filename;
-	// 	$config = array(
-	// 		"appId"		=> $postData->appId,
-	// 		"userId" 	=> $postData->userId,
-	// 		"path"		=> getUploadPath()
-	// 	);
-
-	// 	$handler = new FileHandler($config);
-
-	// 	if (unlink($handler->getTargetPath() . $fileName)) {
-	// 		return 'success';
-	// 	} else {
-	// 		return 'fail';
-	// 	}
-	// }
