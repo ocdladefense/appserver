@@ -107,6 +107,7 @@
 	require_once BASE_PATH.'/includes/Application.php';
 
 
+
 	// Require all of the files in the includes/Salesforce direcory.
 	$sfFiles = array("Salesforce","RestApiResult", "OAuthRequest","OAuthResponse","RestApiRequest",
 					"RestApiResponse","SObject","SalesforceFile","OAuth","RestApiException","OAuthException");
@@ -114,6 +115,7 @@
 	foreach($sfFiles as $file) {
 		require_once(BASE_PATH.'/includes/Salesforce/'.$file.".php");
 	}
+
 
 	$files = array("Attachment","Document", "ContentDocument");
 
@@ -135,5 +137,5 @@
 
 
 	if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
-		include BASE_PATH.'/vendor/autoload.php';
+		// include BASE_PATH.'/vendor/autoload.php';
 	}

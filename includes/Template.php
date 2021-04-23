@@ -13,6 +13,8 @@ class Template {
 	// Name of this template; usually the name of a template file.
 	// Template files may be suffixed with the .tpl.php extension.
 	protected $name;
+
+	protected $modulePath;
 	
 	
 	// Whether the template has been rendered / compiled.
@@ -28,7 +30,7 @@ class Template {
 	
 	
 	// Path or paths associated with this template.
-  protected $paths = array();
+  	protected $paths = array();
 	
 
 	// Messages to record status of this template.
@@ -51,12 +53,21 @@ class Template {
 	public function __construct($name = null) {
 		$this->name = $name;
 	}
+
+	public function getName(){
+
+		return $this->name;
+	}
 	
 	public function setContent($content) {
 		$this->content = $content;
 	}
 		
 
+	public function setModulePath($path){
+
+		$this->modulePath = $path;
+	}
 
 
 	public function addPath($path) {
@@ -68,17 +79,30 @@ class Template {
 	}
 	
 
-	public function addStyles($styles) {
-		$this->styles = $this->styles + $styles;
+	public function addStyles($styles, $modulePath = null) {
+
+		foreach($styles as $style){
+
+			$style["href"] = $modulePath != null ? $modulePath . "/" . $style["href"] : $style["href"];
+
+			$this->styles[] = $style;
+		}
+	}
+
+	public function addScripts($scripts, $modulePath = null) {
+
+		foreach($scripts as $script){
+
+			$script["src"] = $modulePath != null ? $modulePath . "/" . $script["src"] : $script["src"];
+
+			$this->scripts[] = $script;
+		}
 	}
 	
 	public function getStyles() {
 		return $this->styles;
 	}
 	
-	public function addScripts($scripts) {
-		$this->scripts += $scripts;
-	}
 	
 	public function getScripts() {
 		return $this->scripts;
@@ -87,8 +111,13 @@ class Template {
 	public function getOutput() {
 		return $this->output;
 	}
+
+	public function getModulePath(){
+		return $this->modulePath;
+	}
 	
 	public static function isTemplate($obj) {
+
 		return is_object($obj) && (get_parent_class($obj) == "Template" || get_class($obj) == "Template");
 	}
 

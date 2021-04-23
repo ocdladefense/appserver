@@ -35,7 +35,8 @@ class HtmlDocumentHandler extends Handler {
 			// $theme
 			
 			$content = Template::isTemplate($this->output) ? $theme->renderTemplate($this->output) : $this->output;
-			
+
+			// var_dump($this->output, $content);exit;
 			// Loads an HTML page with defined scripts, css.
 			return $theme->render($content);
 	}

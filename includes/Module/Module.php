@@ -94,6 +94,7 @@ class Module {
     protected function loadApi($app = null, $debug = false) {
     
 
+
         $config = get_oauth_config($app);
         $oauth = OAuthRequest::usernamePasswordFlowAccessTokenRequest($config, "usernamepassword");
 

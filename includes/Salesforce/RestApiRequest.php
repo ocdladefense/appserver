@@ -71,6 +71,7 @@ class RestApiRequest extends HttpRequest {
         if(empty($this->instanceUrl)) throw new HttpException("REST_API_ERROR:  The instance url cannot be null.");
         if(empty($this->accessToken)) throw new RestApiException("REST_API_ERROR:  The access token cannot be null.");
 
+
     
         $this->setUrl($this->instanceUrl . $endpoint);
         $this->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\RestApiResponse")); // Use a custom HttpResponse class to represent the HttpResponse.
@@ -264,6 +265,7 @@ class RestApiRequest extends HttpRequest {
         $endpoint = "/services/data/v49.0/query/?q=";
         $endpoint .= urlencode($soql);
 
+
         $this->setMethod("GET");
 
         $resp = $this->send($endpoint);
@@ -275,6 +277,7 @@ class RestApiRequest extends HttpRequest {
 		}
 
         return $resp;
+
     }
 
     public function upsert($sobjectName, $record){

@@ -28,7 +28,6 @@ class RestApiResponse extends HttpResponse {
 
     private $config;
 
-
     
     private static $errorCodes = array(
         0 => "Invalid URl",
@@ -54,6 +53,7 @@ class RestApiResponse extends HttpResponse {
 
 
         if(!empty($this->getBody()["errorCode"]) || !empty($this->getBody()["error"])){
+
 
             $this->hasError = true;
             $this->error = $body["error"];
@@ -113,6 +113,15 @@ class RestApiResponse extends HttpResponse {
 
         $this->config = $config;
     }
+
+    public function getRecords(){
+
+        if($this->isSuccess() && $this->body["records"] != null){
+
+            return $this->body["records"];
+        }
+    }
+
 
     public function other(){
 
