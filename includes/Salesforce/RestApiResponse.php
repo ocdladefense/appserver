@@ -93,6 +93,7 @@ class RestApiResponse extends HttpResponse {
             return $this->body["records"];
         }
     }
+    
 
     public function getRecord($index = null){
 
@@ -112,14 +113,6 @@ class RestApiResponse extends HttpResponse {
     public function setConfig($config){
 
         $this->config = $config;
-    }
-
-    public function getRecords(){
-
-        if($this->isSuccess() && $this->body["records"] != null){
-
-            return $this->body["records"];
-        }
     }
 
 

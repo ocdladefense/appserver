@@ -137,5 +137,5 @@
 
 
 	if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
-		// include BASE_PATH.'/vendor/autoload.php';
+		include BASE_PATH.'/vendor/autoload.php';
 	}
