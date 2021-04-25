@@ -12,8 +12,6 @@ class SalesforceFile extends File {
 
     protected $Id;
 
-    protected $Name;
-
 
     public function getId(){
 

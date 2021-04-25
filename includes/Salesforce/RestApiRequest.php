@@ -10,6 +10,7 @@ use Http\HttpRequest;
 use Http\HttpHeader;
 use Http\Http;
 use Http\HttpResponse;
+use Http\HttpException;
 use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 use Http\BodyPart;
 use File\File;
@@ -25,6 +26,8 @@ class RestApiRequest extends HttpRequest {
 	
 	
 	public $resourcePrefix = "/services/data";
+
+    private $config;
 
 
 	public const ENDPOINTS = array(
@@ -52,16 +55,22 @@ class RestApiRequest extends HttpRequest {
     public function __construct($instanceUrl, $accessToken) {
     
     	parent::__construct();
-    	
+
     	$this->instanceUrl = $instanceUrl;
     	$this->accessToken = $accessToken;
     }
 
+    // public function setBody($body){
+
+    //     is_string($body) ? $this->setBody($body) : $this->setBody(json_encode($body));
+    // }
+
 
     public function send($endpoint) {
 
-        if(empty($this->instanceUrl)) throw new \Exception("REST_API_ERROR:  The instance url cannot be null.");
-        if(empty($this->accessToken)) throw new \Exception("REST_API_ERROR:  The access token cannot be null.");
+        if(empty($this->instanceUrl)) throw new HttpException("REST_API_ERROR:  The instance url cannot be null.");
+        if(empty($this->accessToken)) throw new RestApiException("REST_API_ERROR:  The access token cannot be null.");
+
 
     
         $this->setUrl($this->instanceUrl . $endpoint);
@@ -83,10 +92,21 @@ class RestApiRequest extends HttpRequest {
         //var_dump($this);exit;
         
         $resp = $http->send($this, true);
+        $resp->setConfig($this->getConfig());
 
         // $http->printSessionLog(); exit;
 
         return $resp;
+    }
+
+    public function getConfig(){
+        
+        return $this->config != null ? $this->config->getName() : null;
+    }
+
+    public function setConfig($config){
+
+        $this->config = $config;
     }
 
 
@@ -96,24 +116,36 @@ class RestApiRequest extends HttpRequest {
 
     public function uploadFile(SalesforceFile $file){
 
+
         $sObjectName = $file->getSObjectName();
 
         $isAttachment = $sObjectName == "Attachment";
 
         $endpoint = "/services/data/v51.0/sobjects/{$file->getSObjectName()}/";
     
-        $this->setMethod($file->getId() != null ? "PATCH": "POST");
+        $method = "POST"; // By default we will insert new records.
+
+        if($isAttachment && $file->getId() != null){
+
+            $method = "PATCH";
+
+        } else if(!$isAttachment && $file->getContentDocumentId() != null){ //You cant do patch request for content versions.
+
+            $method = "POST";
+        }
+        
+        $this->setMethod($method);
         $this->setContentType("multipart/form-data; boundary=\"boundary\"");
     
 
-        $metaContentDisposition = $isAttachment ? "form-data; name=\"entity_document\"" : "form-data; name=\"entity_document\"";
+        $metaContentDisposition = $isAttachment ? "form-data; name=\"entity_document\"" : "form-data; name=\"entity_content\"";
 
         $metaPart = new BodyPart();
         $metaPart->addHeader("Content-Disposition", $metaContentDisposition);
         $metaPart->addHeader("Content-Type", "application/json");
         $metaPart->setContent($file->getSObject());
 
-        $binaryContentDisposition = $isAttachment ? "form-data; name=\"Body\"; filename=\"{$file->getName()}\"" : "form-data; name=\"Body\"; filename=\"{$file->getName()}\"";
+        $binaryContentDisposition = $isAttachment ? "form-data; name=\"Body\"; filename=\"{$file->getName()}\"" : "form-data; name=\"VersionData\"; filename=\"{$file->getName()}\"";
 
         $binaryPart = new BodyPart();
         $binaryPart->addHeader("Content-Disposition", $binaryContentDisposition);
@@ -123,7 +155,15 @@ class RestApiRequest extends HttpRequest {
         $this->addPart($metaPart);
         $this->addPart($binaryPart);
 
-        return $this->send($endpoint);
+        $resp = $this->send($endpoint);
+
+        if(!$resp->isSuccess()){
+
+			$message = $resp->getErrorMessage();
+			throw new \Exception($message);
+		}
+
+        return $resp;
         
     }
 
@@ -225,7 +265,19 @@ class RestApiRequest extends HttpRequest {
         $endpoint = "/services/data/v49.0/query/?q=";
         $endpoint .= urlencode($soql);
 
-        return $this->send($endpoint, "GET");
+
+        $this->setMethod("GET");
+
+        $resp = $this->send($endpoint);
+
+        if(!$resp->isSuccess()){
+
+			$message = $resp->getErrorMessage();
+			throw new \Exception($message);
+		}
+
+        return $resp;
+
     }
 
     public function upsert($sobjectName, $record){
@@ -243,8 +295,15 @@ class RestApiRequest extends HttpRequest {
         unset($record->Id);
         $this->setBody(json_encode($record));
 
-        // Send the request.
-        return $this->send($endpoint);
+        $resp = $this->send($endpoint);
+
+        if(!$resp->isSuccess()){
+
+			$message = $resp->getErrorMessage();
+			throw new \Exception($message);
+		}
+
+        return $resp;
     }
 
 

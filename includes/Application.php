@@ -4,6 +4,8 @@ use \Http as Http;
 use \Http\HttpHeader as HttpHeader; 
 use \Http\HttpResponse as HttpResponse;
 use \Http\HttpRequest as HttpRequest;
+use Salesforce\OAuth;
+use Salesforce\OAuthException;
 
 
 class Application {
@@ -29,6 +31,8 @@ class Application {
     
     // Outgoing response.
     private $resp;
+
+    private $modules;
 
 	
 	
@@ -62,11 +66,9 @@ class Application {
         // dump($defs);
 
         // Build an index for modules.
-        $modules = $defs->indexBy(function($def) {
+        $this->modules = $defs->indexBy(function($def) {
             return $def["name"];
         });
-
-        //dump($modules);exit;
 
         $coreDef = array(
             "comment"      => "The core module",
@@ -94,6 +96,20 @@ class Application {
                     "path"          => "list/files",
                     "module"        => "core",
                     "method"        => "get"
+                ),
+                "oauth/start" => array(
+                    "callback"      => "oauthFlowStart",
+                    "content-type"  => "application/json",
+                    "path"          => "oauth/start",
+                    "module"        => "core",
+                    "method"        => "get"
+                ),
+                "oauth/api/request" => array(
+                    "callback"      => "oauthFlowAccessToken",
+                    "content-type"  => "application/json",
+                    "path"          => "oauth/api/request",
+                    "module"        => "core",
+                    "method"        => "get"
                 )
             ),
 						//If the path is null the module loader will not try to load the file
@@ -102,14 +118,12 @@ class Application {
             
         );
 
-        $modules->put("core", $coreDef);
+        $this->modules->put("core", $coreDef);
 
-        $this->loader = new ModuleLoader($modules->getArray());
-
-        //dump($modules);exit;
+        $this->loader = new ModuleLoader($this->modules->getArray());
 
         // Build an index for routes.
-        $this->routes = $modules->map(function($def) {
+        $this->routes = $this->modules->map(function($def) {
             $routes = $def["routes"];
             $name = $def["name"];
 
@@ -123,8 +137,6 @@ class Application {
 
             return $routes;
         },false)->flatten();
-
-        //dump($this->routes);exit;
     }
 
 
@@ -140,6 +152,57 @@ class Application {
 
         // Will need to handle PageNotFoundExceptions here.
         list($module, $route, $params) = $this->init($uri);
+
+
+        //  This is the module flow not the route flow
+        $connectedAppName = $module->get("connectedApp");
+        $config = get_oauth_config($connectedAppName);
+
+        if(!is_user_authorized($module)){
+
+            // What if we decide to set authorization at the module level?                                                     
+            $flow = isset($module->getInfo()["authorizationFlow"]) ? $module->getInfo()["authorizationFlow"] : "usernamepassword";
+
+            //$flow = "usernamepassword";
+            $httpMessage = OAuth::start($config, $flow);
+
+            if(self::isHttpResponse($httpMessage)){
+
+                return $httpMessage;
+            } else {
+
+                $oauthResp = $httpMessage->authorize();
+
+                if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
+
+                OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
+            }
+            
+        }
+
+
+        // This is the route flow not the module flow.
+        if(!is_user_authorized($module, $route)){
+
+            $resp = user_require_auth($config->getName(), $route);
+
+            if($resp == null){
+
+                throw new Exception("AUTHORIZATION_ERROR:");
+            } else {
+
+                return $resp;
+            }
+        }
+        
+        if(!user_has_access($module, $route)){
+
+            $resp = new HttpResponse();
+            $resp->setStatusCode(401);
+            $resp->setBody("Access Denied!");
+            return $resp;
+        }
+
         $module->setRequest($req);
 
         try {
@@ -180,68 +243,50 @@ class Application {
         
         return $this->getOutput($module, $route, $params);
     }
-		
-		
-		// incoming request: maps
+        
+        
+        // incoming request: maps
     public function init($uri) {
 
+        $router = new Router();
+        $path = $router->match($uri, array_keys($this->routes));
 
-			
-			$router = new Router();
-			$path = $router->match($uri, array_keys($this->routes));
+        l("Executing application...");
+        l("Exec located route: {$path}.");
+        l("FINISHED");
 
-			l("Executing application...");
-			l("Exec located route: {$path}.");
-			l("FINISHED");
-			if(false === $path) {
-				throw new Exception("Could not locate {$uri}.");
-			}
+        if(false === $path) {
 
-			
-			$route = $this->routes[$path->__toString()];
+            throw new Exception("Could not locate {$uri}.");
+        }
 
+        $route = $this->routes[$path->__toString()];
 
-			
-			
-			$params = $path->getParams();
+        $params = $path->getParams();
 
-			l("Will execute $path: </p><pre>".print_r($route,true)."</pre>");
-			
-			$moduleName = $route["module"];
-			l("Module is: {$moduleName}.");
+        l("Will execute $path: </p><pre>".print_r($route,true)."</pre>");
+        
+        $moduleName = $route["module"];
+        l("Module is: {$moduleName}.");
 
-
-
-			// Check access here.
-			$access = $route["access"];
-			$access_args = $route["access_args"];
-			
-			
-			if(!user_has_access($route)) {
-				user_require_auth();
-			}
-			
+        // Check access here.
+        $access = $route["access"];
+        $access_args = $route["access_args"];
 
 
+        l("Loading Module...");
+        $loader = $this->getLoader();
 
 
-			l("Loading Module...");
-			$loader = $this->getLoader();
+        // Demonstrate that we can instantiate a module
+        //  and begin using it.
+        $module = $loader->loadObject($moduleName);
+        
+        $func = $route["callback"];
 
- 
-			// Demonstrate that we can instantiate a module
-			//  and begin using it.
-			$object = $loader->loadObject($moduleName);
-    	$func = $route["callback"];
-
-			l("Executing route...<br />Module: {$moduleName}<br />Callback: {$func}.");
-
-    	// dump($object);
-    	// Load the routes files, if any.
-			// $target->loadFiles();
-
-    	
-    	return array($object, $route, $params);
+        l("Executing route...<br />Module: {$moduleName}<br />Callback: {$func}.");
+        
+        return array($module, $route, $params);
     }
     	
     	
@@ -254,7 +299,7 @@ class Application {
      */
     public function getOutput($module, $route, $params) {
     
-			return call_user_func_array(array($module,$route["callback"]),$params);
+        return call_user_func_array(array($module,$route["callback"]),$params);
     }
     
     
@@ -266,39 +311,18 @@ class Application {
      *  webserver context.
      */
     public function run($path) {
+
     	return $this->runHttp($path);
-    	// $this->runCli($cmd, $flags);
     } 
 
 
 
-    private function handleErrors() {
-		
-			/* 
-      } catch(PageNotFoundException $e) {
-        $resp->setNotFoundStatus();
-        $resp->setBody($e->getMessage());
-        
-      } catch(Exception $e) {
-
-        if($contentType == Http\MIME_APPLICATION_JSON){
-            $error = new StdClass();
-            $error->error = $e->getMessage();
-            $body = json_encode($error);
-        } else {
-            $body = $e->getMessage();
-        }
-
-        $resp->setErrorStatus();
-        $resp->setBody($body);
-      }
-      */
-		
-		}
+    private function handleErrors() {}
     
 
 
-		public function doParameters($module,$route) {
+    public function doParameters($module,$route) {
+        
         $expectedRouteParams = $route->getParameters();
         $urlNamedParameters = $this->request->getUrlNamedParameters();
         $args = $this->request->getArguments();
@@ -309,23 +333,30 @@ class Application {
         //if the parameter is defined by name then use the value for that name otherwise use the value at the current index
         //Determine which kind of paramter to give preference to.
         if(!empty($urlNamedParameters) && empty($args)){
+
             for($i = 0; $i < count($expectedRouteParams); $i++){
+
                 if(in_array($namedParamKeys[$i],$expectedRouteParams)){
+
                     $params[] = $urlNamedParameters[$namedParamKeys[$i]];
                 }
+
                 if(count($params) == 0){
+
                     $params = $args;
                 }
             }
         } else {
+
             $params = $args;
         }
-		}
+    }
 
 
 
     //Other Methods
     public function secure() { 
+
         $header = $this->resp->getHeader("Content-Type");
         $cType = null;
         
@@ -337,6 +368,7 @@ class Application {
         $accept = "*/*";
 
         if(!$this->request->isSupportedContentType("*/*")){
+
             throw new Exception("The content type of the requested resource '$contentType' does not match the accepted content type '$accept', which is set by the requesting entity.");
         }
     }

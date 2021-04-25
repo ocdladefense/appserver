@@ -5,7 +5,7 @@ namespace Http;
 
 class HttpResponse extends HttpMessage {
 
-    private $statusCode;
+    private $statusCode; // Need to get rid of this.
 	
     
     public function __construct($body = null){
