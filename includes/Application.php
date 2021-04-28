@@ -152,7 +152,11 @@ class Application {
 
         // Will need to handle PageNotFoundExceptions here.
         list($module, $route, $params) = $this->init($uri);
-
+            //instanciate a new translation class
+            //check for lang and files and correct name
+            //methods are static
+            //default to en for testing
+            $translate = new Translate ($module->getRelPath(),$module->getPackages());//path and language filenames
 
         //  This is the module flow not the route flow
         $connectedAppName = $module->get("connectedApp");
@@ -240,7 +244,7 @@ class Application {
     
     public function exec($uri) {
         list($module, $route, $params) = $this->init($uri);
-        
+
         return $this->getOutput($module, $route, $params);
     }
         

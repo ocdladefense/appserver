@@ -34,22 +34,37 @@ class Module {
     
     protected $user;
     
-    
+    protected $pkg;
 
     
 
-    public function __construct($path = null){
+    public function __construct($path = null,$pkg = null){
     	$this->path = $path;
     	$this->className = get_class($this);
+        $this->$pkg = $pkg;
     }
     
 
-		public function getPath() {
-			$reflector = new \ReflectionClass($this->className);
-			return $reflector->getFileName();
-		}
-		
-		
+    public function getPath() {
+        $reflector = new \ReflectionClass($this->className);
+        return $reflector->getFileName();
+    }
+
+    public function getRelPath() {
+        return $this->path;
+    }
+
+    public function setPath($path){
+        return $this->path;
+    }
+
+    public function setName($name){
+        return $this->name;
+    }
+
+	public function setPackages($pkg){
+        $this->$pkg = $pkg;
+    }	
 		
     public function getRoutes(){
         return $this->routes;
@@ -139,6 +154,10 @@ class Module {
 
     public function getFiles(){
         return $this->files;
+    }
+
+    public function getPackages(){
+        return $this->pkg;
     }
 
 
