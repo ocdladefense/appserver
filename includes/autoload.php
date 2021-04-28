@@ -74,7 +74,7 @@
 	require_once BASE_PATH.'/includes/Template.php';
 	require_once BASE_PATH.'/includes/Theme.php';	
 	require_once BASE_PATH.'/includes/IRenderable.php';
-
+	require_once BASE_PATH.'/includes/Translate.php';
 
 	require_once BASE_PATH.'/includes/Routing/Path.php';	
 	require_once BASE_PATH.'/includes/Routing/Route.php';

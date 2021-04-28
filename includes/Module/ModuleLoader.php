@@ -62,8 +62,11 @@ class ModuleLoader {
     		
         $className = ucwords($moduleName,"-\t\r\n\f\v");
         $className = str_replace("-","",$className)."Module";
-        $moduleClass = new $className();
+        $moduleClass = new $className($info["path"]);
         $moduleClass->setInfo($info);
+        $moduleClass->setName($info["name"]);
+        $moduleClass->setPath($info["path"]);
+        $moduleClass->setLanguages($info["languages"]);
         $dependencies = $moduleClass->getDependencies();
 
         foreach($dependencies as $d){
