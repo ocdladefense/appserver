@@ -34,14 +34,13 @@ class Module {
     
     protected $user;
     
-    protected $pkg;
+    protected $languages;
 
     
 
-    public function __construct($path = null,$pkg = null){
+    public function __construct($path = null){
     	$this->path = $path;
     	$this->className = get_class($this);
-        $this->$pkg = $pkg;
     }
     
 
@@ -55,15 +54,15 @@ class Module {
     }
 
     public function setPath($path){
-        return $this->path;
+        $this->path = $path;
     }
 
     public function setName($name){
-        return $this->name;
+        $this->name = $name;
     }
 
-	public function setPackages($pkg){
-        $this->$pkg = $pkg;
+	public function setLanguages($languages){
+        $this->languages = $languages;
     }	
 		
     public function getRoutes(){
@@ -156,8 +155,8 @@ class Module {
         return $this->files;
     }
 
-    public function getPackages(){
-        return $this->pkg;
+    public function getLanguages(){
+        return $this->languages;
     }
 
 

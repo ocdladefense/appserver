@@ -156,7 +156,7 @@ class Application {
             //check for lang and files and correct name
             //methods are static
             //default to en for testing
-            $translate = new Translate ($module->getRelPath(),$module->getPackages());//path and language filenames
+            Translate::init ($module->getRelPath(),$module->getLanguages());//path and language filenames
 
         //  This is the module flow not the route flow
         $connectedAppName = $module->get("connectedApp");

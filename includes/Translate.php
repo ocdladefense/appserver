@@ -3,42 +3,44 @@
     //filenames are the languages
     class Translate {
 
-        private static $data = array();
+        private static $dictionary = array();
+        private static $type = ".txt";
         
-        public function __construct($path,$files)
+        public static function init($path,$languages)
         {
 
-            
-            foreach ($files as $file) {
-                //making a readable directory link from file array
-                $file = $path.$file;
-                if(is_dir($file)){
-                    throw new Exception("translation file not found");
-                }
+            if (!empty($languages)){
+                foreach ($languages as $language) {
+                    //making a readable directory link from file array
 
-                $key = substr($file, 0, strpos($file, "."));
-
-                $output = fopen($path."/".$file, 'r');
-                while (($line = fgets($output)) !== false) {
-                    $data = explode(",", trim($line),2);
-                    if (count($data) < 1) {
-                        throw new Exception("Error Processing Request", 1);
+                    $file = $path.DIRECTORY_SEPARATOR."languages".DIRECTORY_SEPARATOR.$language.self::$type;
+                    if(is_dir($file)){
+                        throw new Exception("translation file not found");
                     }
-                    self::$data[$key][$data[0]] = $data[1];
+
+                    $output = fopen($file, 'r');
+                    while (($line = fgets($output)) !== false) {
+                        $tmp = explode(",", trim($line),2);
+                        list($target,$translation) = $tmp;
+
+                        //if malformed move to the next line
+                        if (count($tmp) == 0) {
+                            continue;
+                        }
+                        self::$dictionary[$language][$target] = $translation;
+                    }
+            
                 }
-        
             }
-
         }
 
-        public static function getTranslation($key,$lang = null){
+        public static function getTranslation($target,$lang = null){
             $lang = $_GET["lang"] ?? "en";//throw ? if it doesnt exist
-            return self::$data[$lang][$key] ?? "error";
+            return self::$dictionary[$lang][$target] ?? "no translation found for $target";
         }
     }
 
 
-    function t($key,$language = null){
-        return Translate::getTranslation($key,$language);
+    function t($target,$language = null){
+        return Translate::getTranslation($target,$language);
     }
-?>
