@@ -284,7 +284,10 @@ function is_authenticated($module, $route) {
 
 
 function getDefaultLanguage(){
-	return $_GET["lang"] ?? "en";
+	//if lang parameter was not sent use language in session else default to english
+	$language = empty($_GET["lang"]) == false ? $_GET["lang"]: $_SESSION["language"]?? "en";
+	$_SESSION["language"] = $language;
+	return $language;
 }
 
 
