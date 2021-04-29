@@ -67,6 +67,7 @@ class ModuleLoader {
         $moduleClass->setName($info["name"]);
         $moduleClass->setPath($info["path"]);
         $moduleClass->setLanguages($info["languages"]);
+        $moduleClass->setLanguageFiles($info["language-files"]);
         $dependencies = $moduleClass->getDependencies();
 
         foreach($dependencies as $d){

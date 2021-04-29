@@ -273,3 +273,21 @@ function is_authenticated($module, $route) {
 	return !empty(\Session::get($connectedAppName, $flow, "userId"));
 }
 
+//option 1:
+	//let the user set the language preference on their account page
+	//stored in session
+//option 2: 
+	//present the user with a dropdown
+	//arbitrarily with the setting of the dropdown
+	//stored in session
+
+
+
+function getDefaultLanguage(){
+	//if lang parameter was not sent use language in session else default to english
+	$language = empty($_GET["lang"]) == false ? $_GET["lang"]: $_SESSION["language"]?? "en";
+	$_SESSION["language"] = $language;
+	return $language;
+}
+
+

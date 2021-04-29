@@ -36,6 +36,8 @@ class Module {
     
     protected $languages;
 
+    protected $languageFiles;
+
     
 
     public function __construct($path = null){
@@ -64,7 +66,15 @@ class Module {
 	public function setLanguages($languages){
         $this->languages = $languages;
     }	
-		
+
+	public function setLanguageFiles($languageFiles){
+        $this->languageFiles = $languageFiles;
+    }
+    
+	public function getLanguageFiles(){
+        return $this->languageFiles;
+    }
+
     public function getRoutes(){
         return $this->routes;
     }
