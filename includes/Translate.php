@@ -1,19 +1,23 @@
 <?php
     //translate based on module path /moduleName/src/route/language
     //filenames are the languages
+    //remove core code for language files
     class Translate {
 
         private static $dictionary = array();
         private static $type = ".txt";
+        private static $modulePath;
         
-        public static function init($path,$languages)
+        public static function init($modulePath,$languages)
         {
+            self::$modulePath = $modulePath;
+
 
             if (!empty($languages)){
                 foreach ($languages as $language) {
                     //making a readable directory link from file array
 
-                    $file = $path.DIRECTORY_SEPARATOR."languages".DIRECTORY_SEPARATOR.$language.self::$type;
+                    $file = $modulePath.DIRECTORY_SEPARATOR."languages".DIRECTORY_SEPARATOR.$language.self::$type;
                     if(is_dir($file)){
                         throw new Exception("translation file not found");
                     }
@@ -35,12 +39,17 @@
         }
 
         public static function getTranslation($target,$lang = null){
-            $lang = $_GET["lang"] ?? "en";//throw ? if it doesnt exist
+            
             return self::$dictionary[$lang][$target] ?? "no translation found for $target";
+        }
+        public static function getTranslationFromFile($target,$language,$ext = "html"){
+            $filePath = self::$modulePath.DIRECTORY_SEPARATOR."languages".DIRECTORY_SEPARATOR."content".DIRECTORY_SEPARATOR.$target.".".$language.".".$ext;
+            return file_get_contents($filePath);
+
         }
     }
 
-
-    function t($target,$language = null){
-        return Translate::getTranslation($target,$language);
+    function t($target, $language = null,$loadFromFile = false){
+        $language = getDefaultLanguage();
+        return $loadFromFile ? Translate::getTranslationFromFile($target,$language) :Translate::getTranslation($target,$language);
     }
