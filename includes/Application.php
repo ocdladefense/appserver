@@ -285,6 +285,8 @@ class Application {
         // Demonstrate that we can instantiate a module
         //  and begin using it.
         $module = $loader->loadObject($moduleName);
+
+        set_active_module($module);
         
         $func = $route["callback"];
 
