@@ -33,6 +33,24 @@ function path_to_content() {
     return BASE_PATH . "/content";
 }
 
+function set_active_module($module){
+
+	$GLOBALS["active_module"] = $module;
+}
+
+
+function module_path(){
+	
+	$module = $GLOBALS["active_module"];
+	$absolutePath = $module->getPath();
+	$trim = BASE_PATH;  // Remove the base path in order to get the url.
+	$pathParts = explode($trim, $absolutePath);
+	$moduleUri = $pathParts[1];
+	$removeBackSlashes = str_replace(DIRECTORY_SEPARATOR, "/", $moduleUri);
+
+	return $removeBackSlashes;
+}
+
 function path_to_uploads() {
     return BASE_PATH . "/content/uploads";
 }

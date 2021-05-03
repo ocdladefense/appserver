@@ -47,8 +47,10 @@ class Module {
     
 
     public function getPath() {
-        $reflector = new \ReflectionClass($this->className);
-        return $reflector->getFileName();
+        // $reflector = new \ReflectionClass($this->className);
+        // return $reflector->getFileName();
+
+        return $this->path;
     }
 
     public function getRelPath() {
