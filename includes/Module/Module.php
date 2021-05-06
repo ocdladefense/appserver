@@ -34,7 +34,9 @@ class Module {
     
     protected $user;
     
-    
+    protected $languages;
+
+    protected $languageFiles;
 
     
 
@@ -44,13 +46,37 @@ class Module {
     }
     
 
-		public function getPath() {
-			$reflector = new \ReflectionClass($this->className);
-			return $reflector->getFileName();
-		}
-		
-		
-		
+    public function getPath() {
+        // $reflector = new \ReflectionClass($this->className);
+        // return $reflector->getFileName();
+
+        return $this->path;
+    }
+
+    public function getRelPath() {
+        return $this->path;
+    }
+
+    public function setPath($path){
+        $this->path = $path;
+    }
+
+    public function setName($name){
+        $this->name = $name;
+    }
+
+	public function setLanguages($languages){
+        $this->languages = $languages;
+    }	
+
+	public function setLanguageFiles($languageFiles){
+        $this->languageFiles = $languageFiles;
+    }
+    
+	public function getLanguageFiles(){
+        return $this->languageFiles;
+    }
+
     public function getRoutes(){
         return $this->routes;
     }
@@ -139,6 +165,10 @@ class Module {
 
     public function getFiles(){
         return $this->files;
+    }
+
+    public function getLanguages(){
+        return $this->languages;
     }
 
 
