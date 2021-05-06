@@ -255,21 +255,6 @@ class Salesforce
     
     
     /**
-    	* Use an OAuth 2.0 username/password flow 
-    	*  for authorizing to Salesforce.
-    	*  After authorizing we can use the REST API.
-    	*  
-    	*  If the session already has an access_token saved,
-    	*  then attempt to use it before re-authenticating.
-    	*
-    	* @return RespApiResult
-    	*/
-    public function authorizeToSalesforce() {
- 
-
-
-
-    /**
      * Use an OAuth 2.0 username/password flow 
      *  for authorizing to Salesforce.
      *  After authorizing we can use the REST API.

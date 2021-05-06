@@ -1,7 +1,7 @@
 <?php
 
-namespace RestApiRequest;
-
+namespace Salesforce;
+//use RestApiRequest;
 
 class Database {
 
@@ -55,7 +55,16 @@ class Database {
 	 
 	}
 	
-	function update($records) {}
+	function update($records) {
+		global $oauth_config;
+
+		var_dump(list($sObjectName, $records) = self::parseUpdate($query));
+
+		//OAuth
+		$salesforce = new RestApiRequest($oauth_config);
+
+		return $salesforce->CreateQueryFromSession($query);
+	}
 	
 	
 	/*
@@ -80,11 +89,13 @@ class Database {
 	*/
 	
 	
-	function select($query) {
+	public static function select($query) {
 		global $oauth_config;
 
+		var_dump(list($sObjectName, $records) = self::parseSelect($query));
+
 		//OAuth
-		$salesforce = new \RestApiRequest($oauth_config);
+		$salesforce = new RestApiRequest($oauth_config);
 		
 		return $salesforce->CreateQueryFromSession($query);
 	}
@@ -94,17 +105,11 @@ class Database {
 
 		var_dump(list($sObjectName, $records) = self::parseDelete($query));
 
-		//1 Get conditions
-
-		//2 Issue Query   specifically the ID using the given sObjectName
-
-		//3 returns list of results
-
-		//4 Pass the IDs from the results to the API call
-
 
 		//OAuth
-		$salesforce = new \RestApiRequest($oauth_config);
+		$salesforce = new RestApiRequest($oauth_config);
+
+		return $salesforce->CreateQueryFromSession($query);
 	}
 	
 	
@@ -140,13 +145,15 @@ class Database {
 		return $variable2;
 	}
 
+	
+
 	public static function getConditions($sql){
 		
 		$stmt = explode("WHERE", $sql);
 		
-		$conds = Count($stmt) > 1 ? $stmt[1] : null;
+		$numConds = Count($stmt) > 1 ? $stmt[1] : null;
 
-		if($conds == null)
+		if($numConds == null)
 			return null;
 		
 		// ResourceId__c = 'YtoqDF8EnsA' OR ResourceId__c = 'EtoqHACEnsQ'"
@@ -154,8 +161,8 @@ class Database {
 
 		// ResourceId__c = 'YtoqDF8EnsA' OR IsPublished__c = true AND ResourceId__c = 'EtoqHACEnsQ'
 		
-		$numOrs = preg_split("/\s+OR\s+/", $conds); //split by OR first
-		$numANDs = preg_split("/\s+AND\s+/", $conds);
+		$numORs = preg_split("/\s+OR\s+/", $stmt[1]); //split by OR first
+		$numANDs = preg_split("/\s+AND\s+/", $stmt[1]);
 		//split each index of $conds3 by AND next
 		if(Count($numORs) > 1 && Count($numANDs) > 1){
 			//throw exception
@@ -178,12 +185,11 @@ class Database {
 		
 		$conditions = array();
 		$values = array();
-		foreach($conds3 as $cond){
+		
+		$cond = $stmt[1];
+		
+		$fieldValue = explode("=", $cond);
 
-
-			$fieldValue = explode("=", $cond);
-
-			var_dump($fieldValue);
 
 			//trim each index of $fieldValue and turn $field into an array
 			$field = trim($fieldValue[0]);
@@ -197,13 +203,37 @@ class Database {
 			$values[] = $value;
 			$conditions[$field]= $values;
 
+		/*
+		foreach($stmt as $cond){
+
+
+			$fieldValue = explode("=", $cond);
+
+			var_dump($fieldValue);
+
+			//trim each index of $fieldValue and turn $field into an array
+			$field = trim($fieldValue[0]);
+			$preValue = trim($fieldValue[1]);
+
+			//trim single quotes from $preValue and turn it into an array
+			$value = trim($preValue, "'");
+
+			var_dump($field);
+			var_dump($value);
+			//want '' coming in input, but want to strip them out for output using trim(value, "'") using a foreach
+
+			$values[] = $value;
+			$conditions[$field]= $values;
+
 		}
+		*/
 		var_dump($conditions);
 
 		
 
 
 		//return the conditons as an array
+		/*
 		return array(
 			"op" => "OR",//optional
 			"conditions" => array(
@@ -211,10 +241,77 @@ class Database {
 				"ResourceId__c" => "EtoqHACEnsQ"
 			)
 		);
+		*/
+
+		return $conditions;
 		
 	}
 
+	public static function parseUpdate($sql){
+		//Example
+		//"UPDATE Media__C SET ResourceID__c = 'EtoqHACEnsQ' WHERE ResourceID__c = 'YtoqDF8EnsA'"
+
+		$conditions = self::getConditions($sql); 
+
+		$noConds = explode("WHERE", $sql);
+
+		//"UPDATE Media__C SET ResourceID__c = 'EtoqHACEnsQ' 
+		$stmt = explode("UPDATE", $noConds);
+
+		// Media__C SET ResourceID__c = 'EtoqHACEnsQ' 
+		$splitStmt = explode("SET", $stmt[1]);
+
+		//[0]: Media__C 
+		//[1]: ResourceID__c = 'EtoqHACEnsQ' 
+		$SObjectName = trim($splitStmt[0]);
+
+		$setValues = explode("=", trim($splitStmt[1]));
+		
+		$set = array(trim($setValues[0])=>trim($setValues[1]));
+
+		var_dump($set);
+
+		return array("sobject"=>$SObjectName, "set"=>$set, "conditions"=>$conditions);
+
+	}
+
+	public static function parseSelect($sql){
+		//Example
+		//$sql: "Select ResourceId__c FROM Media__c WHERE ResourceId__c = 'YtoqDF8EnsA'"
+
+		var_dump($sql);
+
+		$conditions = self::getConditions($sql);
+
+		$noConds = explode("WHERE", $sql);
+
+		// "Select ResourceId__c FROM Media__c 
+		$stmt = explode("SELECT", $noConds[0]);
+
+		//ResourceId__c FROM Media__c 
+		$splitStmt = explode("FROM", $stmt[1]);
+
+		//ResourceId__c
+		$SObjectName = trim($splitStmt[0]);
+
+		//Media__c
+		$column = trim($splitStmt[1]);
+
+		//this will only works for one SObject so far
+		return array("sobject"=>$SObjectName, "column"=>$column, "conditions"=>$conditions);
+	}
+
+
 	public static function parseDelete($sql){
+		//GOALS
+		//1 Get conditions
+
+		//2 Issue Query   specifically the ID using the given sObjectName
+
+		//3 returns list of results
+
+		//4 Pass the IDs from the results to the API call
+
 		$conditions = self::getConditions($sql);
 		//use a select to select the IDs that match the where clause
 
