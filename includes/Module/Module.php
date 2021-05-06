@@ -78,7 +78,12 @@ class Module {
     }
 
     public function getRoutes(){
-        return $this->routes;
+        return $this->info["routes"];
+    }
+
+    public function getRoute($index){
+
+        return $this->info["routes"][$index];
     }
 
 
@@ -114,7 +119,7 @@ class Module {
     }
     
     protected function loadForceApi($app = null, $debug = false) {
-    	return $this->loadApi($app, $debug);
+    	return $this->loadApiV2($app, $debug);
     }
 
     protected function loadApi($app = null, $debug = false) {
@@ -138,14 +143,17 @@ class Module {
 
     protected function loadApiV2($app = null, $debug = false) {
 
+        // Get the config
         $config = get_oauth_config($app);
 
+        // Get the requested route from the list of routes loaded in the module.
+        $requestedRoute = substr($this->getRequest()->url, 1); // This will not work with a route that takes parameters, but would a route that takes parameters ever require a flow other than username password?
+        $route = $this->getRoute($requestedRoute);
 
-        $requstedRoute = explode("/", $this->getRequest()->url)[1];
-        $routes = $this->getInfo()["routes"];
-        $route = $routes[$requestedRoute];
-
-        $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamepassword";  // This is questionable.
+        // If a OAuth flow is set on the route get that flow, and get the
+        // access token that is stored in at the index of the flow for the connected app.
+        // Refresh token does not work with the username password flow.
+        $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamepassword";
         
         $accessToken = Session::get($config->getName(), $flow, "access_token");
         $instanceUrl = Session::get($config->getName(), $flow, "instance_url");

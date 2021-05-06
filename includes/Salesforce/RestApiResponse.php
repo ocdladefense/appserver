@@ -50,6 +50,13 @@ class RestApiResponse extends HttpResponse {
 
         parent::__construct($body);
 
+        // var_dump($this->getErrorCode());exit;
+
+
+        // if($this->getErrorCode() == self::SESSION_ACCESS_TOKEN_EXPIRED_ERROR_CODE){
+
+        //     var_dump("The session is expired.  What are you going to do about it?");exit;
+        // }
 
 
         if(!empty($this->getBody()["errorCode"]) || !empty($this->getBody()["error"])){
@@ -107,7 +114,7 @@ class RestApiResponse extends HttpResponse {
     }
     public function getConfig(){
 
-        return $this->config != null ? $this->config->getName() : null;
+        return $this->config != null ? $this->config : null;
     }
 
     public function setConfig($config){
@@ -195,6 +202,17 @@ class RestApiResponse extends HttpResponse {
 
         return null;
     }
+
+    public function getErrorcode() {
+
+        if(!$this->success()) {
+
+            $this->errors = RestApiErrorCollection::fromArray($this->getBody());
+            return $this->errors->getFirst()->getCode();   
+        }
+
+        return null;
+    }
     
     
 }
@@ -214,6 +232,11 @@ class RestApiError {
     public function getMessage(){
 
         return $this->message;
+    }
+
+    public function getCode(){
+
+        return $this->errorCode;
     }
 }
 

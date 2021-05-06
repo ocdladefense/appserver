@@ -94,9 +94,12 @@ class RestApiRequest extends HttpRequest {
         $resp = $http->send($this, true);
         $resp->setConfig($this->getConfig());
 
-        // $http->printSessionLog(); exit;
-
         return $resp;
+    }
+
+    public function getAccessToken(){
+
+        return $this->accessToken;
     }
 
     public function getConfig(){
@@ -270,11 +273,11 @@ class RestApiRequest extends HttpRequest {
 
         $resp = $this->send($endpoint);
 
-        if(!$resp->isSuccess()){
+        // if(!$resp->isSuccess()){
 
-			$message = $resp->getErrorMessage();
-			throw new \Exception($message);
-		}
+		// 	$message = $resp->getErrorMessage();
+		// 	throw new \Exception($message);
+		// }
 
         return $resp;
 

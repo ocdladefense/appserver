@@ -100,6 +100,7 @@ class OAuthRequest extends HttpRequest {
 
 	public static function refreshAccessTokenRequest($config, $flow) {
 
+
 		$flowConfig = $config->getFlowConfig($flow);
 
 		$body = array(
@@ -115,7 +116,11 @@ class OAuthRequest extends HttpRequest {
 		
 		$req->setMethod("POST");
 		$req->setBody($body);
-		$req->addHeader(new HttpHeader("Content-Type","application/x-www-form-urlencoded")); 
+		$req->addHeader(new HttpHeader("Content-Type","application/x-www-form-urlencoded"));
+
+		// $resp = $req->authorize();
+
+		// var_dump($resp->getBody());exit;
 
 		return $req;
 	}
