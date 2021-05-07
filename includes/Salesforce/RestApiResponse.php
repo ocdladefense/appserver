@@ -80,10 +80,7 @@ class RestApiResponse extends HttpResponse {
 
     public function getRecords(){
 
-        if($this->isSuccess() && $this->body["records"] != null){
-
-            return $this->body["records"];
-        }
+        return $this->body["records"];
     }
     
 
