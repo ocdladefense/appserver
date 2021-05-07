@@ -100,6 +100,10 @@ class OAuthRequest extends HttpRequest {
 
 	public static function refreshAccessTokenRequest($config, $flow) {
 
+		if(\Session::get($onfig->getName(), $flow, "refresh_token") == null){
+
+			throw new \Exception("OAUTH_REQUEST_ERROR: You don't have a 'refresh_token' in you session.  You may have to delete your session and reauthorize using the 'web server' oauth flow.");
+		}
 
 		$flowConfig = $config->getFlowConfig($flow);
 
