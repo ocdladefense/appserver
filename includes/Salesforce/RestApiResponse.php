@@ -26,8 +26,6 @@ class RestApiResponse extends HttpResponse {
 
     private $sObjects;
 
-    private $config;
-
     
     private static $errorCodes = array(
         0 => "Invalid URl",
@@ -49,14 +47,6 @@ class RestApiResponse extends HttpResponse {
         $body = null != $body ? json_decode($body, true) : null;
 
         parent::__construct($body);
-
-        // var_dump($this->getErrorCode());exit;
-
-
-        // if($this->getErrorCode() == self::SESSION_ACCESS_TOKEN_EXPIRED_ERROR_CODE){
-
-        //     var_dump("The session is expired.  What are you going to do about it?");exit;
-        // }
 
 
         if(!empty($this->getBody()["errorCode"]) || !empty($this->getBody()["error"])){
@@ -111,15 +101,6 @@ class RestApiResponse extends HttpResponse {
     public function getRecordCount(){
 
         return count($this->getRecords());
-    }
-    public function getConfig(){
-
-        return $this->config != null ? $this->config : null;
-    }
-
-    public function setConfig($config){
-
-        $this->config = $config;
     }
 
 
