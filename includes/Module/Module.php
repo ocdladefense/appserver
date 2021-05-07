@@ -36,7 +36,7 @@ class Module {
     
 
     public function __construct($path = null){
-        
+
     	$this->path = $path;
     	$this->className = get_class($this);
     }
@@ -145,27 +145,10 @@ class Module {
     
     protected function loadForceApi($app = null, $debug = false) {
 
-    	return $this->loadApiV2($app, $debug);
+    	return $this->loadApi($app, $debug);
     }
 
-    protected function loadApi($app = null, $debug = false) {
-
-        $config = get_oauth_config($app);
-        $oauth = OAuthRequest::usernamePasswordFlowAccessTokenRequest($config, "usernamepassword");
-
-        $resp = $oauth->authorize();
-		
-	    if($debug) var_dump($config, $oauth, $resp);
-        
-        
-        if(!$resp->success()) {
-            throw new Exception("OAUTH_RESPONSE_ERROR: {$resp->getErrorMessage()}");
-        }
-    
-        return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
-    }
-
-    protected function loadApiV2($connectedAppName = null) {
+    protected function loadApi($connectedAppName = null) {
 
         $config = get_oauth_config($connectedAppName);
         
@@ -184,7 +167,7 @@ class Module {
         return $req;
     }
 
-    protected function execute($soql, $queryType = "query") {
+    protected function execute($soql, $queryType, $debug = false) {
 
         $api = $this->loadForceApi();
 
@@ -207,7 +190,7 @@ class Module {
             $api = $this->loadForceApi();  // Why cant I do this "$api->setAccessToken($accessToken);" ? 
             $resp = call_user_func(array($api, $queryType), $soql);
 			
-			$message = "ACCESS TOKEN WAS REFRESHED";
+			if($debug) $message = "ACCESS TOKEN WAS REFRESHED";
 
 		} else if(!$resp->success()) {
 
@@ -215,10 +198,10 @@ class Module {
 
 		} else {
 
-			$message = "ACCESS TOKEN WAS NOT REFRESHED";
+			if($debug) $message = "ACCESS TOKEN WAS NOT REFRESHED";
 		}
 
-        return array("response" => $resp, "message" => $message);
+        return $debug ? array("response" => $resp, "message" => $message) : $resp;
 
     }
 
@@ -245,3 +228,21 @@ class Module {
         return json_encode($this->getRoutes());
     }
 }
+
+
+// protected function loadApiOld($app = null, $debug = false) {
+
+//     $config = get_oauth_config($app);
+//     $oauth = OAuthRequest::usernamePasswordFlowAccessTokenRequest($config, "usernamepassword");
+
+//     $resp = $oauth->authorize();
+    
+//     if($debug) var_dump($config, $oauth, $resp);
+    
+    
+//     if(!$resp->success()) {
+//         throw new Exception("OAUTH_RESPONSE_ERROR: {$resp->getErrorMessage()}");
+//     }
+
+//     return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+// }
