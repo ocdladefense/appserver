@@ -36,6 +36,7 @@ class Module {
     
 
     public function __construct($path = null){
+        
     	$this->path = $path;
     	$this->className = get_class($this);
     }
