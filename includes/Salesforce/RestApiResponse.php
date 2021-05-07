@@ -1,11 +1,6 @@
 <?php
 
-
-
-
 namespace Salesforce;
-
-
 
 use Http\HttpResponse;
 
@@ -14,7 +9,7 @@ class RestApiResponse extends HttpResponse {
     const DEFAULT_DECODING_SCHEME = "associative_array";
     const OBJECT_DECODING_SCHEME = "object";
     const JSON_DECODING_SCHEME = "json";
-    const SESSION_ACCESS_TOKEN_EXPIRED_ERROR_CODE = "INVALID_SESSION_ID";
+
 
     private $errorMessage;
 

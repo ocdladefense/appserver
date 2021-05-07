@@ -286,6 +286,8 @@ class Application {
         //  and begin using it.
         $module = $loader->loadObject($moduleName);
 
+        $module->setCurrentRoute($route);
+
         set_active_module($module);
         
         $func = $route["callback"];
@@ -410,16 +412,15 @@ class Application {
     }
     
     
-    
 
 
-		public function getLoader() {
-			return $this->loader;
-		}
+    public function getLoader() {
+        return $this->loader;
+    }
 
-		public function getRoutes() {
-			return $this->routes;
-		}
+    public function getRoutes() {
+        return $this->routes;
+    }
 
     //Setters
     public function setModuleLoader($loader){

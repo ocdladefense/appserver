@@ -56,10 +56,11 @@ class ModuleLoader {
     
     // Require each of the dependencies for each module
     public static function getInstance($moduleName, $info = null) {
-    		if(empty($moduleName)) {
-    			throw new Exception("MODULE_ERROR: Cannot instantiate empty module class.");
-    		}
-    		
+
+        if(empty($moduleName)) {
+            throw new Exception("MODULE_ERROR: Cannot instantiate empty module class.");
+        }
+    	
         $className = ucwords($moduleName,"-\t\r\n\f\v");
         $className = str_replace("-","",$className)."Module";
         $moduleClass = new $className($info["path"]);

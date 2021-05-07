@@ -7,30 +7,25 @@ use Salesforce\OAuth;
 
 class Module {
 
+    const SESSION_ACCESS_TOKEN_EXPIRED_ERROR_CODE = "INVALID_SESSION_ID";
 
     protected $routes = array();
-    
+
+    protected $currentRoute;
     
     protected $dependencies = array();
 
-
     protected $files = array();
 
-
     protected $info;
-    
-    
+
     protected $name;
-    
     
     protected $path;
 
-
     protected $request;
     
-    
     protected $theme;
-    
     
     protected $user;
     
@@ -46,85 +41,113 @@ class Module {
     }
     
 
+    // Getters
     public function getPath() {
-        // $reflector = new \ReflectionClass($this->className);
-        // return $reflector->getFileName();
 
         return $this->path;
     }
 
     public function getRelPath() {
+        
         return $this->path;
     }
 
-    public function setPath($path){
-        $this->path = $path;
+    public function getFiles(){
+
+        return $this->files;
     }
 
-    public function setName($name){
-        $this->name = $name;
-    }
+    public function getLanguages(){
 
-	public function setLanguages($languages){
-        $this->languages = $languages;
-    }	
-
-	public function setLanguageFiles($languageFiles){
-        $this->languageFiles = $languageFiles;
+        return $this->languages;
     }
     
 	public function getLanguageFiles(){
+
         return $this->languageFiles;
     }
 
-    public function getRoutes(){
-        return $this->info["routes"];
+    public function getCurrentRoute(){
+
+        return $this->currentRoute;
     }
-
-    public function getRoute($index){
-
-        return $this->info["routes"][$index];
-    }
-
-
 
     public function getDependencies(){
+
         return $this->dependencies;
     }
 
+    public function getInfo(){
 
-    public function setRequest($request){
-        $this->request = $request;
+        return $this->info;
+    }
+    
+    public function get($key){
+
+        return $this->info[$key];
     }
 
-
     public function getRequest(){
+
         return $this->request;
     }
     
     
-    public function setTheme($theme) {
-    	$this->theme = $theme;
-    }
-    
-    
-    
     public function getTheme() {
+
     	return $this->theme;
     }
 
 
-    public function requireDependencies() {
+    // Setters
+    public function setPath($path){
 
+        $this->path = $path;
     }
+
+    public function setName($name){
+
+        $this->name = $name;
+    }
+
+	public function setLanguages($languages){
+
+        $this->languages = $languages;
+    }	
+
+	public function setLanguageFiles($languageFiles){
+
+        $this->languageFiles = $languageFiles;
+    }
+
+    public function setCurrentRoute($route){
+
+        $this->currentRoute = $route;
+    }
+
+    public function setInfo($info){
+
+        $this->info = $info;
+    }
+
+    public function setRequest($request){
+
+        $this->request = $request;
+    }    
+    
+    public function setTheme($theme) {
+
+    	$this->theme = $theme;
+    }
+
+    // Other functions
     
     protected function loadForceApi($app = null, $debug = false) {
+
     	return $this->loadApiV2($app, $debug);
     }
 
     protected function loadApi($app = null, $debug = false) {
-    
-
 
         $config = get_oauth_config($app);
         $oauth = OAuthRequest::usernamePasswordFlowAccessTokenRequest($config, "usernamepassword");
@@ -141,15 +164,12 @@ class Module {
         return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
     }
 
-    protected function loadApiV2($app = null, $debug = false) {
+    protected function loadApiV2($connectedAppName = null) {
 
-        // Get the config
-        $config = get_oauth_config($app);
-
-        // Get the requested route from the list of routes loaded in the module.
-        $requestedRoute = substr($this->getRequest()->url, 1); // This will not work with a route that takes parameters, but would a route that takes parameters ever require a flow other than username password?
-        $route = $this->getRoute($requestedRoute);
-
+        $config = get_oauth_config($connectedAppName);
+        
+        $route = $this->getCurrentRoute();
+        
         // If a OAuth flow is set on the route get that flow, and get the
         // access token that is stored in at the index of the flow for the connected app.
         // Refresh token does not work with the username password flow.
@@ -159,56 +179,68 @@ class Module {
         $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
 
         $req = new RestApiRequest($instanceUrl, $accessToken);
-        $req->setConfig($config);
 
         return $req;
     }
 
+    protected function execute($soql, $queryType = "query") {
+
+        $api = $this->loadForceApi();
+
+        $resp = call_user_func(array($api, $queryType), $soql);
+
+		if(!$resp->success() && $resp->getErrorCode() == self::SESSION_ACCESS_TOKEN_EXPIRED_ERROR_CODE){
+
+            // Get the current route so that you can get the oauth flow if there is one set.
+            $route = $this->getCurrentRoute();
+            $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamepassword";
+
+			$config = get_oauth_config($this->getInfo()["connectedApp"]);
+			$req = OAuthRequest::refreshAccessTokenRequest($config, $flow);
+			$oauthResp = $req->authorize();
+
+			$accessToken = $oauthResp->getAccessToken();
+
+			\Session::set($config->getName(), $flow, "access_token", $accessToken);
+
+            $api = $this->loadForceApi();  // Why cant I do this "$api->setAccessToken($accessToken);" ? 
+            $resp = call_user_func(array($api, $queryType), $soql);
+			
+			$message = "ACCESS TOKEN WAS REFRESHED";
+
+		} else if(!$resp->success()) {
+
+			throw new Exception($resp->getErrorMessage());
+
+		} else {
+
+			$message = "ACCESS TOKEN WAS NOT REFRESHED";
+		}
+
+        return array("response" => $resp, "message" => $message);
+
+    }
 
     public function hasDependencies() {
     
         return !empty($this->dependencies);
     }
 
-
-    public function getFiles(){
-        return $this->files;
-    }
-
-    public function getLanguages(){
-        return $this->languages;
-    }
-
-
-
     public function loadFile($file){
-				require_once("/{$this->path}/src/".$file);
-    }
 
+        require_once("/{$this->path}/src/".$file);
+    }
 
     public function loadFiles(){
+
         foreach ($this->files as $file){
+
             $this->loadFile($file);
         }
     }
 
-    public function setInfo($info){
-
-        $this->info = $info;
-    }
-
-    public function getInfo(){
-
-        return $this->info;
-    }
-    
-    public function get($key){
-
-        return $this->info[$key];
-    }
     public function toJson() {
-
-
-			return json_encode($this->getRoutes());
+        
+        return json_encode($this->getRoutes());
     }
 }
