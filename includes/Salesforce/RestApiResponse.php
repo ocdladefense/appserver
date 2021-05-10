@@ -1,11 +1,6 @@
 <?php
 
-
-
-
 namespace Salesforce;
-
-
 
 use Http\HttpResponse;
 
@@ -14,7 +9,7 @@ class RestApiResponse extends HttpResponse {
     const DEFAULT_DECODING_SCHEME = "associative_array";
     const OBJECT_DECODING_SCHEME = "object";
     const JSON_DECODING_SCHEME = "json";
-    const SESSION_ACCESS_TOKEN_EXPIRED_ERROR_CODE = "INVALID_SESSION_ID";
+
 
     private $errorMessage;
 
@@ -25,8 +20,6 @@ class RestApiResponse extends HttpResponse {
     private $hasError;
 
     private $sObjects;
-
-    private $config;
 
     
     private static $errorCodes = array(
@@ -49,7 +42,6 @@ class RestApiResponse extends HttpResponse {
         $body = null != $body ? json_decode($body, true) : null;
 
         parent::__construct($body);
-
 
 
         if(!empty($this->getBody()["errorCode"]) || !empty($this->getBody()["error"])){
@@ -88,10 +80,7 @@ class RestApiResponse extends HttpResponse {
 
     public function getRecords(){
 
-        if($this->isSuccess() && $this->body["records"] != null){
-
-            return $this->body["records"];
-        }
+        return $this->body["records"];
     }
     
 
@@ -104,15 +93,6 @@ class RestApiResponse extends HttpResponse {
     public function getRecordCount(){
 
         return count($this->getRecords());
-    }
-    public function getConfig(){
-
-        return $this->config != null ? $this->config->getName() : null;
-    }
-
-    public function setConfig($config){
-
-        $this->config = $config;
     }
 
 
@@ -195,6 +175,17 @@ class RestApiResponse extends HttpResponse {
 
         return null;
     }
+
+    public function getErrorcode() {
+
+        if(!$this->success()) {
+
+            $this->errors = RestApiErrorCollection::fromArray($this->getBody());
+            return $this->errors->getFirst()->getCode();   
+        }
+
+        return null;
+    }
     
     
 }
@@ -214,6 +205,11 @@ class RestApiError {
     public function getMessage(){
 
         return $this->message;
+    }
+
+    public function getCode(){
+
+        return $this->errorCode;
     }
 }
 
