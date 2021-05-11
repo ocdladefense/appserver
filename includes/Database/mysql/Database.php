@@ -5,6 +5,7 @@ namespace Mysql;
 use DbInsertResult;
 use DbDeleteResult;
 use DbUpdateResult;
+use QueryBuilder;
 use DbException;
 
 
@@ -99,4 +100,92 @@ class Database {
             }
             return $parsedResults;
     }
+}
+
+// THESE GLOBAL FUNCTIONS ARE OUTSIDE OF THE DATABASE CLASS!
+
+
+function select($query) {
+	$tokens = explode(" ", strtolower($query));
+	$tokens = implode(" ", array_filter($query));
+	
+	$parts = preg_split("/\s(select|from|where)\s+/",$tokens);
+	
+	print_r($parts);
+	
+	
+	$fields = $parts[0];
+	$object = $parts[1];
+	$conditions = $parts[2];
+	
+	$results = MysqlDatabase::query($query);
+
+	
+	return new ListObject($object,$results);
+}
+
+
+
+
+
+//Global insert function that calls the insert method of the MysqlDatabase class.
+function insert($objs = array(), $isSalesforce = false){
+
+    $objs = !is_array($objs) ? [$objs] : $objs;
+    $invalid = array_filter($objs, function($obj){return $obj->id !== null;});
+
+    if(count($invalid) > 0){
+        throw new DbException("Object Id must be null");
+    }
+
+    if($isSalesforce){
+
+        $force = new Salesforce();
+		return $force->createRecords($sObjectName, $records);
+    }
+		
+    $sample = $objs[0];
+
+    $columns = getObjectFields($sample);
+
+    $values = getObjectValues($objs);
+    
+    $tableName = strtolower(get_class($objs[0]));
+
+    //use the querybuilder to build insert statement
+    $builder = new QueryBuilder();
+    $builder->setType("insert");
+    $builder->setTable($tableName);
+    $builder->setColumns($columns);
+    $builder->setValues($values);
+    $sql = $builder->compile();
+
+    $db = new Database();
+    $insertResult = $db->insert($sql);
+    $counter = 0;
+
+    //give each insertResult an id to save the status of the insert for each object and save it in the application state. 
+    foreach($insertResult as $autoId){
+        $objs[$counter++]->id = $autoId;
+
+    }
+   
+}
+
+function getObjectFields($obj){
+
+    if($obj === null){
+        throw new DbException("Given object cannot be null");
+    }
+
+    $fields = get_object_vars($obj);
+
+    return array_keys($fields);
+}
+
+function getObjectValues($objs){
+
+    $values = array_map("get_object_vars",$objs);
+
+    return $values;
 }
