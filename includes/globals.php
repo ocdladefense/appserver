@@ -158,6 +158,15 @@ function user_get_initials() {
 }
 
 
+function current_user(){
+	$connectedApp = "letter-links";
+	$flow = "webserver";//set globally
+	//$_SESSION["connecte"][$flow]["user"];
+	return \Session::get($connectedApp, $flow, "user");
+	//should this be deserialized into a user class?
+}
+
+
 function get_oauth_config($key = null) {
 
 	global $oauth_config;

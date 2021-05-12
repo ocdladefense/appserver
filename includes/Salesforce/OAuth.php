@@ -41,10 +41,13 @@ class OAuth {
         if($refreshToken != null) \Session::set($connectedApp, $flow, "refresh_token", $refreshToken);
         \Session::set($connectedApp, $flow, "instance_url", $instanceUrl);
         \Session::set($connectedApp, $flow, "access_token", $accessToken);
-        \Session::set($connectedApp, $flow, "userId", OAuth::getUserId($connectedApp, $flow));
+        $userInfo = OAuth::getUser($connectedApp, $flow);
+        \Session::set($connectedApp, $flow, "userId", $userInfo["user_id"]);
+        \User::add_session_data($userInfo,"salesforce",$connectedApp);
+  
     }
 
-    public static function getUserId($connectedApp, $flow){
+    public static function getUser($connectedApp, $flow){
 
 		$accessToken = \Session::get($connectedApp, $flow, "access_token");
 		$instanceUrl = \Session::get($connectedApp, $flow, "instance_url");
@@ -54,9 +57,7 @@ class OAuth {
 		$req = new RestApiRequest($instanceUrl, $accessToken);
 
 		$resp = $req->send($url);
-
-		$userInfo = $resp->getBody();
 		
-		return $userInfo["user_id"];
+		return $resp->getBody();
 	}
 }
