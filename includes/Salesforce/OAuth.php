@@ -3,6 +3,7 @@
 namespace Salesforce;
 
 use Http\HttpHeader;
+use Http\HttpRequest as HttpRequest;
 
 class OAuth {
 
@@ -43,8 +44,9 @@ class OAuth {
         \Session::set($connectedApp, $flow, "access_token", $accessToken);
         $userInfo = OAuth::getUser($connectedApp, $flow);
         \Session::set($connectedApp, $flow, "userId", $userInfo["user_id"]);
-        \User::add_session_data($userInfo,"salesforce",$connectedApp);
-  
+        //setting user
+        $user = new \User($userInfo,"salesforce");
+        \User::setUserSession($user,$connectedApp,$flow,"user");
     }
 
     public static function getUser($connectedApp, $flow){
@@ -60,4 +62,34 @@ class OAuth {
 		
 		return $resp->getBody();
 	}
+
+    public static function logout($connectedApp, $flow, $sandbox = false){
+		$accessToken = \Session::get($connectedApp, $flow, "access_token");
+        $url = "https://login.salesforce.com/services/oauth2/revoke?token=";
+        if($sandbox){
+            $url = "https://test.salesforce.com/services/oauth2/revoke?token=";
+        }
+        
+
+        $req = new \Http\HttpRequest();
+        $req->setUrl($url.$accessToken);
+        $req->setMethod("GET");
+        $config = array(
+            "returntransfer" 		=> true,
+            "useragent" 				=> "Mozilla/5.0",
+            "followlocation" 		=> true,
+            "ssl_verifyhost" 		=> false,
+            "ssl_verifypeer" 		=> false
+        );
+
+        $http = new \Http\Http($config);
+    
+        $resp = $http->send($req, true);
+        if($resp->getStatusCode() == 200){
+            $accessToken = \Session::set($connectedApp, $flow, "access_token",null);
+            \Session::set($connectedApp, $flow, "user",null);
+            return true;
+        }
+        return false;
+    }
 }

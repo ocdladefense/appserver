@@ -160,6 +160,8 @@ class Application {
 
         //  This is the module flow not the route flow
         $connectedAppName = $module->get("connectedApp");
+        //get the connected app config from the module
+        //if there is a default then include it on the module
         $config = get_oauth_config($connectedAppName);
 
         if(!is_user_authorized($module)){

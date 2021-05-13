@@ -158,12 +158,14 @@ function user_get_initials() {
 }
 
 
-function current_user(){
-	$connectedApp = "letter-links";
-	$flow = "webserver";//set globally
-	//$_SESSION["connecte"][$flow]["user"];
-	return \Session::get($connectedApp, $flow, "user");
-	//should this be deserialized into a user class?
+function current_user($connectedApp = null, $flow = null){
+
+	$connectedApp = "salesforce";
+	$flow = "webserver";//get from config later?
+
+	//$_SESSION["connectedApp"][$flow]["user"];
+	//\Session::get($connectedApp, $flow, "user");
+	return User::getUserFromSession($connectedApp, $flow);
 }
 
 

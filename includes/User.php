@@ -1,43 +1,59 @@
 <?php
 
 class User {
-	private $json ="";
+	private $data ="";
 	private $userId;
 	private $salesforceData = array();
-	private $name;
-	private $firstName;
-	private $lastName;
+	public $name;
+	public $firstName;
+	public $lastName;
+	public $username;
+	public $shortUsername;
+	private $connectedApp;
+	private $flow;
 
-	public static function add_session_data($saml = array(),$type = null,$connectedApp = "salesforce") {
-		if($type == "slalesforce"){
-			\Session::set($connectedApp, "user", $userInfo);
-			User::$json = json_decode($saml);
-			User::$userId = $saml["user_id"];
-			User::$salesforceData["organization_id"] = $saml["organization_id"];
-			User::$salesforceData["preferred_username"] = $saml["preferred_username"];
-			User::$salesforceData["nickname"] = $saml["nickname"];
-			User::$name = $saml["name"];
-			User::$firstName = $saml["given_name"];
-			User::$lastName = $saml["family_name"];
-			User::$salesforceData["zoneinfo"] = $saml["zoneinfo"];
-			User::$salesforceData["photos"] = array(
-				"picture" => $saml["photos"]["picture"],
-				"thumbnail" => $saml["photos"]["picture"],
-			);
+	public function __construct($user = array(), $type = "salesforce")
+	{
+		$this->data = $user;
+		if(is_array($user) && $type =="salesforce"){
+			$this->userId = $user["user_id"];
+			$this->salesforceData["organization_id"] = $user["organization_id"];
+			$this->salesforceData["preferred_username"] = $user["preferred_username"];
+			$this->salesforceData["nickname"] = $user["nickname"];
+			$this->name = $user["name"];
+			$this->firstName = $user["given_name"];
+			$this->lastName = $user["family_name"];
+			$this->username = $user["preferred_username"];
+			$this->shortUsername = substr($user["preferred_username"], 0, 22)."...";
+			$this->salesforceData["zoneinfo"] = $user["zoneinfo"];
+			$this->salesforceData["photos"] = $user["photos"];
 		}
-		$userId 				= $saml["userId"][0];
-		$username 			= $saml["username"][0];
-		$email 					= $saml["email"][0];
-		$isPortalUser 	= $saml["is_portal_user"][0];
+	}
+
+	public static function setUserSession($user, $connectedApp, $flow, $name = "user"){
+		return Session::set($connectedApp,$flow, $name, $user);
+	}
+
+	public static function getUserFromSession($connectedApp, $flow, $name = "user"){
+		return Session::get($connectedApp,$flow, $name);
+	}
+
+	public static function add_session_data($saml = array()) {		
+		if(!empty($saml)){
+			$userId 				= $saml["userId"][0];
+			$username 			= $saml["username"][0];
+			$email 					= $saml["email"][0];
+			$isPortalUser 	= $saml["is_portal_user"][0];
+			
 		
-	
-		$_SESSION["userId"] 			= $userId;
-		$_SESSION["username"] 		= $username;
-		$_SESSION["email"] 				= $email;
-		$_SESSION["isPortalUser"] = $isPortalUser;
-		$_SESSION["FirstName"]		= $firstName;
-		$_SESSION["LastName"] 		= $lastName;
-		$_SESSION["initials"] 		= substr($firstName, 0, 1) . substr($lastName, 0, 1);
+			$_SESSION["userId"] 			= $userId;
+			$_SESSION["username"] 		= $username;
+			$_SESSION["email"] 				= $email;
+			$_SESSION["isPortalUser"] = $isPortalUser;
+			$_SESSION["FirstName"]		= $firstName;
+			$_SESSION["LastName"] 		= $lastName;
+			$_SESSION["initials"] 		= substr($firstName, 0, 1) . substr($lastName, 0, 1);
+		}
 	}
 
 
