@@ -24,7 +24,7 @@ class User {
 			$this->firstName = $user["given_name"];
 			$this->lastName = $user["family_name"];
 			$this->username = $user["preferred_username"];
-			$this->shortUsername = substr($user["preferred_username"], 0, 22)."...";
+			$this->shortUsername = substr($user["preferred_username"], 0, 18)."...";
 			$this->salesforceData["zoneinfo"] = $user["zoneinfo"];
 			$this->salesforceData["photos"] = $user["photos"];
 		}
