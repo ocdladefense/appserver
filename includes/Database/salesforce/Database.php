@@ -256,7 +256,7 @@ class Database {
 		$noConds = explode("WHERE", $sql);
 
 		//"UPDATE Media__C SET ResourceID__c = 'EtoqHACEnsQ' 
-		$stmt = explode("UPDATE", $noConds);
+		$stmt = explode("UPDATE", $noConds[0]);
 
 		// Media__C SET ResourceID__c = 'EtoqHACEnsQ' 
 		$splitStmt = explode("SET", $stmt[1]);
