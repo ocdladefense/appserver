@@ -15,9 +15,29 @@ class ContentDocument extends SalesforceFile { // implements ISObject
 
     public $isLocal = false;
 
+    public $Name;
+
+
     public function __construct($id = null){ // Maybe the default constructor takes the Id.
 
         $this->Id = $id;
+    }
+
+    public static function newFromSalesforceRecord($record){
+        //creates an instance/object of ContentDocument by reference using the record id
+        $myDocument = new ContentDocument($record["Id"]);
+        //retrieves the value in the "Title" Element in the ContentDocument array of record
+        $name = $record["ContentDocument"]["Title"];
+        //calls setName() passes in the name; giving $myDocument the property $Name
+        $myDocument->setName($name);
+        
+        return $myDocument;
+        
+    }
+
+    public function setName($name){
+
+        $this->Name = $name;
     }
 
     public function setId($id){
@@ -62,7 +82,7 @@ class ContentDocument extends SalesforceFile { // implements ISObject
     public static function fromArray($obj){
 
         $sfFile = new Attachment();
-        $sfFile->Id = $ojb["id"];
+        $sfFile->Id = $obj["id"];
 
         return $sfFile;
     }
@@ -72,9 +92,30 @@ class ContentDocument extends SalesforceFile { // implements ISObject
         $obj = json_decode($json);
 
         $sfFile = new Attachment();
-        $sfFile->Id = $ojb->id;
+        $sfFile->Id = $obj->id;
 
         return $sfFile;
+    }
+
+    public function getName(){
+        //$doc = $this->Id;
+        //$name = $doc["ContentDocument"]["Title"];
+       
+        $name = $this->Name;
+        //var_dump($name);exit;
+        $parts = explode(".", $name);
+        $ext = array_pop($parts); 
+        $name = implode(".", $parts);
+        $tooLong = strlen($name) > 20;
+        $short = substr($name, 0, 10);
+
+        //no extension appended "." prepended to the front of name?
+        $filename = ($tooLong ? ($short . "...") : ($name.".")) . $ext;
+
+
+       //var_dump($filename); exit; // dumps appropriate $filename. ~ well did 
+       return $filename;
+					
     }
 
     // Always produce an object that is compatible with the salesforce simple object endpoint.
