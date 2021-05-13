@@ -98,8 +98,6 @@ class ContentDocument extends SalesforceFile { // implements ISObject
     }
 
     public function getName(){
-        //$doc = $this->Id;
-        //$name = $doc["ContentDocument"]["Title"];
        
         $name = $this->Name;
         //var_dump($name);exit;
@@ -109,7 +107,7 @@ class ContentDocument extends SalesforceFile { // implements ISObject
         $tooLong = strlen($name) > 20;
         $short = substr($name, 0, 10);
 
-        //no extension appended "." prepended to the front of name?
+        //no extension appended "." prepended to the front of name? PROBABLY WHY THIS RUBBISH MADE NO SENSE!!
         $filename = ($tooLong ? ($short . "...") : ($name.".")) . $ext;
 
 
