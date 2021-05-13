@@ -102,7 +102,7 @@
 
 	require_once BASE_PATH.'/includes/Application.php';
 
-	require_once BASE_PATH.'/includes/Salesforce/Salesforce.php';
+	//require_once BASE_PATH.'/includes/Salesforce/Salesforce.php';
 	require_once BASE_PATH.'/includes/Salesforce/RestApiResult.php';	
 	require_once BASE_PATH.'/includes/Salesforce/OAuthRequest.php';
 	require_once BASE_PATH.'/includes/Salesforce/OAuthResponse.php';
