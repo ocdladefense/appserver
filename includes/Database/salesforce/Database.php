@@ -1,7 +1,7 @@
 <?php
 
 namespace Salesforce;
-
+//use RestApiRequest;
 
 class Database {
 
@@ -55,7 +55,16 @@ class Database {
 	 
 	}
 	
-	function update($records) {}
+	function update($records) {
+		global $oauth_config;
+
+		var_dump(list($sObjectName, $records) = self::parseUpdate($query));
+
+		//OAuth
+		$salesforce = new RestApiRequest($oauth_config);
+
+		return $salesforce->CreateQueryFromSession($query);
+	}
 	
 	
 	/*
@@ -63,7 +72,7 @@ class Database {
 	
 			$selectQuery = buildSelectFromUpdate($sql);
 			
-			$force = new Salesforce();
+			$force = new RestApiRequest();
 			$records = $force->createQueryFromSession($selectQuery);
 			
 			// parse the UPDATE to get the props.
@@ -80,14 +89,26 @@ class Database {
 	*/
 	
 	
-	function delete($records) {}
-	
-	function select($query) {
+	public static function select($query) {
 		global $oauth_config;
 
+		var_dump(list($sObjectName, $records) = self::parseSelect($query));
+
 		//OAuth
-		$salesforce = new \Salesforce($oauth_config);
+		$salesforce = new RestApiRequest($oauth_config);
 		
+		return $salesforce->CreateQueryFromSession($query);
+	}
+
+	public static function delete($query){
+		global $oauth_config;
+
+		var_dump(list($sObjectName, $records) = self::parseDelete($query));
+
+
+		//OAuth
+		$salesforce = new RestApiRequest($oauth_config);
+
 		return $salesforce->CreateQueryFromSession($query);
 	}
 	
@@ -101,21 +122,227 @@ class Database {
 		
 	}
 
+	//step 2
 	public static function insert2($query){
 		global $oauth_config;
 
 		//OAuth
-		$salesforce = new \Salesforce($oauth_config);
+		$salesforce = new \RestApiRequest($oauth_config);
+
+		list($sObjectName, $records) = self::parseInsert($query);
+		//var_dump($sObjectName);
+		//var_dump($records);
+		
+		
+		//use For loop to loop through records
+		$batches = $salesforce->prepareBatchInsert($sObjectName, $records);
+		var_dump($batches);
+		
+		$variable2 = $salesforce->sendBatchFromSession($batches);
+		var_dump($variable2);
+		//return $salesforce->sendBatch();
+
+		return $variable2;
+	}
+
+	
+
+	public static function getConditions($sql){
+		
+		$stmt = explode("WHERE", $sql);
+		
+		$numConds = Count($stmt) > 1 ? $stmt[1] : null;
+
+		if($numConds == null)
+			return null;
+		
+		// ResourceId__c = 'YtoqDF8EnsA' OR ResourceId__c = 'EtoqHACEnsQ'"
+		//$conds2 = trim($conds, "\"'");
+
+		// ResourceId__c = 'YtoqDF8EnsA' OR IsPublished__c = true AND ResourceId__c = 'EtoqHACEnsQ'
+		
+		$numORs = preg_split("/\s+OR\s+/", $stmt[1]); //split by OR first
+		$numANDs = preg_split("/\s+AND\s+/", $stmt[1]);
+		//split each index of $conds3 by AND next
+		if(Count($numORs) > 1 && Count($numANDs) > 1){
+			//throw exception
+			throw new Exception("We cannot process conditons with ANDs and ORs");
+		}
+		else if(Count($numORs) == 1 && Count($numANDs) == 1){
+			//1 condition
+		}
+		else if(Count($numORs) > 1){
+			//all ORs
+		}		
+		else if(Count($numANDs) > 1){
+			//all ANDs
+		}
+		
+
+
+		//split each section by = then trim spaces using array_map
+
+		
+		$conditions = array();
+		$values = array();
+		
+		$cond = $stmt[1];
+		
+		$fieldValue = explode("=", $cond);
+
+
+			//trim each index of $fieldValue and turn $field into an array
+			$field = trim($fieldValue[0]);
+			$preValue = trim($fieldValue[1]);
+
+			//trim single quotes from $preValue and turn it into an array
+			$value = trim($preValue, "'");
+
+			//want '' coming in input, but want to strip them out for output using trim(value, "'") using a foreach
+
+			$values[] = $value;
+			$conditions[$field]= $values;
+
+		/*
+		foreach($stmt as $cond){
+
+
+			$fieldValue = explode("=", $cond);
+
+			var_dump($fieldValue);
+
+			//trim each index of $fieldValue and turn $field into an array
+			$field = trim($fieldValue[0]);
+			$preValue = trim($fieldValue[1]);
+
+			//trim single quotes from $preValue and turn it into an array
+			$value = trim($preValue, "'");
+
+			var_dump($field);
+			var_dump($value);
+			//want '' coming in input, but want to strip them out for output using trim(value, "'") using a foreach
+
+			$values[] = $value;
+			$conditions[$field]= $values;
+
+		}
+		*/
+		var_dump($conditions);
 
 		
 
+
+		//return the conditons as an array
+		/*
+		return array(
+			"op" => "OR",//optional
+			"conditions" => array(
+				"ResourceId__c" => "YtoqDF8EnsA",
+				"ResourceId__c" => "EtoqHACEnsQ"
+			)
+		);
+		*/
+
+		return $conditions;
 		
+	}
+
+	public static function parseUpdate($sql){
+		//Example
+		//"UPDATE Media__C SET ResourceID__c = 'EtoqHACEnsQ' WHERE ResourceID__c = 'YtoqDF8EnsA'"
+
+		$conditions = self::getConditions($sql); 
+
+		$noConds = explode("WHERE", $sql);
+
+		//"UPDATE Media__C SET ResourceID__c = 'EtoqHACEnsQ' 
+		$stmt = explode("UPDATE", $noConds[0]);
+
+		// Media__C SET ResourceID__c = 'EtoqHACEnsQ' 
+		$splitStmt = explode("SET", $stmt[1]);
+
+		//[0]: Media__C 
+		//[1]: ResourceID__c = 'EtoqHACEnsQ' 
+		$SObjectName = trim($splitStmt[0]);
+
+		$setValues = explode("=", trim($splitStmt[1]));
 		
-		$getRidofQuotes = function ($item) {
+		$set = array(trim($setValues[0])=>trim($setValues[1]));
+
+		var_dump($set);
+
+		return array("sobject"=>$SObjectName, "set"=>$set, "conditions"=>$conditions);
+
+	}
+
+	public static function parseSelect($sql){
+		//Example
+		//$sql: "Select ResourceId__c FROM Media__c WHERE ResourceId__c = 'YtoqDF8EnsA'"
+
+		var_dump($sql);
+
+		$conditions = self::getConditions($sql);
+
+		$noConds = explode("WHERE", $sql);
+
+		// "Select ResourceId__c FROM Media__c 
+		$stmt = explode("SELECT", $noConds[0]);
+
+		//ResourceId__c FROM Media__c 
+		$splitStmt = explode("FROM", $stmt[1]);
+
+		//ResourceId__c
+		$SObjectName = trim($splitStmt[0]);
+
+		//Media__c
+		$column = trim($splitStmt[1]);
+
+		//this will only works for one SObject so far
+		return array("sobject"=>$SObjectName, "column"=>$column, "conditions"=>$conditions);
+	}
+
+
+	public static function parseDelete($sql){
+		//GOALS
+		//1 Get conditions
+
+		//2 Issue Query   specifically the ID using the given sObjectName
+
+		//3 returns list of results
+
+		//4 Pass the IDs from the results to the API call
+
+		$conditions = self::getConditions($sql);
+		//use a select to select the IDs that match the where clause
+
+		//pass IDs to batch endpoint
+
+		$tmp = explode("WHERE", $sql);
+
+		//[0]:  "DELETE FROM Media__c 
+		//[1]: CONDITIONS
+
+		$tmp2 = explode("FROM", $tmp[0]);
+
+		//[1]: Media__c 
+
+		$SObject = trim($tmp2[1]);
+		
+		var_dump($SObject);
+
+		//array with keys
+		return array("sobject"=>$SObject, "conditions"=>$conditions);
+	}
+
+	
+	//step 1
+	public static function parseInsert($query){
+
+		$getRidOfQuotes = function ($item) {
 			return trim($item, "\"'");
 		};
 
-		$getRidofParen = function ($item) {
+		$getRidOfParen = function ($item) {
 			return trim($item, "()");
 		};
 
@@ -152,9 +379,9 @@ class Database {
 		
 
 		$protoKeyValues = explode("VALUES", $statement);
-
+		
 		printAll($protoKeyValues, "Keys and values.");
-
+		
 		$valueString = preg_replace("/\)\s*,\s*\(/", "),(", $protoKeyValues[1]);  //standardizing multiple records
 		//look up preg_replace on php.net!
 		//IF THERE IS NO PATTERN THEN IT WILL RETURN NULL!!
@@ -177,6 +404,7 @@ class Database {
 		//$SObjectKey[0] is Media__c
 		//$SObjectKey[1] is ResourceId__c,Name, Speakers__c, Description__c, IsPublic__c, Published__c, Date__c)
 
+		$sObjectName = trim($SObjectKey[0]);
 		printAll($SObjectKey, "SObject Keys string is:");
 
 
@@ -231,37 +459,18 @@ class Database {
 			
 
 			//array_map ( callable|null $callback , array $array , array ...$arrays )?
-			$trimmedValues = array_map($getRidofQuotes, $values);
+			$trimmedValues = array_map($getRidOfQuotes, $values);
 
 
 			$record = array_combine($keys, $values);
 			//want '' coming in input, but want to strip them out for output using trim(value, "'") using a foreach
 
-			
-			//array_map ( callable|null $callback , array $array , array ...$arrays )
-
-
-			// $record = array(
-			// 	"ResourceId__c"=>"'YtoqDF8EnsA'",
-			// 	"Name"=>"''",
-			// 	"Speakers__c"=>"''",
-			// 	"Description__c"=>"''",
-			// 	"IsPublic__c"=>true,
-			// 	"Published__c"=>true,
-			// 	"Date__c"=>"''"
-			// );
 
 			$records[] = $record;
 		}
 
-		var_dump($records);
-		
-
-		return $salesforce->createRecordsFromSession($SObjectName, $records);
+		return array($sObjectName, $records);
 	}
-	
-	
-	
 	
 	
 	
