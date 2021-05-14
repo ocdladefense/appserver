@@ -3,6 +3,7 @@
 namespace Salesforce;
 
 use Http\HttpHeader;
+use Http\HttpRequest as HttpRequest;
 
 class OAuth {
 
@@ -41,10 +42,14 @@ class OAuth {
         if($refreshToken != null) \Session::set($connectedApp, $flow, "refresh_token", $refreshToken);
         \Session::set($connectedApp, $flow, "instance_url", $instanceUrl);
         \Session::set($connectedApp, $flow, "access_token", $accessToken);
-        \Session::set($connectedApp, $flow, "userId", OAuth::getUserId($connectedApp, $flow));
+        $userInfo = OAuth::getUser($connectedApp, $flow);
+        \Session::set($connectedApp, $flow, "userId", $userInfo["user_id"]);
+        //setting user
+        $user = new \User($userInfo,"salesforce");
+        \User::setUserSession($user,$connectedApp,$flow,"user");
     }
 
-    public static function getUserId($connectedApp, $flow){
+    public static function getUser($connectedApp, $flow){
 
 		$accessToken = \Session::get($connectedApp, $flow, "access_token");
 		$instanceUrl = \Session::get($connectedApp, $flow, "instance_url");
@@ -54,9 +59,37 @@ class OAuth {
 		$req = new RestApiRequest($instanceUrl, $accessToken);
 
 		$resp = $req->send($url);
-
-		$userInfo = $resp->getBody();
 		
-		return $userInfo["user_id"];
+		return $resp->getBody();
 	}
+
+    public static function logout($connectedApp, $flow, $sandbox = false){
+		$accessToken = \Session::get($connectedApp, $flow, "access_token");
+        $url = "https://login.salesforce.com/services/oauth2/revoke?token=";
+        if($sandbox){
+            $url = "https://test.salesforce.com/services/oauth2/revoke?token=";
+        }
+        
+
+        $req = new \Http\HttpRequest();
+        $req->setUrl($url.$accessToken);
+        $req->setMethod("GET");
+        $config = array(
+            "returntransfer" 		=> true,
+            "useragent" 				=> "Mozilla/5.0",
+            "followlocation" 		=> true,
+            "ssl_verifyhost" 		=> false,
+            "ssl_verifypeer" 		=> false
+        );
+
+        $http = new \Http\Http($config);
+    
+        $resp = $http->send($req, true);
+        if($resp->getStatusCode() == 200){
+            $accessToken = \Session::set($connectedApp, $flow, "access_token",null);
+            \Session::set($connectedApp, $flow, "user",null);
+            return true;
+        }
+        return false;
+    }
 }

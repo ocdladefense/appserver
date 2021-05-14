@@ -158,6 +158,17 @@ function user_get_initials() {
 }
 
 
+function current_user($connectedApp = null, $flow = null){
+
+	$connectedApp = "salesforce";
+	$flow = "webserver";//get from config later?
+
+	//$_SESSION["connectedApp"][$flow]["user"];
+	//\Session::get($connectedApp, $flow, "user");
+	return User::getUserFromSession($connectedApp, $flow);
+}
+
+
 function get_oauth_config($key = null) {
 
 	global $oauth_config;
