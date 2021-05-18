@@ -231,7 +231,7 @@ class Application {
             $resp->setBody($handler->getOutput());
             $resp->addHeaders($handler->getHeaders());
             
-        } catch(Error $error) {
+       } catch(Error $error) {
             $handler = Handler::fromType($error, $route["content-type"]);
 
             $resp->setBody($handler->getOutput());
