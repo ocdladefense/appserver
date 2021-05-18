@@ -12,7 +12,8 @@ class OAuth {
         return $flow == "webserver" ? self::newOAuthResponse($config,$flow) : OAuthRequest::newAccessTokenRequest($config,$flow);
     }
 
-
+    // This is step one.  We are going to make a request to the "auth_url".
+    // We do this by redirecting the user agent to the auth_url.
     public static function newOAuthResponse($config,$flow) {
 
         $flowConfig = $config->getFlowConfig($flow);
