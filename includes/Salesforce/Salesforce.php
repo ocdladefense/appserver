@@ -200,9 +200,9 @@ class Salesforce
 
 
         //commented out to get around too many login errors~not sure why I am getting that message//
-        if ($_SESSION["login_attempts"] > self::MAX_LOGIN_ATTEMPTS) {
+        /*if ($_SESSION["login_attempts"] > self::MAX_LOGIN_ATTEMPTS) {
             throw new Exception("OAUTH_AUTHENTICATION_ERROR: Too many login attempts.");
-        }
+        }*/
 
 
 

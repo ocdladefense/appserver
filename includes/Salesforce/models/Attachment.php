@@ -40,7 +40,7 @@ class Attachment extends SalesforceFile { // implements ISObject
     public static function fromArray($obj){
 
         $sfFile = new Attachment();
-        $sfFile->Id = $ojb["id"];
+        $sfFile->Id = $obj["id"];
 
         return $sfFile;
     }
@@ -50,7 +50,7 @@ class Attachment extends SalesforceFile { // implements ISObject
         $obj = json_decode($json);
 
         $sfFile = new Attachment();
-        $sfFile->Id = $ojb->id;
+        $sfFile->Id = $obj->id;
 
         return $sfFile;
     }
