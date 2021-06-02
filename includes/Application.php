@@ -14,7 +14,7 @@ class Application {
     private static $DEFAULT_HTTP_METHOD = Http\HTTP_METHOD_GET;
 
     private static $DEFAULT_CONTENT_TYPE = Http\MIME_TEXT_HTML;
-    	
+
     // The Module Loader.
     private $loader;
     
@@ -206,6 +206,58 @@ class Application {
 
         $module->setRequest($req);
 
+        if($route["content-type"] == Http\MIME_APPLICATION_JSON) {
+
+            return $this->handleApplicationJsonErrors($module, $route, $params, $resp);
+
+        } else {
+            
+            return $this->handleTextHtmlErrors($module, $route, $params, $resp);
+        }
+    }
+
+    public function handleTextHtmlErrors($module, $route, $params, $resp){
+
+        try {
+
+            if(isset($route["theme"])) {
+                \set_theme("Videos");
+            }
+    
+            $out = $this->getOutput($module, $route, $params);
+    
+            if(self::isHttpResponse($out)){
+    
+                return $out;
+            }
+            
+            if(null == $out) throw new Exception("Callback function returned NULL!");
+            
+            $handler = Handler::fromType($out, $route["content-type"]);
+    
+            $resp->setBody($handler->getOutput());
+            $resp->addHeaders($handler->getHeaders());
+    
+            return $resp;
+
+        } catch(Throwable $e) {
+
+            http_response_code(500);
+            //throw $e;   // Should be able to just do this....Should work without losing the stack trace.
+
+            if(get_class($e) == "Error") {
+
+                throw new Error("XXXX".$e->getMessage(), 500, $e);
+            } else {
+
+                throw new Exception("XXXX".$e->getMessage(), 500, $e);
+            }
+        }
+    }
+
+    
+    public function handleApplicationJsonErrors($module, $route, $params, $resp){
+
         try {
 
             if(isset($route["theme"])) {
@@ -245,7 +297,6 @@ class Application {
 
         return $resp;
     }
-    
     
     
     public function exec($uri) {
@@ -326,42 +377,6 @@ class Application {
 
     	return $this->runHttp($path);
     } 
-
-
-    // NOT BEING USED....................
-    private function handleErrors() {}
-
-
-    // NOT BEING USED....................
-    public function doParameters($module,$route) {
-        
-        $expectedRouteParams = $route->getParameters();
-        $urlNamedParameters = $this->request->getUrlNamedParameters();
-        $args = $this->request->getArguments();
-        $namedParamKeys = array_keys($urlNamedParameters);
-        $params = array();
-
-        //if the parameter is defined by name then use the value for that name otherwise use the value at the current index
-        //Determine which kind of paramter to give preference to.
-        if(!empty($urlNamedParameters) && empty($args)){
-
-            for($i = 0; $i < count($expectedRouteParams); $i++){
-
-                if(in_array($namedParamKeys[$i],$expectedRouteParams)){
-
-                    $params[] = $urlNamedParameters[$namedParamKeys[$i]];
-                }
-
-                if(count($params) == 0){
-
-                    $params = $args;
-                }
-            }
-        } else {
-
-            $params = $args;
-        }
-    }
 
 
     //Other Methods
@@ -457,5 +472,44 @@ class Application {
 
         return is_object($object) && (get_class($object) === "Http\HttpResponse" || is_subclass_of($object, "Http\HttpResponse", False));
 
+    }
+
+
+///////////////////////////   SHOULD WE REMOVE THESES????   //////////////////////////////////////////////////////////////
+
+
+    // NOT BEING USED....................
+    private function handleErrors() {}
+
+
+    // NOT BEING USED....................
+    public function doParameters($module,$route) {
+        
+        $expectedRouteParams = $route->getParameters();
+        $urlNamedParameters = $this->request->getUrlNamedParameters();
+        $args = $this->request->getArguments();
+        $namedParamKeys = array_keys($urlNamedParameters);
+        $params = array();
+
+        //if the parameter is defined by name then use the value for that name otherwise use the value at the current index
+        //Determine which kind of paramter to give preference to.
+        if(!empty($urlNamedParameters) && empty($args)){
+
+            for($i = 0; $i < count($expectedRouteParams); $i++){
+
+                if(in_array($namedParamKeys[$i],$expectedRouteParams)){
+
+                    $params[] = $urlNamedParameters[$namedParamKeys[$i]];
+                }
+
+                if(count($params) == 0){
+
+                    $params = $args;
+                }
+            }
+        } else {
+
+            $params = $args;
+        }
     }
 }
