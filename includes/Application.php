@@ -316,7 +316,7 @@ class Application {
         l("FINISHED");
 
         if(false === $path) {
-
+            http_response_code(404);
             throw new Exception("Could not locate {$uri}.");
         }
 
