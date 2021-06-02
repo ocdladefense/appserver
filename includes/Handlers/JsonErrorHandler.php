@@ -3,7 +3,7 @@ use \Http\HttpHeader as HttpHeader;
 
 class JsonErrorHandler extends Handler {
 
-	public function __construct(Exception $e, $contentType) {
+	public function __construct($e, $contentType) {
 		$this->output = $e;
 		
 		$this->contentType = $contentType;
@@ -13,7 +13,9 @@ class JsonErrorHandler extends Handler {
 	public function getOutput() {
 			// Loads an HTML page with defined scripts, css.
 			return json_encode(array(
-				"error" => $this->output->getMessage()
+				
+				"error" => $this->output->getMessage(),
+				"stack" => $this->output->getTrace()
 			));
 	}
 	
