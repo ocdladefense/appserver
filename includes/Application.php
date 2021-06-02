@@ -243,19 +243,18 @@ class Application {
         } catch(Throwable $e) {
 
             http_response_code(500);
-            //throw $e;   // Should be able to just do this....Should work without losing the stack trace.
 
             if(get_class($e) == "Error") {
 
-                throw new Error("XXXX".$e->getMessage(), 500, $e);
+                throw new Error($e->getMessage(), 0, $e);  // Should figure out an error code.
             } else {
 
-                throw new Exception("XXXX".$e->getMessage(), 500, $e);
+                throw new Exception($e->getMessage(), 0, $e);
             }
         }
     }
 
-    
+
     public function handleApplicationJsonErrors($module, $route, $params, $resp){
 
         try {
