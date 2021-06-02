@@ -14,20 +14,15 @@ class Application {
     private static $DEFAULT_HTTP_METHOD = Http\HTTP_METHOD_GET;
 
     private static $DEFAULT_CONTENT_TYPE = Http\MIME_TEXT_HTML;
-		
-		
-		
+    	
     // The Module Loader.
     private $loader;
-    
     
     // Available routes/commands.
     private $routes = array();
     
-    
     // Incoming request.
     private $req;
-    
     
     // Outgoing response.
     private $resp;
@@ -231,7 +226,16 @@ class Application {
             $resp->setBody($handler->getOutput());
             $resp->addHeaders($handler->getHeaders());
             
-       } catch(Error $error) {
+       } catch(Exception $error) {
+
+            $handler = Handler::fromType($error, $route["content-type"]);
+
+            $resp->setBody($handler->getOutput());
+            $resp->addHeaders($handler->getHeaders());
+            http_response_code(500);
+
+        } catch(Error $error) {
+
             $handler = Handler::fromType($error, $route["content-type"]);
 
             $resp->setBody($handler->getOutput());
@@ -251,7 +255,7 @@ class Application {
     }
         
         
-        // incoming request: maps
+    // incoming request: maps
     public function init($uri) {
 
         $router = new Router();
@@ -313,8 +317,6 @@ class Application {
     }
     
     
-    
-    
     /**
      * For HTTP contexts,
      *  `run` should return an HttpResponse object that will be returned to the
@@ -326,11 +328,11 @@ class Application {
     } 
 
 
-
+    // NOT BEING USED....................
     private function handleErrors() {}
-    
 
 
+    // NOT BEING USED....................
     public function doParameters($module,$route) {
         
         $expectedRouteParams = $route->getParameters();
@@ -338,7 +340,6 @@ class Application {
         $args = $this->request->getArguments();
         $namedParamKeys = array_keys($urlNamedParameters);
         $params = array();
-
 
         //if the parameter is defined by name then use the value for that name otherwise use the value at the current index
         //Determine which kind of paramter to give preference to.
@@ -363,15 +364,14 @@ class Application {
     }
 
 
-
     //Other Methods
     public function secure() { 
 
         $header = $this->resp->getHeader("Content-Type");
         $cType = null;
         
-        
-        if(null != $cType) {
+        if(null != $cType){
+
             $cType = $header->getValue();
         }
         
@@ -387,19 +387,18 @@ class Application {
 
         $content = $resp->getBody();
 
-        
         $collection = $resp->getHeaderCollection();
-        foreach($collection->getHeaders() as $header) {
+        foreach($collection->getHeaders() as $header){
+
             header($header->getName() . ": " . $header->getValue());
         }
-
 
         http_response_code($resp->getStatusCode());
 
         if($resp->isFile()) {
 
             $file = $resp->getBody();
-            if($file->exists()) {
+            if($file->exists()){
 
                 readfile($file->getPath());
 
@@ -413,49 +412,50 @@ class Application {
         print $content;
     }
     
-    
 
-
-    public function getLoader() {
+    public function getLoader(){
         return $this->loader;
     }
 
-    public function getRoutes() {
+    public function getRoutes(){
         return $this->routes;
     }
 
     //Setters
     public function setModuleLoader($loader){
+
         $this->loader = $loader;
     }
     
     public function setRequest($req){
+
         $this->req = $req;
     }
     
-    public function setResponse($resp) {
+    public function setResponse($resp){
+
     	$this->resp = $resp;
     }
     
     public function setRouter($router){
+
         $this->router = $router;
     }
 
     //Getters
     public function getInstance($moduleName){
+
         return $this->loader->getInstance($moduleName);
     }
     
     public function getModules(){
+
         return $this->loader->getModules();
     }
 
-    public static function isHttpResponse($object) {
+    public static function isHttpResponse($object){
 
         return is_object($object) && (get_class($object) === "Http\HttpResponse" || is_subclass_of($object, "Http\HttpResponse", False));
 
     }
-    
-
-
 }

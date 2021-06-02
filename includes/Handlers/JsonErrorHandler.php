@@ -3,7 +3,7 @@ use \Http\HttpHeader as HttpHeader;
 
 class JsonErrorHandler extends Handler {
 
-	public function __construct(Exception $e, $contentType) {
+	public function __construct($e, $contentType) {
 		$this->output = $e;
 		
 		$this->contentType = $contentType;

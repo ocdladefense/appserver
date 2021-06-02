@@ -57,7 +57,7 @@ abstract class Handler {
 			
 		} else if($mimeType == Http\MIME_APPLICATION_JSON) {
 
-			$handler = is_object($output) && get_class($output) == "Exception" ?
+			$handler = is_object($output) && (is_subclass_of($output, "Exception") || get_class($output) == "Exception" || get_class($output) == "Error") ?
 				new JsonErrorHandler($output, $mimeType) :
 				new JsonHandler($output, $mimeType);
 	 
