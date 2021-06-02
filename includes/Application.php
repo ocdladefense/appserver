@@ -208,15 +208,28 @@ class Application {
 
         if($route["content-type"] == Http\MIME_APPLICATION_JSON) {
 
-            return $this->handleApplicationJsonErrors($module, $route, $params, $resp);
+            return $this->getJsonOutput($module, $route, $params);
 
         } else {
             
-            return $this->handleTextHtmlErrors($module, $route, $params, $resp);
+            return $this->getTextOutput($module, $route, $params);
         }
     }
 
-    public function handleTextHtmlErrors($module, $route, $params, $resp){
+        /**
+     * Actually call the route's callback
+     *  Retrieve the output,
+     *  then decide what to do with the output
+     *  depending on the context.
+     */
+    public function getOutput($module, $route, $params) {
+    
+        return call_user_func_array(array($module,$route["callback"]),$params);
+    }
+
+    public function getTextOutput($module, $route, $params){
+
+        $resp = new HttpResponse();
 
         try {
 
@@ -225,7 +238,7 @@ class Application {
             }
     
             $out = $this->getOutput($module, $route, $params);
-    
+                
             if(self::isHttpResponse($out)){
     
                 return $out;
@@ -242,6 +255,13 @@ class Application {
 
         } catch(Throwable $e) {
 
+            $handlers = ob_list_handlers();
+            while (!empty($handlers)){
+
+                ob_end_clean();
+                $handlers = ob_list_handlers();
+            }
+
             http_response_code(500);
 
             if(get_class($e) == "Error") {
@@ -255,7 +275,9 @@ class Application {
     }
 
 
-    public function handleApplicationJsonErrors($module, $route, $params, $resp){
+    public function getJsonOutput($module, $route, $params){
+
+        $resp = new HttpResponse();
 
         try {
 
@@ -354,17 +376,7 @@ class Application {
     }
     	
     	
-    	
-    /**
-     * Actually call the route's callback
-     *  Retrieve the output,
-     *  then decide what to do with the output
-     *  depending on the context.
-     */
-    public function getOutput($module, $route, $params) {
     
-        return call_user_func_array(array($module,$route["callback"]),$params);
-    }
     
     
     /**
