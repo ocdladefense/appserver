@@ -149,6 +149,7 @@ body {
 }
 
 #logo img {
+	vertical-align: middle;
 	max-width: 150px;
 }
 

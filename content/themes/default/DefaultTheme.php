@@ -51,7 +51,7 @@ class DefaultTheme extends Theme {
 			"src" => "/content/libraries/view/modal.js"
 		),
 		array(
-			"src" => "/content/themes/highscope/js/sidebar.js"
+			"src" => "/content/themes/default/js/sidebar.js"
 		)
 		
 		

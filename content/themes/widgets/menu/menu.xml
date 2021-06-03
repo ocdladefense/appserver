@@ -1,0 +1,9 @@
+<menu>
+    <template name="sidebar" />
+    <styles>
+        <style name="sidebar.css"/>  
+    </styles>
+    <scripts>
+        <script name="sidebar.js"/>
+    </scripts>
+</menu>
