@@ -49,6 +49,9 @@ class DefaultTheme extends Theme {
 		),
 		array(
 			"src" => "/content/libraries/view/modal.js"
+		),
+		array(
+			"src" => "/content/themes/highscope/js/sidebar.js"
 		)
 		
 		
@@ -142,7 +145,11 @@ class DefaultTheme extends Theme {
 			array(
 				"active" => true,
 				"href" => $path . "/css/tables.css?bust=001"
-			)
+			),
+			array(
+				"active" => true,
+				"href" => $path . "/css/sidebar.css?bust=001"
+			),
 		);
 	
 		return $styles;
