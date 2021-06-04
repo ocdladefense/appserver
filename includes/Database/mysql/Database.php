@@ -49,7 +49,7 @@ class Database {
         return new DbUpdateResult($result,$count,$this->connection->error);
     }
     
-    function delete($sql){
+    public function delete($sql){
 
         $result = $this->connection->query($sql);
         if($result !== true) throw new DbException("Error deleting data.  " . $this->connection->error);
@@ -132,6 +132,7 @@ function select($query) {
 function insert($objs = array(), $isSalesforce = false){
 
     $objs = !is_array($objs) ? [$objs] : $objs;
+
     $invalid = array_filter($objs, function($obj){return $obj->id !== null;});
 
     if(count($invalid) > 0){
@@ -169,7 +170,43 @@ function insert($objs = array(), $isSalesforce = false){
         $objs[$counter++]->id = $autoId;
 
     }
+
+    return $insertResult;
    
+}
+
+
+// Needs work.
+function update($objs = array()){
+
+    $objs = !is_array($objs) ? [$objs] : $objs;
+
+    $id = $objs[0]->id;
+
+    $columns = getObjectFields($objs[0]);
+
+    // Remove the Id column
+    unset($columns[0]);
+
+    $values = getObjectValues($objs);
+
+    // remove the id key and value.  Can't have either.
+    array_shift($values[0]);
+    
+    $tableName = strtolower(get_class($objs[0]));
+
+    $builder = new QueryBuilder();
+    $builder->setType("update");
+    $builder->setTable($tableName);
+    $builder->setColumns($columns);
+    $builder->setValues($values);
+    $sql = $builder->compile();
+
+    $sql .= " WHERE Id = '$id'";  // Totally cheating here.  I already know.
+
+    $db = new Database();
+    return $db->update($sql);
+
 }
 
 function getObjectFields($obj){

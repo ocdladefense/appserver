@@ -47,4 +47,9 @@ class DbInsertResult extends DbResult implements IDbResult, IteratorAggregate{
         }
         return new ArrayObject($ids);
     }
+
+    public function getId(){
+
+        return $this->id;
+    }
 }
