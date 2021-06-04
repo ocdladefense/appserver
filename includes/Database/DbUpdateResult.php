@@ -21,7 +21,7 @@ class DbUpdateResult extends DbResult implements IDbResult, IteratorAggregate{
         }
     }
 
-    private function hasError(){
+    public function hasError(){
         if($this->result === true){
             return false;
         }
