@@ -23,12 +23,17 @@ class HtmlDocumentHandler extends Handler {
 
 	
 	public function getOutput() {
-	
+
+			global $theme;
+
+
 			// Init the theme, first.
 			$className = ucfirst(strtolower(get_theme())) . "Theme";
 			require(get_theme_path() . "/" . $className . ".php");
 			
 			$theme = new $className();
+
+			
 			// $theme->addStyle
 			// $theme->addScript
 			// $theme->addMeta

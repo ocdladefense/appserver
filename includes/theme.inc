@@ -26,8 +26,13 @@ function load_template($filename){
 	include(get_theme_path().DIRECTORY_SEPARATOR.$filename.".tpl.php"); 
 }
 
-function load_widget($filename){
-	include(get_theme_path().DIRECTORY_SEPARATOR.$filename.".tpl.php"); 
-}
+function load_widget($name){
+	//1. parse xml
 
-// function add_script($
+	//2 use $global theme and call its add script and add styles passing the values from the xml
+
+	//3
+	include(get_theme_path().DIRECTORY_SEPARATOR.$filename.".tpl.php"); 
+
+	//4 repo of widgets
+}

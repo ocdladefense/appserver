@@ -285,8 +285,7 @@
 
                     <?php 
 						load_template("sidebar");
-						//include(BASE_PATH.DIRECTORY_SEPARATOR."content".DIRECTORY_SEPARATOR."themes".
-							//DIRECTORY_SEPARATOR."default".DIRECTORY_SEPARATOR."sidebar.tpl.php"); 
+						//load_widget("sidebar");
 					?>
 
 
