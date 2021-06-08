@@ -262,7 +262,7 @@
                                         href="/jobs">jobs</a></li>
 
                                 <li class="home-menu-item"><i class="fas fa-database fa-2x" aria-hidden="true"></i><a
-                                        href="/cars">case reviews</a></li>
+                                        href="/car/list">case reviews</a></li>
 
                                 <li class="home-menu-item"><i class="fas fa-map-pin fa-2x" aria-hidden="true"></i><a
                                         href="/maps">maps</a></li>
