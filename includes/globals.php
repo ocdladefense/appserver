@@ -319,3 +319,11 @@ function getDefaultLanguage(){
 	return $language;
 }
 
+function redirect($path) {
+
+	$resp = new Http\HttpResponse();
+	$resp->addHeader(new Http\HttpHeader("Location", $path));
+
+	return $resp;
+}
+

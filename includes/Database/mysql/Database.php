@@ -217,6 +217,8 @@ function getObjectFields($obj){
 
     $fields = get_object_vars($obj);
 
+    unset($fields["meta"]);
+
     return array_keys($fields);
 }
 
