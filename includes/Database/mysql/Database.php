@@ -43,8 +43,8 @@ class Database {
         $result = $this->connection->query($sql);
         if($result !== true) throw new DbException("Error updating data.  " . $this->connection->error);
 
-        $count = mysqli_affected_rows($this->connection);
-        if($count == 0) throw new DbException("There were ". $count . " rows updated.");
+        // $count = mysqli_affected_rows($this->connection);
+        // if($count == 0) throw new DbException("There were ". $count . " rows updated.");
 
         return new DbUpdateResult($result,$count,$this->connection->error);
     }
