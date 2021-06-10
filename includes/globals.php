@@ -33,6 +33,14 @@ function path_to_content() {
     return BASE_PATH . "/content";
 }
 
+function path_to_config() {
+    return BASE_PATH . "/config";
+}
+
+function path_to_modules_config() {
+    return BASE_PATH .DIRECTORY_SEPARATOR. "config".DIRECTORY_SEPARATOR."modules";
+}
+
 function set_active_module($module){
 
 	$GLOBALS["active_module"] = $module;
