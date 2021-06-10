@@ -28,6 +28,7 @@ function load_template($filename){
 
 function load_widget($name){
 	//1. parse xml
+	//domdocument
 
 	//2 use $global theme and call its add script and add styles passing the values from the xml
 
