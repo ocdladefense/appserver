@@ -33,6 +33,10 @@ function path_to_content() {
     return BASE_PATH . "/content";
 }
 
+function path_to_config() {
+    return BASE_PATH . "/config";
+}
+
 function set_active_module($module){
 
 	$GLOBALS["active_module"] = $module;

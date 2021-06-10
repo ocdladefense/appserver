@@ -63,3 +63,6 @@ log/*
 
 test.php
 content/themes/highscope
+
+
+/config/modules/
