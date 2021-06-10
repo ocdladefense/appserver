@@ -21,7 +21,7 @@ function getPathToContent(){
     return BASE_PATH . "/content";
 }
 function getUploadPath(){
-    return BASE_PATH . "/content/uploads";
+    return BASE_PATH .DIRECTORY_SEPARATOR. "content".DIRECTORY_SEPARATOR."uploads";
 }
 
 
@@ -39,6 +39,10 @@ function path_to_config() {
 
 function path_to_modules_config() {
     return BASE_PATH .DIRECTORY_SEPARATOR. "config".DIRECTORY_SEPARATOR."modules";
+}
+
+function path_to_modules_upload() {
+    return getUploadPath().DIRECTORY_SEPARATOR."modules";
 }
 
 function set_active_module($module){
