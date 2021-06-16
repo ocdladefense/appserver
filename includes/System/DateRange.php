@@ -5,7 +5,7 @@ namespace System;
 class DateRange {
 
     //Build and return an array of string dates, formated appropriately for building the urls
-	public static function toStringArray($numDays, $startDate = null, $format = "Y-n-j"){
+	public static function toStringArray($numDays, $startDate = null, $format = "Y-m-d"){
 
 		$urlDate = $startDate == null ? new \DateTime() : new \DateTime($startDate);
 
