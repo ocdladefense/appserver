@@ -117,7 +117,7 @@
 	}
 
 
-	$files = array("Attachment","Document", "ContentDocument");
+	$files = array("Attachment","Document", "ContentDocument", "Contact");
 
 	foreach($files as $file) {
 		require_once(BASE_PATH.'/includes/Salesforce/models/'.$file.".php");
