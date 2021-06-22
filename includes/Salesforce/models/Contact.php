@@ -5,6 +5,9 @@ class Contact {
     public $FirstName;
     public $LastName;
     public $MailingCity;
+    public $MailingState;
+    public $Phone;
+    public $Email;
     public $Ocdla_Occupation_Field_Type__c;
     public $Ocdla_Organization__c;
 
@@ -22,6 +25,9 @@ class Contact {
             $c->Ocdla_Occupation_Field_Type__c = $record["Ocdla_Occupation_Field_Type__c"];
             $c->Ocdla_Organization__c = $record["Ocdla_Organization__c"];
             $c->MailingCity = $record["MailingCity"];
+            $c->MailingState = $record["MailingState"];
+            $c->Phone = $record["Phone"];
+            $c->Email = $record["Email"];
             
             $contacts[] = $c;
         }
@@ -42,6 +48,21 @@ class Contact {
     public function getMailingCity(){
 
         return $this->MailingCity;
+    }
+
+    public function getMailingState(){
+
+        return $this->MailingState;
+    }
+
+    public function getPhone(){
+
+        return $this->Phone;
+    }
+
+    public function getEmail(){
+
+        return $this->Email;
     }
     public function getOccupationFieldType(){
 
