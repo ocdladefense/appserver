@@ -7,6 +7,7 @@ class Contact {
     public $MailingCity;
     public $Ocdla_Occupation_Field_Type__c;
     public $Ocdla_Organization__c;
+    public $AreasOfInterest__r;
 
     public function __construct(){}
 
@@ -22,6 +23,7 @@ class Contact {
             $c->Ocdla_Occupation_Field_Type__c = $record["Ocdla_Occupation_Field_Type__c"];
             $c->Ocdla_Organization__c = $record["Ocdla_Organization__c"];
             $c->MailingCity = $record["MailingCity"];
+            $c->AreasOfInterest__r = $record["AreasOfInterest__r"]["records"];
             
             $contacts[] = $c;
         }
@@ -42,6 +44,14 @@ class Contact {
     public function getMailingCity(){
 
         return $this->MailingCity;
+    }
+    
+    public function getAreasOfInterest(){
+
+        $interests = array();
+        foreach($this->AreasOfInterest__r as $record) $interests[] = $record["Interest__c"];
+
+        return implode(", ", $interests);
     }
     public function getOccupationFieldType(){
 
