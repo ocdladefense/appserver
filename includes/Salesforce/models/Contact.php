@@ -54,10 +54,17 @@ class Contact {
     
     public function getAreasOfInterest(){
 
-        $interests = array();
-        foreach($this->AreasOfInterest__r as $record) $interests[] = $record["Interest__c"];
+        if(!empty($this->AreasOfInterest__r)){
 
-        return implode(", ", $interests);
+            $interests = array();
+            foreach($this->AreasOfInterest__r as $record) $interests[] = $record["Interest__c"];
+
+            return implode(", ", $interests);
+
+        } else {
+
+            return null;
+        }
     }
 
     public function getMailingState(){
