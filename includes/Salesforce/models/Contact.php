@@ -58,6 +58,7 @@ class Contact {
         foreach($this->AreasOfInterest__r as $record) $interests[] = $record["Interest__c"];
 
         return implode(", ", $interests);
+    }
 
     public function getMailingState(){
 
