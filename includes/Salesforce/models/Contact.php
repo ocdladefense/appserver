@@ -2,6 +2,7 @@
 
 class Contact {
 
+    public $Id;
     public $FirstName;
     public $LastName;
     public $MailingCity;
@@ -21,6 +22,7 @@ class Contact {
         foreach($records as $record){
 
             $c = new Contact();
+            $c->Id = $record["Id"];
             $c->FirstName = $record["FirstName"];
             $c->LastName = $record["LastName"];
             $c->Ocdla_Occupation_Field_Type__c = $record["Ocdla_Occupation_Field_Type__c"];
@@ -35,6 +37,11 @@ class Contact {
         }
 
         return $contacts;
+    }
+
+    public function getId(){
+
+        return $this->Id;
     }
 
     public function getFirstName(){
