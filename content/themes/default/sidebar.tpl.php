@@ -1,21 +1,15 @@
 <div id="sidenav" class="sidenav">
+    
     <div class="user">
-            <div class="user-info-top">Username1234</div>
+
+            <!-- <div class="user-info-top">Username1234</div> -->
             <div class="user-body">
-                <i class="fa fa-user user-pic"></i>
-                <div class="user-info-side">
-                    Field1____________<!--<?php echo($user->name); ?>!-->
-                    Field2____________<!--<?php echo($user->shortUsername); ?>!-->
-                </div>
-                <a href="letterlinks/user" style="text-decoration: none; 
-                color:#fff;
-                display: block;
-                margin-left: 25px;
-                margin-right: auto;
-                text-align: left;"><i class="fa fa-cog" aria-hidden="true"></i>Options</a>
+                <!-- <i class="fa fa-user user-pic"></i> -->
+                <div class="user-info-side"></div>
             </div>
 
     </div>
+
     <ul class="sidebar-links">
 						
         <li class="side-menu-item"><i class="fas fa-home fa-2x" aria-hidden="true"></i><a href="/home">home</a></li>

@@ -234,60 +234,9 @@
 
                 <div class="container-content">
 
-                    <!--
-						<a href="/home">
-							<img id="logo" src="/content/images/logo.png" alt="Back to app home." />
-						</a>
-					-->
-                    <div id="container-left" class="column column-left">
-                        <div id="menu-left">
-                            <ul class="main-menu">
+                    <div id="container-left" class="column column-left"></div>
 
-                                <li class="home-menu-item"><i class="fas fa-home fa-2x" aria-hidden="true"></i><a
-                                        href="/home">home</a></li>
-
-                                <li class="home-menu-item"><i class="fas fa-people-arrows fa-2x"></i><a href="/covid"
-                                        title="How OCDLA is pivoting to meet COVID-19 challenges.">covid-19</a></li>
-
-                                <li class="home-menu-item"><i class="fas fa-scroll"></i><a href="/documents"
-                                        title="OCDLA motion bank">motion bank</a></li>
-
-                                <li class="home-menu-item"><i class="fas fa-book-open"></i><a href="/user/documents"
-                                        title="Read your publications">my publications</a></li>
-
-                                <li class="home-menu-item"><i class="fas fa-calendar-day fa-2x"
-                                        aria-hidden="true"></i><a href="/events">events</a></li>
-
-                                <li class="home-menu-item"><i class="fas fa-briefcase" aria-hidden="true"></i><a
-                                        href="/jobs">jobs</a></li>
-
-                                <li class="home-menu-item"><i class="fas fa-database fa-2x" aria-hidden="true"></i><a
-                                        href="/car/list">case reviews</a></li>
-
-                                <li class="home-menu-item"><i class="fas fa-map-pin fa-2x" aria-hidden="true"></i><a
-                                        href="/maps">maps</a></li>
-
-                                <li class="home-menu-item"><i class="fas fa-video fa-2x" aria-hidden="true"></i><a
-                                        href="/videos">videos</a></li>
-
-                                <li class="home-menu-item"><i class="fas fa-user-friends fa-2x"
-                                        aria-hidden="true"></i><a href="/directory">members/experts</a></li>
-
-                                <li class="home-menu-item"><i class="fas fa-comment-dots fa-2x"
-                                        aria-hidden="true"></i><a href="/feedback">feedback</a></li>
-
-                                <li class="home-menu-item"><i class="fas fa-mobile-alt fa-2x" aria-hidden="true"></i><a
-                                        href="/contact">contact us</a></li>
-
-                            </ul>
-                        </div>
-                    </div>
-
-                    <?php 
-						load_template("sidebar");
-						//include(BASE_PATH.DIRECTORY_SEPARATOR."content".DIRECTORY_SEPARATOR."themes".
-							//DIRECTORY_SEPARATOR."default".DIRECTORY_SEPARATOR."sidebar.tpl.php"); 
-					?>
+                    <?php load_template("sidebar"); ?>
 
 
                     <div id="stage" class="column column-middle">
@@ -300,27 +249,20 @@
 
                     </div>
 
-                    <!--
-					<div id="container-right" class="column column-right">
-						&nbsp;
-					</div>
-					-->
-
                 </div> <!-- end container-content -->
 
             </div>
             <!--end container-->
 
             <div id="footer">
+
                 <div class="content">
                     <span style="font-size:smaller;">&copy;&nbsp;2020 OCDLA</span>
-                </div>
-                <!--end content-->
-            </div>
-            <!--end footer-->
+                </div><!--end content-->
 
-        </div>
-        <!--end page -->
+            </div> <!--end footer-->
+
+        </div> <!--end page -->
 
 
         <div id="modal-backdrop">
