@@ -61,7 +61,6 @@
 
 .sidenav-mobile-open{
     display: block !important;
-    width: 250px !important;
 }
 
 .user-pic{
@@ -147,6 +146,13 @@
     width:unset;
     background-color:white;
     color:black !important;
+}
+
+@media screen and (max-width: 800px){
+    .sidenav{
+        width:100%;
+        height:unset;
+    }
 }
 
 
