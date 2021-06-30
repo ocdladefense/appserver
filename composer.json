@@ -7,12 +7,14 @@
     "extra": {
     	"installer-paths": {
     		"saml":["simplesamlphp/simplesamlphp"],
-            "content/libraries/file/dragDrop":["ocdladefense/lib-drag-drop-upload"]
+            "content/libraries/file/dragDrop":["ocdladefense/lib-drag-drop-upload"],
+            "modules/car":["ocdladefense/appserver-car"]
     	}
     },
     "require": {
         "composer/installers":"~1.0",
         "ocdladefense/lib-oauth-config": "~2.0",
-        "ocdladefense/lib-drag-drop-upload":"dev-development"
+        "ocdladefense/lib-drag-drop-upload":"dev-development",
+        "ocdladefense/appserver-car":"dev-development"
     }
 }
