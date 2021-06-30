@@ -105,7 +105,6 @@
 .side-menu-item a, .dropdown-btn {
     padding: 3px 3px 3px 3px;
     text-decoration: none;
-    color: #fff;
     display: block;
     text-transform: uppercase;
     font-weight: 600;
@@ -117,7 +116,6 @@
     color: rgba(0,0,0,0.6);
     display: block;
     min-width: 45px;
-    vertical-align: top;
     font-size: 2.0rem;
     margin-bottom: 0.3em;
 }
@@ -142,6 +140,13 @@
 
 .sidenav a:hover {
     color: #9cbeca;
+}
+
+.sidenav{
+    float:left;
+    width:unset;
+    background-color:white;
+    color:black !important;
 }
 
 

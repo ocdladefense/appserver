@@ -1,13 +1,4 @@
-
-
-
-
-
-
-
-
 #container {
-	/* background-color: rgba(215,225,225,0.25); */
 	text-align:center;
 	padding-top: 85px;
 }
@@ -15,8 +6,6 @@
 .container-content {
 	background-color: inherit;
 }
-
-
 
 .column {
 	overflow-y:hidden;
@@ -29,28 +18,6 @@
 	text-align:left;
 	display:none;
 }
-
-#container-left {
-	/* overflow-y: scroll; This causes an issue when all menu items are visible it still makes space for the scrollbar. */
-}
-
-
-/*
-#menu-left {
-	display:inline-block;
-	min-height:100vh;
-	vertical-align:top;
-	padding-left: 11%;
-	padding-right: 11%;
-	padding-top: 6%;
-	font-size:0.8rem;
-}
-*/
-
-
-
-
-
 
 #footer {
 	display: none;
@@ -69,12 +36,10 @@ footer .container {
     padding: 25px;
 }
 
-
 #btnAdd {
 	max-width: 10vh;
 	cursor: pointer;
 }
-
 
 #stage-content {
     text-align: left;
@@ -83,11 +48,9 @@ footer .container {
 	min-height: 100vh;
 }
 
-
 #stage.home {
 	max-width:78%;
 }
-
 
 #footer {
 	z-index:10;
@@ -98,21 +61,13 @@ footer .container {
 	width:100%;
 }
 
-
 #installBanner {
 	margin-top: 50px;
 }
 
-
-
-
-
-
-
 body {
 	margin:0 !important;
 }
-
 
 #page {
 	min-height: 100vh;
@@ -135,12 +90,10 @@ body {
 	background-color:#fff;
 }
 
-
 .header-content {
 	padding-left:3%;
 	padding-right:3%;
 }
-
 
 #logo {
 	display:inline-block;
@@ -153,20 +106,13 @@ body {
 	max-width: 150px;
 }
 
-
-
 #search-form {
 	display:none;
 }
 
-
-
-
-
 #stage {
 	display: block;
 	position: relative;
-	vertical-align: top;
 	margin: 0 auto;
 }
 
@@ -175,8 +121,6 @@ body {
 		width: 90%;
 	}
 }
-
-
 
 @media screen and (min-width: 1024px) {
 	body:not(".is-home") #container-left {
@@ -204,14 +148,10 @@ body {
 		min-height: 200px;
 	}
 	
-	
 	footer {
 		min-height: 200px;
 	}
-	
-
 }
-
 
 
 
