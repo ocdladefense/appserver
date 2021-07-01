@@ -8,6 +8,7 @@ class Attachment extends SalesforceFile { // implements ISObject
     public $SObjectName = "Attachment";
     public $ParentId;
     public $Id;
+    public $content;
     public $isLocal = false;
 
     public function __construct($id = null){ // Maybe the default constructor takes the Id.
@@ -20,19 +21,13 @@ class Attachment extends SalesforceFile { // implements ISObject
         $this->ParentId = $id;
     }
 
-    // public function fromFile(File $file){
-
-    //     $this->setPath($file->getPath());
-    //     $this->setName($file->getName());
-    //     $this->isLocal = true;
-    // }
-
     public static function fromFile(File $file){
 
         $sfFile = new Attachment();
         $sfFile->setPath($file->getPath());
         $sfFile->setName($file->getName());
         $sfFile->isLocal = true;
+        $sfFile->setContent($file->getContent());
 
         return $sfFile;
     }

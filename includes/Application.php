@@ -424,6 +424,7 @@ class Application {
         if($resp->isFile()) {
 
             $file = $resp->getBody();
+            
             if($file->exists()){
 
                 readfile($file->getPath());

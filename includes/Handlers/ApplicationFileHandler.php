@@ -29,7 +29,6 @@ class ApplicationFileHandler extends Handler {
 	
 	public function getHeaders() {
 		$fileName = $this->output->getName();
-
 		$contentType = $this->output->getType();
 	
 		return array(

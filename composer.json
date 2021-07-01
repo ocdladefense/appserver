@@ -17,8 +17,8 @@
         "composer/installers":"~1.0",
         "ocdladefense/lib-oauth-config": "~2.0",
         "ocdladefense/lib-drag-drop-upload":"dev-development",
-        "ocdladefense/appserver-car":"~1.0",
-        "ocdladefense/appserver-directory":"~1.0",
-        "ocdladefense/appserver-jobs":"~1.0"
+        "ocdladefense/appserver-car":"dev-development",
+        "ocdladefense/appserver-directory":"dev-development",
+        "ocdladefense/appserver-jobs":"dev-development"
     }
 }
