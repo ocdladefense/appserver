@@ -292,6 +292,7 @@ class RestApiRequest extends HttpRequest {
     }
 
     public function getAttachment($id) {
+        
         $endpoint = "/services/data/v49.0/sobjects/Attachment/{$id}/body";
         $resp = $this->send($endpoint);
 

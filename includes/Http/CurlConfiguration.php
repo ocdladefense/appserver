@@ -9,7 +9,8 @@ namespace Http;
 		
 		
 		public function __construct($config) {
-			$this->configs = array_merge(self::$defaults,$config);
+
+			$this->configs = array_merge(self::$defaults, $config);
 		}
 	
 		public function getAsCurl() {
