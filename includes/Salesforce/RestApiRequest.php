@@ -20,6 +20,8 @@ class RestApiRequest extends HttpRequest {
 	
 	private $accessToken;
 
+    private $addXHttpClientHeader = true;
+
 
 
 	public const ENDPOINTS = array(
@@ -55,7 +57,12 @@ class RestApiRequest extends HttpRequest {
         if(empty($this->accessToken)) throw new RestApiException("REST_API_ERROR:  The access token cannot be null.");
     
         $this->setUrl($this->instanceUrl . $endpoint);
-        $this->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\RestApiResponse")); // Use a custom HttpResponse class to represent the HttpResponse.
+        
+        if($this->addXHttpClientHeader){
+
+            $this->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\RestApiResponse")); // Use a custom HttpResponse class to represent the HttpResponse.
+        }
+
         $token = new HttpHeader("Authorization", "Bearer " . $this->accessToken);
         $this->addHeader($token);
         
@@ -72,6 +79,11 @@ class RestApiRequest extends HttpRequest {
         $resp = $http->send($this, true);
 
         return $resp;
+    }
+
+    public function removeXHttpClientHeader(){
+
+        $this->addXHttpClientHeader = false;
     }
 
     public function setAccessToken($token){
