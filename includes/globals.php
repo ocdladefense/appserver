@@ -262,7 +262,25 @@ function is_admin_user(){
 }
 
 
+function is_system_administrator(){
 
+
+}
+
+function get_user_info(){
+
+	$module = new Module\Module();
+	
+	// Get the salesforce "user info" for the current user.
+	$userInfoEndpoint = "/services/oauth2/userinfo?access_token={$accessToken}";
+	$req = new RestApiRequest($instanceUrl, $accessToken);
+	$resp = $req->send($userInfoEndpoint);
+
+	$uInfo = $resp->getBody();
+
+	var_dump($uInfo);exit;
+    return $uInfo;
+}
 
 
 
@@ -338,4 +356,3 @@ function redirect($path) {
 
 	return $resp;
 }
-
