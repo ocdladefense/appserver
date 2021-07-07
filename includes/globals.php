@@ -1,5 +1,7 @@
 <?php
 
+use function Session\is_admin_user;
+
 $log = array();
 $debug = true;
 
@@ -164,21 +166,8 @@ function doSAMLAuthorization(){
 }
 
 
-function user_get_initials() {
-	//return !is_authenticated() ? "G" : ucfirst(substr($_SESSION["username"], 0, 1));
-	return "G";
-}
 
 
-function current_user($connectedApp = null, $flow = null){
-
-	$connectedApp = "salesforce";
-	$flow = "webserver";//get from config later?
-
-	//$_SESSION["connectedApp"][$flow]["user"];
-	//\Session::get($connectedApp, $flow, "user");
-	return User::getUserFromSession($connectedApp, $flow);
-}
 
 
 function get_oauth_config($key = null) {
@@ -255,21 +244,6 @@ function is_route_authorized($connectedAppName, $route) {
 
 	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
 }
-
-function is_admin_user(){
-
-	return defined("ADMIN_USER") && ADMIN_USER === true;
-}
-
-
-
-
-
-
-
-
-
-
 
 
 

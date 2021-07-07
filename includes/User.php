@@ -1,7 +1,7 @@
 <?php
 
 class User {
-	private $data ="";
+	public $data ="";
 	private $userId;
 	private $salesforceData = array();
 	public $name;
@@ -11,6 +11,7 @@ class User {
 	public $shortUsername;
 	private $connectedApp;
 	private $flow;
+	private $userType;
 
 	public function __construct($user = array(), $type = "salesforce")
 	{
@@ -27,16 +28,11 @@ class User {
 			$this->shortUsername = substr($user["preferred_username"], 0, 18)."...";
 			$this->salesforceData["zoneinfo"] = $user["zoneinfo"];
 			$this->salesforceData["photos"] = $user["photos"];
+			$this->userType = $user["user_type"];
 		}
 	}
 
-	public static function setUserSession($user, $connectedApp, $flow, $name = "user"){
-		return Session::set($connectedApp,$flow, $name, $user);
-	}
 
-	public static function getUserFromSession($connectedApp, $flow, $name = "user"){
-		return Session::get($connectedApp,$flow, $name);
-	}
 
 	public static function add_session_data($saml = array()) {		
 		if(!empty($saml)){
