@@ -1,6 +1,6 @@
 <?php
 
-use function Session\is_admin_user;
+use function Session\user_is_admin;
 
 $log = array();
 $debug = true;
@@ -256,7 +256,7 @@ function user_has_access($module, $route) {
 	if($access === false) return false;
 
 	// Define in config/config.php.
-	if(is_admin_user()) return true;
+	if(user_is_admin()) return true;
 	
 	
 	if(!isset($access) ) {

@@ -2,28 +2,27 @@
 
 namespace Session;
 
+
 function get_current_user($connectedApp = null, $flow = null){
 
-    $connectedApp = "ocdla-sandbox-2.0";
-    $flow = "webserver";
-
-    return \Session::get($connectedApp,$flow, "user");
+    return \Session::get($connectedApp, $flow, "user");
 }
 
 
 
 function user_get_initials() {
 
-	return "G";
+	return "TU";
 }
 
 
-function is_admin_user(){
+function user_is_admin($user = null){
 
-    return defined("ADMIN_USER") && ADMIN_USER === true;
+    return (defined("ADMIN_USER") && ADMIN_USER === true) || $user->data["user_type"] == "STANDARD";
 }
 
-function user_is_admin($user){
 
-    return $user->data["user_type"] == "STANDARD";
+function user_is_member($user = null){
+
+    return $user->data["user_type"] != "STANDARD";
 }
