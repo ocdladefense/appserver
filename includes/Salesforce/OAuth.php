@@ -41,13 +41,19 @@ class OAuth {
     public static function setSession($connectedApp, $flow, $instanceUrl, $accessToken, $refreshToken = null){
 
         if($refreshToken != null) \Session::set($connectedApp, $flow, "refresh_token", $refreshToken);
+        
+
         \Session::set($connectedApp, $flow, "instance_url", $instanceUrl);
         \Session::set($connectedApp, $flow, "access_token", $accessToken);
+
+
         $userInfo = OAuth::getUser($connectedApp, $flow);
         \Session::set($connectedApp, $flow, "userId", $userInfo["user_id"]);
+
+
         //setting user
         $user = new \User($userInfo,"salesforce");
-        \User::setUserSession($user,$connectedApp,$flow,"user");
+        \Session::set($connectedApp,$flow, "user", $user);
     }
 
     public static function getUser($connectedApp, $flow){

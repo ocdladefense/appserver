@@ -1,4 +1,6 @@
 <?php
+
+use function Session\user_get_initials;
 /**
  * This is the webconsole template file.
  * Reference it like so: 

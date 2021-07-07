@@ -5,6 +5,9 @@
 	if(file_exists($saml_auth)) {
 		require_once($saml_auth);
 	}
+
+	require_once BASE_PATH.'/includes/user.inc';
+
 	require_once BASE_PATH.'/includes/globals.php';
 	require_once BASE_PATH.'/includes/User.php';
 
