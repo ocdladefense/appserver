@@ -148,7 +148,7 @@ class Module {
     	return $this->loadApi($app, $debug);
     }
 
-    protected function loadApi($connectedAppName = null) {
+    protected function loadApi($connectedAppName = null, $userpasswordOnly = false) {
 
         $config = get_oauth_config($connectedAppName);
         
@@ -158,6 +158,8 @@ class Module {
         // access token that is stored in at the index of the flow for the connected app.
         // Refresh token does not work with the username password flow.
         $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamepassword";
+
+        $userpasswordOnly ? $flow = "usernamepassword" : $flow;
         
         $accessToken = Session::get($config->getName(), $flow, "access_token");
         $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
