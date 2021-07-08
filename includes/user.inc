@@ -3,26 +3,16 @@
 namespace Session;
 
 
-function get_current_user($connectedApp = null, $flow = null){
+function get_current_user() {
 
-    return \Session::get($connectedApp, $flow, "user");
+    $user = \Session::getUser();
+
+    if($user == null) $user = new \User();
+
+    return $user;
 }
 
+function is_admin(){
 
-
-function user_get_initials() {
-
-	return "TU";
-}
-
-
-function user_is_admin($user = null){
-
-    return (defined("ADMIN_USER") && ADMIN_USER === true) || $user->data["user_type"] == "STANDARD";
-}
-
-
-function user_is_member($user = null){
-
-    return $user->data["user_type"] != "STANDARD";
+    return (defined("ADMIN_USER") && ADMIN_USER === true);
 }

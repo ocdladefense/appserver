@@ -1,11 +1,16 @@
 <?php
 
-use function Session\user_get_initials;
+use function Session\get_current_user;
+
 /**
  * This is the webconsole template file.
  * Reference it like so: 
  *   $template = new Template("webconsole");
  */
+
+
+ $user = get_current_user();
+
 ?>
 <!doctype html>
 <html>
@@ -210,7 +215,7 @@ use function Session\user_get_initials;
                                         <circle cx="50" cy="50" r="50" style="fill: rgba(210, 165, 80);" />
                                         <text x="50%" y="50%" font-size="3.0em" fill="#ffffff" text-anchor="middle"
                                             stroke="#ffffff" stroke-width="0px"
-                                            dy=".3em"><?php print user_get_initials(); ?></text>
+                                            dy=".3em"><?php print $user->getInitials(); ?></text>
                                     </g>
                                 </svg>
                             </a>

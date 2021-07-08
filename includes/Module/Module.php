@@ -187,7 +187,7 @@ class Module {
 
 			\Session::set($config->getName(), $flow, "access_token", $accessToken);
 
-            $api = $this->loadForceApi();  // Why cant I do this "$api->setAccessToken($accessToken);" ? 
+            $api = $this->loadForceApi();
             $resp = call_user_func(array($api, $queryType), $soql);
 			
 			if($debug) $message = "ACCESS TOKEN WAS REFRESHED";
