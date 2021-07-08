@@ -22,4 +22,15 @@ class Session {
         return $_SESSION[$namespace][$flow][$name];
         
     }
+
+    // May want to type hint this later
+    public static function setUser($user) {
+
+        $_SESSION["user"] = $user;
+    }
+
+    public static function getUser(){
+
+        return $_SESSION["user"];
+    }
 }

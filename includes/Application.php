@@ -178,7 +178,6 @@ class Application {
 
                 OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
             }
-            
         }
 
 
@@ -187,13 +186,9 @@ class Application {
 
             $resp = user_require_auth($config->getName(), $route);
 
-            if($resp == null){
+            if($resp == null) throw new Exception("AUTHORIZATION_ERROR:");
 
-                throw new Exception("AUTHORIZATION_ERROR:");
-            } else {
-
-                return $resp;
-            }
+            return $resp;
         }
         
         if(!user_has_access($module, $route)){

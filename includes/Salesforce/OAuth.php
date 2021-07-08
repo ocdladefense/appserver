@@ -49,11 +49,6 @@ class OAuth {
 
         $userInfo = OAuth::getUser($connectedApp, $flow);
         \Session::set($connectedApp, $flow, "userId", $userInfo["user_id"]);
-
-
-        //setting user
-        $user = new \User($userInfo,"salesforce");
-        \Session::set($connectedApp,$flow, "user", $user);
     }
 
     public static function getUser($connectedApp, $flow){
