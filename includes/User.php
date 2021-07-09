@@ -63,13 +63,6 @@ class User {
 		return $this->userId == self::GUEST_USER_ID;
 	}
 
-	public function isOwner($obj){
-
-		$obj = (array) $obj;
-
-		return $obj["CreatedById"] == $this->userId;
-	}
-
 
 	public function user_is_logged_in(){
 

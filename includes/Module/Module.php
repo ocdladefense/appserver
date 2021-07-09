@@ -143,12 +143,12 @@ class Module {
 
     // Other functions
     
-    protected function loadForceApi($app = null, $debug = false) {
+    protected function loadForceApi($app = null, $usernamePasswordFlowOnly = false) {
 
-    	return $this->loadApi($app, $debug);
+    	return $this->loadApi($app, $usernamePasswordFlowOnly);
     }
 
-    protected function loadApi($connectedAppName = null, $userpasswordOnly = false) {
+    protected function loadApi($connectedAppName = null, $usernamePasswordFlowOnly = false) {
 
         $config = get_oauth_config($connectedAppName);
         
@@ -159,7 +159,7 @@ class Module {
         // Refresh token does not work with the username password flow.
         $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamepassword";
 
-        $userpasswordOnly ? $flow = "usernamepassword" : $flow;
+        $usernamePasswordFlowOnly == true ? $flow = "usernamepassword" : $flow;
         
         $accessToken = Session::get($config->getName(), $flow, "access_token");
         $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
