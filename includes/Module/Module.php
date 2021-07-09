@@ -143,12 +143,28 @@ class Module {
 
     // Other functions
     
-    protected function loadForceApi($app = null, $usernamePasswordFlowOnly = false) {
+    protected function loadForceApi($app = null, $debug = false) {
 
-    	return $this->loadApi($app, $usernamePasswordFlowOnly);
+    	return $this->loadApi($app, $debug);
     }
 
-    protected function loadApi($connectedAppName = null, $usernamePasswordFlowOnly = false) {
+
+    protected function loadForceApiFromFlow($flow, $connectedAppName = null) {
+
+        $config = get_oauth_config($connectedAppName);
+        
+        $accessToken = Session::get($config->getName(), $flow, "access_token");
+        $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
+
+        $req = new RestApiRequest($instanceUrl, $accessToken);
+
+        return $req;
+    }
+
+
+
+
+    protected function loadApi($connectedAppName = null, $debug = false) {
 
         $config = get_oauth_config($connectedAppName);
         
@@ -158,8 +174,6 @@ class Module {
         // access token that is stored in at the index of the flow for the connected app.
         // Refresh token does not work with the username password flow.
         $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamepassword";
-
-        $usernamePasswordFlowOnly == true ? $flow = "usernamepassword" : $flow;
         
         $accessToken = Session::get($config->getName(), $flow, "access_token");
         $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
