@@ -1,0 +1,50 @@
+
+.fullscreen #container-left {
+    display: none;
+}
+
+.fullscreen #stage {
+    width: 100% !important;
+}
+
+.fullscreen #stage-content {
+    height: 100vh;
+}
+
+#header {
+    transition: height 0.3s ease-in-out 0.5s;
+    overflow: hidden;
+}
+
+.fullscreen #header {
+    height: 0px;
+}
+
+#container {
+    transition: padding-top 0.3s ease-out 1.0s;
+}
+
+.fullscreen #container {
+    padding-top: 0px;
+}
+
+.doc {
+    display: inline-block;
+    text-align: center;
+    width: 45%;
+    vertical-align: top;
+    margin-bottom: 40px;
+}
+
+.doc-title {
+
+    padding-top: 4px;
+    font-family: "Roboto", sans-serif;
+    /* text-transform: uppercase; */
+    font-size: 16.5px;
+    font-weight: 600;
+}
+
+.doc span {
+    display: block;
+}
