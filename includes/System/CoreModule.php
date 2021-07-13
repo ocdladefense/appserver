@@ -84,13 +84,9 @@ class CoreModule extends Module {
 		$user = new \User($userInfo);
 		\Session::setUser($user);
 
-		$resp2 = new HttpResponse();
+		$redirect = $this->buildRedirect($_SESSION["login_redirect"]);
 
-		$flowConfig = $config->getFlowConfig($flow);
-
-		$resp2->addHeader(new HttpHeader("Location", $flowConfig->getCallbackUrl()));
-
-		return $resp2;
+		return redirect($redirect);
 	}
 
 
@@ -132,9 +128,11 @@ class CoreModule extends Module {
 		return $form;
 	}
 
-	public function buildRedirect(){
+	public function buildRedirect($ref = null){
 
-		$redirectParts = explode("/", $_SERVER["HTTP_REFERER"]);
+		if(empty($ref)) $ref = $_SERVER["HTTP_REFERER"];
+
+		$redirectParts = explode("/", $ref);
 
 		array_shift($redirectParts); // Remove the protocol
 		array_shift($redirectParts); // Remove empty element

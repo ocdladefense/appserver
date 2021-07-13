@@ -9,6 +9,8 @@ class OAuth {
 
     public static function start($config, $flow){
 
+        $_SESSION["login_redirect"] = $_SERVER["HTTP_REFERER"];
+
         return $flow == "webserver" ? self::newOAuthResponse($config,$flow) : OAuthRequest::newAccessTokenRequest($config,$flow);
     }
 
