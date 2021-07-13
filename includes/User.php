@@ -10,6 +10,9 @@ class User {
 	private $lastName;
 	private $username;
 	private $preferredUsername;
+	private $email;
+	private $geoZone;
+	private $country;
 	private $userType;
 	private $organizationId;
 	
@@ -24,6 +27,9 @@ class User {
 			$this->lastName = $user["family_name"];
 			$this->username = $user["preferred_username"];
 			$this->preferredUsername = $user["preferred_username"];
+			$this->email = $user["email"];
+			$this->geoZone = $user["zoneinfo"];
+			$this->country = $user["address"]["country"];
 			$this->userType = $user["user_type"];
 			$this->organizationId = $user["organization_id"];
 		}
@@ -41,6 +47,11 @@ class User {
 		return $this->name;
 	}
 
+	public function getUserName(){
+
+		return $this->username;
+	}
+
 	public function getFirstName(){
 
 		return $this->firstName;
@@ -49,6 +60,21 @@ class User {
 	public function getUserType(){
 
 		return $this->userType;
+	}
+
+	public function getGeoZone(){
+
+		return $this->geoZone;
+	}
+
+	public function getEmail(){
+
+		return $this->email;
+	}
+
+	public function getCountry(){
+
+		return $this->country;
 	}
 
 	public function getInitials() {

@@ -7,6 +7,7 @@ use function Session\get_current_user;
 
  $user = get_current_user();
  $loginMessage = !$user->is_logged_in() ? "Logged in as Guest" : "Hello {$user->getFirstName()}";
+ $profileUrl = !$user->is_logged_in() ? "" : "/user/profile";
 
 ?>
 <!doctype html>
@@ -89,29 +90,13 @@ use function Session\get_current_user;
 
                     <div id="user-area" style="display:inline-block; margin-top:11px;">
 
-                        <!-- <?php if(true || is_authenticated()): ?>
-                            <a href="/user/profile" title="You're logged in using <?php print $_SESSION["username"]; ?>">
-                        <?php else: ?>
-                            <a href="/login" title="You're a guest - login.">
-                                <?php endif; ?>
-                                <svg id="user-widget" width="40" height="40" viewBox="0 0 100 100"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                        <circle cx="50" cy="50" r="50" style="fill: rgba(210, 165, 80);" />
-                                        <text x="50%" y="50%" font-size="3.0em" fill="#ffffff" text-anchor="middle"
-                                            stroke="#ffffff" stroke-width="0px"
-                                            dy=".3em"><?php print $user->getInitials(); ?></text>
-                                    </g>
-                                </svg>
-                            </a> -->
-
                         <?php if($user->is_logged_in()) : ?>
-                            <a class="login" href="">logout></>
+                            <a class="login" href="/user/logout">logout</>
                         <?php else : ?>
-                            <a class="login" href="">login</a>
+                            <a class="login" href="/user/login">login</a>
                         <?php endif; ?>
 
-                        <a id="user-icon" href="" title="<?php print $loginMessage; ?>">
+                        <a id="user-icon" href="<?php print $profileUrl; ?>" title="<?php print $loginMessage; ?>">
                             <svg id="user-widget" width="40" height="40" viewBox="0 0 100 100"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g>
@@ -146,7 +131,7 @@ use function Session\get_current_user;
 
                     <div id="container-left" class="column column-left"></div>
 
-                    <?php load_template("sidebar"); ?>
+                    <?php //load_template("sidebar"); ?>
 
 
                     <div id="stage" class="column column-middle">
