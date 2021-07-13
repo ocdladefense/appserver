@@ -245,6 +245,32 @@ function is_route_authorized($connectedAppName, $route) {
 	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
 }
 
+function is_admin_user(){
+
+	return defined("ADMIN_USER") && ADMIN_USER === true;
+}
+
+
+function is_system_administrator(){
+
+
+}
+
+function get_user_info(){
+
+	$module = new Module\Module();
+	
+	// Get the salesforce "user info" for the current user.
+	$userInfoEndpoint = "/services/oauth2/userinfo?access_token={$accessToken}";
+	$req = new RestApiRequest($instanceUrl, $accessToken);
+	$resp = $req->send($userInfoEndpoint);
+
+	$uInfo = $resp->getBody();
+
+	var_dump($uInfo);exit;
+    return $uInfo;
+}
+
 
 
 /// These are our access related functions.
@@ -312,4 +338,3 @@ function redirect($path) {
 
 	return $resp;
 }
-
