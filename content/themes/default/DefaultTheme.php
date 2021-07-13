@@ -52,6 +52,9 @@ class DefaultTheme extends Theme {
 		),
 		array(
 			"src" => "/content/themes/default/js/sidebar.js"
+		),
+		array(
+			"src" => "/content/themes/default/js/app.js"
 		)
 		
 		
@@ -150,6 +153,10 @@ class DefaultTheme extends Theme {
 				"active" => true,
 				"href" => $path . "/css/sidebar.css?bust=001"
 			),
+			array(
+				"active" => true,
+				"href" => $path . "/css/style.css?bust=001"
+			)
 		);
 	
 		return $styles;
