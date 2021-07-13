@@ -93,20 +93,8 @@ class CoreModule extends Module {
 		return $resp2;
 	}
 
-	public function userLogin($connectedAppName = null, $flow = "webserver"){
 
-		$_COOKIE["PHPSESSID"] = array();
-
-		$config = get_oauth_config($connectedAppName);
-
-		OAuth::start($config, $flow);
-
-		$redirect = $this->buildRedirect();
-
-		return redirect($redirect);
-
-	}
-
+	// Don't need an actual login function, because the route has specified the webserver flow ????
 	public function userLogout(){
 
 		$_COOKIE["PHPSESSID"] = array();

@@ -68,6 +68,7 @@ class Application {
         $coreDef = array(
             "comment"      => "The core module",
             "name"         => "core",
+            "connectedApp" => "default",
             "description"  => "holds routes for core functionality",
             "files"        => array(),
             "routes"       => array(
