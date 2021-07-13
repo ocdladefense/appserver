@@ -105,7 +105,32 @@ class Application {
                     "path"          => "oauth/api/request",
                     "module"        => "core",
                     "method"        => "get"
+                ),
+                "user/login"        => array(
+                    "callback"      => "userLogin",
+                    "content-type"  => "application/json",
+                    "path"          => "user/login",
+                    "module"        => "core",
+                    "method"        => "get",
+                    "access"        => "is_authenticated",
+                    "authorization" => "webserver"
+                ),
+                "user/logout"        => array(
+                    "callback"      => "userLogout",
+                    "content-type"  => "application/json",
+                    "path"          => "user/logout",
+                    "module"        => "core",
+                    "method"        => "get"
+                ),
+                "user/profile"        => array(
+                    "callback"      => "userProfile",
+                    "content-type"  => "text/html",
+                    "path"          => "user/profile/%userId",
+                    "module"        => "core",
+                    "method"        => "get"
                 )
+
+
             ),
 						//If the path is null the module loader will not try to load the file
 						//core module is loaded in autoloader.php
