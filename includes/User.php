@@ -36,6 +36,16 @@ class User {
 		return $this->userId;
 	}
 
+	public function getName(){
+
+		return $this->name;
+	}
+
+	public function getFirstName(){
+
+		return $this->firstName;
+	}
+
 	public function getUserType(){
 
 		return $this->userType;
@@ -43,7 +53,7 @@ class User {
 
 	public function getInitials() {
 
-		return !$this->isGuest() ? $this->firstName[0] . $this->lastName[0] : "GU";
+		return !$this->isGuest() ? $this->firstName[0] . $this->lastName[0] : "G";
 	}
 	
 	
@@ -64,7 +74,7 @@ class User {
 	}
 
 
-	public function user_is_logged_in(){
+	public function is_logged_in(){
 
 		return $this->userId != self::GUEST_USER_ID;
 	}

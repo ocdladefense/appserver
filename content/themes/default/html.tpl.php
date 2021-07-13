@@ -2,14 +2,11 @@
 
 use function Session\get_current_user;
 
-/**
- * This is the webconsole template file.
- * Reference it like so: 
- *   $template = new Template("webconsole");
- */
+// This is the template for the default theme which happens to be for OCDLA.....
 
 
  $user = get_current_user();
+ $loginMessage = !$user->is_logged_in() ? "Logged in as Guest" : "Hello {$user->getFirstName()}";
 
 ?>
 <!doctype html>
@@ -90,9 +87,9 @@ use function Session\get_current_user;
 
                     </div>
 
-                    <div id="user-menu" style="display:inline-block; margin-top:11px;">
+                    <div id="user-area" style="display:inline-block; margin-top:11px;">
 
-                        <?php if(true || is_authenticated()): ?>
+                        <!-- <?php if(true || is_authenticated()): ?>
                             <a href="/user/profile" title="You're logged in using <?php print $_SESSION["username"]; ?>">
                         <?php else: ?>
                             <a href="/login" title="You're a guest - login.">
@@ -106,9 +103,27 @@ use function Session\get_current_user;
                                             dy=".3em"><?php print $user->getInitials(); ?></text>
                                     </g>
                                 </svg>
-                            </a>
+                            </a> -->
 
-                    </div><!-- end user menu -->
+                        <?php if($user->is_logged_in()) : ?>
+                            <a class="login" href="">logout></>
+                        <?php else : ?>
+                            <a class="login" href="">login</a>
+                        <?php endif; ?>
+
+                        <a id="user-icon" href="" title="<?php print $loginMessage; ?>">
+                            <svg id="user-widget" width="40" height="40" viewBox="0 0 100 100"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g>
+                                    <circle cx="50" cy="50" r="50" style="fill: rgba(210, 165, 80);" />
+                                    <text x="50%" y="50%" font-size="3.0em" fill="#ffffff" text-anchor="middle"
+                                        stroke="#ffffff" stroke-width="0px"
+                                        dy=".3em"><?php print $user->getInitials(); ?></text>
+                                </g>
+                            </svg>
+                        </a>
+
+                    </div><!-- end user-area -->
 
                 </div><!-- end float-right -->
 

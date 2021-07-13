@@ -52,11 +52,7 @@ class DefaultTheme extends Theme {
 		),
 		array(
 			"src" => "/content/themes/default/js/sidebar.js"
-		),
-		array(
-			"src" => "/content/themes/default/js/app.js"
 		)
-		
 		
 		// $module_path = "/modules/webconsole";
 		/*
