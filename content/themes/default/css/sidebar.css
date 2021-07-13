@@ -16,7 +16,7 @@
 
 @media screen and (min-width: 801px){
     #stage{
-        width: 79%;
+        /* width: 79%; */
         display:inline-block;
     }
     .sidenav {

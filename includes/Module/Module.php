@@ -148,7 +148,23 @@ class Module {
     	return $this->loadApi($app, $debug);
     }
 
-    protected function loadApi($connectedAppName = null) {
+
+    protected function loadForceApiFromFlow($flow, $connectedAppName = null) {
+
+        $config = get_oauth_config($connectedAppName);
+        
+        $accessToken = Session::get($config->getName(), $flow, "access_token");
+        $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
+
+        $req = new RestApiRequest($instanceUrl, $accessToken);
+
+        return $req;
+    }
+
+
+
+
+    protected function loadApi($connectedAppName = null, $debug = false) {
 
         $config = get_oauth_config($connectedAppName);
         
@@ -187,7 +203,7 @@ class Module {
 
 			\Session::set($config->getName(), $flow, "access_token", $accessToken);
 
-            $api = $this->loadForceApi();  // Why cant I do this "$api->setAccessToken($accessToken);" ? 
+            $api = $this->loadForceApi();
             $resp = call_user_func(array($api, $queryType), $soql);
 			
 			if($debug) $message = "ACCESS TOKEN WAS REFRESHED";

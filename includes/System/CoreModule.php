@@ -76,7 +76,13 @@ class CoreModule extends Module {
 			throw new OAuthException($resp->getErrorMessage());
 		}
 
+		// Step 1: Set up the session for the connected app.
 		OAuth::setSession($connectedApp, $flow, $resp->getInstanceUrl(), $resp->getAccessToken(), $resp->getRefreshToken());
+
+		// Step 2: Declare who the current user is.  Create a user session.
+		$userInfo = OAuth::getUser($config->getName(), "webserver");
+		$user = new \User($userInfo);
+		\Session::setUser($user);
 
 		$resp2 = new HttpResponse();
 

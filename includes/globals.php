@@ -1,5 +1,7 @@
 <?php
 
+use function Session\is_admin;
+
 $log = array();
 $debug = true;
 
@@ -164,21 +166,8 @@ function doSAMLAuthorization(){
 }
 
 
-function user_get_initials() {
-	//return !is_authenticated() ? "G" : ucfirst(substr($_SESSION["username"], 0, 1));
-	return "G";
-}
 
 
-function current_user($connectedApp = null, $flow = null){
-
-	$connectedApp = "salesforce";
-	$flow = "webserver";//get from config later?
-
-	//$_SESSION["connectedApp"][$flow]["user"];
-	//\Session::get($connectedApp, $flow, "user");
-	return User::getUserFromSession($connectedApp, $flow);
-}
 
 
 function get_oauth_config($key = null) {
@@ -284,13 +273,6 @@ function get_user_info(){
 
 
 
-
-
-
-
-
-
-
 /// These are our access related functions.
 function user_has_access($module, $route) {
 
@@ -300,7 +282,7 @@ function user_has_access($module, $route) {
 	if($access === false) return false;
 
 	// Define in config/config.php.
-	if(is_admin_user()) return true;
+	if(is_admin()) return true;
 	
 	
 	if(!isset($access) ) {
