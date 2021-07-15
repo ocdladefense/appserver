@@ -93,7 +93,24 @@ class CoreModule extends Module {
 	// Don't need an actual login function, because the route has specified the webserver flow ????
 	public function userLogout(){
 
+		$sloEndpoint = "https://ocdla-sandbox--ocdpartial.my.salesforce.com/services/auth/idp/oidc/logout";
+		$infoEndpoint = "/.well-known/openid-configuration";
+
+		$api = $this->loadForceApiFromFlow("usernamepassword");
+
+		$info = $api->send($infoEndpoint);
+
+		if(!$info->isSuccess()) throw new Exception($info->getErrorMessage());
+
+		$sloEndpoint = $this->buildRedirect($info->getBody()["end_session_endpoint"]);
+
+		$api2 = $this->loadForceApiFromFlow("usernamepassword");
+		$logout = $api2->send($sloEndpoint);
+
+		if(!$logout->isSuccess()) throw new Exception($logout->getErrorMessage());
+
 		$_COOKIE["PHPSESSID"] = array();
+
 		$_SESSION = array();
 
 		$redirect = $this->buildRedirect();
@@ -108,7 +125,7 @@ class CoreModule extends Module {
 		if($user != null){
 
 			$name = $user->getName();
-			$username = $user->getUserName;
+			$username = $user->getUserName();
 			$userType = $user->isAdmin() ? "Admin" : "Customer";
 			$email = $user->getEmail();
 			$geoZone = $user->getGeoZone();
