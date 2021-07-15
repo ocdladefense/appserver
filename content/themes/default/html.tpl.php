@@ -7,7 +7,7 @@ use function Session\get_current_user;
 
  $user = get_current_user();
  $loginMessage = !$user->is_logged_in() ? "Logged in as Guest" : "Hello {$user->getFirstName()}";
- $profileUrl = !$user->is_logged_in() ? "" : "/user/profile";
+ $profileUrl = !$user->is_logged_in() ? "#" : "/user/profile";
 
 ?>
 <!doctype html>
@@ -91,9 +91,9 @@ use function Session\get_current_user;
                     <div id="user-area" style="display:inline-block; margin-top:11px;">
 
                         <?php if($user->is_logged_in()) : ?>
-                            <a class="login" href="/user/logout">logout</>
+                            <a class="login" href="/logout">logout</>
                         <?php else : ?>
-                            <a class="login" href="/user/login">login</a>
+                            <a class="login" href="/login">login</a>
                         <?php endif; ?>
 
                         <a id="user-icon" href="<?php print $profileUrl; ?>" title="<?php print $loginMessage; ?>">

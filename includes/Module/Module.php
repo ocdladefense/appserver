@@ -166,6 +166,12 @@ class Module {
 
     protected function loadApi($connectedAppName = null, $debug = false) {
 
+        if(empty($this->getInfo()["connectedApp"])){
+            
+            throw new Exception("CONFIGURATION_ERROR: No 'Connected App' sepecified.  Update the 'module.json' file for your module.");
+        }
+
+
         $config = get_oauth_config($connectedAppName);
         
         $route = $this->getCurrentRoute();

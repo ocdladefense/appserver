@@ -117,7 +117,7 @@ class CoreModule extends Module {
 		}
 
 		$form = "
-		<a href='$redirect'>Go Back</a>
+		<a href='#' onclick='history.back(); return false;'>Go Back</a>
 		<p><strong>Name:</strong>$name</p><br />
 		<p><strong>Username:</strong>$username</p><br />
 		<p><strong>Email:</strong>$email</p><br />
