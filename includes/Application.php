@@ -68,7 +68,6 @@ class Application {
         $coreDef = array(
             "comment"      => "The core module",
             "name"         => "core",
-            "connectedApp" => "default",
             "description"  => "holds routes for core functionality",
             "files"        => array(),
             "routes"       => array(
@@ -107,26 +106,26 @@ class Application {
                     "module"        => "core",
                     "method"        => "get"
                 ),
-                "user/login"        => array(
+                "login"        => array(
                     "callback"      => "userLogin",
                     "content-type"  => "application/json",
-                    "path"          => "user/login",
+                    "path"          => "login",
                     "module"        => "core",
                     "method"        => "get",
                     "access"        => "is_authenticated",
                     "authorization" => "webserver"
                 ),
-                "user/logout"        => array(
+                "logout"        => array(
                     "callback"      => "userLogout",
                     "content-type"  => "application/json",
-                    "path"          => "user/logout",
+                    "path"          => "logout",
                     "module"        => "core",
                     "method"        => "get"
                 ),
                 "user/profile"        => array(
                     "callback"      => "userProfile",
                     "content-type"  => "text/html",
-                    "path"          => "user/profile/%userId",
+                    "path"          => "user/profile",
                     "module"        => "core",
                     "method"        => "get"
                 )

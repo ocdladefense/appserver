@@ -226,10 +226,8 @@ function is_module_authorized($module) {
 	$moduleName = $module->getCurrentRoute()["module"];
 
 	// If the module has no connected app set, the user is authorized for the module.
-	if(!isset($module->getInfo()["connectedApp"]) && $moduleName != "core"){
-
-		throw new Exception("MODULE_CONFIGURATION_ERROR: No connected app specified.  Check the 'module.json file for your module.'");
-	}
+	if(!isset($module->getInfo()["connectedApp"])) return true;
+	
 	// Necessary because key can be "default".
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
 	$connectedAppName = get_oauth_config($connectedAppSetting)->getName();
