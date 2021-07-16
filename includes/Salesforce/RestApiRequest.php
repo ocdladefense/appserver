@@ -68,7 +68,7 @@ class RestApiRequest extends HttpRequest {
         
         $config = array(
                 "returntransfer" 		=> true,
-                "useragent" 				=> "Mozilla/5.0",
+                "useragent" 			=> "Mozilla/5.0",
                 "followlocation" 		=> true,
                 "ssl_verifyhost" 		=> false,
                 "ssl_verifypeer" 		=> false

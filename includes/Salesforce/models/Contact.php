@@ -44,6 +44,11 @@ class Contact {
         return $this->Id;
     }
 
+    public function getName(){
+
+        return $this->FirstName . " " . $this->LastName;
+    }
+
     public function getFirstName(){
 
         return $this->FirstName;
@@ -82,6 +87,11 @@ class Contact {
     public function getPhone(){
 
         return $this->Phone;
+    }
+
+    public function getPhoneNumericOnly(){
+
+        return preg_replace('/[^a-z\d]/i', '', $this->Phone);
     }
 
     public function getEmail(){
