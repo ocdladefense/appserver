@@ -1,6 +1,6 @@
 
 function openNav() {
-    console.log("Hitting this one!!!!!!!!!!!!!!!!!!!!!!!!1");
+  
     document.getElementById("sidenav").classList.add("sidenav-mobile-open");
     menu.innerHTML = "&times;";
     menu.style.fontSize = "xx-large" ;
