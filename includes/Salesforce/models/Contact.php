@@ -9,9 +9,11 @@ class Contact {
     public $MailingState;
     public $Phone;
     public $Email;
+    public $AreasOfInterest__r;
+    public $Ocdla_Expert_Witness_Other_Areas__c;
     public $Ocdla_Occupation_Field_Type__c;
     public $Ocdla_Organization__c;
-    public $AreasOfInterest__r;
+    public $Ocdla_Expert_Witness_Primary__c;
 
     public function __construct(){}
 
@@ -32,6 +34,8 @@ class Contact {
             $c->MailingState = $record["MailingState"];
             $c->Phone = $record["Phone"];
             $c->Email = $record["Email"];
+            $c->Ocdla_Expert_Witness_Other_Areas__c = $record["Ocdla_Expert_Witness_Other_Areas__c"];
+            $c->Ocdla_Expert_Witness_Primary__c = $record["Ocdla_Expert_Witness_Primary__c"];
             
             $contacts[] = $c;
         }
@@ -64,19 +68,25 @@ class Contact {
         return $this->MailingCity;
     }
     
-    public function getAreasOfInterest(){
+    public function getAreasOfInterest($asArray = false){
 
         if(!empty($this->AreasOfInterest__r)){
 
             $interests = array();
+
             foreach($this->AreasOfInterest__r as $record) $interests[] = $record["Interest__c"];
 
-            return implode(", ", $interests);
+            return $asArray ? $interests : implode(", ", $interests);
 
         } else {
 
             return null;
         }
+    }
+
+    public function getExpertWitnessOtherAreas(){
+
+        return $this->Ocdla_Expert_Witness_Other_Areas__c;
     }
 
     public function getMailingState(){
@@ -107,5 +117,12 @@ class Contact {
     public function getOcdlaOrganization(){
 
         return $this->Ocdla_Organization__c;
+    }
+
+    public function getPrimaryFields($asArray = false){
+
+        $primaryFields = explode(";", $this->Ocdla_Expert_Witness_Primary__c);
+
+        return $asArray ? $primaryFields : implode(", ", $primaryFields);
     }
 }
