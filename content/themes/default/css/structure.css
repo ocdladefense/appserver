@@ -95,15 +95,29 @@ body {
 	padding-right:3%;
 }
 
+#float-right {
+	display: inline-block;
+}
+
 #logo {
 	display:inline-block;
 	margin-bottom:13px;
-	max-width: 40%;
+	width: 59%;
+}
+
+@media screen and (min-width:800px) {
+	#logo {
+		width: 85%;
+	}
 }
 
 #logo img {
 	vertical-align: middle;
 	max-width: 150px;
+}
+
+#user-icon {
+	vertical-align: middle;
 }
 
 #search-form {

@@ -63,7 +63,7 @@ use function Session\get_current_user;
 
                 <div id="banner">&nbsp;</div>
 
-                <div id="float-right" style="display:inline-block; float:right;">
+                <div id="float-right">
 
                     <div id="search-form">
 
