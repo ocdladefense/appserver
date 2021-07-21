@@ -14,6 +14,8 @@ use File\File;
 
 class RestApiRequest extends HttpRequest {
 
+    public const SALESFORCE_EXPIRED_ACCESS_TOKEN_ERROR = "INVALID_SESSION_ID";
+
     public $resourcePrefix = "/services/data";
 
 	private $instanceUrl;
@@ -77,6 +79,14 @@ class RestApiRequest extends HttpRequest {
         $http = new Http($config);
         
         $resp = $http->send($this, true);
+
+        // Is it safe to assume that if a RestApiRequest fails due to an expired access token, that we are using the usernamepassword flow?
+        if($resp->getErrorCode() == self::SALESFORCE_EXPIRED_ACCESS_TOKEN_ERROR){
+
+            $updatedRequest = refresh_user_pass_access_token($this);
+
+            return $http->send($updatedRequest, true);
+        }
 
         return $resp;
     }
