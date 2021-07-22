@@ -141,21 +141,23 @@ function user_require_auth($connectedAppName, $route) {
 
 function refresh_user_pass_access_token(Salesforce\RestApiRequest $req){
 
-	$oldAccessToken = $req->getAccessToken();
+	$redirect = $_SERVER["REDIRECT_URL"];
 
-	$config = get_oauth_config();
+	return redirect($redirect);
 
-	$oauthRequest = Salesforce\OAuth::start($config, "usernamepassword");
+	
 
-	$oauthResponse = $oauthRequest->authorize();
+	// $config = get_oauth_config();
 
-	$req->setAccessToken($oauthResponse->getAccessToken());
+	// $oauthRequest = Salesforce\OAuth::start($config, "usernamepassword");
 
-	Session::set($config->getName(), "usernamepassword", $oauthResponse->getAccessToken(), $oauthResponse->getInstanceUrl());
+	// $oauthResponse = $oauthRequest->authorize();
 
-	// var_dump($oldAccessToken, $req->getAccessToken());exit;
+	// $req->setAccessToken($oauthResponse->getAccessToken());
 
-	return $req;
+	// Session::set($config->getName(), "usernamepassword", $oauthResponse->getAccessToken(), $oauthResponse->getInstanceUrl());
+
+	// return $req;
 }
 
 

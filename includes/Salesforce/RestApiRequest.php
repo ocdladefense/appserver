@@ -85,6 +85,8 @@ class RestApiRequest extends HttpRequest {
 
             $updatedRequest = refresh_user_pass_access_token($this);
 
+            var_dump($this, $updatedRequest);exit;
+
             return $http->send($updatedRequest, true);
         }
 
