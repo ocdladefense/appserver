@@ -83,11 +83,13 @@ class RestApiRequest extends HttpRequest {
         // Is it safe to assume that if a RestApiRequest fails due to an expired access token, that we are using the usernamepassword flow?
         if($resp->getErrorCode() == self::SALESFORCE_EXPIRED_ACCESS_TOKEN_ERROR){
 
-            $updatedRequest = refresh_user_pass_access_token($this);
+            throw new \Exception($resp->getErrorMessage() . " Until this bug is fixed, you will need to clear your cookies to resolve this issue.");
 
-            var_dump($this, $updatedRequest);exit;
+            //$updatedRequest = refresh_user_pass_access_token($this);
 
-            return $http->send($updatedRequest, true);
+            //var_dump($this, $updatedRequest);exit;
+
+            //return $http->send($updatedRequest, true);
         }
 
         return $resp;
