@@ -13,13 +13,6 @@
             "modules/jobs":["ocdladefense/appserver-jobs"]
     	}
     },
-    "config": {
-        "preferred-install": {
-            "ocdladefense/appserver-car": "source",
-            "ocdladefense/appserver-directory": "source",
-            "ocdladefense/appserver-jobs": "source"
-        }
-    },
     "require": {
         "composer/installers":"~1.0",
         "ocdladefense/lib-oauth-config": "~2.0",
