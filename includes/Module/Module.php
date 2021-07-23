@@ -180,8 +180,6 @@ class Module {
         // access token that is stored in at the index of the flow for the connected app.
         // Refresh token does not work with the username password flow.
         $flow = isset($route["authorization"]) ? $route["authorization"] : "usernamepassword";
-
-        
         
         $accessToken = Session::get($config->getName(), $flow, "access_token");
         $instanceUrl = Session::get($config->getName(), $flow, "instance_url");

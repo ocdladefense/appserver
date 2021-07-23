@@ -139,6 +139,21 @@ function user_require_auth($connectedAppName, $route) {
 	return Salesforce\OAuth::start($config, $authFlow);
 }
 
+function refresh_user_pass_access_token(Salesforce\RestApiRequest $req){
+
+	$config = get_oauth_config();
+
+	$oauthRequest = Salesforce\OAuth::start($config, "usernamepassword");
+
+	$oauthResponse = $oauthRequest->authorize();
+
+	$req->setAccessToken($oauthResponse->getAccessToken());
+
+	Salesforce\OAuth::setSession($config->getName(), "usernamepassword", $oauthResponse->getAccessToken(), $oauthResponse->getInstanceUrl());
+
+	return $req;
+}
+
 
 function doSAMLAuthorization(){
 
