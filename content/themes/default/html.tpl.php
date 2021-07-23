@@ -91,9 +91,9 @@ use function Session\get_current_user;
                     <div id="user-area">
 
                         <?php if($user->is_logged_in()) : ?>
-                            <!--<a class="login" href="/logout">logout</a>-->
+                            <a class="login" href="/logout">logout</a>
                         <?php else : ?>
-                            <!--<a class="login" href="/login">login</a>-->
+                            <a class="login" href="/login">login</a>
                         <?php endif; ?>
 
                         <a id="user-icon" href="<?php print $profileUrl; ?>" title="<?php print $loginMessage; ?>">
