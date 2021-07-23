@@ -93,7 +93,10 @@ class CoreModule extends Module {
 	// Don't need an actual login function, because the route has specified the webserver flow ????
 	public function userLogout(){
 
-		$sloEndpoint = "https://ocdla-sandbox--ocdpartial.my.salesforce.com/services/auth/idp/oidc/logout";
+		// SINGLE LOGOUT URL: 		  "https://ocdla-sandbox--ocdpartial.my.salesforce.com/services/auth/idp/oidc/logout"
+		// OPEN ID CONFIGURATION URL: "https://ocdla-sandbox--ocdpartial.my.salesforce.com/.well-known/openid-configuration"
+
+
 		$infoEndpoint = "/.well-known/openid-configuration";
 
 		$api = $this->loadForceApiFromFlow("usernamepassword");
@@ -134,6 +137,9 @@ class CoreModule extends Module {
 		}
 
 		$form = "
+		<style>
+		.sidenav{display:none;}
+		</style>
 		<a href='#' onclick='history.back(); return false;'>Go Back</a>
 		<p><strong>Name:</strong>$name</p><br />
 		<p><strong>Username:</strong>$username</p><br />
