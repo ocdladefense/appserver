@@ -154,5 +154,24 @@
         height:unset;
     }
 }
+.user{
+    display:none;
+}
+
+span#menu {
+    display: inline-block;
+}
+
+@media screen and (min-width:750px){
+
+    .sidenav{
+        float:unset;
+    }
+    
+    li.side-menu-item {
+        width: 101px;
+        display: inline-block;
+    }
+}
 
 
