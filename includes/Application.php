@@ -107,7 +107,7 @@ class Application {
                     "method"        => "get"
                 ),
                 "login"        => array(
-                    "callback"      => "userLogin",
+                    "callback"      => "login",
                     "content-type"  => "application/json",
                     "path"          => "login",
                     "module"        => "core",
