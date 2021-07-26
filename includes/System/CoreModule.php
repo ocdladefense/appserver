@@ -92,6 +92,13 @@ class CoreModule extends Module {
 
 	// Don't need an actual login function, because the route has specified the webserver flow ????
 	public function userLogout(){
+
+		$config = get_oauth_config();
+
+		//Temporary fix for getting instance doamain.
+		$flow = $config->getFlowConfig();
+
+		$tokenUrl = explode("/", $flow->getTokenUrl());
 		
 		$sloEndpoint = "https://ocdla-sandbox--ocdpartial.my.salesforce.com/services/auth/idp/oidc/logout";
 
