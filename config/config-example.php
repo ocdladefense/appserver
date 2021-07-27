@@ -6,35 +6,41 @@
 define("ADMIN_USER", true);
 
 
-/**
- * Connect to multiple endpoints, but
- *  specify one as the "default."
- *
- * Example in a module:
- * $api = $this->loadForceApi("ocdla-sandbox");
- *
- * to connect to the default use the existing syntax:
- * $api = $this->loadForceApi();
- */
+// These are really connected applications
 $oauth_config = array(
-	"ocdla-sandbox" => array(
-		"default" => true,
-		"oauth_url" => "https://test.salesforce.com/services/oauth2/token",
-		"client_id" => "",
-		"client_secret" => "",
-		"callback_url" => "https://localhost/resttest/oauth_callback.php",
-		"username" => "user@example.com",
-		"password" => "abcdefg12345",
-		"security_token" => ""
+
+	"connected-app-name" => array(
+		"default" => false,
+		"sandbox" => true,
+		"token_url" => "https://login.salesforce.com/services/oauth2/token",
+		"client_id" => "your client id",
+		"client_secret" => "your client secret",
+		"username" => "your username",
+		"password" => "our password",
+		"security_token" => "your security token"
 	),
-	"ocdla-production" => array(
-		"oauth_url" => "https://login.salesforce.com/services/oauth2/token",
+	"trevors-dev-hub" => array(
+		"default" => true,
+		"sandbox" => true, // Might be used to determine domain for urls
 		"client_id" => "",
 		"client_secret" => "",
-		"callback_url" => "https://ocdla.app/home",
-		"username" => "user@example.com",
-		"password" => "abcdefg12345",
-		"security_token" => ""
+		"auth" => array(
+			"saml" => array(),
+			"oauth" => array(
+				"usernamepassword" => array(
+					"token_url" => "https://login.salesforce.com/services/oauth2/token",
+					"username" => "",
+					"password" => "",
+					"security_token" => ""
+				),
+				"webserver" => array(
+					"token_url" => "https://login.trevoruehlin-developer-edition.na85.force.com/services/oauth2/token",
+					"auth_url" => "https://trevoruehlin-developer-edition.na85.force.com/services/oauth2/authorize",	// Web server ouath flow has two oauth urls.
+					"redirect_url" => "http://localhost/oauth/api/request",
+					"callback_url" => "http://localhost/test/1",
+				)
+			)
+		)
 	)
 );
 

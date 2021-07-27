@@ -5,6 +5,9 @@
 	if(file_exists($saml_auth)) {
 		require_once($saml_auth);
 	}
+
+	require_once BASE_PATH.'/includes/user.inc';
+
 	require_once BASE_PATH.'/includes/globals.php';
 	require_once BASE_PATH.'/includes/User.php';
 
@@ -14,15 +17,18 @@
 	}
 
 
-	
-	require_once BASE_PATH.'/includes/System/ClassName.php';
-	require_once BASE_PATH.'/includes/System/XList.php';
-	require_once BASE_PATH.'/includes/System/IJson.php';
-	require_once BASE_PATH.'/includes/System/DateRange.php';
+	require_once(BASE_PATH.'/includes/Module/Module.php');
 
-	
+	// Require all of the files in the includes/System directory.
+	$systemFiles = array("ClassName","XList", "IJson", "DateRange", "CoreModule","Session");
+
+	foreach($systemFiles as $file) {
+		require_once(BASE_PATH.'/includes/System/'.$file.".php");
+	}
 
 
+
+	// Require all of the files in the includes/File directory.
 	$files = array("FileSystem","File", "FileList", "FileHandler", "PhpFileUpload");
 
 	foreach($files as $file) {
@@ -39,7 +45,7 @@
 
 	
 	$http = array("HttpConstants","CurlConfiguration","Curl","Http","HttpHeader","HttpHeaderCollection","HttpMessage","HttpRequest","HttpResponse","HttpRedirect","IHttpCache",
-	"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag","BodyPart");
+	"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag","BodyPart","HttpException");
 	
 	foreach($http as $file) {
 		require_once(BASE_PATH.'/includes/Http/'.$file.".php");
@@ -63,14 +69,15 @@
 		
 	require_once BASE_PATH.'/includes/Exception/PageNotFoundException.php';
 	require_once BASE_PATH.'/includes/Exception/SalesforceAccessException.php';
-	require_once BASE_PATH.'/includes/Exception/SalesforceAuthException.php';		
+	require_once BASE_PATH.'/includes/Exception/SalesforceAuthException.php';
+
 
 
 
 	require_once BASE_PATH.'/includes/Template.php';
 	require_once BASE_PATH.'/includes/Theme.php';	
 	require_once BASE_PATH.'/includes/IRenderable.php';
-
+	require_once BASE_PATH.'/includes/Translate.php';
 
 	require_once BASE_PATH.'/includes/Routing/Path.php';	
 	require_once BASE_PATH.'/includes/Routing/Route.php';
@@ -102,18 +109,18 @@
 
 	require_once BASE_PATH.'/includes/Application.php';
 
-	require_once BASE_PATH.'/includes/Salesforce/Salesforce.php';
-	require_once BASE_PATH.'/includes/Salesforce/RestApiResult.php';	
-	require_once BASE_PATH.'/includes/Salesforce/OAuthRequest.php';
-	require_once BASE_PATH.'/includes/Salesforce/OAuthResponse.php';
-	require_once BASE_PATH.'/includes/Salesforce/RestApiRequest.php';
-	require_once BASE_PATH.'/includes/Salesforce/RestApiResponse.php';
-	require_once BASE_PATH.'/includes/Salesforce/SObject.php';
-	require_once BASE_PATH.'/includes/Salesforce/SalesforceFile.php';
-	require_once BASE_PATH.'/includes/Salesforce/OAuthConfig.php';
-	require_once BASE_PATH.'/includes/Salesforce/OAuthFlowConfig.php';
 
-	$files = array("Attachment","Document", "ContentDocument");
+
+	// Require all of the files in the includes/Salesforce direcory.
+	$sfFiles = array("Salesforce","RestApiResult", "OAuthRequest","OAuthResponse","RestApiRequest",
+					"RestApiResponse","SObject","SalesforceFile","OAuth","RestApiException","OAuthException");
+
+	foreach($sfFiles as $file) {
+		require_once(BASE_PATH.'/includes/Salesforce/'.$file.".php");
+	}
+
+
+	$files = array("Attachment","Document", "ContentDocument", "Contact");
 
 	foreach($files as $file) {
 		require_once(BASE_PATH.'/includes/Salesforce/models/'.$file.".php");
@@ -133,5 +140,5 @@
 
 
 	if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
-		// include BASE_PATH.'/vendor/autoload.php';
+		include BASE_PATH.'/vendor/autoload.php';
 	}

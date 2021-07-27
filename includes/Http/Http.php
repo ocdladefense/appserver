@@ -57,6 +57,11 @@ class Http {
 	//   enable logging.
 	public function send(HttpMessage $msg, $log = false) {
 
+		if(is_subclass_of($msg, "Http\HttpRequest") && $msg->getUrl() == null){
+
+			throw new HttpException("ENDPOINT_ERROR: The endpoint/url cannot be null");
+		}
+
 		
 		// Static context so need to reset headers before further processing.
 		self::$headersSent = null;
@@ -137,6 +142,12 @@ class Http {
 	
 
 	private static function newHttpResponse($responseClass,$endpoint,$headers,$body,$info,$log = null){
+
+		if($headers["Content-Type"] == "application/octetstream"){
+
+			$responseClass = "\Http\HttpResponse";
+		}
+
 		$resp = new $responseClass($body);
 		$resp->setHeaders(HttpHeader::fromArray($headers));
 		$resp->addHeader(new HttpHeader("X-Request-Endpoint",$endpoint));

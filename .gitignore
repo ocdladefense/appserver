@@ -7,6 +7,8 @@ log/
 settings.php
 settings.js
 config.php
+TREVORS_CONFIG.php
+ex-prod-config.php
 config.js
 
 login.xml
@@ -62,3 +64,6 @@ log/*
 
 test.php
 content/themes/highscope
+
+
+/config/modules/

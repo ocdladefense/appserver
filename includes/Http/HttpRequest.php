@@ -41,6 +41,14 @@ class HttpRequest extends HttpMessage {
 		"DELETE"
 	);
 
+	public function __construct($url = null) {
+
+		parent::__construct();
+
+		if(null != $url) $this->setUrl($url);
+	}
+	
+
 
 	public function setPlatform($env){
 
@@ -79,6 +87,7 @@ class HttpRequest extends HttpMessage {
 		return $this->headerLike("Content-Type", MIME_FORM_URLENCODED);	
 	}
 	
+	
 	public function isMultipart() {
 
 		$multipart = $this->headerLike("Content-Type", MIME_MULTIPART_FORM_DATA);
@@ -100,14 +109,6 @@ class HttpRequest extends HttpMessage {
 		$this->addHeader(new HttpHeader("Content-Type", $value));
 	}
 
-
-	public function __construct($url = null) {
-		parent::__construct();
-		if(null != $url) {
-			$this->setUrl($url);
-		}
-	}
-	
 	
 	public function setUrl($url) {
 	

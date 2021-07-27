@@ -1,15 +1,12 @@
 <?php
 
-
-
-
 namespace Salesforce;
-
 
 use Http\HttpRequest;
 use Http\HttpHeader;
 use Http\Http;
 use Http\HttpResponse;
+use Http\HttpException;
 use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 use Http\BodyPart;
 use File\File;
@@ -17,14 +14,16 @@ use File\File;
 
 class RestApiRequest extends HttpRequest {
 
+    public const SALESFORCE_EXPIRED_ACCESS_TOKEN_ERROR = "INVALID_SESSION_ID";
+
+    public $resourcePrefix = "/services/data";
 
 	private $instanceUrl;
 	
-	
 	private $accessToken;
-	
-	
-	public $resourcePrefix = "/services/data";
+
+    private $addXHttpClientHeader = true;
+
 
 
 	public const ENDPOINTS = array(
@@ -35,7 +34,6 @@ class RestApiRequest extends HttpRequest {
                 "sObjectName" => 2
             )
         ),
-        
         "Query" => array(
             "endpoint" => "/%apiVersion/query/?q=",
             "parameters" => array(
@@ -45,14 +43,11 @@ class RestApiRequest extends HttpRequest {
         )
     );
 
-    /**
-     * Prepare authentication parameters for the Salesforce REST API.
-     *  Keep track of the number of login attempts.
-     */
+
     public function __construct($instanceUrl, $accessToken) {
     
     	parent::__construct();
-    	
+
     	$this->instanceUrl = $instanceUrl;
     	$this->accessToken = $accessToken;
     }
@@ -60,37 +55,68 @@ class RestApiRequest extends HttpRequest {
 
     public function send($endpoint) {
 
-        if(empty($this->instanceUrl)) throw new \Exception("REST_API_ERROR:  The instance url cannot be null.");
-        if(empty($this->accessToken)) throw new \Exception("REST_API_ERROR:  The access token cannot be null.");
-
+        if(empty($this->instanceUrl)) throw new HttpException("REST_API_ERROR:  The instance url cannot be null.");
+        if(empty($this->accessToken)) throw new RestApiException("REST_API_ERROR:  The access token cannot be null.");
     
         $this->setUrl($this->instanceUrl . $endpoint);
-        $this->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\RestApiResponse")); // Use a custom HttpResponse class to represent the HttpResponse.
+        
+        if($this->addXHttpClientHeader){
+
+            $this->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\RestApiResponse")); // Use a custom HttpResponse class to represent the HttpResponse.
+        }
+
         $token = new HttpHeader("Authorization", "Bearer " . $this->accessToken);
         $this->addHeader($token);
         
         $config = array(
                 "returntransfer" 		=> true,
-                "useragent" 				=> "Mozilla/5.0",
+                "useragent" 			=> "Mozilla/5.0",
                 "followlocation" 		=> true,
                 "ssl_verifyhost" 		=> false,
                 "ssl_verifypeer" 		=> false
         );
 
-
         $http = new Http($config);
-
-        //var_dump($this);exit;
         
         $resp = $http->send($this, true);
 
-        // $http->printSessionLog(); exit;
+        // Is it safe to assume that if a RestApiRequest fails due to an expired access token, that we are using the usernamepassword flow?
+        if($resp->getErrorCode() == self::SALESFORCE_EXPIRED_ACCESS_TOKEN_ERROR){
+
+            throw new \Exception($resp->getErrorMessage() . " Until this bug is fixed, you will need to clear your cookies to resolve this issue.");
+
+            //$updatedRequest = refresh_user_pass_access_token($this);
+
+            //var_dump($this, $updatedRequest);exit;
+
+            //return $http->send($updatedRequest, true);
+        }
 
         return $resp;
     }
 
+    public function removeXHttpClientHeader(){
+
+        $this->addXHttpClientHeader = false;
+    }
+
+    public function setAccessToken($token){
+
+        $this->accessToken = $token;
+    }
+
+    public function getAccessToken(){
+
+        return $this->accessToken;
+    }
+
+    public function getInstanceUrl(){
+
+        return $this->instanceUrl;
+    }
 
     public function getEndpoint($target, $version = "v51.0" , $getIndex = false){
+
         return ENDPOINT[$target][$version];
     }
 
@@ -102,18 +128,29 @@ class RestApiRequest extends HttpRequest {
 
         $endpoint = "/services/data/v51.0/sobjects/{$file->getSObjectName()}/";
     
-        $this->setMethod($file->getId() != null ? "PATCH": "POST");
+        $method = "POST"; // By default we will insert new records.
+
+        if($isAttachment && $file->getId() != null){
+
+            $method = "PATCH";
+
+        } else if(!$isAttachment && $file->getContentDocumentId() != null){ //You cant do patch request for content versions.
+
+            $method = "POST";
+        }
+        
+        $this->setMethod($method);
         $this->setContentType("multipart/form-data; boundary=\"boundary\"");
     
 
-        $metaContentDisposition = $isAttachment ? "form-data; name=\"entity_document\"" : "form-data; name=\"entity_document\"";
+        $metaContentDisposition = $isAttachment ? "form-data; name=\"entity_document\"" : "form-data; name=\"entity_content\"";
 
         $metaPart = new BodyPart();
         $metaPart->addHeader("Content-Disposition", $metaContentDisposition);
         $metaPart->addHeader("Content-Type", "application/json");
         $metaPart->setContent($file->getSObject());
 
-        $binaryContentDisposition = $isAttachment ? "form-data; name=\"Body\"; filename=\"{$file->getName()}\"" : "form-data; name=\"Body\"; filename=\"{$file->getName()}\"";
+        $binaryContentDisposition = $isAttachment ? "form-data; name=\"Body\"; filename=\"{$file->getName()}\"" : "form-data; name=\"VersionData\"; filename=\"{$file->getName()}\"";
 
         $binaryPart = new BodyPart();
         $binaryPart->addHeader("Content-Disposition", $binaryContentDisposition);
@@ -123,8 +160,15 @@ class RestApiRequest extends HttpRequest {
         $this->addPart($metaPart);
         $this->addPart($binaryPart);
 
-        return $this->send($endpoint);
-        
+        $resp = $this->send($endpoint);
+
+        if(!$resp->isSuccess()){
+
+			$message = $resp->getErrorMessage();
+			throw new \Exception($message);
+		}
+
+        return $resp;
     }
 
 
@@ -155,8 +199,6 @@ class RestApiRequest extends HttpRequest {
     }
 
     public function buildMetadata($fileList, $parentId){
-
-        // Probably want to pass in the type of SObject at some point.
 
         $metadata = array(
             "allOrNone" => false,
@@ -197,8 +239,6 @@ class RestApiRequest extends HttpRequest {
         return $req;
     }
     
-
-
     public function sendBatch($records, $sObjectName) {
 
         $batches = array();
@@ -212,11 +252,8 @@ class RestApiRequest extends HttpRequest {
         $foobar = array("batchRequests" => $batches);
         $this->body = $foobar;
 
-        //var_dump($this->body); exit;
         $resp = $this->send($endpoint);
                 
-    
-        //var_dump($resp);
         return $resp->getBody();
     }
 
@@ -225,7 +262,11 @@ class RestApiRequest extends HttpRequest {
         $endpoint = "/services/data/v49.0/query/?q=";
         $endpoint .= urlencode($soql);
 
-        return $this->send($endpoint, "GET");
+        $this->setMethod("GET");
+
+        $resp = $this->send($endpoint);
+
+        return $resp;
     }
 
     public function upsert($sobjectName, $record){
@@ -238,13 +279,13 @@ class RestApiRequest extends HttpRequest {
 
         // Set up the request.
         $record->Id == null || $record->Id == "" ? $this->setPost() : $this->setPatch();
-        //$this->addHeader(new HttpHeader("Content-Type", "application/json"));
         $this->setContentType("application/json");
         unset($record->Id);
         $this->setBody(json_encode($record));
 
-        // Send the request.
-        return $this->send($endpoint);
+        $resp = $this->send($endpoint);
+
+        return $resp;
     }
 
 
@@ -276,8 +317,8 @@ class RestApiRequest extends HttpRequest {
         return $record;
     }
 
-
     public function getAttachment($id) {
+        
         $endpoint = "/services/data/v49.0/sobjects/Attachment/{$id}/body";
         $resp = $this->send($endpoint);
 
@@ -305,7 +346,6 @@ class RestApiRequest extends HttpRequest {
         return $resp;
     }
 
-  
     public function getContentDocument($id) {
            
         $endpoint = "/services/data/v51.0/sobjects/ContentVersion/{$ContentVersionId}/VersionData";
@@ -314,8 +354,6 @@ class RestApiRequest extends HttpRequest {
         return $resp;
     }
 
-  
-  
     public function getContentDocuments($parentId) {
 
            

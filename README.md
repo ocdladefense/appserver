@@ -10,6 +10,13 @@ PHP >=5.6 and the php-curl extension
 Apache config:
 sudo a2enmod headers
 
+## Updating your installation of the "appserver" so that it works with the latest version of the "lib-oauth-config" package.
+### Steps
+1) In your terminal, checkout the development branch of the appserver repository.
+2) Run the "git pull" command.
+3) Run the "composer update" command.
+4) In your config.php file, make sure that the configuration for the connected app that you are using follows the array structure outlined in the "Version 2.0" example in the "config-example.php" file. The configuration files are located in the "config" directory of the appserver.
+
 
 
 INSTALLATION NOTES

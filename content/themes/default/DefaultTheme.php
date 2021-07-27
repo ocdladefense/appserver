@@ -49,8 +49,10 @@ class DefaultTheme extends Theme {
 		),
 		array(
 			"src" => "/content/libraries/view/modal.js"
+		),
+		array(
+			"src" => "/content/themes/default/js/sidebar.js"
 		)
-		
 		
 		// $module_path = "/modules/webconsole";
 		/*
@@ -142,6 +144,14 @@ class DefaultTheme extends Theme {
 			array(
 				"active" => true,
 				"href" => $path . "/css/tables.css?bust=001"
+			),
+			array(
+				"active" => true,
+				"href" => $path . "/css/sidebar.css?bust=001"
+			),
+			array(
+				"active" => true,
+				"href" => $path . "/css/style.css?bust=001"
 			)
 		);
 	

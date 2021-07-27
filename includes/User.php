@@ -2,36 +2,106 @@
 
 class User {
 
+	const GUEST_USER_ID = "0";
 
-	public static function add_session_data($saml = array()) {
-		$userId 				= $saml["userId"][0];
-		$username 			= $saml["username"][0];
-		$email 					= $saml["email"][0];
-		$isPortalUser 	= $saml["is_portal_user"][0];
-		
+	private $userId;
+	private $name;
+	private $firstName;
+	private $lastName;
+	private $username;
+	private $preferredUsername;
+	private $email;
+	private $geoZone;
+	private $country;
+	private $userType;
+	private $organizationId;
 	
-		$_SESSION["userId"] 			= $userId;
-		$_SESSION["username"] 		= $username;
-		$_SESSION["email"] 				= $email;
-		$_SESSION["isPortalUser"] = $isPortalUser;
-		$_SESSION["FirstName"]		= $firstName;
-		$_SESSION["LastName"] 		= $lastName;
-		$_SESSION["initials"] 		= substr($firstName, 0, 1) . substr($lastName, 0, 1);
+
+	public function __construct($user = array(), $type = "salesforce") {
+
+		if(is_array($user) && $type =="salesforce"){
+
+			$this->userId = $user["user_id"];
+			$this->name = $user["name"];
+			$this->firstName = $user["given_name"];
+			$this->lastName = $user["family_name"];
+			$this->username = $user["preferred_username"];
+			$this->preferredUsername = $user["preferred_username"];
+			$this->email = $user["email"];
+			$this->geoZone = $user["zoneinfo"];
+			$this->country = $user["address"]["country"];
+			$this->userType = $user["user_type"];
+			$this->organizationId = $user["organization_id"];
+		}
+
+		if($this->userId == null) $this->userId = self::GUEST_USER_ID;
+	}
+
+	public function getId(){
+
+		return $this->userId;
+	}
+
+	public function getName(){
+
+		return $this->name;
+	}
+
+	public function getUserName(){
+
+		return $this->username;
+	}
+
+	public function getFirstName(){
+
+		return $this->firstName;
+	}
+
+	public function getUserType(){
+
+		return $this->userType;
+	}
+
+	public function getGeoZone(){
+
+		return $this->geoZone;
+	}
+
+	public function getEmail(){
+
+		return $this->email;
+	}
+
+	public function getCountry(){
+
+		return $this->country;
+	}
+
+	public function getInitials() {
+
+		return !$this->isGuest() ? $this->firstName[0] . $this->lastName[0] : "G";
+	}
+	
+	
+	public function isAdmin($user = null){
+	
+		return $this->userType == "STANDARD";
+	}
+	
+	
+	public function isMember($user = null){
+	
+		return $this->userType != "STANDARD" && $this->userId != self::GUEST_USER_ID;
+	}
+
+	public function isGuest(){
+
+		return $this->userId == self::GUEST_USER_ID;
 	}
 
 
-	public static function is_authenticated() {
-		return defined("ADMIN_USER") && ADMIN_USER === true || isset($_SESSION["userId"]);
+	public function is_logged_in(){
+
+		return $this->userId != self::GUEST_USER_ID;
 	}
-
-
-	// Assume that uid of 1 is the super-user for now.
-	//  Other ids will be unique for each individual logged-in member.
-	public static function getId() {
-		return defined("ADMIN_USER") && ADMIN_USER === true ? 1 : $_SESSION["userId"];
-	}
-
-
-
-
 }
