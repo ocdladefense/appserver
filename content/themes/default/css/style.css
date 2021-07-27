@@ -56,3 +56,12 @@ a{
 span#menu {
     display: inline-block;
 }
+
+@media screen and (min-width:750px){
+    div#sidenav {
+        position: fixed;
+        height: 24%;
+        width: 100%;
+    }
+}
+}
