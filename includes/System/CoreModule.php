@@ -92,8 +92,22 @@ class CoreModule extends Module {
 
 	// Don't need an actual login function, because the route has specified the webserver flow ????
 	public function userLogout(){
+
+		$config = get_oauth_config();
+
+		// Here comes a crazy temporary fix for getting instance doamain.  Need to update the connected app config and lib-oauth-config
+		// with a method for getting the instance url from the connected app config.  Whould be a lot more reliable then the current 
+		// method of getting the instance url from the response.....i think.  I might be crazy, just thinking....
+
+		$flow = $config->getFlowConfig();
+		$instanceUrlparts = explode("/", $flow->getTokenUrl());
+		$removeToken = array_pop($instanceUrlparts);
+		$removeOauth = array_pop($instanceUrlparts);
+		$removeServices = array_pop($instanceUrlparts);
+
+		$instanceUrl = implode("/", $instanceUrlparts);
 		
-		$sloEndpoint = "https://ocdla-sandbox--ocdpartial.my.salesforce.com/services/auth/idp/oidc/logout";
+		$sloEndpoint = "$instanceUrl/services/auth/idp/oidc/logout";
 
 		$_COOKIE["PHPSESSID"] = array();
 
