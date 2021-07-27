@@ -60,8 +60,8 @@ span#menu {
 @media screen and (min-width:750px){
     div#sidenav {
         position: fixed;
-        height: 24%;
+        height: 100%;
         width: 100%;
+        top:75px;
     }
-}
 }
