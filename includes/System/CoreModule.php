@@ -95,12 +95,19 @@ class CoreModule extends Module {
 
 		$config = get_oauth_config();
 
-		//Temporary fix for getting instance doamain.
-		$flow = $config->getFlowConfig();
+		// Here comes a crazy temporary fix for getting instance doamain.  Need to update the connected app config and lib-oauth-config
+		// with a method for getting the instance url from the connected app config.  Whould be a lot more reliable then the current 
+		// method of getting the instance url from the response.....i think.  I might be crazy, just thinking....
 
-		$tokenUrl = explode("/", $flow->getTokenUrl());
+		$flow = $config->getFlowConfig();
+		$instanceUrlparts = explode("/", $flow->getTokenUrl());
+		$removeToken = array_pop($instanceUrlparts);
+		$removeOauth = array_pop($instanceUrlparts);
+		$removeServices = array_pop($instanceUrlparts);
+
+		$instanceUrl = implode("/", $instanceUrlparts);
 		
-		$sloEndpoint = "https://ocdla-sandbox--ocdpartial.my.salesforce.com/services/auth/idp/oidc/logout";
+		$sloEndpoint = "$instanceUrl/services/auth/idp/oidc/logout";
 
 		$_COOKIE["PHPSESSID"] = array();
 
