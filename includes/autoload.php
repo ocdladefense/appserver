@@ -48,7 +48,7 @@
 	"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag","BodyPart","HttpException");
 	
 	foreach($http as $file) {
-		require_once(BASE_PATH.'/includes/Http/'.$file.".php");
+		//require_once(BASE_PATH.'/includes/Http/'.$file.".php");
 	}
 
 
@@ -116,14 +116,14 @@
 					"RestApiResponse","SObject","SalesforceFile","OAuth","RestApiException","OAuthException");
 
 	foreach($sfFiles as $file) {
-		require_once(BASE_PATH.'/includes/Salesforce/'.$file.".php");
+		//require_once(BASE_PATH.'/includes/Salesforce/'.$file.".php");
 	}
 
 
 	$files = array("Attachment","Document", "ContentDocument", "Contact");
 
 	foreach($files as $file) {
-		require_once(BASE_PATH.'/includes/Salesforce/models/'.$file.".php");
+		//require_once(BASE_PATH.'/includes/Salesforce/models/'.$file.".php");
 	}
 	
 	require_once BASE_PATH.'/includes/Store/Product.php';

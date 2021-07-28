@@ -23,6 +23,8 @@
     "require": {
         "composer/installers":"~1.0",
         "ocdladefense/lib-oauth-config": "~2.0",
+        "ocdladefense/lib-salesforce-rest-api":"~3.0",
+        "ocdladefense/lib-http":"~3.0",
         "ocdladefense/lib-drag-drop-upload":"dev-development",
         "ocdladefense/appserver-directory":"dev-development",
         "ocdladefense/appserver-jobs":"dev-development",
