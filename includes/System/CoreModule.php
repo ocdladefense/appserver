@@ -93,6 +93,17 @@ class CoreModule extends Module {
 	// Don't need an actual login function, because the route has specified the webserver flow ????
 	public function userLogout(){
 
+		$useSloEndpoint = False;
+
+		$_COOKIE["PHPSESSID"] = array();
+		$_SESSION = array();
+
+		if(!$useSloEndpoint){
+
+			$redirect = $this->buildRedirect();
+			return redirect($redirect);
+		}
+
 		$config = get_oauth_config();
 
 		// Here comes a crazy temporary fix for getting instance doamain.  Need to update the connected app config and lib-oauth-config
@@ -108,10 +119,6 @@ class CoreModule extends Module {
 		$instanceUrl = implode("/", $instanceUrlparts);
 		
 		$sloEndpoint = "$instanceUrl/services/auth/idp/oidc/logout";
-
-		$_COOKIE["PHPSESSID"] = array();
-
-		$_SESSION = array();
 
 		return redirect($sloEndpoint);
 	}
