@@ -93,12 +93,10 @@ class CoreModule extends Module {
 	// Don't need an actual login function, because the route has specified the webserver flow ????
 	public function userLogout(){
 
-		$useSloEndpoint = False;
-
 		$_COOKIE["PHPSESSID"] = array();
 		$_SESSION = array();
 
-		if(!$useSloEndpoint){
+		if(!USE_SALESFORCE_SLO_LOGOUT_ENDPOINT){
 
 			$redirect = $this->buildRedirect();
 			return redirect($redirect);
