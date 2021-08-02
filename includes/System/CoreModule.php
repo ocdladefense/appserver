@@ -128,6 +128,7 @@ class CoreModule extends Module {
 		if($user != null){
 
 			$name = $user->getName();
+			$userId = $user->getId();
 			$username = $user->getUserName();
 			$userType = $user->isAdmin() ? "Admin" : "Customer";
 			$email = $user->getEmail();
@@ -141,6 +142,7 @@ class CoreModule extends Module {
 		.sidenav{display:none;}
 		</style>
 		<a href='#' onclick='history.back(); return false;'>Go Back</a>
+		<p><strong>ID:</strong>$userId</p><br />
 		<p><strong>Name:</strong>$name</p><br />
 		<p><strong>Username:</strong>$username</p><br />
 		<p><strong>Email:</strong>$email</p><br />
