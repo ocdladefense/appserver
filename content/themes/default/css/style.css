@@ -81,3 +81,5 @@ div#sidenav{
         max-width: 100px;
     }
 }
+
+.sidenav{display:none;}
