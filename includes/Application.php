@@ -67,6 +67,7 @@ class Application {
 
         $coreDef = array(
             "comment"      => "The core module",
+            "connectedApp" => CORE_MODULE_CONNECTED_APP_NAME,
             "name"         => "core",
             "description"  => "holds routes for core functionality",
             "files"        => array(),
@@ -179,7 +180,7 @@ class Application {
         Translate::init ($module->getRelPath(),$module->getLanguages());//path and language filenames
 
         // Thrown an exception if authorization is set on the route, but there is no "connectedApp" key set on the module.json file for the module.
-        if(isset($route["authorization"]) && !isset($module->getInfo()["connectedApp"])) {
+        if((isset($route["authorization"]) && !isset($module->getInfo()["connectedApp"])) && get_class($module) != "CoreModule") {
 
             throw new Exception("MODULE_CONFIGURATION_ERROR: No connected app set for the module.  Check the module.json file of the module.");
         }
