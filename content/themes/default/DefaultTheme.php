@@ -44,6 +44,9 @@ class DefaultTheme extends Theme {
 		array(
 			"src" => "/content/libraries/core/Repository.js"
 		),
+		array(
+			"src" => "/content/libraries/core/SiteLibraries.js"
+		),
 		array (
 			"src" => "/content/libraries/view/view.js"
 		),
