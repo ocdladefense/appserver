@@ -4,7 +4,6 @@ log/
 .htaccess
 
 # Ignore settings
-settings.php
 settings.js
 config.php
 TREVORS_CONFIG.php
