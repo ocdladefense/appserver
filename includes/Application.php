@@ -282,6 +282,21 @@ class Application {
 
         } catch(Throwable $e) {
 
+            if(!defined("DEBUG") || DEBUG === false) {
+
+                // Maybe hard code the content type later...as text/html
+
+                $contentType = $route["content-type"] == Http\MIME_TEXT_HTML_PARTIAL ? $route["content-type"] : "text/html"; // Used to be "$route["content-type"]"
+                $handler = Handler::fromType($e->getMessage(), $contentType);
+    
+                $resp->setBody($handler->getOutput());
+                $resp->addHeaders($handler->getHeaders());
+        
+                return $resp;
+
+            }
+
+
             $handlers = ob_list_handlers();
             while (!empty($handlers)){
 
@@ -326,22 +341,25 @@ class Application {
             $resp->setBody($handler->getOutput());
             $resp->addHeaders($handler->getHeaders());
             
-       } catch(Exception $error) {
+       } catch(Throwable $e) {
 
-            $handler = Handler::fromType($error, $route["content-type"]);
+            if(!defined("DEBUG") || DEBUG === false) {
+
+                $handler = Handler::fromType($e, $route["content-type"]);
+                $handler->removeStack();
+
+                $resp->setBody($handler->getOutput());
+                $resp->addHeaders($handler->getHeaders());
+        
+                return $resp;
+            }
+
+            $handler = Handler::fromType($e, $route["content-type"]);
 
             $resp->setBody($handler->getOutput());
             $resp->addHeaders($handler->getHeaders());
             http_response_code(500);
-
-        } catch(Error $error) {
-
-            $handler = Handler::fromType($error, $route["content-type"]);
-
-            $resp->setBody($handler->getOutput());
-            $resp->addHeaders($handler->getHeaders());
-            http_response_code(500);
-        }
+       }
 
         return $resp;
     }
