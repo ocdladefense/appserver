@@ -129,6 +129,13 @@ class Application {
                     "path"          => "user/profile",
                     "module"        => "core",
                     "method"        => "get"
+                ),
+                "page/not/found"        => array(
+                    "callback"      => "handlePageNotFound",
+                    "content-type"  => "text/html",
+                    "path"          => "page/not/found",
+                    "module"        => "core",
+                    "method"        => "get"
                 )
 
 
@@ -171,8 +178,11 @@ class Application {
 
         session_start();
 
-        // Will need to handle PageNotFoundExceptions here.
-        list($module, $route, $params) = $this->init($uri);
+        $init = $this->init($uri);
+
+        if(!is_array($init) && get_class($init) == "Http\HttpResponse") return $init;
+
+        list($module, $route, $params) = $init;
         //instanciate a new translation class
         //check for lang and files and correct name
         //methods are static
@@ -383,8 +393,9 @@ class Application {
         l("FINISHED");
 
         if(false === $path) {
-            http_response_code(404);
-            throw new Exception("Could not locate {$uri}.");
+            //http_response_code(404);
+            //throw new Exception("Could not locate {$uri}.");
+            return redirect("/page/not/found", 404);
         }
 
         $route = $this->routes[$path->__toString()];
