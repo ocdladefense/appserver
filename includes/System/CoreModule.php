@@ -167,4 +167,12 @@ class CoreModule extends Module {
 
 		return $redirect;
 	}
+
+	public function handlePageNotFound(){
+
+		$tpl = new Template("404");
+		$tpl->addPath(__DIR__ . "/core-templates");
+
+		return $tpl->render(array());
+	}
 }
