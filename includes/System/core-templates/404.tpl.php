@@ -24,4 +24,12 @@
     .main-screen-image-container{
         text-align:center;
     }
+
+    @media screen and (max-width:750px){
+
+        img.main-screen-image {
+            width: 200px;
+            height:100px;
+        }
+    }
 </style>
