@@ -11,10 +11,10 @@ class PhpFileUpload{
     public function __construct($files){
 
         $this->files = array();
+
         foreach ($files as $file) {
-            if($file["size"][0] > 0){
-                $this->files[] = $file;
-            }
+            
+            if($file["size"][0] > 0) $this->files[] = $file;
         }
     }
 
