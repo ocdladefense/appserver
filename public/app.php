@@ -13,6 +13,7 @@ $request = HttpRequest::newFromEnvironment();
 
 $response = $app->runHttp($request);
 
+
 //session_gc();
 
 $app->send($response);

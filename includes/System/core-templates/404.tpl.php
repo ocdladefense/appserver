@@ -6,7 +6,7 @@
         <img class="main-screen-image" src="/content/images/logo.png" />
     </a>
 
-    <h1>Ooops.....Page not found</h1>
+    <h1>Ooops...Page not found</h1>
 
     <br />
 
