@@ -179,7 +179,7 @@ class Application {
 
             
             $tpl = new Template("404");
-            $tpl->addPath(__DIR__ . "/system/core-templates");
+            $tpl->addPath(__DIR__ . "/System/core-templates");
 
             $page = $tpl->render(array());
 
