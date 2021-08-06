@@ -129,13 +129,6 @@ class Application {
                     "path"          => "user/profile",
                     "module"        => "core",
                     "method"        => "get"
-                ),
-                "page/not/found"        => array(
-                    "callback"      => "handlePageNotFound",
-                    "content-type"  => "text/html",
-                    "path"          => "page/not/found",
-                    "module"        => "core",
-                    "method"        => "get"
                 )
 
 
@@ -178,9 +171,24 @@ class Application {
 
         session_start();
 
-        $init = $this->init($uri);
+        try{
 
-        if(!is_array($init) && get_class($init) == "Http\HttpResponse") return $init;
+            $init = $this->init($uri);
+        
+        } catch(PageNotFoundException $e) {
+
+            
+            $tpl = new Template("404");
+            $tpl->addPath(__DIR__ . "/system/core-templates");
+
+            $page = $tpl->render(array());
+
+            $resp->setBody($page);
+            $resp->setStatusCode(404);
+
+            return $resp;
+        }
+
 
         list($module, $route, $params) = $init;
         //instanciate a new translation class
@@ -301,6 +309,7 @@ class Application {
     
                 $resp->setBody($handler->getOutput());
                 $resp->addHeaders($handler->getHeaders());
+                $resp->setStatusCode(500);
         
                 return $resp;
 
@@ -313,8 +322,6 @@ class Application {
                 ob_end_clean();
                 $handlers = ob_list_handlers();
             }
-
-            http_response_code(500);
 
             if(get_class($e) == "Error") {
 
@@ -360,6 +367,7 @@ class Application {
 
                 $resp->setBody($handler->getOutput());
                 $resp->addHeaders($handler->getHeaders());
+                $resp->setStatusCode(500);
         
                 return $resp;
             }
@@ -368,7 +376,7 @@ class Application {
 
             $resp->setBody($handler->getOutput());
             $resp->addHeaders($handler->getHeaders());
-            http_response_code(500);
+            $resp->setStatusCode(500);
        }
 
         return $resp;
@@ -382,10 +390,12 @@ class Application {
     }
         
         
-    // incoming request: maps
+    // This function returns an array with the module info, the route info, and any params.
     public function init($uri) {
 
         $router = new Router();
+
+        // if path is not found match returns false.
         $path = $router->match($uri, array_keys($this->routes));
 
         l("Executing application...");
@@ -393,9 +403,8 @@ class Application {
         l("FINISHED");
 
         if(false === $path) {
-            //http_response_code(404);
-            //throw new Exception("Could not locate {$uri}.");
-            return redirect("/page/not/found", 404);
+
+            throw new PageNotFoundException("PAGE_NOT_FOUND");
         }
 
         $route = $this->routes[$path->__toString()];
