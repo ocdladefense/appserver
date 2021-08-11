@@ -12,13 +12,10 @@
 	require_once BASE_PATH.'/includes/User.php';
 
 
-	// if(file_exists(BASE_PATH.'/config/config.php')){		
-	// 	require_once BASE_PATH.'/config/config.php';
-	// 	require_once BASE_PATH.'/includes/theme.inc';
-	// }
-
-	// Why were we including this file based on the existence of the "config.php" file?
-	require_once BASE_PATH.'/includes/theme.inc';
+	if(file_exists(BASE_PATH.'/config/config.php')){		
+		require_once BASE_PATH.'/config/config.php';
+		require_once BASE_PATH.'/includes/theme.inc';
+	}
 
 
 	require_once(BASE_PATH.'/includes/Module/Module.php');

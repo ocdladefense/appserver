@@ -1,7 +1,6 @@
 <?php
 
 require '../bootstrap.php';
-require_once '../config/config-production.php';
 
 
 use Http\HttpRequest as HttpRequest;
