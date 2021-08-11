@@ -1,8 +1,6 @@
 <?php
 
 require '../bootstrap.php';
-require_once '../config/config-dev.php';
-
 
 use Http\HttpRequest as HttpRequest;
 use Http\HttpResponse as HttpResponse;   
