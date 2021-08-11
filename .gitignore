@@ -5,9 +5,13 @@ log/
 
 # Ignore settings
 settings.js
+
+#Ignore configuration files
 config.php
-TREVORS_CONFIG.php
-ex-prod-config.php
+config-dev.php
+config-staging.php
+config-production.php
+config-default-*.php
 config.js
 
 login.xml

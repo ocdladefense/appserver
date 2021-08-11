@@ -1,6 +1,7 @@
 <?php
 
-require '../bootstrap.php';     
+require '../bootstrap.php';
+require_once '../config/config-staging.php';
 
 
 use Http\HttpRequest as HttpRequest;
