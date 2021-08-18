@@ -5,9 +5,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "extra": {
-    	"installer-paths": {
-    		"saml":["simplesamlphp/simplesamlphp"]
-    	}
+    	"installer-paths": {}
     },
     "config": {
         "preferred-install": {
