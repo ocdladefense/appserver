@@ -39,13 +39,24 @@ class Application {
         // $list = XList::fromFileSystem(path_to_modules());
         $list = new XList(XList::getDirContents(path_to_modules()));
 
-        $list->addItems(XList::getDirContents(path_to_root_vendor_directory()));
+        // Get installed composer module packages
+        $installedModulePackages = Composer\InstalledVersions::getInstalledPackagesByType("appserver-module");
+        
+        // Get the install path for each module package
+        $installPaths = array();
+        foreach($installedModulePackages as $package){
+            
+            $path = Composer\InstalledVersions::getInstallPath($package);
+            if(!in_array($path, $installPaths)) $installPaths[] = $path;
+        }
         
         // Only include folders with the magic module.json file.
         $only = $list->filter(function($folder) {
             $file = $folder . "/module.json";
             return file_exists($file);
         });
+
+        $only->addItems($installPaths);
 
         // Build the complete list of module definitions specified by 
         //  module.json files.
