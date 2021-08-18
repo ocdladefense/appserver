@@ -37,16 +37,17 @@ class Application {
         // Demonstrate that we can build an index of modules.
         // $mIndex = new ModuleDiscoveryService(path_to_modules());
         // $list = XList::fromFileSystem(path_to_modules());
-        $list = new XList(XList::getDirContents(path_to_modules()));        
-        // dump($list);exit;
+        $list = new XList(XList::getDirContents(path_to_modules()));
+        
+        $pathToVendor = get_path_to_root_composer_vendor("ocdladefense");
+
+        $list->addItems(XList::getDirContents($pathToVendor));
         
         // Only include folders with the magic module.json file.
         $only = $list->filter(function($folder) {
             $file = $folder . "/module.json";
             return file_exists($file);
         });
-        
-        
 
         // Build the complete list of module definitions specified by 
         //  module.json files.

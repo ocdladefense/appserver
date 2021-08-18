@@ -9,6 +9,7 @@ class ModuleLoader {
 
 
     public function __construct($index) {
+
     	$this->index = $index;
     }
 
@@ -28,6 +29,7 @@ class ModuleLoader {
     
     
     public function load($name) {
+
     	if(!isset($this->index[$name])) {
     		throw new Exception("MODULE_NOT_FOUND_ERROR: {$name}.");
     	}

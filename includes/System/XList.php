@@ -8,7 +8,16 @@ class XList {
 
 
 	public function __construct($items = array()) {
+
 		$this->items = $items;
+	}
+
+	public function addItems($items = array()){
+
+		foreach($items as $item){
+
+			$this->items[] = $item;
+		}
 	}
 
 
