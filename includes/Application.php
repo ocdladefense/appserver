@@ -38,10 +38,8 @@ class Application {
         // $mIndex = new ModuleDiscoveryService(path_to_modules());
         // $list = XList::fromFileSystem(path_to_modules());
         $list = new XList(XList::getDirContents(path_to_modules()));
-        
-        $pathToVendor = get_path_to_root_composer_vendor("ocdladefense");
 
-        $list->addItems(XList::getDirContents($pathToVendor));
+        $list->addItems(XList::getDirContents(path_to_root_vendor_directory()));
         
         // Only include folders with the magic module.json file.
         $only = $list->filter(function($folder) {

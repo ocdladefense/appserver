@@ -350,7 +350,7 @@ function redirect($path) {
 	return $resp;
 }
 
-function get_path_to_root_composer_vendor($vendorName){
+function path_to_root_vendor_directory(){
 
-	return $_SERVER["DOCUMENT_ROOT"] . "/vendor/$vendorName";
+	return $_SERVER["DOCUMENT_ROOT"] . "/vendor";
 }
