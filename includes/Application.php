@@ -29,6 +29,54 @@ class Application {
 
     private $modules;
 
+
+    public function getComposerInstallPathsByType($type){
+
+        // Get installed composer appserver module packages
+        $installedModulePackages = Composer\InstalledVersions::getInstalledPackagesByType($type);
+
+        // Get the install path for each module package
+        $installPaths = array();
+
+        // For some reason, the "InstalledVersions" class method "getInstalledPackagesByType" returns duplicates.
+        // The issue is in the "getInstalled" method which is called by "getInstalledPackagesByType".
+        // That is why i need to use the "filterDups" boolean.
+        $filterDups = true;
+        foreach($installedModulePackages as $package){
+            
+            $path = Composer\InstalledVersions::getInstallPath($package);
+            if(true === $filterDups && !in_array($path, $installPaths)){
+                
+                $installPaths[] = $path;
+
+            } elseif($filterDups === false){
+
+                $installPaths[] = $path;
+            }
+        }
+
+        return $installPaths;
+
+    }
+
+    public function validateModuleList($pathsToModules){
+
+        $moduleNames = array();
+        foreach($pathsToModules as $path){
+
+            $pathParts = explode("/", $path);
+            $semiFilteredName = $pathParts[count($pathParts) -1];
+            $semiFilteredNameParts = explode("\\", $semiFilteredName);
+            $moduleName = $semiFilteredNameParts[count($semiFilteredNameParts) -1];
+
+            if(in_array($moduleName, $moduleNames)){
+
+                throw new Exception("MODULE_DUPLICATE_ERROR: You have two instances of the $moduleName module installed.");
+            }
+
+            $moduleNames[] = $moduleName;
+        }
+    }
 	
 	
 		
@@ -39,24 +87,20 @@ class Application {
         // $list = XList::fromFileSystem(path_to_modules());
         $list = new XList(XList::getDirContents(path_to_modules()));
 
-        // Get installed composer module packages
-        $installedModulePackages = Composer\InstalledVersions::getInstalledPackagesByType("appserver-module");
+        $installPaths = $this->getComposerInstallPathsByType("appserver-module");
         
-        // Get the install path for each module package
-        $installPaths = array();
-        foreach($installedModulePackages as $package){
-            
-            $path = Composer\InstalledVersions::getInstallPath($package);
-            if(!in_array($path, $installPaths)) $installPaths[] = $path;
-        }
-        
+        $list->addItems($installPaths);
+
         // Only include folders with the magic module.json file.
         $only = $list->filter(function($folder) {
             $file = $folder . "/module.json";
             return file_exists($file);
         });
 
-        $only->addItems($installPaths);
+        // Make sure that there is only one instance of a given module installed.
+        $this->validateModuleList($only->getArray());
+
+        var_dump($only);exit;
 
         // Build the complete list of module definitions specified by 
         //  module.json files.
@@ -150,6 +194,7 @@ class Application {
         );
 
         $this->modules->put("core", $coreDef);
+
 
         $this->loader = new ModuleLoader($this->modules->getArray());
 
