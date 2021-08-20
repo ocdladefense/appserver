@@ -138,8 +138,10 @@
 	require_once BASE_PATH.'/includes/Store/Square/ShoppingCart.php';
 	require_once BASE_PATH.'/includes/Store/Square/PaymentProcessor.php'; 
 
-
-
 	if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
 		include BASE_PATH.'/vendor/autoload.php';
+	}elseif(file_exists(BASE_PATH.'../vendor/autoload.php')) {
+		include BASE_PATH.'../vendor/autoload.php';
+	}elseif(file_exists(BASE_PATH.'../../vendor/autoload.php')) {
+		include BASE_PATH.'../../vendor/autoload.php';
 	}

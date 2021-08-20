@@ -3,8 +3,7 @@
 require '../bootstrap.php';
 
 use Http\HttpRequest as HttpRequest;
-use Http\HttpResponse as HttpResponse;   
-
+use Http\HttpResponse as HttpResponse;
 
 $app = new Application();
 

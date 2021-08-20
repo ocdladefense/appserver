@@ -85,6 +85,10 @@ class Application {
         // Demonstrate that we can build an index of modules.
         // $mIndex = new ModuleDiscoveryService(path_to_modules());
         // $list = XList::fromFileSystem(path_to_modules());
+
+        // You need a modules directory, or "XList" will throw an Exception.
+        if(!file_exists(path_to_modules())) mkdir(path_to_modules());
+
         $list = new XList(XList::getDirContents(path_to_modules()));
 
         $installPaths = $this->getComposerInstallPathsByType("appserver-module");
@@ -99,8 +103,6 @@ class Application {
 
         // Make sure that there is only one instance of a given module installed.
         $this->validateModuleList($only->getArray());
-
-        var_dump($only);exit;
 
         // Build the complete list of module definitions specified by 
         //  module.json files.
