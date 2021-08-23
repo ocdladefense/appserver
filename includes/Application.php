@@ -266,8 +266,6 @@ class Application {
         // Might be altered depending on wheather the appserver is installed in a subdirectory.
         $scriptUri = $this->getScriptUri($uri);
 
-        var_dump($uri, $scriptUri);exit;
-
 
         l("Processing {$scriptUri}.");
     
