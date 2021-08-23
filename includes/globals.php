@@ -349,3 +349,8 @@ function redirect($path) {
 
 	return $resp;
 }
+
+function path_to_root_vendor_directory(){
+
+	return $_SERVER["DOCUMENT_ROOT"] . "/vendor";
+}
