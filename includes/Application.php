@@ -29,6 +29,54 @@ class Application {
 
     private $modules;
 
+
+    public function getComposerInstallPathsByType($type){
+
+        // Get installed composer appserver module packages
+        $installedModulePackages = Composer\InstalledVersions::getInstalledPackagesByType($type);
+
+        // Get the install path for each module package
+        $installPaths = array();
+
+        // For some reason, the "InstalledVersions" class method "getInstalledPackagesByType" returns duplicates.
+        // The issue is in the "getInstalled" method which is called by "getInstalledPackagesByType".
+        // That is why i need to use the "filterDups" boolean.
+        $filterDups = true;
+        foreach($installedModulePackages as $package){
+            
+            $path = Composer\InstalledVersions::getInstallPath($package);
+            if(true === $filterDups && !in_array($path, $installPaths)){
+                
+                $installPaths[] = $path;
+
+            } elseif($filterDups === false){
+
+                $installPaths[] = $path;
+            }
+        }
+
+        return $installPaths;
+
+    }
+
+    public function validateModuleList($pathsToModules){
+
+        $moduleNames = array();
+        foreach($pathsToModules as $path){
+
+            $pathParts = explode("/", $path);
+            $semiFilteredName = $pathParts[count($pathParts) -1];
+            $semiFilteredNameParts = explode("\\", $semiFilteredName);
+            $moduleName = $semiFilteredNameParts[count($semiFilteredNameParts) -1];
+
+            if(in_array($moduleName, $moduleNames)){
+
+                throw new Exception("MODULE_DUPLICATE_ERROR: You have two instances of the $moduleName module installed.");
+            }
+
+            $moduleNames[] = $moduleName;
+        }
+    }
 	
 	
 		
@@ -37,16 +85,24 @@ class Application {
         // Demonstrate that we can build an index of modules.
         // $mIndex = new ModuleDiscoveryService(path_to_modules());
         // $list = XList::fromFileSystem(path_to_modules());
-        $list = new XList(XList::getDirContents(path_to_modules()));        
-        // dump($list);exit;
+
+        // You need a modules directory, or "XList" will throw an Exception.
+        if(!file_exists(path_to_modules())) mkdir(path_to_modules());
+
+        $list = new XList(XList::getDirContents(path_to_modules()));
+
+        $installPaths = $this->getComposerInstallPathsByType("appserver-module");
         
+        $list->addItems($installPaths);
+
         // Only include folders with the magic module.json file.
         $only = $list->filter(function($folder) {
             $file = $folder . "/module.json";
             return file_exists($file);
         });
-        
-        
+
+        // Make sure that there is only one instance of a given module installed.
+        $this->validateModuleList($only->getArray());
 
         // Build the complete list of module definitions specified by 
         //  module.json files.
@@ -67,7 +123,7 @@ class Application {
 
         $coreDef = array(
             "comment"      => "The core module",
-            "connectedApp" => CORE_MODULE_CONNECTED_APP_NAME,
+            "connectedApp" => "default",
             "name"         => "core",
             "description"  => "holds routes for core functionality",
             "files"        => array(),
@@ -141,6 +197,7 @@ class Application {
 
         $this->modules->put("core", $coreDef);
 
+
         $this->loader = new ModuleLoader($this->modules->getArray());
 
         // Build an index for routes.
@@ -156,16 +213,63 @@ class Application {
                 $route["content-type"] = $route["content-type"] ?: self::$DEFAULT_CONTENT_TYPE;
             }
 
+            //var_dump($routes);exit;
+
             return $routes;
         },false)->flatten();
     }
 
 
+    public function isInstallDirValid($uri, $installDir){
+
+        return strpos($uri, $installDir) === 0;
+    }
     
+    public function calculateScriptUri($uri, $installDir){
+
+        $uriLength = strlen($uri);
+        $installDirLength = strlen($installDir);
+        $offset = $installDirLength - $uriLength;
+
+        return substr($uri, $offset);
+    }
+
+    public function getScriptUri($uri){
+
+        $installDir = defined("APPSERVER_INSTALL_DIRECTORY") && !empty(APPSERVER_INSTALL_DIRECTORY) ? trim(APPSERVER_INSTALL_DIRECTORY) : null;
+
+        $installDirIsSet = $installDir != null;
+
+        if($installDirIsSet){
+
+            // Making sure that the setting for the constant is valid
+            $installDirIsValid = $this->isInstallDirValid($uri, $installDir);
+            
+            if(!$installDirIsValid){
+                
+                throw new Exception("CONFIGURATION_ERROR: the 'APPSEVER_INSTALL_DIRECTORY' setting is invalid in config.php");
+
+            }
+
+            return $this->calculateScriptUri($uri, $installDir);
+
+        } else {
+
+            return $uri;
+        }
+
+    }
     public function runHttp($req) {
 
         $uri = $req->getRequestUri();
-        l("Processing {$uri}.");
+
+        // Might be altered depending on wheather the appserver is installed in a subdirectory.
+        $scriptUri = $this->getScriptUri($uri);
+
+        var_dump($uri, $scriptUri);exit;
+
+
+        l("Processing {$scriptUri}.");
     
         $resp = new HttpResponse();
 
@@ -173,7 +277,7 @@ class Application {
 
         try{
 
-            $init = $this->init($uri);
+            $init = $this->init($scriptUri);
         
         } catch(PageNotFoundException $e) {
 
@@ -392,7 +496,7 @@ class Application {
         
     // This function returns an array with the module info, the route info, and any params.
     public function init($uri) {
-
+        
         $router = new Router();
 
         // if path is not found match returns false.
@@ -401,11 +505,12 @@ class Application {
         l("Executing application...");
         l("Exec located route: {$path}.");
         l("FINISHED");
-
+        
         if(false === $path) {
 
             throw new PageNotFoundException("PAGE_NOT_FOUND");
         }
+
 
         $route = $this->routes[$path->__toString()];
 
