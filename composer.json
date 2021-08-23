@@ -26,8 +26,8 @@
         "ocdladefense/lib-salesforce-rest-api":"~3.0",
         "ocdladefense/lib-http":"~3.0",
         "ocdladefense/lib-drag-drop-upload":"dev-development",
-        "ocdladefense/appserver-directory":"dev-composer-test",
-        "ocdladefense/appserver-car": "dev-composer-test",
-        "ocdladefense/appserver-jobs": "dev-composer-test"
+        "ocdladefense/appserver-directory":"dev-development",
+        "ocdladefense/appserver-car": "dev-development",
+        "ocdladefense/appserver-jobs": "dev-development"
     }
 }

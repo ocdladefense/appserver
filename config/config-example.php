@@ -3,7 +3,15 @@
 
 // Force the current user to be a super-user.
 // Works with globals.php/user_has_access().
-define("ADMIN_USER", true);
+define("USE_SALESFORCE_SLO_LOGOUT_ENDPOINT", true);
+
+define("DEBUG", false);
+
+//Optionally set the path to the root vendor directory if the appserver is not the root directory
+//define("COMPOSER_VENDOR_PATH", "/foob");
+
+//Optionally set the path the appserver if the appserver is in a subdirectory
+define("APPSERVER_INSTALL_DIRECTORY", "  ");
 
 
 // These are really connected applications
