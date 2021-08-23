@@ -5,7 +5,13 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "extra": {
-    	"installer-paths": {}
+    	"installer-paths": {
+            "saml":["simplesamlphp/simplesamlphp"],
+            "content/libraries/file/dragDrop":["ocdladefense/lib-drag-drop-upload"],
+            "modules/car":["ocdladefense/appserver-car"],
+            "modules/directory":["ocdladefense/appserver-directory"],
+            "modules/jobs":["ocdladefense/appserver-jobs"]
+        }
     },
     "config": {
         "preferred-install": {
