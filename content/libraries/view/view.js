@@ -31,7 +31,7 @@ function linkContainer(link){
 
 
 
-function vNode(name,attributes,children){
+function vNode(name,attributes,...children){
 		if(null == children || typeof children == "undefined") {
 			children = [];
 		} else if(typeof children == "string" ) {
@@ -115,6 +115,10 @@ vnode = vNode;
 		}
 		if(vnode.type == "text") {
 			return document.createTextNode(vnode.children);
+		}
+		if(typeof vnode.type == "function") {
+			let temp = vnode.type(vnode.props);
+			return createElement(temp);
 		}
 	
 		var $el = document.createElement(vnode.type);
