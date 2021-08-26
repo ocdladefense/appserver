@@ -32,18 +32,27 @@ function linkContainer(link){
 
 
 function vNode(name,attributes,...children){
+		let joined = [];
 		if(null == children || typeof children == "undefined") {
-			children = [];
+			joined = [];
 		} else if(typeof children == "string" ) {
-			children = [children];
+			joined = [children];
 		} else {
 			children = Array.isArray(children) ? children : [children];
+			console.log(children);
+			for(var i = 0; i<children.length; i++) {
+				if(Array.isArray(children[i])) {
+					joined = joined.concat(children[i]);
+				} else {
+					joined.push(children[i]);
+				}
+			}
 		}
-		
+		  
     var vnode =  {    
 			type: name,
 			props: attributes,
-			children: children
+			children: joined
     };
     
     return vnode;
