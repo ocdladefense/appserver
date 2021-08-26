@@ -31,7 +31,7 @@ function linkContainer(link){
 
 
 
-function vNode(name,attributes,children){
+function vNode(name,attributes,...children){
 		if(null == children || typeof children == "undefined") {
 			children = [];
 		} else if(typeof children == "string" ) {
@@ -116,6 +116,10 @@ vnode = vNode;
 		if(vnode.type == "text") {
 			return document.createTextNode(vnode.children);
 		}
+		if(typeof vnode.type == "function") {
+			let temp = vnode.type(vnode.props);
+			return createElement(temp);
+		}
 	
 		var $el = document.createElement(vnode.type);
 		
@@ -132,6 +136,54 @@ vnode = vNode;
 		
 		return $el;
 	};
+
+	/**
+	 * Method for virtual nodes
+	 *
+	 * @see-also https://medium.com/@deathmood/how-to-write-your-own-virtual-dom-ee74acc13060
+	 */
+
+	  
+	  window.updateElement = function updateElement($parent, newNode, oldNode, index = 0) {
+		  
+		if (!oldNode) {
+		  $parent.appendChild(createElement(newNode));
+
+		} else if (!newNode) {
+			if (!$parent.childNodes[index]) {
+				$parent.removeChild($parent.childNodes[$parent.childNodes.length-1]);
+			} else {
+				$parent.removeChild($parent.childNodes[index]);
+			}
+
+		} else if (changed(newNode, oldNode)) {
+		  $parent.replaceChild(
+			createElement(newNode),
+			$parent.childNodes[index]
+		  );
+
+		} else if (newNode.type) {
+		  const newLength = newNode.children.length;
+		  const oldLength = oldNode.children.length;
+		  for (let i = 0; i < newLength || i < oldLength; i++) {
+			
+
+			updateElement(
+			  $parent.childNodes[index],
+			  newNode.children[i],
+			  oldNode.children[i],
+			  i
+			);
+		  }
+		}
+	  }
+
+	  window.changed = function changed(node1, node2) {
+		return typeof node1 !== typeof node2 ||
+			   typeof node1 === 'string' && node1 !== node2 ||
+			   node1.type !== node2.type;// || (node1.children && node2.children && node1.children.length != node2.children.length);
+	  }
+	
 	
 	
 
