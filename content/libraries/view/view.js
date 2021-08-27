@@ -30,16 +30,19 @@ function linkContainer(link){
 }
 
 
-
+/*TODO
+figure out what to do when our text value is undefined
+*/
 function vNode(name,attributes,...children){
 		let joined = [];
-		if(null == children || typeof children == "undefined") {
+		if(children.length == 0 || null == children[0] || typeof children[0] == "undefined") {
 			joined = [];
-		} else if(typeof children == "string" ) {
-			joined = [children];
+		} else if(children.length == 1 && typeof children[0] == "string") {
+			joined = children;
 		} else {
-			children = Array.isArray(children) ? children : [children];
-			console.log(children);
+			//children = Array.isArray(children) ? children : [children];
+			//console.log(children);
+			//flatten method?
 			for(var i = 0; i<children.length; i++) {
 				if(Array.isArray(children[i])) {
 					joined = joined.concat(children[i]);
