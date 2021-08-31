@@ -453,7 +453,7 @@ class Application {
                 return $out;
             }
             
-            if(null == $out) throw new Exception("Callback function returned NULL!");
+            if(is_null($out)) throw new Exception("Callback function returned NULL!");
             
             $handler = Handler::fromType($out, $route["content-type"]);
 
