@@ -31,7 +31,9 @@ function linkContainer(link){
 
 
 /*TODO
-figure out what to do when our text value is undefined
+figure out what to do when our text value is undefined. 
+For example, when JSX evaluates a variable and its value is undefined and its value is used as a text node.
+
 */
 function vNode(name,attributes,...children){
 		let joined = [];
@@ -155,6 +157,16 @@ vnode = vNode;
 	 * @see-also https://medium.com/@deathmood/how-to-write-your-own-virtual-dom-ee74acc13060
 	 */
 
+	window.render = function render($container, newNode) {
+		let $containerClone = $container.cloneNode(false);
+		let $parent = $container.parentNode;
+
+		$newNode = createElement(newNode);
+		$containerClone.appendChild($newNode);
+
+		$parent.replaceChild($containerClone, $container);
+	}
+	
 	  
 	  window.updateElement = function updateElement($parent, newNode, oldNode, index = 0) {
 		  
