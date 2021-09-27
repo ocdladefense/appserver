@@ -30,9 +30,9 @@
 
         <!--<li class="side-menu-item"><i class="fas fa-video fa-2x" aria-hidden="true"></i><a href="/videos">videos</a></li>-->
 
-        <li class="side-menu-item"><a href="/directory/members"><i class="fas fa-user-friends fa-2x" aria-hidden="true"></i>member directory</a></li>
+        <li class="side-menu-item"><a href="/directory/members"><i class="fas fa-user-friends fa-2x" aria-hidden="true"></i>member<br />directory</a></li>
         
-        <li class="side-menu-item"><a href="/directory/experts"><i class="fas fa-user-friends fa-2x" aria-hidden="true"></i>expert directory</a></li>
+        <li class="side-menu-item"><a href="/directory/experts"><i class="fas fa-user-friends fa-2x" aria-hidden="true"></i>expert<br />directory</a></li>
 
         <!--<li class="side-menu-item"><i class="fas fa-comment-dots fa-2x" aria-hidden="true"></i><a href="/feedback">feedback</a></li>-->
 
