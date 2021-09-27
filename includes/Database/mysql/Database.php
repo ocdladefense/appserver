@@ -149,7 +149,7 @@ function insert($objs = array(), $isSalesforce = false){
 
     $columns = getObjectFields($sample);
 
-    $values = getObjectValues($objs);
+    $values = getObjectValues($objs);;
     
     $tableName = strtolower(get_class($objs[0]));
 
