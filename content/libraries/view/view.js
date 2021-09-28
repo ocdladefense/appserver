@@ -140,6 +140,9 @@ vnode = vNode;
 
 		for(var prop in vnode.props) {
 			var html5 = "className" == prop ? "class" : prop;
+			if (vnode.props[prop] === null) {
+				continue;
+			}
 			$el.setAttribute(html5,vnode.props[prop]);
 		}
 		
@@ -169,29 +172,24 @@ vnode = vNode;
 	
 	  
 	  window.updateElement = function updateElement($parent, newNode, oldNode, index = 0) {
-		  
 		if (!oldNode) {
 		  $parent.appendChild(createElement(newNode));
-
 		} else if (!newNode) {
 			if (!$parent.childNodes[index]) {
 				$parent.removeChild($parent.childNodes[$parent.childNodes.length-1]);
 			} else {
 				$parent.removeChild($parent.childNodes[index]);
 			}
-
 		} else if (changed(newNode, oldNode)) {
 		  $parent.replaceChild(
 			createElement(newNode),
 			$parent.childNodes[index]
 		  );
-
 		} else if (newNode.type) {
 		  const newLength = newNode.children.length;
 		  const oldLength = oldNode.children.length;
 		  for (let i = 0; i < newLength || i < oldLength; i++) {
 			
-
 			updateElement(
 			  $parent.childNodes[index],
 			  newNode.children[i],
@@ -199,15 +197,45 @@ vnode = vNode;
 			  i
 			);
 		  }
-		}
+		} 
 	  }
 
 	  window.changed = function changed(node1, node2) {
 		return typeof node1 !== typeof node2 ||
 			   typeof node1 === 'string' && node1 !== node2 ||
-			   node1.type !== node2.type;// || (node1.children && node2.children && node1.children.length != node2.children.length);
+			   node1.type !== node2.type ||
+			   propsChanged(node1, node2);
 	  }
 	
+	  window.propsChanged = function propsChanged(node1, node2) {
+			let node1Props = node1.props;
+			let node2Props = node2.props;
+
+			if (typeof node1Props != typeof node2Props) {
+				return true;
+			}
+
+			if (!node1Props && !node2Props) {
+				return false;
+			}
+
+			let aProps = Object.getOwnPropertyNames(node1Props);
+			let bProps = Object.getOwnPropertyNames(node2Props);
+		
+			
+			if (aProps.length != bProps.length) {
+				return true;
+			}
+		
+			for (let i = 0; i < aProps.length; i++) {
+				let propName = aProps[i];
+		
+				if (node1Props[propName] !== node2Props[propName]) {
+					return true;
+				}
+			}
+			return false;
+		}
 	
 	
 
