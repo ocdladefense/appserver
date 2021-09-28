@@ -209,19 +209,29 @@ class QueryBuilder{
     }
     
     function prepareInsertValues(){
+
         $sqlr = array();
 
         foreach($this->values as $row){
+
+    
             $prepared = array();
             
-            foreach($row as $value){
+            foreach($row as $key => $value){
+
+                if(is_array($value)) throw new DbException("SQL_INSERT_VALUE_ERROR: Value for column '$key' cannot be an array.");
                 
                 if(is_numeric($value)){
+
                     $prepared[] = $value;
+
                 } else if(is_string($value)) {
+
                     $temp = addslashes($value);
                     $prepared[] = sprintf("'%s'",$temp);
+
                 } else if(is_null($value)){
+                    
                     $prepared[] = 'NULL';
                 }
 
