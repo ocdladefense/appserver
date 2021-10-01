@@ -17,7 +17,9 @@
         "preferred-install": {
             "ocdladefense/appserver-car": "source",
             "ocdladefense/appserver-directory": "source",
-            "ocdladefense/appserver-jobs": "source"
+            "ocdladefense/appserver-jobs": "source",
+            "ocdladefense/lib-salesforce-rest-api": "source",
+            "ocdladefense/*": "source"
         }
     },
     "require": {
