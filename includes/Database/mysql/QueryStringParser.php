@@ -1,4 +1,8 @@
 <?php
+
+namespace Mysql;
+
+
 class QueryStringParser {
 
 public static function Validate($sql){

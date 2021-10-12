@@ -3,7 +3,7 @@
 namespace Mysql;
 
 
-class DbSelectResult extends DbResult implements IDbResult, \IteratorAggregate {
+class DbSelectResult extends DbResult implements \IDbResult, \IteratorAggregate {
 
 
     private $result;

@@ -86,22 +86,23 @@
 
 
 	// Step 2.) This should be converted to library code.
-	require_once BASE_PATH.'/includes/Database/mysql/IDbResult.php';
-	require_once BASE_PATH.'/includes/Database/mysql/DbResult.php';
-	require_once BASE_PATH.'/includes/Database/mysql/Database.php';
-	require_once BASE_PATH.'/includes/Database/mysql/DbSelectResult.php';
-	require_once BASE_PATH.'/includes/Database/mysql/DbInsertResult.php';
-	require_once BASE_PATH.'/includes/Database/mysql/DbUpdateResult.php';
-	require_once BASE_PATH.'/includes/Database/mysql/DbDeleteResult.php';
-	require_once BASE_PATH.'/includes/Database/mysql/QueryBuilder.php';
-	require_once BASE_PATH. '/includes/Database/mysql/QueryStringParser.php';	
-	require_once BASE_PATH. '/includes/Database/mysql/QueryException.php';
+	// require_once BASE_PATH.'/includes/Database/DbException.php';
+	// require_once BASE_PATH. '/includes/Database/QueryException.php';
+	// require_once BASE_PATH.'/includes/Database/IDbResult.php';
+	
+	// require_once BASE_PATH.'/includes/Database/mysql/DbResult.php';
+	// require_once BASE_PATH.'/includes/Database/mysql/DbSelectResult.php';
+	// require_once BASE_PATH.'/includes/Database/mysql/DbInsertResult.php';
+	// require_once BASE_PATH.'/includes/Database/mysql/DbUpdateResult.php';
+	// require_once BASE_PATH.'/includes/Database/mysql/DbDeleteResult.php';
+	// require_once BASE_PATH.'/includes/Database/mysql/QueryBuilder.php';
+	// require_once BASE_PATH. '/includes/Database/mysql/QueryStringParser.php';	
+	// require_once BASE_PATH.'/includes/Database/mysql/Database.php';
 
-	require_once BASE_PATH.'/includes/Database/salesforce/Database.php';
-	require_once BASE_PATH.'/includes/Database/salesforce/SObject.php';
-	require_once BASE_PATH.'/includes/Database/salesforce/SObjectList.php';
+	// require_once BASE_PATH.'/includes/Database/salesforce/Database.php';
+	// require_once BASE_PATH.'/includes/Database/salesforce/SObject.php';
+	// require_once BASE_PATH.'/includes/Database/salesforce/SObjectList.php';
 
-	require_once BASE_PATH.'/includes/Database/DbException.php';
 
 
 	// Step 2.) This needs to be moved to the Database library.

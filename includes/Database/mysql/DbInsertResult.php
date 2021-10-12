@@ -2,7 +2,7 @@
 
 namespace Mysql;
 
-class DbInsertResult extends DbResult implements IDbResult, \IteratorAggregate{
+class DbInsertResult extends DbResult implements \IDbResult, \IteratorAggregate{
 
     private $result;
     private $sql;
@@ -48,7 +48,7 @@ class DbInsertResult extends DbResult implements IDbResult, \IteratorAggregate{
 
             $ids[] = $nextId;
         }
-        return new ArrayObject($ids);
+        return new \ArrayObject($ids);
     }
 
     public function getId(){
