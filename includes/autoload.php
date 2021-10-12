@@ -49,7 +49,7 @@
 	"SigningKey","SigningRequest","Signature/Parameter","Signature/SignatureParameter","Signature/SignatureParameterBag","BodyPart","HttpException");
 	
 	foreach($http as $file) {
-		//require_once(BASE_PATH.'/includes/Http/'.$file.".php");
+		// require_once(BASE_PATH.'/includes/Http/'.$file.".php");
 	}
 
 
@@ -87,10 +87,14 @@
 
 	require_once BASE_PATH.'/includes/Module/Module.php';
 	require_once BASE_PATH.'/includes/Module/ModuleLoader.php';
-	require_once BASE_PATH.'/includes/DocumentParser.php';
+	
+	// Step 1.) Move this over to the scraper module; rename it from car-scraper to something more appropriate (e.g., "web-scraper"), since it does more than just scrape cars.
+	// require_once BASE_PATH.'/includes/DocumentParser.php';
 
+	// Leave this!
 	require_once BASE_PATH.'/includes/System/CoreModule.php';
 
+	// Step 2.) This should be converted to library code.
 	require_once BASE_PATH.'/includes/Database/IDbResult.php';
 	require_once BASE_PATH.'/includes/Database/DbResult.php';
 	require_once BASE_PATH.'/includes/Database/mysql/Database.php';
@@ -103,10 +107,11 @@
 	require_once BASE_PATH.'/includes/Database/SObject.php';
 	require_once BASE_PATH.'/includes/Database/SObjectList.php';
 
-
-
-
+	// Step 2.) This needs to be moved to the Database library.
 	require_once BASE_PATH.'/includes/Exception/DbException.php';
+
+
+
 
 	require_once BASE_PATH.'/includes/Application.php';
 
@@ -124,25 +129,30 @@
 	$files = array("Attachment","Document", "ContentDocument", "Contact");
 
 	foreach($files as $file) {
-		//require_once(BASE_PATH.'/includes/Salesforce/models/'.$file.".php");
+		// require_once(BASE_PATH.'/includes/Salesforce/models/'.$file.".php");
 	}
+	
+	
+	
 	
 	require_once BASE_PATH.'/includes/Store/Product.php';
 	require_once BASE_PATH. '/includes/Database/QueryStringParser.php';
 	require_once BASE_PATH. '/includes/Exception/QueryException.php';
 
-	//to be modules
+	// To be modules
 	require_once BASE_PATH.'/includes/Store/Salesforce/ShoppingCart.php'; 
 	require_once BASE_PATH.'/includes/Store/Salesforce/PaymentProcessor.php'; 
 	
 	require_once BASE_PATH.'/includes/Store/Square/ShoppingCart.php';
 	require_once BASE_PATH.'/includes/Store/Square/PaymentProcessor.php'; 
 
-	if(defined("COMPOSER_VENDOR_PATH")) {//&& file_exists(COMPOSER_VENDOR_PATH.'/vendor/autoload.php')) {
-
+	if(defined("COMPOSER_VENDOR_PATH")) {
 		require COMPOSER_VENDOR_PATH.'/vendor/autoload.php';
 
-	} elseif(file_exists(BASE_PATH.'/vendor/autoload.php')) {
+	} else if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
 
 		include BASE_PATH.'/vendor/autoload.php';
 	}
+	
+	
+// end of file.
