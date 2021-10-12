@@ -1,5 +1,8 @@
 <?php
-class DbDeleteResult extends DbResult implements IDbResult, IteratorAggregate{
+
+namespace Mysql;
+
+class DbDeleteResult extends DbResult implements IDbResult, \IteratorAggregate{
 
     private $result;
     private $count;

@@ -65,7 +65,7 @@ class Database {
         $result = $this->connection->query($sql);
         if(!$result) throw new DbException($this->connection->error);
 
-        return new \DbSelectResult($result);
+        return new DbSelectResult($result);
     }
     
     public static function query($sql, $type = "select"){

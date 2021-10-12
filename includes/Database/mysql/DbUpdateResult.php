@@ -1,5 +1,9 @@
 <?php
-class DbUpdateResult extends DbResult implements IDbResult, IteratorAggregate{
+
+namespace Mysql;
+
+
+class DbUpdateResult extends DbResult implements IDbResult, \IteratorAggregate{
 
     private $result;
     private $count;

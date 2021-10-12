@@ -1,5 +1,8 @@
 <?php
-class DbInsertResult extends DbResult implements IDbResult, IteratorAggregate{
+
+namespace Mysql;
+
+class DbInsertResult extends DbResult implements IDbResult, \IteratorAggregate{
 
     private $result;
     private $sql;
