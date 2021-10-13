@@ -2,11 +2,7 @@
 
 namespace Mysql;
 
-use DbInsertResult;
-use DbDeleteResult;
-use DbUpdateResult;
-use QueryBuilder;
-use DbException;
+use \DbException;
 
 
 class Database {
@@ -65,7 +61,7 @@ class Database {
         $result = $this->connection->query($sql);
         if(!$result) throw new DbException($this->connection->error);
 
-        return new \DbSelectResult($result);
+        return new DbSelectResult($result);
     }
     
     public static function query($sql, $type = "select"){
@@ -154,7 +150,7 @@ function insert($objs = array(), $isSalesforce = false){
     $tableName = strtolower(get_class($objs[0]));
 
     //use the querybuilder to build insert statement
-    $builder = new QueryBuilder();
+    $builder = new \Mysql\QueryBuilder();
     $builder->setType("insert");
     $builder->setTable($tableName);
     $builder->setColumns($columns);

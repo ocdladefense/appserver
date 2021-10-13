@@ -1,5 +1,8 @@
 <?php
-class DbDeleteResult extends DbResult implements IDbResult, IteratorAggregate{
+
+namespace Mysql;
+
+class DbDeleteResult extends DbResult implements \IDbResult, \IteratorAggregate{
 
     private $result;
     private $count;
@@ -39,6 +42,6 @@ class DbDeleteResult extends DbResult implements IDbResult, IteratorAggregate{
             }
         }
 
-        return new ArrayObject($this -> rows);
+        return new \ArrayObject($this -> rows);
     }
 }

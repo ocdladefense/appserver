@@ -1,5 +1,8 @@
 <?php
 
+namespace Mysql;
+
+
 define("SQL_FIELD_SEPERATOR",",");
 define("SQL_ROW_SEPERATOR",",");
 define("SQL_INSERT_ROW_START","(");

@@ -1,2 +1,3 @@
 <?php 
-Interface IDbResult{}
+
+interface IDbResult{}
