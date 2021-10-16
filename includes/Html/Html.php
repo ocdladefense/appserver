@@ -56,6 +56,21 @@ function createElement($tagName, $attributes, $children) {
 	return "<{$tagName} ".implode(" ",$attributeStrings).">{$children}</{$tagName}>";
 }
 
+function createSelectList($name, $options = array()){
+
+	$openSelect = "<select id='$name' name='$name'>";
+	$closeSelect = "</select>";
+
+	$optionElements = array();
+
+	foreach($options as $opt){
+
+		$optionElements[] = "<option value='$opt'>$opt</option>";
+	}
+
+	return $openSelect . implode("", $optionElements) . $closeSelect;
+}
+
 
 
 class Html {
