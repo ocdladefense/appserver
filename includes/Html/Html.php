@@ -45,7 +45,7 @@ function attr($prop,$val = null) {
 	else return "{$prop}='{$val}'";
 }
 
-function createElement($tagName, $attributes, $children) {
+function createElementExperiment($tagName, $attributes, $children) {
 	$attributeStrings = array();
 	foreach($attributes as $key => $value) {
 		$attributeStrings[] = "{$key}=\"{$value}\"";
@@ -56,36 +56,42 @@ function createElement($tagName, $attributes, $children) {
 	return "<{$tagName} ".implode(" ",$attributeStrings).">{$children}</{$tagName}>";
 }
 
-function createSelectListElement($name, $currentlySelected, $options = array(), $classNames = null){
 
-	$openSelect = "<select id='$name' class='$classNames' name='$name'>";
-	$closeSelect = "</select>";
+function createElement($tagName, $attrs){
+
+	$id = $attrs["id"];
+	$name = $attrs["name"];
+	$classes = $attrs["classes"];
+
+	$openTag = "<$tagName id='$id' name='$name' class='$classes'>";
+	$closeTag = "</$tagName>";
+
+	$theTag = $openTag . $closeTag;
+
+	if(empty($attrs["options"]) || ($tagName != "select" && $tagName != "datalist")){
+
+		return $theTag;
+
+	}
 
 	$optionElements = array();
 
+	$options = $attrs["options"];
+
+	$currentlySelected = $attrs["selected"];
+
 	foreach($options as $value => $label){
 
-		$selected = $currentlySelected == $value ? "selected" : ""; 
+		$selected = $currentlySelected == $value ? "selected" : "";
+
+		// You don't want to set the label if you are building options for a datalist.  Creates duplicates.
+		if($tagName == "datalist") $label = null;
 
 		$optionElements[] = "<option value='$value' $selected>$label</option>";
 	}
 
-	return $openSelect . implode("", $optionElements) . $closeSelect;
-}
+	return $openTag . implode("", $optionElements) . $closeTag;
 
-function createOptionDataList($name, $values){
-
-	$open = "<datalist id='$name'>";
-	$close = "</datalist>";
-
-	$dataList = array();
-
-	foreach($values as $value){
-
-		$dataList[] = "<option value='$value'></option>";
-	}
-
-	return $open . implode("", $dataList) . $close;
 }
 
 
