@@ -56,43 +56,57 @@ function createElementExperiment($tagName, $attributes, $children) {
 	return "<{$tagName} ".implode(" ",$attributeStrings).">{$children}</{$tagName}>";
 }
 
+function createDataList($name, $values){
 
-function createElement($tagName, $attrs){
+	$children = array_map(function($judge){
 
-	$id = $attrs["id"];
-	$name = $attrs["name"];
-	$classes = $attrs["classes"];
+		return array("name" => "option", "attrs" => array(), "children" => $judge);
 
-	$openTag = "<$tagName id='$id' name='$name' class='$classes'>";
+	}, $values);
+
+	return createElement("datalist", array("name" => $name, "id" => $name), $children);
+}
+
+function createElement($tagName, $attrs, $children = null){
+
+	// Not all tags support all attributes.
+	$openTag = "<$tagName";
+
+	foreach($attrs as $key => $value) {
+
+		$openTag .= " $key='$value'";
+	}
+
+	$openTag .= ">";
+
+
 	$closeTag = "</$tagName>";
 
 	$theTag = $openTag . $closeTag;
 
-	if(empty($attrs["options"]) || ($tagName != "select" && $tagName != "datalist")){
 
-		return $theTag;
+	if(!empty($children) && is_string($children)) {
 
+		return $openTag . $children . $closeTag;
+
+	} else if(!empty($children) && is_array($children)) {
+
+		$fn = function($child){
+			$name = $child["name"];
+			$attrs = $child["attrs"];
+			$children = $child["children"];
+
+			return createElement($name, $attrs, $children);
+		};
+
+		return $openTag . implode("\n", array_map($fn, $children)) . $closeTag;
 	}
 
-	$optionElements = array();
-
-	$options = $attrs["options"];
-
-	$currentlySelected = $attrs["selected"];
-
-	foreach($options as $value => $label){
-
-		$selected = $currentlySelected == $value ? "selected" : "";
-
-		// You don't want to set the label if you are building options for a datalist.  Creates duplicates.
-		if($tagName == "datalist") $label = null;
-
-		$optionElements[] = "<option value='$value' $selected>$label</option>";
-	}
-
-	return $openTag . implode("", $optionElements) . $closeTag;
+	return $theTag;
 
 }
+
+
 
 
 
