@@ -66,9 +66,9 @@ function createSelectElement($name, $values, $selected = null){
 
 	$options = array_map(function($key, $value) use ($selected){
 
-		if($selected == $value) return array("name" => "option", "attrs" => array("value" => $key, "selected" => ""), "children" => $value);
+		$attrs = $selected == $value ? array("value" => $key, "selected" => "") : array("value" => $key);
 
-		return array("name" => "option", "attrs" => array("value" => $key), "children" => $value);
+		return array("name" => "option", "attrs" => $attrs, "children" => $value);
 
 	},array_keys($values), $values);
 
