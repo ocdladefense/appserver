@@ -4,95 +4,125 @@ namespace Html;
 
 const VERSION = "5";
 
-
 const DOC_TYPE = "html5";
 
 
-
 function HtmlLink($style) {
+
 	$elem = "<link rel='stylesheet' type='text/css' ";
+
 	foreach($style as $prop => $val) {
+
 		if($prop == "active") continue;
+
 		$elem .= "{$prop}='{$val}'";
 	}
+
 	return $elem .= " />";
 }
 
+
 function HtmlScript($script) {
+
 	$kvp = array();
 	$elem = "<script ";
 	
-	if(gettype($script) === "string") {
-		$script = array(
-			"src" => $script
-		);
-	}
+	if(gettype($script) === "string") $script = array("src" => $script);
 	
-	if(!isset($script["type"])) {
-		$script["type"] = "text/javascript";
-	}
+	if(!isset($script["type"])) $script["type"] = "text/javascript";
 	
 	foreach($script as $prop => $val) {
+
 		if($prop == "active") continue;
+
 		$kvp[] = attr($prop,$val);
 	}
+
 	return $elem .= implode(" ",$kvp) .">\n</script>";
 }
 
 
 function attr($prop,$val = null) {
+
 	if($val == null) return $prop;
+
 	else return "{$prop}='{$val}'";
 }
 
-function createElement($tagName, $attributes, $children) {
-	$attributeStrings = array();
-	foreach($attributes as $key => $value) {
-		$attributeStrings[] = "{$key}=\"{$value}\"";
-	}
-	if(is_array($children)){
-		$children = implode("\n",$children);
-	}
-	return "<{$tagName} ".implode(" ",$attributeStrings).">{$children}</{$tagName}>";
+
+function createDataListElement($name, $values){
+
+	$options = array_map(function($value) {
+
+		return array("name" => "option", "attrs" => array(), "children" => $value);
+
+	}, $values);
+
+	return createElement("datalist", array("name" => $name, "id" => $name), $options);
 }
 
-function createSelectListElement($name, $currentlySelected, $options = array(), $classNames = null){
 
-	$openSelect = "<select id='$name' class='$classNames' name='$name'>";
-	$closeSelect = "</select>";
+function createSelectElement($name, $values, $selected = null){
 
-	$optionElements = array();
+	$options = array_map(function($key, $value) use ($selected){
 
-	foreach($options as $value => $label){
+		if($selected == $value) return array("name" => "option", "attrs" => array("value" => $key, "selected" => ""), "children" => $value);
 
-		$selected = $currentlySelected == $value ? "selected" : ""; 
+		return array("name" => "option", "attrs" => array("value" => $key), "children" => $value);
 
-		$optionElements[] = "<option value='$value' $selected>$label</option>";
-	}
+	},array_keys($values), $values);
 
-	return $openSelect . implode("", $optionElements) . $closeSelect;
+	return createElement("select", array("name" => $name), $options);
 }
 
-function createOptionDataList($name, $values){
 
-	$open = "<datalist id='$name'>";
-	$close = "</datalist>";
+function createElement($tagName, $attrs, $children = null){
 
-	$dataList = array();
+	// Not all tags support all attributes.
+	$openTag = "<$tagName";
 
-	foreach($values as $value){
+	foreach($attrs as $key => $value) {
 
-		$dataList[] = "<option value='$value'></option>";
+		$openTag .= " " . $key . "='" . $value ."'";
 	}
 
-	return $open . implode("", $dataList) . $close;
+	$openTag .= ">";
+
+
+	$closeTag = "</$tagName>";
+
+	$theTag = $openTag . $closeTag;
+
+
+	if(!empty($children) && is_string($children)) {
+
+		return $openTag . $children . $closeTag;
+
+	} else if(!empty($children) && is_array($children)) {
+
+		$fn = function($child){
+			$name = $child["name"];
+			$attrs = $child["attrs"];
+			$children = $child["children"];
+
+			return createElement($name, $attrs, $children);
+		};
+
+		return $openTag . implode("\n", array_map($fn, $children)) . $closeTag;
+	}
+
+	return $theTag;
+
 }
+
+
 
 
 
 class Html {
 
 	public static function toList($items,$heading) {
+
 		return "<h2>{$heading}</h2><ul>" . implode("\n",array_map(function($item) {
 			return "<li>{$item}</li>";
 		}, $items))."</ul>";
