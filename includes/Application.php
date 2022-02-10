@@ -620,7 +620,7 @@ class Application {
             header($header->getName() . ": " . $header->getValue());
         }
 
-        http_response_code($resp->getStatusCode());
+        // http_response_code($resp->getStatusCode());
 
         if($resp->isFile()) {
 
@@ -643,7 +643,10 @@ class Application {
         $message = str_replace("\n", "\r\n", $content);
         $headers = array();
         $params = array();
-        // print $content;
+        
+        print $content; 
+        
+
         return mail(
             $to,
             $subject,
