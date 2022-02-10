@@ -606,6 +606,53 @@ class Application {
 
         print $content;
     }
+
+
+
+
+    public function sendMail($resp) {
+
+        $content = $resp->getBody();
+
+        $collection = $resp->getHeaderCollection();
+        foreach($collection->getHeaders() as $header){
+
+            header($header->getName() . ": " . $header->getValue());
+        }
+
+        http_response_code($resp->getStatusCode());
+
+        if($resp->isFile()) {
+
+            $file = $resp->getBody();
+            
+            if($file->exists()){
+
+                readfile($file->getPath());
+
+            } else {
+
+                $content = $file->getContent();
+                
+            }
+        }
+
+
+        $to = "jbernal.web.dev@gmail.com";
+        $subject = "Latest OCDLA Case Reviews";
+        $message = str_replace("\n", "\r\n", $content);
+        $headers = array();
+        $params = array();
+        // print $content;
+        return mail(
+            $to,
+            $subject,
+            $message
+        );
+    }
+
+
+
     
 
     public function getLoader(){
