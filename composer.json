@@ -33,7 +33,7 @@
         "ocdladefense/lib-database":"dev-development",
         "ocdladefense/lib-drag-drop-upload":"dev-development",
         "ocdladefense/appserver-directory":"dev-development",
-        "ocdladefense/appserver-car": "~2.0",
+        "ocdladefense/appserver-car": "~3.0",
         "ocdladefense/appserver-jobs": "dev-development"
     }
 }
