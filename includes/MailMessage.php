@@ -14,7 +14,7 @@ class MailMessage {
 		$this->body = $body;
 	}
 	
-	public function setHeaders(Array $headers){
+	public function setHeaders($headers){
 
 		$this->headers = $headers;
 	}

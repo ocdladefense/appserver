@@ -6,6 +6,7 @@ use \Http\HttpResponse as HttpResponse;
 use \Http\HttpRequest as HttpRequest;
 use Salesforce\OAuth;
 use Salesforce\OAuthException;
+uSE Http\HttpHeaderCollection;
 
 
 class Application {
@@ -386,7 +387,7 @@ class Application {
     
             $out = $this->getOutput($module, $route, $params);
                 
-            if(self::isHttpResponse($out)){
+            if(self::isHttpResponse($out) || self::isMailMessage($out)){
     
                 return $out;
             }
@@ -611,12 +612,12 @@ class Application {
 
 
 
-    public function sendMail($resp) {
+    public function sendMail($mailMessage) {
 
-        $collection = $resp->getHeaderCollection();
+        $collection = new HttpHeaderCollection($mailMessage->getHeaders());
 
-        $message = str_replace("\n", "\r\n", $resp->getBody());
-        $headers = implode("\r\n", $collection->getHeaders());
+        $message = str_replace("\n", "\r\n", $mailMessage->getBody());
+        $headers = implode("\r\n", $collection->getHeadersAsArray());
 
         $sent = mail(null, null, $message, $headers);
         
@@ -670,6 +671,12 @@ class Application {
     public static function isHttpResponse($object){
 
         return is_object($object) && (get_class($object) === "Http\HttpResponse" || is_subclass_of($object, "Http\HttpResponse", False));
+
+    }
+
+    public static function isMailMessage($object){
+
+        return is_object($object) && (get_class($object) === "MailMessage" || is_subclass_of($object, "MailMessage", False));
 
     }
 

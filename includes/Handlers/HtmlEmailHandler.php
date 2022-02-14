@@ -1,24 +1,11 @@
 <?php
 
-use \Http\HttpHeader as HttpHeader;
-
-/**
- * Handler to return a well-formed XHTML document.
- *
- * Assume that this document handler might have some relationship to the Theme classes.
- *  For now this relationship is hard-coded; however, we should probably consider that the XHTML
- *  document itself wouldn't necessarily need any styling information.
- *  And that the theme could "inject" its scripting and styling information?
- */
 class HtmlEmailHandler extends Handler {
 
-
 	
-	public function __construct($output, $contentType) {
+	public function __construct($output) {
 
 		$this->output = $output;
-		
-		$this->contentType = $contentType;
 	}
 	
 
@@ -27,6 +14,7 @@ class HtmlEmailHandler extends Handler {
 		
 		return $this->output->getBody();
 	}
+	
 	
 	public function getHeaders() {
 
