@@ -49,7 +49,7 @@
 		require_once(BASE_PATH.'/includes/Store/'.$file.".php");
 	}
 	
-	$handlers = array("Handler","ApplicationFileHandler","HttpResponseHandler","JsonHandler","HtmlDocumentHandler","JsonErrorHandler","HtmlStringHandler","HtmlErrorHandler");
+	$handlers = array("Handler","ApplicationFileHandler","HttpResponseHandler","JsonHandler","HtmlEmailHandler","HtmlDocumentHandler","JsonErrorHandler","HtmlStringHandler","HtmlErrorHandler");
 	
 	foreach($handlers as $file) {
 		require_once(BASE_PATH.'/includes/Handlers/'.$file.".php");
@@ -75,6 +75,8 @@
 	require_once BASE_PATH.'/includes/Module/ModuleLoader.php';
 
 	require_once BASE_PATH.'/includes/System/CoreModule.php';
+
+	require_once BASE_PATH. "/includes/MailMessage.php";
 
 
 

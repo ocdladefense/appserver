@@ -1,7 +1,10 @@
 <?php
 
+
 require '../bootstrap.php';
 
+$application = !empty($_GET["mail"]) ? "mail" : "http";
+$isCLI = false;
 
 use Http\HttpRequest as HttpRequest;
 use Http\HttpResponse as HttpResponse;
@@ -11,9 +14,18 @@ $app = new Application();
 
 $request = HttpRequest::newFromEnvironment();
 
-$response = $app->runHttp($request);
 
+if($application == "http"){
 
-//session_gc();
+    $response = $app->runHttp($request);
+    $app->send($response);
 
-$app->send($response);
+} else if($application == "mail") {
+
+    $response = $app->runHttp($request);
+    $app->sendMail($response);
+    
+} else {
+
+    throw new Exception("No application set in app.php");
+}

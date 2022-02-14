@@ -393,9 +393,10 @@ class Application {
             
             if(null == $out) throw new Exception("Callback function returned NULL!");
             
-            $handler = Handler::fromType($out, $route["content-type"]);
+            $handler = Handler::fromType($out, $route);
     
             $resp->setBody($handler->getOutput());
+
             $resp->addHeaders($handler->getHeaders());
     
             return $resp;
@@ -612,46 +613,14 @@ class Application {
 
     public function sendMail($resp) {
 
-        $content = $resp->getBody();
-
         $collection = $resp->getHeaderCollection();
-        foreach($collection->getHeaders() as $header){
 
-            header($header->getName() . ": " . $header->getValue());
-        }
+        $message = str_replace("\n", "\r\n", $resp->getBody());
+        $headers = implode("\r\n", $collection->getHeaders());
 
-        // http_response_code($resp->getStatusCode());
-
-        if($resp->isFile()) {
-
-            $file = $resp->getBody();
-            
-            if($file->exists()){
-
-                readfile($file->getPath());
-
-            } else {
-
-                $content = $file->getContent();
-                
-            }
-        }
-
-
-        $to = "jbernal.web.dev@gmail.com";
-        $subject = "Latest OCDLA Case Reviews";
-        $message = str_replace("\n", "\r\n", $content);
-        $headers = array();
-        $params = array();
+        $sent = mail(null, null, $message, $headers);
         
-        print $content; 
-        
-
-        return mail(
-            $to,
-            $subject,
-            $message
-        );
+        print $sent ? "Your email was sent" : "Your email was not sent";
     }
 
 

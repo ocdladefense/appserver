@@ -30,24 +30,30 @@ abstract class Handler {
 	protected abstract function getHeaders();
 
 
-	public static function fromType($output, $mimeType = null) {
+	public static function fromType($output, $route) {
+
+		$mimetype = $route["content-type"];
 
 		// For a full HTML page
 		// Render the HTML template and inject content to 
 		//  be the body of the page.
-		
-		if(is_object($output) && get_class($output) == "Http\HttpResponse") {
+		if(get_class($output) == "MailMessage"){
+
+			$handler = new HtmlEmailHandler($output, $mimeType);
+			
+		}
+		else if(is_object($output) && get_class($output) == "Http\HttpResponse") {
 
 			$handler = new HttpResponseHandler($output, $mimeType);
 		}
-		
 		else if($mimeType == null || $mimeType == Http\MIME_TEXT_HTML) {
 
 			$handler = is_object($output) && get_class($output) == "Exception" ?
 					new HtmlErrorHandler($output, $mimeType) :
 					new HtmlDocumentHandler($output, $mimeType);
 
-		} else if($mimeType == Http\MIME_TEXT_HTML_PARTIAL) {
+		}
+		else if($mimeType == Http\MIME_TEXT_HTML_PARTIAL) {
 
 			$handler = new HtmlStringHandler($output, $mimeType);
 
