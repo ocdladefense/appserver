@@ -20,6 +20,9 @@
             "ocdladefense/appserver-jobs": "source",
             "ocdladefense/lib-salesforce-rest-api": "source",
             "ocdladefense/*": "source"
+        },
+        "allow-plugins": {
+            "composer/installers": true
         }
     },
     "require": {
