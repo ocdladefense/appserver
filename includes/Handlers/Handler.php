@@ -37,12 +37,22 @@ abstract class Handler {
 		// For a full HTML page
 		// Render the HTML template and inject content to 
 		//  be the body of the page.
+
 		if(is_object($output) && get_class($output) == "MailMessage"){
 
 			$handler = new HtmlEmailHandler($output);
 			
 		}
+
+		else if($mimeType == "application/xml")
+		{
+			$handler = new XmlHandler($output, $mimeType);
+			return $handler;
+		}	
+
+
 		else if(is_object($output) && get_class($output) == "Http\HttpResponse") {
+
 
 			$handler = new HttpResponseHandler($output, $mimeType);
 		}
