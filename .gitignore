@@ -70,3 +70,6 @@ content/themes/highscope
 
 
 /config/modules/
+
+#ingnore the default theme directory
+/content/themes/default/
