@@ -6,6 +6,7 @@ use \Http\HttpResponse as HttpResponse;
 use \Http\HttpRequest as HttpRequest;
 use Salesforce\OAuth;
 use Salesforce\OAuthException;
+uSE Http\HttpHeaderCollection;
 
 
 class Application {
@@ -386,16 +387,17 @@ class Application {
     
             $out = $this->getOutput($module, $route, $params);
                 
-            if(self::isHttpResponse($out)){
+            if(self::isHttpResponse($out) || self::isMailMessage($out)){
     
                 return $out;
             }
             
             if(null == $out) throw new Exception("Callback function returned NULL!");
             
-            $handler = Handler::fromType($out, $route["content-type"]);
+            $handler = Handler::fromType($out, $route);
     
             $resp->setBody($handler->getOutput());
+
             $resp->addHeaders($handler->getHeaders());
     
             return $resp;
@@ -606,6 +608,19 @@ class Application {
 
         print $content;
     }
+
+
+
+
+    public function sendMail($message) {
+
+        $sent = mail(null, null, $message->getBody(), $message->getHeaders());
+        
+        print $sent ? "Your email was sent" : "Your email was not sent";
+    }
+
+
+
     
 
     public function getLoader(){
@@ -651,6 +666,12 @@ class Application {
     public static function isHttpResponse($object){
 
         return is_object($object) && (get_class($object) === "Http\HttpResponse" || is_subclass_of($object, "Http\HttpResponse", False));
+
+    }
+
+    public static function isMailMessage($object){
+
+        return is_object($object) && (get_class($object) === "MailMessage" || is_subclass_of($object, "MailMessage", False));
 
     }
 
