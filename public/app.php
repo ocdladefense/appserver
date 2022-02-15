@@ -24,7 +24,7 @@ if($application == "http"){
 
     $response = $app->runHttp($request);
     $app->sendMail($response);
-    
+
 } else {
 
     throw new Exception("No application set in app.php");
