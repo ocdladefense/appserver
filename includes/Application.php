@@ -612,14 +612,9 @@ class Application {
 
 
 
-    public function sendMail($mailMessage) {
+    public function sendMail($message) {
 
-        $collection = new HttpHeaderCollection($mailMessage->getHeaders());
-
-        $message = str_replace("\n", "\r\n", $mailMessage->getBody());
-        $headers = implode("\r\n", $collection->getHeadersAsArray());
-
-        $sent = mail(null, null, $message, $headers);
+        $sent = mail(null, null, $message->getBody(), $message->getHeaders());
         
         print $sent ? "Your email was sent" : "Your email was not sent";
     }
