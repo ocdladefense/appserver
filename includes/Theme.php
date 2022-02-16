@@ -16,6 +16,8 @@ class Theme {
 
 	protected $styles = array();
 
+	protected $links = array();
+
 	protected $footerScripts = array();
 	
 
@@ -40,6 +42,17 @@ class Theme {
 	public function addStyle($css) {
 		$this->styles []= $css;
 	}
+
+	public function addLinks(array $links) {
+
+		$this->links = array_merge($this->links, $links);
+	}
+	
+	public function addLink($link) {
+
+		$this->links[] = $link;
+	}
+
 	
 	public function addSearchPath($path) {
 		self::$paths []= $path;

@@ -30,7 +30,7 @@ abstract class Handler {
 	protected abstract function getHeaders();
 
 
-	public static function fromType($output, $route) {
+	public static function fromType($output, $route, $module) {
 
 		$mimetype = $route["content-type"];
 
@@ -60,7 +60,7 @@ abstract class Handler {
 
 			$handler = is_object($output) && get_class($output) == "Exception" ?
 					new HtmlErrorHandler($output, $mimeType) :
-					new HtmlDocumentHandler($output, $mimeType);
+					new HtmlDocumentHandler($output, $mimeType, $module);
 
 		}
 		else if($mimeType == Http\MIME_TEXT_HTML_PARTIAL) {

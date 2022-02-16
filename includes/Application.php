@@ -218,6 +218,8 @@ class Application {
 
             return $routes;
         },false)->flatten();
+
+
     }
 
 
@@ -394,7 +396,7 @@ class Application {
             
             if(null == $out) throw new Exception("Callback function returned NULL!");
             
-            $handler = Handler::fromType($out, $route);
+            $handler = Handler::fromType($out, $route, $module);
     
             $resp->setBody($handler->getOutput());
 

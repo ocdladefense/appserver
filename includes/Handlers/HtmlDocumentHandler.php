@@ -14,7 +14,10 @@ class HtmlDocumentHandler extends Handler {
 
 
 	
-	public function __construct($output, $contentType) {
+	public function __construct($output, $contentType, $module) {
+
+		$this->links = $module->getInfo()["links"];
+
 		$this->output = $output;
 		
 		$this->contentType = $contentType;
@@ -29,10 +32,7 @@ class HtmlDocumentHandler extends Handler {
 			require(get_theme_path() . "/" . $className . ".php");
 			
 			$theme = new $className();
-			// $theme->addStyle
-			// $theme->addScript
-			// $theme->addMeta
-			// $theme
+			if(!empty($this->links)) $theme->addLinks($this->links);
 			
 			$content = Template::isTemplate($this->output) ? $theme->renderTemplate($this->output) : $this->output;
 
