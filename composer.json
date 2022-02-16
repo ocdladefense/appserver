@@ -10,7 +10,8 @@
             "content/libraries/file/dragDrop":["ocdladefense/lib-drag-drop-upload"],
             "modules/car":["ocdladefense/appserver-car"],
             "modules/directory":["ocdladefense/appserver-directory"],
-            "modules/jobs":["ocdladefense/appserver-jobs"]
+            "modules/jobs":["ocdladefense/appserver-jobs"],
+            "modules/sphinx":["ocdladefense/appserver-sphinx-search"]
         }
     },
     "config": {
@@ -34,6 +35,7 @@
         "ocdladefense/lib-drag-drop-upload":"dev-development",
         "ocdladefense/appserver-directory":"dev-development",
         "ocdladefense/appserver-car": "~3.0",
-        "ocdladefense/appserver-jobs": "dev-development"
+        "ocdladefense/appserver-jobs": "dev-development",
+        "ocdladefense/appserver-sphinx-search": "dev-development"
     }
 }
