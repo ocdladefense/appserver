@@ -1,0 +1,545 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "872a3e8eb64be2d103656ffc413b9eb4",
+    "packages": [
+        {
+            "name": "composer/installers",
+            "version": "v1.12.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/installers.git",
+                "reference": "d20a64ed3c94748397ff5973488761b22f6d3f19"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/installers/zipball/d20a64ed3c94748397ff5973488761b22f6d3f19",
+                "reference": "d20a64ed3c94748397ff5973488761b22f6d3f19",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0 || ^2.0"
+            },
+            "replace": {
+                "roundcube/plugin-installer": "*",
+                "shama/baton": "*"
+            },
+            "require-dev": {
+                "composer/composer": "1.6.* || ^2.0",
+                "composer/semver": "^1 || ^3",
+                "phpstan/phpstan": "^0.12.55",
+                "phpstan/phpstan-phpunit": "^0.12.16",
+                "symfony/phpunit-bridge": "^4.2 || ^5",
+                "symfony/process": "^2.3"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Composer\\Installers\\Plugin",
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\Installers\\": "src/Composer/Installers"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kyle Robinson Young",
+                    "email": "kyle@dontkry.com",
+                    "homepage": "https://github.com/shama"
+                }
+            ],
+            "description": "A multi-framework Composer library installer",
+            "homepage": "https://composer.github.io/installers/",
+            "keywords": [
+                "Craft",
+                "Dolibarr",
+                "Eliasis",
+                "Hurad",
+                "ImageCMS",
+                "Kanboard",
+                "Lan Management System",
+                "MODX Evo",
+                "MantisBT",
+                "Mautic",
+                "Maya",
+                "OXID",
+                "Plentymarkets",
+                "Porto",
+                "RadPHP",
+                "SMF",
+                "Starbug",
+                "Thelia",
+                "Whmcs",
+                "WolfCMS",
+                "agl",
+                "aimeos",
+                "annotatecms",
+                "attogram",
+                "bitrix",
+                "cakephp",
+                "chef",
+                "cockpit",
+                "codeigniter",
+                "concrete5",
+                "croogo",
+                "dokuwiki",
+                "drupal",
+                "eZ Platform",
+                "elgg",
+                "expressionengine",
+                "fuelphp",
+                "grav",
+                "installer",
+                "itop",
+                "joomla",
+                "known",
+                "kohana",
+                "laravel",
+                "lavalite",
+                "lithium",
+                "magento",
+                "majima",
+                "mako",
+                "mediawiki",
+                "miaoxing",
+                "modulework",
+                "modx",
+                "moodle",
+                "osclass",
+                "pantheon",
+                "phpbb",
+                "piwik",
+                "ppi",
+                "processwire",
+                "puppet",
+                "pxcms",
+                "reindex",
+                "roundcube",
+                "shopware",
+                "silverstripe",
+                "sydes",
+                "sylius",
+                "symfony",
+                "tastyigniter",
+                "typo3",
+                "wordpress",
+                "yawik",
+                "zend",
+                "zikula"
+            ],
+            "support": {
+                "issues": "https://github.com/composer/installers/issues",
+                "source": "https://github.com/composer/installers/tree/v1.12.0"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-09-13T08:19:44+00:00"
+        },
+        {
+            "name": "ocdladefense/appserver-car",
+            "version": "v3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/appserver-car.git",
+                "reference": "a2dc26343823a2a0bb27fb2e4ce67c0e7dda14a3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/a2dc26343823a2a0bb27fb2e4ce67c0e7dda14a3",
+                "reference": "a2dc26343823a2a0bb27fb2e4ce67c0e7dda14a3",
+                "shasum": ""
+            },
+            "require": {
+                "ocdladefense/lib-database": "dev-development"
+            },
+            "type": "wordpress-theme",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "TrevorUehlin",
+                    "email": "trevoruehlinx1@gmail.com"
+                }
+            ],
+            "description": "A module for viewing and managing case review data.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/appserver-car/issues",
+                "source": "https://github.com/ocdladefense/appserver-car/tree/v3.0.1"
+            },
+            "time": "2022-02-14T19:55:01+00:00"
+        },
+        {
+            "name": "ocdladefense/appserver-directory",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/appserver-directory.git",
+                "reference": "ef65034f75844391112101206c599b3cb38923d0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-directory/zipball/ef65034f75844391112101206c599b3cb38923d0",
+                "reference": "ef65034f75844391112101206c599b3cb38923d0",
+                "shasum": ""
+            },
+            "type": "wordpress-theme",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "TrevorUehlin",
+                    "email": "trevoruehlinx1@gmail.com"
+                }
+            ],
+            "description": "A module for viewing member and expert witnesses within the OCDLA orginization.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/appserver-directory/issues",
+                "source": "https://github.com/ocdladefense/appserver-directory/tree/development"
+            },
+            "time": "2021-10-15T17:58:45+00:00"
+        },
+        {
+            "name": "ocdladefense/appserver-jobs",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/appserver-jobs.git",
+                "reference": "d09452e11bb1bf6ce5d8602e39ac2cd070874a94"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-jobs/zipball/d09452e11bb1bf6ce5d8602e39ac2cd070874a94",
+                "reference": "d09452e11bb1bf6ce5d8602e39ac2cd070874a94",
+                "shasum": ""
+            },
+            "type": "wordpress-theme",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "TrevorUehlin",
+                    "email": "trevoruehlinx1@gmail.com"
+                }
+            ],
+            "description": "A module for viewing and managing OCDLA job postings.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/appserver-jobs/issues",
+                "source": "https://github.com/ocdladefense/appserver-jobs/tree/development"
+            },
+            "time": "2021-07-29T19:58:19+00:00"
+        },
+        {
+            "name": "ocdladefense/appserver-sphinx-search",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/appserver-sphinx-search.git",
+                "reference": "cab8b428853cfc6bbb0909d08cb89bfaf18206d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-sphinx-search/zipball/cab8b428853cfc6bbb0909d08cb89bfaf18206d1",
+                "reference": "cab8b428853cfc6bbb0909d08cb89bfaf18206d1",
+                "shasum": ""
+            },
+            "require": {
+                "ocdladefense/lib-sphinx-search": "dev-development"
+            },
+            "type": "wordpress-theme",
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Module to implement the Sphinx fulltext search engine.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/appserver-sphinx-search/issues",
+                "source": "https://github.com/ocdladefense/appserver-sphinx-search/tree/development"
+            },
+            "time": "2022-02-17T17:17:43+00:00"
+        },
+        {
+            "name": "ocdladefense/appserver-theme-default",
+            "version": "v1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/appserver-theme-default.git",
+                "reference": "139106263a326776dcb586b2de67cbdb749b2b2c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/139106263a326776dcb586b2de67cbdb749b2b2c",
+                "reference": "139106263a326776dcb586b2de67cbdb749b2b2c",
+                "shasum": ""
+            },
+            "type": "wordpress-theme",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jose Bernal",
+                    "email": "jbernal.web.dev@gmail.com"
+                }
+            ],
+            "description": "A default theme for the OCDLA appserver.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/appserver-theme-default/issues",
+                "source": "https://github.com/ocdladefense/appserver-theme-default/tree/v1.1"
+            },
+            "time": "2022-02-17T17:26:19+00:00"
+        },
+        {
+            "name": "ocdladefense/lib-database",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/lib-database.git",
+                "reference": "dcfb32be30466ffb584a682cd6a4bd4a96345448"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/lib-database/zipball/dcfb32be30466ffb584a682cd6a4bd4a96345448",
+                "reference": "dcfb32be30466ffb584a682cd6a4bd4a96345448",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "mysql/",
+                    "salesforce/"
+                ],
+                "files": [
+                    "mysql/Database.php",
+                    "QueryBuilderBase.php",
+                    "DbException.php",
+                    "IDbResult.php",
+                    "QueryException.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "A PHP databse library.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/lib-database/issues",
+                "source": "https://github.com/ocdladefense/lib-database/tree/development"
+            },
+            "time": "2022-01-26T22:22:03+00:00"
+        },
+        {
+            "name": "ocdladefense/lib-drag-drop-upload",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/lib-drag-drop-upload.git",
+                "reference": "2e2ff08cd6cba16c26808dbe81326700a6c32f40"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/lib-drag-drop-upload/zipball/2e2ff08cd6cba16c26808dbe81326700a6c32f40",
+                "reference": "2e2ff08cd6cba16c26808dbe81326700a6c32f40",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Trevor Uehlin",
+                    "email": "trevoruehlinx1@gmail.com"
+                }
+            ],
+            "description": "A drag and drop file uploader.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/lib-drag-drop-upload/issues",
+                "source": "https://github.com/ocdladefense/lib-drag-drop-upload/tree/development"
+            },
+            "time": "2021-08-18T20:39:00+00:00"
+        },
+        {
+            "name": "ocdladefense/lib-http",
+            "version": "v3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/lib-http.git",
+                "reference": "8ddfa6661dffc8691ed083728a2c09ce145b0b44"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/lib-http/zipball/8ddfa6661dffc8691ed083728a2c09ce145b0b44",
+                "reference": "8ddfa6661dffc8691ed083728a2c09ce145b0b44",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/HttpConstants.php"
+                ],
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jose Bernal",
+                    "email": "jbernal.web.dev@gmail.com"
+                }
+            ],
+            "description": "PHP wrapper classes for curl functions.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/lib-http/issues",
+                "source": "https://github.com/ocdladefense/lib-http/tree/v3.1"
+            },
+            "time": "2022-02-15T00:56:23+00:00"
+        },
+        {
+            "name": "ocdladefense/lib-oauth-config",
+            "version": "v2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/lib-oauth-config.git",
+                "reference": "0156d8208ae2a48ae238cd6c71b2b40bde7ef89b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/lib-oauth-config/zipball/0156d8208ae2a48ae238cd6c71b2b40bde7ef89b",
+                "reference": "0156d8208ae2a48ae238cd6c71b2b40bde7ef89b",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Classes to enable parsing of oauth schemas.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/lib-oauth-config/issues",
+                "source": "https://github.com/ocdladefense/lib-oauth-config/tree/v2.1.1"
+            },
+            "time": "2021-04-20T21:19:09+00:00"
+        },
+        {
+            "name": "ocdladefense/lib-salesforce-rest-api",
+            "version": "v3.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/lib-salesforce-rest-api.git",
+                "reference": "c1f762c9dd5ad6c4fbd0f37e7aa860c6237924bc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/lib-salesforce-rest-api/zipball/c1f762c9dd5ad6c4fbd0f37e7aa860c6237924bc",
+                "reference": "c1f762c9dd5ad6c4fbd0f37e7aa860c6237924bc",
+                "shasum": ""
+            },
+            "require": {
+                "ocdladefense/lib-http": "~3.0",
+                "ocdladefense/lib-oauth-config": "~2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/",
+                    "models/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "OCDLA plugin accesses.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/lib-salesforce-rest-api/issues",
+                "source": "https://github.com/ocdladefense/lib-salesforce-rest-api/tree/v3.6"
+            },
+            "time": "2022-01-21T21:00:07+00:00"
+        },
+        {
+            "name": "ocdladefense/lib-sphinx-search",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/lib-sphinx-search.git",
+                "reference": "4b7ab22ca39ae0fcc882296d74248c0102bd4f5e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/lib-sphinx-search/zipball/4b7ab22ca39ae0fcc882296d74248c0102bd4f5e",
+                "reference": "4b7ab22ca39ae0fcc882296d74248c0102bd4f5e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/sphinxapi.php"
+                ],
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jose Bernal",
+                    "email": "jbernal.web.dev@gmail.com"
+                }
+            ],
+            "description": "PHP wrapper classes for performing Sphinx fulltext searches.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/lib-sphinx-search/issues",
+                "source": "https://github.com/ocdladefense/lib-sphinx-search/tree/development"
+            },
+            "time": "2022-02-16T21:22:33+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "ocdladefense/lib-database": 20,
+        "ocdladefense/lib-drag-drop-upload": 20,
+        "ocdladefense/appserver-directory": 20,
+        "ocdladefense/appserver-jobs": 20,
+        "ocdladefense/appserver-sphinx-search": 20
+    },
+    "prefer-stable": true,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.1.0"
+}

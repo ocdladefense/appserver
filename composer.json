@@ -8,6 +8,7 @@
     	"installer-paths": {
             "saml":["simplesamlphp/simplesamlphp"],
             "content/libraries/file/dragDrop":["ocdladefense/lib-drag-drop-upload"],
+            "content/themes/default":["ocdladefense/appserver-theme-default"],
             "modules/car":["ocdladefense/appserver-car"],
             "modules/directory":["ocdladefense/appserver-directory"],
             "modules/jobs":["ocdladefense/appserver-jobs"],
@@ -33,6 +34,7 @@
         "ocdladefense/lib-http":"~3.0",
         "ocdladefense/lib-database":"dev-development",
         "ocdladefense/lib-drag-drop-upload":"dev-development",
+        "ocdladefense/appserver-theme-default":"~1.0",
         "ocdladefense/appserver-directory":"dev-development",
         "ocdladefense/appserver-car": "~3.0",
         "ocdladefense/appserver-jobs": "dev-development",
