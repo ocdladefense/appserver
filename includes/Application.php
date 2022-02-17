@@ -30,6 +30,8 @@ class Application {
 
     private $modules;
 
+    private $links;
+
 
     public function getComposerInstallPathsByType($type){
 
@@ -122,6 +124,8 @@ class Application {
             return $def["name"];
         });
 
+
+
         $coreDef = array(
             "comment"      => "The core module",
             "connectedApp" => "default",
@@ -190,10 +194,9 @@ class Application {
 
 
             ),
-						//If the path is null the module loader will not try to load the file
-						//core module is loaded in autoloader.php
-						"path"     => null
-            
+            //If the path is null the module loader will not try to load the file
+            //core module is loaded in autoloader.php
+            "path"     => null
         );
 
         $this->modules->put("core", $coreDef);
@@ -218,6 +221,16 @@ class Application {
 
             return $routes;
         },false)->flatten();
+
+
+
+        // Gather the links from the module.json file of each module.
+        $this->links = array();
+        foreach($this->modules->getArray() as $moduleDef) {
+
+            if(!empty($moduleDef["links"])) $this->links = array_merge($this->links, $moduleDef["links"]);
+        }
+
     }
 
 
@@ -393,6 +406,9 @@ class Application {
             if(null == $out) throw new Exception("Callback function returned NULL!");
             
             $handler = Handler::fromType($out, $route);
+
+            // If the output is being rendered with the theme, add any links specified in the composer.json files of all modules.
+            if(get_class($handler) == "HtmlDocumentHandler") $handler->setLinks($this->links); 
     
             $resp->setBody($handler->getOutput());
             $resp->addHeaders($handler->getHeaders());

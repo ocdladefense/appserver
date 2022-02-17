@@ -5,7 +5,7 @@
 class ModuleLoader {
 
 
-		private $index;
+    private $index;
 
 
     public function __construct($index) {
