@@ -35,8 +35,6 @@ soap-login-admin-user.xml
 modules/*
 !modules/.gitkeep
 
-# Ignore composer.lock
-composer.lock
 
 
 # Ignore node modules
