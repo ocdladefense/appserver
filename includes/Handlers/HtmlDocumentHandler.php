@@ -12,11 +12,9 @@ use \Http\HttpHeader as HttpHeader;
  */
 class HtmlDocumentHandler extends Handler {
 
-
+	private $links;
 	
-	public function __construct($output, $contentType, $module) {
-
-		$this->links = $module->getInfo()["links"];
+	public function __construct($output, $contentType) {
 
 		$this->output = $output;
 		
@@ -24,21 +22,26 @@ class HtmlDocumentHandler extends Handler {
 	}
 	
 
+	public function setLinks($links) {
+
+		$this->links = $links;
+	}
+
 	
 	public function getOutput() {
 	
-			// Init the theme, first.
-			$className = ucfirst(strtolower(get_theme())) . "Theme";
-			require(get_theme_path() . "/" . $className . ".php");
-			
-			$theme = new $className();
-			if(!empty($this->links)) $theme->addLinks($this->links);
-			
-			$content = Template::isTemplate($this->output) ? $theme->renderTemplate($this->output) : $this->output;
+		// Init the theme, first.
+		$className = ucfirst(strtolower(get_theme())) . "Theme";
+		require(get_theme_path() . "/" . $className . ".php");
+		
+		$theme = new $className();
+		$theme->addLinks($this->links);
+		
+		$content = Template::isTemplate($this->output) ? $theme->renderTemplate($this->output) : $this->output;
 
-			// var_dump($this->output, $content);exit;
-			// Loads an HTML page with defined scripts, css.
-			return $theme->render($content);
+		// var_dump($this->output, $content);exit;
+		// Loads an HTML page with defined scripts, css.
+		return $theme->render($content);
 	}
 	
 	public function getHeaders() {
