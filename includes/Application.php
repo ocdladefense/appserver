@@ -354,30 +354,28 @@ class Application {
 
         $module->setRequest($req);
 
-        if($route["content-type"] == Http\MIME_APPLICATION_JSON) {
 
-            return $this->getJsonOutput($module, $route, $params);
 
-        } else {
-            
-            return $this->getTextOutput($module, $route, $params);
-        }
+
+        return $this->getOutput($module,$route,$params);
     }
 
-        /**
+
+
+
+
+
+    /**
      * Actually call the route's callback
      *  Retrieve the output,
      *  then decide what to do with the output
      *  depending on the context.
      */
-    public function getOutput($module, $route, $params) {
-    
-        return call_user_func_array(array($module,$route["callback"]),$params);
-    }
-
-    public function getTextOutput($module, $route, $params){
+    public function getOutput($module, $route, $params){
 
         $resp = new HttpResponse();
+
+
 
         try {
 
@@ -385,7 +383,7 @@ class Application {
                 \set_theme("Videos");
             }
     
-            $out = $this->getOutput($module, $route, $params);
+            $out = call_user_func_array(array($module,$route["callback"]),$params);
                 
             if(self::isHttpResponse($out) || self::isMailMessage($out)){
     
@@ -397,95 +395,60 @@ class Application {
             $handler = Handler::fromType($out, $route);
     
             $resp->setBody($handler->getOutput());
-
             $resp->addHeaders($handler->getHeaders());
-    
-            return $resp;
 
         } catch(Throwable $e) {
 
-            if(!defined("DEBUG") || DEBUG === false) {
+            // How does this relate to the content-type?
+            // $route["contentType"
+            if(defined("DEBUG") && DEBUG === true) {
+
+                $handlers = ob_list_handlers();
+                while (!empty($handlers)){
+    
+                    ob_end_clean();
+                    $handlers = ob_list_handlers();
+                }
+    
+                // Can we use a ternary here?
+                if(get_class($e) == "Error") {
+    
+                    throw new Error($e->getMessage(), 0, $e);  // Should figure out an error code.
+                } else {
+    
+                    throw new Exception($e->getMessage(), 0, $e);
+                }
+            }
+
+            else {
 
                 // Maybe hard code the content type later...as text/html
+                // $contentType = $route["content-type"] == Http\MIME_TEXT_HTML_PARTIAL ? $route["content-type"] : "text/html"; // Used to be "$route["content-type"]"
+                
+                // Here we're passing in a string (getMessage) but we could pass in the entire Exception $e.
+                $handler = Handler::fromType($e->getMessage(), $route["contentType"]);
+                // $handler = Handler::fromType($e, $route["content-type"]);
 
-                $contentType = $route["content-type"] == Http\MIME_TEXT_HTML_PARTIAL ? $route["content-type"] : "text/html"; // Used to be "$route["content-type"]"
-                $handler = Handler::fromType($e->getMessage(), $contentType);
-    
                 $resp->setBody($handler->getOutput());
                 $resp->addHeaders($handler->getHeaders());
                 $resp->setStatusCode(500);
-        
-                return $resp;
 
-            }
-
-
-            $handlers = ob_list_handlers();
-            while (!empty($handlers)){
-
-                ob_end_clean();
-                $handlers = ob_list_handlers();
-            }
-
-            if(get_class($e) == "Error") {
-
-                throw new Error($e->getMessage(), 0, $e);  // Should figure out an error code.
-            } else {
-
-                throw new Exception($e->getMessage(), 0, $e);
+                // Remove the PHP error stack if we don't wish to deliver
+                // verbose debugging info.
+                // Assuming the handler supports ->removeStack();
+                $handler->removeStack();
             }
         }
-    }
 
-
-    public function getJsonOutput($module, $route, $params){
-
-        $resp = new HttpResponse();
-
-        try {
-
-            if(isset($route["theme"])) {
-                \set_theme("Videos");
-            }
-
-            $out = $this->getOutput($module, $route, $params);
-
-            if(self::isHttpResponse($out)){
-
-                return $out;
-            }
-            
-            if(is_null($out)) throw new Exception("Callback function returned NULL!");
-            
-            $handler = Handler::fromType($out, $route["content-type"]);
-
-            $resp->setBody($handler->getOutput());
-            $resp->addHeaders($handler->getHeaders());
-            
-       } catch(Throwable $e) {
-
-            if(!defined("DEBUG") || DEBUG === false) {
-
-                $handler = Handler::fromType($e, $route["content-type"]);
-                $handler->removeStack();
-
-                $resp->setBody($handler->getOutput());
-                $resp->addHeaders($handler->getHeaders());
-                $resp->setStatusCode(500);
-        
-                return $resp;
-            }
-
-            $handler = Handler::fromType($e, $route["content-type"]);
-
-            $resp->setBody($handler->getOutput());
-            $resp->addHeaders($handler->getHeaders());
-            $resp->setStatusCode(500);
-       }
 
         return $resp;
     }
+
+
+
     
+
+
     
     public function exec($uri) {
         list($module, $route, $params) = $this->init($uri);
@@ -494,6 +457,8 @@ class Application {
     }
         
         
+
+
     // This function returns an array with the module info, the route info, and any params.
     public function init($uri) {
         
