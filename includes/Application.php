@@ -28,63 +28,19 @@ class Application {
     // Outgoing response.
     private $resp;
 
+    // List of installed modules, if any.
+    // Core module will be in here by default.
     private $modules;
 
-    private $links;
 
-
-    public function getComposerInstallPathsByType($type){
-
-        // Get installed composer appserver module packages
-        $installedModulePackages = Composer\InstalledVersions::getInstalledPackagesByType($type);
-
-        // Get the install path for each module package
-        $installPaths = array();
-
-        // For some reason, the "InstalledVersions" class method "getInstalledPackagesByType" returns duplicates.
-        // The issue is in the "getInstalled" method which is called by "getInstalledPackagesByType".
-        // That is why i need to use the "filterDups" boolean.
-        $filterDups = true;
-        foreach($installedModulePackages as $package){
-            
-            $path = Composer\InstalledVersions::getInstallPath($package);
-            if(true === $filterDups && !in_array($path, $installPaths)){
-                
-                $installPaths[] = $path;
-
-            } elseif($filterDups === false){
-
-                $installPaths[] = $path;
-            }
-        }
-
-        return $installPaths;
-
-    }
-
-    public function validateModuleList($pathsToModules){
-
-        $moduleNames = array();
-        foreach($pathsToModules as $path){
-
-            $pathParts = explode("/", $path);
-            $semiFilteredName = $pathParts[count($pathParts) -1];
-            $semiFilteredNameParts = explode("\\", $semiFilteredName);
-            $moduleName = $semiFilteredNameParts[count($semiFilteredNameParts) -1];
-
-            if(in_array($moduleName, $moduleNames)){
-
-                throw new Exception("MODULE_DUPLICATE_ERROR: You have two instances of the $moduleName module installed.");
-            }
-
-            $moduleNames[] = $moduleName;
-        }
-    }
+    
 	
 	
 		
     public function __construct() {
 		
+        global $coreDef;
+
         // Demonstrate that we can build an index of modules.
         // $mIndex = new ModuleDiscoveryService(path_to_modules());
         // $list = XList::fromFileSystem(path_to_modules());
@@ -117,7 +73,6 @@ class Application {
             return $def;
         });
            
-        // dump($defs);
 
         // Build an index for modules.
         $this->modules = $defs->indexBy(function($def) {
@@ -126,78 +81,7 @@ class Application {
 
 
 
-        $coreDef = array(
-            "comment"      => "The core module",
-            "connectedApp" => "default",
-            "name"         => "core",
-            "description"  => "holds routes for core functionality",
-            "files"        => array(),
-            "routes"       => array(
-                "file/upload" => array(
-                    "callback"      => "upload",
-                    "content-type"  => "application/json",
-                    "path"          => "upload",
-                    "module"        => "core",
-                    "method"        => "get"
-                ),
-                "file/download/%filename" => array(
-                    "callback"      => "download",
-                    "content-type"  => "application/json",
-                    "path"          => "download",
-                    "module"        => "core",
-                    "method"        => "get"
-                ),
-                "file/list" => array(
-                    "callback"      => "list",
-                    "content-type"  => "application/json",
-                    "path"          => "list/files",
-                    "module"        => "core",
-                    "method"        => "get"
-                ),
-                "oauth/start" => array(
-                    "callback"      => "oauthFlowStart",
-                    "content-type"  => "application/json",
-                    "path"          => "oauth/start",
-                    "module"        => "core",
-                    "method"        => "get"
-                ),
-                "oauth/api/request" => array(
-                    "callback"      => "oauthFlowAccessToken",
-                    "content-type"  => "application/json",
-                    "path"          => "oauth/api/request",
-                    "module"        => "core",
-                    "method"        => "get"
-                ),
-                "login"        => array(
-                    "callback"      => "login",
-                    "content-type"  => "application/json",
-                    "path"          => "login",
-                    "module"        => "core",
-                    "method"        => "get",
-                    "access"        => "is_authenticated",
-                    "authorization" => "webserver"
-                ),
-                "logout"        => array(
-                    "callback"      => "userLogout",
-                    "content-type"  => "application/json",
-                    "path"          => "logout",
-                    "module"        => "core",
-                    "method"        => "get"
-                ),
-                "user/profile"        => array(
-                    "callback"      => "userProfile",
-                    "content-type"  => "text/html",
-                    "path"          => "user/profile",
-                    "module"        => "core",
-                    "method"        => "get"
-                )
 
-
-            ),
-            //If the path is null the module loader will not try to load the file
-            //core module is loaded in autoloader.php
-            "path"     => null
-        );
 
         $this->modules->put("core", $coreDef);
 
@@ -217,62 +101,17 @@ class Application {
                 $route["content-type"] = $route["content-type"] ?: self::$DEFAULT_CONTENT_TYPE;
             }
 
-            //var_dump($routes);exit;
-
             return $routes;
         },false)->flatten();
-
-
-
-        // Gather the links from the module.json file of each module.
-        $this->links = array();
-        foreach($this->modules->getArray() as $moduleDef) {
-
-            if(!empty($moduleDef["links"])) $this->links = array_merge($this->links, $moduleDef["links"]);
-        }
-
     }
 
 
-    public function isInstallDirValid($uri, $installDir){
 
-        return strpos($uri, $installDir) === 0;
-    }
+
     
-    public function calculateScriptUri($uri, $installDir){
 
-        $uriLength = strlen($uri);
-        $installDirLength = strlen($installDir);
-        $offset = $installDirLength - $uriLength;
 
-        return substr($uri, $offset);
-    }
 
-    public function getScriptUri($uri){
-
-        $installDir = defined("APPSERVER_INSTALL_DIRECTORY") && !empty(APPSERVER_INSTALL_DIRECTORY) ? trim(APPSERVER_INSTALL_DIRECTORY) : null;
-
-        $installDirIsSet = $installDir != null;
-
-        if($installDirIsSet){
-
-            // Making sure that the setting for the constant is valid
-            $installDirIsValid = $this->isInstallDirValid($uri, $installDir);
-            
-            if(!$installDirIsValid){
-                
-                throw new Exception("CONFIGURATION_ERROR: the 'APPSEVER_INSTALL_DIRECTORY' setting is invalid in config.php");
-
-            }
-
-            return $this->calculateScriptUri($uri, $installDir);
-
-        } else {
-
-            return $uri;
-        }
-
-    }
     public function runHttp($req) {
 
         $uri = $req->getRequestUri();
@@ -408,15 +247,22 @@ class Application {
             $handler = Handler::fromType($out, $route);
 
             // If the output is being rendered with the theme, add any links specified in the composer.json files of all modules.
-            if(get_class($handler) == "HtmlDocumentHandler") $handler->setLinks($this->links); 
-    
+            if(get_class($handler) == "HtmlDocumentHandler") {
+                $links = array();
+                foreach($this->modules->getArray() as $moduleDef) {
+
+                    if(!empty($moduleDef["links"])) $links = array_merge($links, $moduleDef["links"]);
+                }
+                $handler->setLinks($links); 
+            }
+
             $resp->setBody($handler->getOutput());
             $resp->addHeaders($handler->getHeaders());
 
         } catch(Throwable $e) {
 
             // How does this relate to the content-type?
-            // $route["contentType"
+            // $route["contentType"]
             if(defined("DEBUG") && DEBUG === true) {
 
                 $handlers = ob_list_handlers();
@@ -541,7 +387,7 @@ class Application {
     } 
 
 
-    //Other Methods
+    // Other Methods
     public function secure() { 
 
         $header = $this->resp->getHeader("Content-Type");
@@ -657,6 +503,100 @@ class Application {
     }
 
 
+
+
+    public function getComposerInstallPathsByType($type){
+
+        // Get installed composer appserver module packages
+        $installedModulePackages = Composer\InstalledVersions::getInstalledPackagesByType($type);
+
+        // Get the install path for each module package
+        $installPaths = array();
+
+        // For some reason, the "InstalledVersions" class method "getInstalledPackagesByType" returns duplicates.
+        // The issue is in the "getInstalled" method which is called by "getInstalledPackagesByType".
+        // That is why i need to use the "filterDups" boolean.
+        $filterDups = true;
+        foreach($installedModulePackages as $package){
+            
+            $path = Composer\InstalledVersions::getInstallPath($package);
+            if(true === $filterDups && !in_array($path, $installPaths)){
+                
+                $installPaths[] = $path;
+
+            } elseif($filterDups === false){
+
+                $installPaths[] = $path;
+            }
+        }
+
+        return $installPaths;
+
+    }
+
+    public function validateModuleList($pathsToModules){
+
+        $moduleNames = array();
+        foreach($pathsToModules as $path){
+
+            $pathParts = explode("/", $path);
+            $semiFilteredName = $pathParts[count($pathParts) -1];
+            $semiFilteredNameParts = explode("\\", $semiFilteredName);
+            $moduleName = $semiFilteredNameParts[count($semiFilteredNameParts) -1];
+
+            if(in_array($moduleName, $moduleNames)){
+
+                throw new Exception("MODULE_DUPLICATE_ERROR: You have two instances of the $moduleName module installed.");
+            }
+
+            $moduleNames[] = $moduleName;
+        }
+    }
+    
+    public function isInstallDirValid($uri, $installDir){
+
+        return strpos($uri, $installDir) === 0;
+    }
+
+
+    
+    public function calculateScriptUri($uri, $installDir){
+
+        $uriLength = strlen($uri);
+        $installDirLength = strlen($installDir);
+        $offset = $installDirLength - $uriLength;
+
+        return substr($uri, $offset);
+    }
+
+
+
+    public function getScriptUri($uri){
+
+        $installDir = defined("APPSERVER_INSTALL_DIRECTORY") && !empty(APPSERVER_INSTALL_DIRECTORY) ? trim(APPSERVER_INSTALL_DIRECTORY) : null;
+
+        $installDirIsSet = $installDir != null;
+
+        if($installDirIsSet){
+
+            // Making sure that the setting for the constant is valid
+            $installDirIsValid = $this->isInstallDirValid($uri, $installDir);
+            
+            if(!$installDirIsValid){
+                
+                throw new Exception("CONFIGURATION_ERROR: the 'APPSEVER_INSTALL_DIRECTORY' setting is invalid in config.php");
+
+            }
+
+            return $this->calculateScriptUri($uri, $installDir);
+
+        } else {
+
+            return $uri;
+        }
+
+    }
+
 ///////////////////////////   SHOULD WE REMOVE THESES????   //////////////////////////////////////////////////////////////
 
 
@@ -695,3 +635,78 @@ class Application {
         }
     }
 }
+
+
+
+$coreDef = array(
+    "comment"      => "The core module",
+    "connectedApp" => "default",
+    "name"         => "core",
+    "description"  => "holds routes for core functionality",
+    "files"        => array(),
+    "routes"       => array(
+        "file/upload" => array(
+            "callback"      => "upload",
+            "content-type"  => "application/json",
+            "path"          => "upload",
+            "module"        => "core",
+            "method"        => "get"
+        ),
+        "file/download/%filename" => array(
+            "callback"      => "download",
+            "content-type"  => "application/json",
+            "path"          => "download",
+            "module"        => "core",
+            "method"        => "get"
+        ),
+        "file/list" => array(
+            "callback"      => "list",
+            "content-type"  => "application/json",
+            "path"          => "list/files",
+            "module"        => "core",
+            "method"        => "get"
+        ),
+        "oauth/start" => array(
+            "callback"      => "oauthFlowStart",
+            "content-type"  => "application/json",
+            "path"          => "oauth/start",
+            "module"        => "core",
+            "method"        => "get"
+        ),
+        "oauth/api/request" => array(
+            "callback"      => "oauthFlowAccessToken",
+            "content-type"  => "application/json",
+            "path"          => "oauth/api/request",
+            "module"        => "core",
+            "method"        => "get"
+        ),
+        "login"        => array(
+            "callback"      => "login",
+            "content-type"  => "application/json",
+            "path"          => "login",
+            "module"        => "core",
+            "method"        => "get",
+            "access"        => "is_authenticated",
+            "authorization" => "webserver"
+        ),
+        "logout"        => array(
+            "callback"      => "userLogout",
+            "content-type"  => "application/json",
+            "path"          => "logout",
+            "module"        => "core",
+            "method"        => "get"
+        ),
+        "user/profile"        => array(
+            "callback"      => "userProfile",
+            "content-type"  => "text/html",
+            "path"          => "user/profile",
+            "module"        => "core",
+            "method"        => "get"
+        )
+
+
+    ),
+    //If the path is null the module loader will not try to load the file
+    //core module is loaded in autoloader.php
+    "path"     => null
+);
