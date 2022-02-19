@@ -120,6 +120,23 @@ class Theme {
 
 		return implode("\n",array_map("Html\HtmlLink",$active));
 	}
+
+
+	/**
+	 * Helper function to format list of links into HTML <a> elements.
+	 */
+	function pageLinks($links = array() ) {
+
+		// Only include active styles.
+		$fn = function($link) {
+			return $link["active"] !== false;
+		};
+
+		$active = array_filter($links,$fn);
+
+
+		return implode("\n",array_map("Html\HtmlA",$active));
+	}
 }
 
 

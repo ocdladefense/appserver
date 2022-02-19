@@ -22,7 +22,8 @@ function get_theme_path() {
 	return BASE_PATH ."/content/themes/" . strtolower(get_theme());
 }
 
-function load_template($filename){
+function load_template($filename,$params = array()){
+	extract($params);
 	include(get_theme_path().DIRECTORY_SEPARATOR.$filename.".tpl.php"); 
 }
 

@@ -4,7 +4,7 @@
 
 class ModuleLoader {
 
-
+    // The list of Modules installed for this application.
     private $index;
 
 
@@ -45,6 +45,25 @@ class ModuleLoader {
     	}
         
         return $info;
+    }
+
+
+    /**
+     * Return an array of values for the given key
+     * in all loaded module.json files.
+     */
+    public function getKey($key) {
+
+        if(null == $key) throw new Exception("MODULE_PARSE_ERROR: key not specified or null when attempting to retrieve value.");
+        // Build an index for routes.
+        $values = array();
+        foreach($this->index as $def) {
+            if(isset($def[$key])) {
+                $values = array_merge($values,$def[$key]);
+            }
+        }
+
+        return array_filter($values);
     }
     
     

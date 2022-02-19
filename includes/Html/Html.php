@@ -41,6 +41,14 @@ function HtmlScript($script) {
 	return $elem .= implode(" ",$kvp) .">\n</script>";
 }
 
+function HtmlA($link) {
+
+	$kvp = array();
+
+
+	return "<a class='foobar'>Foobar</a>";
+}
+
 
 function attr($prop,$val = null) {
 
