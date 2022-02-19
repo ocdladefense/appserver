@@ -7,15 +7,60 @@
 class MailMessage {
 
 
-	public $body;
+	private $to = "";
 
 
-	public $headers;
+	private $subject = "";
+
+
+	private $body = "";
+
+
+	private $headers = null;
 	
 
-	public function __costruct(){}
 
 
+	public function __construct($to = ""){
+		$this->to = $to;
+	}
+
+
+
+
+
+
+
+
+	public function getTo() {
+		return !empty($this->to) ? $this->to : $this->headers->getValue("To");
+	}
+
+  
+	public function getSubject() {
+		return !empty($this->subject) ? $this->subject : $this->headers->getValue("Subject");
+	}
+
+	public function getHeaders($format = false){
+
+		return $format === true ? implode("\r\n", $this->headers->getList()) : $this->headers->getHeadersAsAssociativeArray();
+	}
+
+	public function getBody($format = false){
+
+		return str_replace("\n", "\r\n", $this->body);
+	}
+
+
+
+
+	public function setTo($to) {
+		$this->to = $to;
+	}
+
+	public function setSubject($subject) {
+		$this->subject = $subject;
+	}
 
 	public function setBody($body){
 
@@ -25,17 +70,5 @@ class MailMessage {
 	public function setHeaders($headers){
 
 		$this->headers = $headers;
-	}
-
-
-	public function getBody($format = false){
-
-		return str_replace("\n", "\r\n", $this->body);
-	}
-
-
-	public function getHeaders($format = false){
-
-		return implode("\r\n", $this->headers->getHeadersAsArray());
 	}
 }

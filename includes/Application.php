@@ -441,7 +441,12 @@ class Application {
 
     public function sendMail($message) {
 
-        $sent = mail(null, null, $message->getBody(), $message->getHeaders());
+        $sent = mail(
+            $message->getTo(),
+            $message->getSubject(),
+            $message->getBody(),
+            $message->getHeaders()
+        );
         
         print $sent ? "Your email was sent" : "Your email was not sent";
     }
