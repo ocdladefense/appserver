@@ -406,7 +406,21 @@ class Application {
         }
     }
     
-    public function send($resp) {
+
+
+
+
+    public function send($message) {
+        if(!is_object($message)) die('Woops');
+
+        $resp = get_class($message) == "MailMessage" ? $this->sendMail($message) : $this->sendHttp($message);
+
+        if(null != $resp) $this->send($resp);
+    }
+
+
+    
+    public function sendHttp($resp) {
 
         $content = $resp->getBody();
 
@@ -434,21 +448,44 @@ class Application {
         }
 
         print $content;
+
+        return null;
     }
+
+
+
+
 
 
 
 
     public function sendMail($message) {
 
+
+		$template = new Template("email");
+		$template->addPath(get_theme_path());
+		$body = $template->render(array(
+            "content" => $message->getBody(),
+            "title" => "OCDLA Criminal Appellate Review"
+        ));
+
         $sent = mail(
             $message->getTo(),
             $message->getSubject(),
-            $message->getBody(),
+            $body,
             $message->getHeaders()
         );
         
-        print $sent ? "Your email was sent" : "Your email was not sent";
+
+        if($sent) {
+            $resp = new HttpResponse("Your email was sent");
+            
+        } else {
+            $resp = new HttpResponse("Your email was not sent");
+            $resp->setStatusCode(500);
+        }
+        
+        return $resp;
     }
 
 
