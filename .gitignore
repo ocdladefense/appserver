@@ -64,10 +64,12 @@ phplog*
 log/*
 
 test.php
-content/themes/highscope
+
+# Ignore some themes: these are now in separate repos.
+/content/themes/default
+/content/themes/highscope
+/content/themes/videos
 
 
 /config/modules/
 
-#ingnore the default theme directory
-/content/themes/default/
