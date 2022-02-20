@@ -490,6 +490,41 @@ class Application {
 
 
 
+    /**
+     * Mock of a route being able to execute a file upload to an SFTP server.
+     * 
+     * For specific instructions see:
+     * https://stackoverflow.com/questions/4689540/how-to-sftp-with-php
+     * 
+     * https://stackoverflow.com/search?q=sftp+php
+     * 
+     * 
+     * Even when using file_get_contents() you still need the ssh2 extension
+     * apt install libssh2-1-dev php-ssh2 
+     */
+    public function sendFtp($message) {
+
+
+        $status = execute_some_ftp_method($message, "PUSH");
+        
+
+                
+        // file_get_contents('ssh2.sftp://user:pass@example.com:22/path/to/filename');
+
+
+        if($status) {
+            $resp = new HttpResponse("Your file was sent.");
+            
+        } else {
+            $resp = new HttpResponse("Your file was not sent.");
+            $resp->setStatusCode(500);
+        }
+        
+        return $resp;
+    }
+
+
+
     
 
     public function getLoader(){
