@@ -57,8 +57,19 @@ function Html($link) {
  * We take the $name of the tag and call the relevant function, 
  *  passing in $data to fill in the element attributes (i.e., key/value pairs.)
  */
-function Element($name, $data) {
+function element($name, $data) {
 
+	switch($name) {
+
+		case "a":
+			return createAElement($data);
+			break;
+	}
+}
+
+function createAElement($props) {
+
+	return sprintf("<a href='%s'>%s</a>", $props["href"], $props["label"]);
 }
 
 

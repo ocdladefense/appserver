@@ -31,4 +31,9 @@ function load_widget($filename){
 	include(get_theme_path().DIRECTORY_SEPARATOR.$filename.".tpl.php"); 
 }
 
+function html($name, $data) {
+
+	return \Html\element($name, $data);
+}
+
 // function add_script($
