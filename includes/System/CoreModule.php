@@ -96,10 +96,16 @@ class CoreModule extends Module {
 		$_COOKIE["PHPSESSID"] = array();
 		$_SESSION = array();
 
+		// We shouldn't redirect back to a page that would require authorization.
+		// In order to do this we would need to compare the current URL to 
+		// all available routes.
+		// @TODO - supply this functionality.
 		if(!USE_SALESFORCE_SLO_LOGOUT_ENDPOINT){
-
-			$redirect = $this->buildRedirect();
-			return redirect($redirect);
+			$currentPage = $_SERVER["HTTP_REFERER"];
+			$examplePage = "https://oclda.app/car/list"; // Shouldn't need to be a full URL.
+			$defaultPage = "/car/list";
+			$redirect = $this->buildRedirect($defaultPage);
+			return redirect($defaultPage);
 		}
 
 		$config = get_oauth_config();
@@ -120,6 +126,23 @@ class CoreModule extends Module {
 
 		return redirect($sloEndpoint);
 	}
+
+
+	public function buildRedirect($ref = null){
+
+		if(empty($ref)) $ref = $_SERVER["HTTP_REFERER"];
+		
+		$redirectParts = explode("/", $ref);
+
+		array_shift($redirectParts); // Remove the protocol
+		array_shift($redirectParts); // Remove empty element
+		array_shift($redirectParts); // Remove domain
+
+		$redirect = "/" . implode("/", $redirectParts);
+
+		return $redirect;
+	}
+
 
 	public function userProfile(){
 
@@ -153,18 +176,5 @@ class CoreModule extends Module {
 		return $form;
 	}
 
-	public function buildRedirect($ref = null){
 
-		if(empty($ref)) $ref = $_SERVER["HTTP_REFERER"];
-
-		$redirectParts = explode("/", $ref);
-
-		array_shift($redirectParts); // Remove the protocol
-		array_shift($redirectParts); // Remove empty element
-		array_shift($redirectParts); // Remove domain
-
-		$redirect = "/" . implode("/", $redirectParts);
-
-		return $redirect;
-	}
 }
