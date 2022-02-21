@@ -244,8 +244,9 @@ class Application {
             
             if(null == $out) throw new Exception("Callback function returned NULL!");
             
-            $handler = Handler::fromType($out, $route);
 
+            $handler = Handler::fromType($out, $route);
+            
             // If the output is being rendered with the theme, add any links specified in the composer.json files of all modules.
             if(get_class($handler) == "HtmlDocumentHandler") {
                 $secondary_links = array();
@@ -253,8 +254,6 @@ class Application {
 
                     if(!empty($moduleDef["links"])) $secondary_links = array_merge($secondary_links, $moduleDef["links"]);
                 }
-
-
 
                 $handler->setLinks($secondary_links); 
             }

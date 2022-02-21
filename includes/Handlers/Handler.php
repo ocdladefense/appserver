@@ -32,7 +32,7 @@ abstract class Handler {
 
 	public static function fromType($output, $route) {
 
-		$mimetype = $route["content-type"];
+		$mimeType = $route["content-type"];
 
 		// For a full HTML page
 		// Render the HTML template and inject content to 
@@ -41,7 +41,6 @@ abstract class Handler {
 		if(is_object($output) && get_class($output) == "MailMessage"){
 
 			$handler = new HtmlEmailHandler($output);
-			
 		}
 
 		else if($mimeType == "application/xml")
@@ -51,36 +50,46 @@ abstract class Handler {
 		}	
 
 
-		else if(is_object($output) && get_class($output) == "Http\HttpResponse") {
+		else if(is_object($output) && get_class($output) == "Http\HttpResponse")
+		{
 
 
 			$handler = new HttpResponseHandler($output, $mimeType);
 		}
-		else if($mimeType == null || $mimeType == Http\MIME_TEXT_HTML) {
+		else if($mimeType == null || $mimeType == Http\MIME_TEXT_HTML)
+		{
 
 			$handler = is_object($output) && get_class($output) == "Exception" ?
 					new HtmlErrorHandler($output, $mimeType) :
 					new HtmlDocumentHandler($output, $mimeType);
 
 		}
-		else if($mimeType == Http\MIME_TEXT_HTML_PARTIAL) {
+		else if($mimeType == Http\MIME_TEXT_HTML_PARTIAL)
+		{
 
 			$handler = new HtmlStringHandler($output, $mimeType);
 
-		} else if( is_object($output) && get_class($output) == "File\File") {
+		}
+		else if( is_object($output) && get_class($output) == "File\File")
+		{
 
 			$handler = new ApplicationFileHandler($output, $mimeType);
 			
-		} else if($mimeType == Http\MIME_APPLICATION_JSON) {
+		} 
+		else if($mimeType == Http\MIME_APPLICATION_JSON)
+		{
 
 			$handler = is_object($output) && (is_subclass_of($output, "Exception") || get_class($output) == "Exception" || get_class($output) == "Error") ?
 				new JsonErrorHandler($output, $mimeType) :
 				new JsonHandler($output, $mimeType);
 	 
-		} else {
+		}
+		else
+		{
 			$handler = new DefaultHandler($output, $mimeType);
 		}
 	
+
 		return $handler;
 	}
 }
