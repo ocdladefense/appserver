@@ -42,47 +42,33 @@ abstract class Handler {
 
 			$handler = new HtmlEmailHandler($output);
 		}
-
 		else if($mimeType == "application/xml")
 		{
 			$handler = new XmlHandler($output, $mimeType);
-			return $handler;
 		}	
-
-
 		else if(is_object($output) && get_class($output) == "Http\HttpResponse")
 		{
-
-
 			$handler = new HttpResponseHandler($output, $mimeType);
 		}
 		else if($mimeType == null || $mimeType == Http\MIME_TEXT_HTML)
 		{
-
 			$handler = is_object($output) && get_class($output) == "Exception" ?
 					new HtmlErrorHandler($output, $mimeType) :
 					new HtmlDocumentHandler($output, $mimeType);
-
 		}
 		else if($mimeType == Http\MIME_TEXT_HTML_PARTIAL)
 		{
-
 			$handler = new HtmlStringHandler($output, $mimeType);
-
 		}
 		else if( is_object($output) && get_class($output) == "File\File")
 		{
-
 			$handler = new ApplicationFileHandler($output, $mimeType);
-			
 		} 
 		else if($mimeType == Http\MIME_APPLICATION_JSON)
 		{
-
 			$handler = is_object($output) && (is_subclass_of($output, "Exception") || get_class($output) == "Exception" || get_class($output) == "Error") ?
 				new JsonErrorHandler($output, $mimeType) :
 				new JsonHandler($output, $mimeType);
-	 
 		}
 		else
 		{
