@@ -41,12 +41,35 @@ function HtmlScript($script) {
 	return $elem .= implode(" ",$kvp) .">\n</script>";
 }
 
-function HtmlA($link) {
+function Html($link) {
 
 	$kvp = array();
 
 
 	return "<a class='foobar'>Foobar</a>";
+}
+
+
+
+/**
+ * Create a function that can render any HTML element.
+ * 
+ * We take the $name of the tag and call the relevant function, 
+ *  passing in $data to fill in the element attributes (i.e., key/value pairs.)
+ */
+function element($name, $data) {
+
+	switch($name) {
+
+		case "a":
+			return createAElement($data);
+			break;
+	}
+}
+
+function createAElement($props) {
+
+	return sprintf("<a href='%s'>%s</a>", $props["href"], $props["label"]);
 }
 
 
