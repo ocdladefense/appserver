@@ -169,6 +169,7 @@ class Application {
             // What if we decide to set authorization at the module level?                                                     
             $flow = isset($module->getInfo()["authorizationFlow"]) ? $module->getInfo()["authorizationFlow"] : "usernamepassword";
 
+            $_SESSION["login_redirect"] = $_SERVER["HTTP_REFERER"];
             //$flow = "usernamepassword";
             $httpMessage = OAuth::start($config, $flow);
 
