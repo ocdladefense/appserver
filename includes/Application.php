@@ -248,12 +248,15 @@ class Application {
 
             // If the output is being rendered with the theme, add any links specified in the composer.json files of all modules.
             if(get_class($handler) == "HtmlDocumentHandler") {
-                $links = array();
+                $secondary_links = array();
                 foreach($this->modules->getArray() as $moduleDef) {
 
-                    if(!empty($moduleDef["links"])) $links = array_merge($links, $moduleDef["links"]);
+                    if(!empty($moduleDef["links"])) $secondary_links = array_merge($secondary_links, $moduleDef["links"]);
                 }
-                $handler->setLinks($links); 
+
+
+
+                $handler->setLinks($secondary_links); 
             }
 
             $resp->setBody($handler->getOutput());

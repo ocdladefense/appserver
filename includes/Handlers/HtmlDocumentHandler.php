@@ -12,7 +12,10 @@ use \Http\HttpHeader as HttpHeader;
  */
 class HtmlDocumentHandler extends Handler {
 
-	private $links;
+	private $secondary_links = array();
+
+
+
 	
 	public function __construct($output, $contentType) {
 
@@ -24,7 +27,7 @@ class HtmlDocumentHandler extends Handler {
 
 	public function setLinks($links) {
 
-		$this->links = $links;
+		$this->secondary_links = $links;
 	}
 
 	
@@ -35,7 +38,11 @@ class HtmlDocumentHandler extends Handler {
 		require(get_theme_path() . "/" . $className . ".php");
 		
 		$theme = new $className();
-		$theme->addLinks($this->links);
+
+
+
+
+		$theme->addLinks($this->secondary_links);
 		
 		$content = Template::isTemplate($this->output) ? $theme->renderTemplate($this->output) : $this->output;
 
