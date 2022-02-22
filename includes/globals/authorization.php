@@ -33,15 +33,7 @@ function refresh_user_pass_access_token(Salesforce\RestApiRequest $req){
 }
 
 
-function is_authenticated($module, $route) {
-	
-	// The connected app setting can also be "default"
-	$connectedAppSetting = $module->getInfo()["connectedApp"];
-	$connectedAppName = get_oauth_config($connectedAppSetting)->getName();
-	$flow = $route["authorization"];
-	
-	return !empty(\Session::get($connectedAppName, $flow, "userId"));
-}
+
 
 function is_user_authorized($module, $route = null){
 
