@@ -161,6 +161,39 @@ class Application {
             }
         }
 
+        
+        // Step 1: Check if either the module or the route requires authorization.
+        // Step 2: Check if the user is already authorized.
+        // Step 3: If the user isn't authorized, run an authorization flow.
+          // Step 3a: Depending on where we are at in the flow, do different things.
+        // Step 4: "This is the route flow no the module flow" - WHAT DOES THIS MEAN?
+        // Step 5: Assume that authorization has completed and now check ACCESS.
+
+        // $isProtected = !empty($route["access"]) && $route["access"] !== true;
+
+        // if(CHECK_ACCESS && $isProtected) {
+
+        //     // If this is true, then we say that the route requires "elevated" privileges.
+        //     // Elevated simply means something other than just being a guest.
+
+        //     // See includes/User.php for the class definition.
+        //     $userHasAccess = user_has_access($module, $route);
+
+        //     if(!is_user_authorized($module, $route)){
+        //         $resp = $this->doAuthorization($module, $route);
+        //         if($resp != null) return $resp;
+        //     }
+
+        //     if(!$userHasAccess) {
+        //         $resp = new HttpResponse();
+        //         $resp->setStatusCode(403);
+        //         $resp->setBody("Access Denied!");
+        //         return $resp;
+        //     }
+
+        //     // Otherwise user has logged in AND they have access so continue processing this request...
+        // }
+
         $module->setRequest($req);
 
 
@@ -220,7 +253,7 @@ class Application {
         if(!user_has_access($module, $route)){
 
             $resp = new HttpResponse();
-            $resp->setStatusCode(401);
+            $resp->setStatusCode(403);
             $resp->setBody("Access Denied!");
             return $resp;
         }
