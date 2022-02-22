@@ -152,6 +152,26 @@ class Application {
         //default to en for testing
         Translate::init ($module->getRelPath(),$module->getLanguages());//path and language filenames
 
+        define("CHECK_ACCESS", true);
+
+        if(CHECK_ACCESS) {
+            $resp = $this->doAuthorization($module,$route);
+            if(null != $resp) {
+                return $resp;
+            }
+        }
+
+        $module->setRequest($req);
+
+
+        return $this->getOutput($module,$route,$params);
+    }
+
+
+
+
+    private function doAuthorization($module,$route) {
+
         // Thrown an exception if authorization is set on the route, but there is no "connectedApp" key set on the module.json file for the module.
         if((isset($route["authorization"]) && !isset($module->getInfo()["connectedApp"])) && get_class($module) != "CoreModule") {
 
@@ -204,19 +224,7 @@ class Application {
             $resp->setBody("Access Denied!");
             return $resp;
         }
-
-        $module->setRequest($req);
-
-
-
-
-        return $this->getOutput($module,$route,$params);
     }
-
-
-
-
-
 
     /**
      * Actually call the route's callback
