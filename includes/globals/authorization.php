@@ -39,9 +39,14 @@ function is_user_authorized($module, $route = null){
 
 	$connectedAppSetting = $module->getInfo()["connectedApp"];
 	$connectedAppName = get_oauth_config($connectedAppSetting)->getName();
-	return $route == null ? is_module_authorized($module) : is_route_authorized($connectedAppName, $route);
 
+	return $route == null ? is_module_authorized($module) : is_route_authorized($connectedAppName, $route);
 }
+
+
+
+
+// Does the user have session data stored for the usernamepassword flow of the connected app?
 function is_module_authorized($module) {
 
 	$moduleName = $module->getCurrentRoute()["module"];
@@ -57,18 +62,25 @@ function is_module_authorized($module) {
 	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
 }
 
+
+
+
 // Determine if the user has already authorized against a oauth flow.
 function is_route_authorized($connectedAppName, $route) {
 
 	// If the route has no authorization flow set, the user is authorized for the route.
 	if(!isset($route["authorization"])) return true;
 	
+
+	// When set, usually set to "webserver".
 	$flow = $route["authorization"];
 
 	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
 }
 
-// Determine if the user has already authorized against a oauth flow.
+
+
+
 
 function module_requires_authorization($module){
 
@@ -76,6 +88,10 @@ function module_requires_authorization($module){
 	return isset($module->getInfo()["connectedApp"]);
 }
 
+
+
+
+// DEPRECATED
 function doSAMLAuthorization(){
 
 	header("Location: /login", true, 302);
