@@ -152,7 +152,7 @@ class Application {
         //default to en for testing
         Translate::init ($module->getRelPath(),$module->getLanguages());//path and language filenames
 
-        define("CHECK_ACCESS", true);
+        define("CHECK_ACCESS", false);
 
         if(CHECK_ACCESS) {
             $resp = $this->doAuthorization($module,$route);
@@ -161,6 +161,32 @@ class Application {
             }
         }
 
+
+        
+
+        $connectedAppName = $module->get("connectedApp");
+        // If the module requires APIs, bootstrap those.
+        // Currently, use the module's "connectedApp" key to determine which API to use.
+        if(null != $connectedAppName && api_is_bootstrapped($connectedAppName)){
+
+
+            //get the connected app config from the module
+            //if there is a default then include it on the module
+            $config = get_oauth_config($connectedAppName);
+
+            // What if we decide to set authorization at the module level?                                                     
+            $flow = "usernamepassword";
+
+            //$_SESSION["login_redirect"] = $_SERVER["HTTP_REFERER"];
+            //$flow = "usernamepassword";
+            $httpMessage = OAuth::start($config, $flow);
+
+            $oauthResp = $httpMessage->authorize();
+
+            if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
+
+            OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
+        }
         
         // Step 1: Check if either the module or the route requires authorization.
         // Step 2: Check if the user is already authorized.
@@ -202,7 +228,7 @@ class Application {
 
 
 
-
+    // Should only be executed if the route needs it.
     private function doAuthorization($module,$route) {
 
         // Thrown an exception if authorization is set on the route, but there is no "connectedApp" key set on the module.json file for the module.
