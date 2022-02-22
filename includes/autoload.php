@@ -7,7 +7,12 @@
 	}
 
 	require_once BASE_PATH.'/includes/user.inc';
-	require_once BASE_PATH.'/includes/globals.php';
+	
+	require_once BASE_PATH.'/includes/globals/globals.php';
+	require_once BASE_PATH.'/includes/globals/access.php';
+	require_once BASE_PATH.'/includes/globals/authorization.php';
+	require_once BASE_PATH.'/includes/globals/user.php';
+
 	require_once BASE_PATH.'/includes/User.php';
 
 
