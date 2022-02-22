@@ -1,30 +1,39 @@
 <?php
 
 use function Session\is_admin;
+use function Session\get_current_user;
 
-function user_has_access($module, $route) {
+
+
+function user_has_access($module, $route, $user = null) {
+	
+
+	$user = $user == null ? get_current_user() : $user;
 
 	$access = $route["access"];
 	$args = $route["access_args"];
-	
+
+	if(!isset($access) || true === $access) return true;
+
 	if($access === false) return false;
 
 	// Define in config/config.php.
-	if(is_admin()) return true;
-	
-	
-	if(!isset($access) ) {
-		return true;
-		
-	} else if( true === $access ) {
+
+	if($user->isAdmin()){
 
 		return true;
-
-	} else if(false === $access) {
+	}
+	else if($user->isGuest()){
 
 		return false;
-		
-	} else if(function_exists($access)) {
+	}
+	else if(is_admin()) {
+
+		return true;
+	}
+	
+	
+	if(function_exists($access)) {
 
 		$args = array($module, $route);
 
