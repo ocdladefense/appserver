@@ -152,8 +152,6 @@ class Application {
         //default to en for testing
         Translate::init ($module->getRelPath(),$module->getLanguages());//path and language filenames
 
-        define("CHECK_ACCESS", false);
-
         if(CHECK_ACCESS) {
             $resp = $this->doAuthorization($module,$route);
             if(null != $resp) {
