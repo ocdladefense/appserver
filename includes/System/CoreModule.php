@@ -55,7 +55,28 @@ class CoreModule extends Module {
 		return $fList;
 	}
 
+	public function pageNotFound() {
 
+		$tpl = new Template("404");
+		$tpl->addPath(__DIR__ . "/core-templates");
+
+		$page = $tpl->render(array());
+
+		$resp->setBody($page);
+		$resp->setStatusCode(404);
+
+		return $resp;
+	}
+
+
+	public function accessDenied() {
+
+		$resp = new HttpResponse();
+		$resp->setStatusCode(403);
+		$resp->setBody("Access Denied! <a href='/login'>Login</a> for more info.");
+
+		return $resp;
+	}
 
 	public function login() {
 

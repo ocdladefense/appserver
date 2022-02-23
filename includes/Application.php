@@ -119,39 +119,42 @@ class Application {
         // Might be altered depending on wheather the appserver is installed in a subdirectory.
         $scriptUri = $this->getScriptUri($uri);
 
-
-        l("Processing {$scriptUri}.");
-    
-        $resp = new HttpResponse();
-
         session_start();
 
+        $loader = $this->getLoader();
+        $router = new Router();
 
-        list($module, $route, $params) = $this->init($scriptUri);
+        // if path is not found match returns false.
+        $path = $router->match($scriptUri, array_keys($this->routes));
+        $params = $path->getParams();
 
-        $userHasAccess = user_has_access($module,$route);
+        
 
-        if(null === $route) {
-
-            $tpl = new Template("404");
-            $tpl->addPath(__DIR__ . "/System/core-templates");
-
-            $page = $tpl->render(array());
-
-            $resp->setBody($page);
-            $resp->setStatusCode(404);
-
-            return $resp;
-        }
-        else if(CHECK_ACCESS === true && !$userHasAccess)
+        if($match !== false) // We found a route :)
         {
-            $resp = new HttpResponse();
-            $resp->setStatusCode(403);
-            $resp->setBody("Access Denied! <a href='/login'>Login</a> for more info.");
-
-            return $resp;
+            $route = $this->routes[$path->__toString()];
+            $moduleName = $route["module"];
+            $module = $loader->loadObject($moduleName);
+        }
+        else // Oops, requestURI doesn't match a route :(
+        {
+            $module = $loader->loadObject("CoreModule");
+            $route = $this->routes["system/404"];
         }
         
+        // ... But access is denied to the route.
+        // Return a 403.
+        // @TODO: setup appropriate response for different handlers?
+        if(CHECK_ACCESS === true && !user_has_access($module,$route))
+        {
+            $module = $loader->loadObject("CoreModule");
+            $route = $this->routes["system/403"];
+        }
+        
+
+        $module->setRequest($req);
+        $module->setCurrentRoute($route);
+        set_active_module($module);
 
 
 
@@ -160,7 +163,7 @@ class Application {
         //check for lang and files and correct name
         //methods are static
         //default to en for testing
-        Translate::init ($module->getRelPath(),$module->getLanguages());//path and language filenames
+        Translate::init($module->getRelPath(),$module->getLanguages());//path and language filenames
 
         
 
@@ -189,85 +192,28 @@ class Application {
         }
         
 
-
-        $module->setRequest($req);
-
-
-        return $this->getOutput($module,$route,$params);
+        return $this->getOutput($module, $route, $params);
     }
 
 
 
-    // Should only be executed if the route needs it.
-    // This function is deprecated and is no longer needed.
-    // @DEPRECATED
-    private function doAuthorization($module,$route) {
-
-        // Thrown an exception if authorization is set on the route, but there is no "connectedApp" key set on the module.json file for the module.
-        if((isset($route["authorization"]) && !isset($module->getInfo()["connectedApp"])) && get_class($module) != "CoreModule") {
-
-            throw new Exception("MODULE_CONFIGURATION_ERROR: No connected app set for the module.  Check the module.json file of the module.");
-        }
-
-        //  This is the module flow not the route flow
-        $connectedAppName = $module->get("connectedApp");
-        //get the connected app config from the module
-        //if there is a default then include it on the module
-        $config = get_oauth_config($connectedAppName);
-
-        if(!is_user_authorized($module)){
-
-            // What if we decide to set authorization at the module level?                                                     
-            $flow = isset($module->getInfo()["authorizationFlow"]) ? $module->getInfo()["authorizationFlow"] : "usernamepassword";
-
-            $_SESSION["login_redirect"] = $_SERVER["HTTP_REFERER"];
-            //$flow = "usernamepassword";
-            $httpMessage = OAuth::start($config, $flow);
-
-            if(self::isHttpResponse($httpMessage)){
-
-                return $httpMessage;
-            } else {
-
-                $oauthResp = $httpMessage->authorize();
-
-                if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
-
-                OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
-            }
-        }
 
 
-        // This is the route flow not the module flow.
-        if(!is_user_authorized($module, $route)){
 
-            $resp = user_require_auth($config->getName(), $route);
 
-            if($resp == null) throw new Exception("AUTHORIZATION_ERROR:");
-
-            return $resp;
-        }
-        
-        if(!user_has_access($module, $route)){
-
-            $resp = new HttpResponse();
-            $resp->setStatusCode(403);
-            $resp->setBody("Access Denied!");
-            return $resp;
-        }
-    }
 
     /**
      * Actually call the route's callback
-     *  Retrieve the output,
-     *  then decide what to do with the output
+     *  Retrieve the output, then decide what to do with the output
      *  depending on the context.
+     * 
+     * @param module The module that is implementing the current route.
+     * @param route The route to be executed.
+     * @param params Any parameters to be passed in via the URL.
      */
-    public function getOutput($module, $route, $params){
+    public function getOutput($module, $route, $params) {
 
         $resp = new HttpResponse();
-
-
 
         try {
 
@@ -303,8 +249,11 @@ class Application {
 
         } catch(Throwable $e) {
 
-            // How does this relate to the content-type?
-            // $route["contentType"]
+            // Unhandled Exceptions/Errors will often be returned as
+            // text (i.e., error message / stack trace) by the PHP runtime or
+            // XDebug.
+            // We should only let these messages propagate up to the main app.php
+            // if the reqested content-type is "text/html."
             if(defined("DEBUG") && DEBUG === true) {
 
                 $handlers = ob_list_handlers();
@@ -350,6 +299,8 @@ class Application {
 
 
 
+
+    
     
 
 
@@ -363,51 +314,7 @@ class Application {
         
 
 
-    // This function returns an array with the module info, the route info, and any params.
-    public function init($uri) {
-        
-        $router = new Router();
 
-        // if path is not found match returns false.
-        $path = $router->match($uri, array_keys($this->routes));
-
-        l("Executing application...");
-        l("Exec located route: {$path}.");
-        l("FINISHED");
-        
-        if(false === $path) {
-            return arry(null, null, null);
-            // throw new PageNotFoundException("PAGE_NOT_FOUND");
-        }
-
-
-        $route = $this->routes[$path->__toString()];
-
-        $params = $path->getParams();
-
-        l("Will execute $path: </p><pre>".print_r($route,true)."</pre>");
-        
-        $moduleName = $route["module"];
-        l("Module is: {$moduleName}.");
-
-        l("Loading Module...");
-        $loader = $this->getLoader();
-
-
-        // Demonstrate that we can instantiate a module
-        //  and begin using it.
-        $module = $loader->loadObject($moduleName);
-
-        $module->setCurrentRoute($route);
-
-        set_active_module($module);
-        
-        $func = $route["callback"];
-
-        l("Executing route...<br />Module: {$moduleName}<br />Callback: {$func}.");
-        
-        return array($module, $route, $params);
-    }
     	
     	
     
@@ -526,6 +433,66 @@ class Application {
     }
 
 
+
+
+// Should only be executed if the route needs it.
+    // This function is deprecated and is no longer needed.
+    // @DEPRECATED
+    private function doAuthorization($module,$route) {
+
+        // Thrown an exception if authorization is set on the route, but there is no "connectedApp" key set on the module.json file for the module.
+        if((isset($route["authorization"]) && !isset($module->getInfo()["connectedApp"])) && get_class($module) != "CoreModule") {
+
+            throw new Exception("MODULE_CONFIGURATION_ERROR: No connected app set for the module.  Check the module.json file of the module.");
+        }
+
+        //  This is the module flow not the route flow
+        $connectedAppName = $module->get("connectedApp");
+        //get the connected app config from the module
+        //if there is a default then include it on the module
+        $config = get_oauth_config($connectedAppName);
+
+        if(!is_user_authorized($module)){
+
+            // What if we decide to set authorization at the module level?                                                     
+            $flow = isset($module->getInfo()["authorizationFlow"]) ? $module->getInfo()["authorizationFlow"] : "usernamepassword";
+
+            $_SESSION["login_redirect"] = $_SERVER["HTTP_REFERER"];
+            //$flow = "usernamepassword";
+            $httpMessage = OAuth::start($config, $flow);
+
+            if(self::isHttpResponse($httpMessage)){
+
+                return $httpMessage;
+            } else {
+
+                $oauthResp = $httpMessage->authorize();
+
+                if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
+
+                OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
+            }
+        }
+
+
+        // This is the route flow not the module flow.
+        if(!is_user_authorized($module, $route)){
+
+            $resp = user_require_auth($config->getName(), $route);
+
+            if($resp == null) throw new Exception("AUTHORIZATION_ERROR:");
+
+            return $resp;
+        }
+        
+        if(!user_has_access($module, $route)){
+
+            $resp = new HttpResponse();
+            $resp->setStatusCode(403);
+            $resp->setBody("Access Denied!");
+            return $resp;
+        }
+    }
 
     
 
@@ -723,6 +690,18 @@ $coreDef = array(
     "description"  => "holds routes for core functionality",
     "files"        => array(),
     "routes"       => array(
+        "system/404" => array(
+            "callback"      => "pageNotFound",
+            "content-type"  => "text/html",
+            "module"        => "core",
+            "method"        => "get"
+        ),
+        "system/403" => array(
+            "callback"      => "accessDenied",
+            "content-type"  => "text/html",
+            "module"        => "core",
+            "method"        => "get"
+        ),
         "file/upload" => array(
             "callback"      => "upload",
             "content-type"  => "application/json",
