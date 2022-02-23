@@ -284,16 +284,16 @@
         },
         {
             "name": "ocdladefense/appserver-theme-default",
-            "version": "v1.5.1",
+            "version": "v1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-theme-default.git",
-                "reference": "d9632da74ba8c8d74f7f43b153d3fc58a4bab374"
+                "reference": "828e7a42740e35d94b62b3da701ee49ab99f2179"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/d9632da74ba8c8d74f7f43b153d3fc58a4bab374",
-                "reference": "d9632da74ba8c8d74f7f43b153d3fc58a4bab374",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/828e7a42740e35d94b62b3da701ee49ab99f2179",
+                "reference": "828e7a42740e35d94b62b3da701ee49ab99f2179",
                 "shasum": ""
             },
             "type": "wordpress-theme",
@@ -310,9 +310,9 @@
             "description": "A default theme for the OCDLA appserver.",
             "support": {
                 "issues": "https://github.com/ocdladefense/appserver-theme-default/issues",
-                "source": "https://github.com/ocdladefense/appserver-theme-default/tree/v1.5.1"
+                "source": "https://github.com/ocdladefense/appserver-theme-default/tree/v1.6"
             },
-            "time": "2022-02-21T18:53:19+00:00"
+            "time": "2022-02-23T01:39:02+00:00"
         },
         {
             "name": "ocdladefense/lib-database",
@@ -384,16 +384,16 @@
         },
         {
             "name": "ocdladefense/lib-http",
-            "version": "v3.2",
+            "version": "v3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/lib-http.git",
-                "reference": "d7f51e7c40300f5d4547fee91712cb6e840f7dd2"
+                "reference": "04d5728389eb550b74f7c19e394e0abd327b2deb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/lib-http/zipball/d7f51e7c40300f5d4547fee91712cb6e840f7dd2",
-                "reference": "d7f51e7c40300f5d4547fee91712cb6e840f7dd2",
+                "url": "https://api.github.com/repos/ocdladefense/lib-http/zipball/04d5728389eb550b74f7c19e394e0abd327b2deb",
+                "reference": "04d5728389eb550b74f7c19e394e0abd327b2deb",
                 "shasum": ""
             },
             "type": "library",
@@ -418,9 +418,9 @@
             "description": "PHP wrapper classes for curl functions.",
             "support": {
                 "issues": "https://github.com/ocdladefense/lib-http/issues",
-                "source": "https://github.com/ocdladefense/lib-http/tree/v3.2"
+                "source": "https://github.com/ocdladefense/lib-http/tree/v3.3"
             },
-            "time": "2022-02-19T01:12:52+00:00"
+            "time": "2022-02-23T01:43:03+00:00"
         },
         {
             "name": "ocdladefense/lib-oauth-config",
