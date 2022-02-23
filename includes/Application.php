@@ -126,13 +126,13 @@ class Application {
 
         session_start();
 
-        try{
 
-            $init = $this->init($scriptUri);
-        
-        } catch(PageNotFoundException $e) {
+        list($module, $route, $params) = $this->init($scriptUri);
 
-            
+        $userHasAccess = user_has_access($module,$route);
+
+        if(null === $route) {
+
             $tpl = new Template("404");
             $tpl->addPath(__DIR__ . "/System/core-templates");
 
@@ -143,34 +143,36 @@ class Application {
 
             return $resp;
         }
+        else if(CHECK_ACCESS === true && !$userHasAccess)
+        {
+            $resp = new HttpResponse();
+            $resp->setStatusCode(403);
+            $resp->setBody("Access Denied! <a href='/login'>Login</a> for more info.");
+
+            return $resp;
+        }
+        
 
 
-        list($module, $route, $params) = $init;
+
+        
         //instanciate a new translation class
         //check for lang and files and correct name
         //methods are static
         //default to en for testing
         Translate::init ($module->getRelPath(),$module->getLanguages());//path and language filenames
 
-        if(CHECK_ACCESS) {
-            $resp = $this->doAuthorization($module,$route);
-            if(null != $resp) {
-                return $resp;
-            }
-        }
-
-
         
 
-        $connectedAppName = $module->get("connectedApp");
+        
+        $value = $module->getInfo()["connectedApp"];
+        $config = get_oauth_config($value);
+        $name = $config->getName();
+
         // If the module requires APIs, bootstrap those.
         // Currently, use the module's "connectedApp" key to determine which API to use.
-        if(null != $connectedAppName && api_is_bootstrapped($connectedAppName)){
+        if(null != $name && !api_is_bootstrapped($name)){
 
-
-            //get the connected app config from the module
-            //if there is a default then include it on the module
-            $config = get_oauth_config($connectedAppName);
 
             // What if we decide to set authorization at the module level?                                                     
             $flow = "usernamepassword";
@@ -186,37 +188,7 @@ class Application {
             OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
         }
         
-        // Step 1: Check if either the module or the route requires authorization.
-        // Step 2: Check if the user is already authorized.
-        // Step 3: If the user isn't authorized, run an authorization flow.
-          // Step 3a: Depending on where we are at in the flow, do different things.
-        // Step 4: "This is the route flow no the module flow" - WHAT DOES THIS MEAN?
-        // Step 5: Assume that authorization has completed and now check ACCESS.
 
-        // $isProtected = !empty($route["access"]) && $route["access"] !== true;
-
-        // if(CHECK_ACCESS && $isProtected) {
-
-        //     // If this is true, then we say that the route requires "elevated" privileges.
-        //     // Elevated simply means something other than just being a guest.
-
-        //     // See includes/User.php for the class definition.
-        //     $userHasAccess = user_has_access($module, $route);
-
-        //     if(!is_user_authorized($module, $route)){
-        //         $resp = $this->doAuthorization($module, $route);
-        //         if($resp != null) return $resp;
-        //     }
-
-        //     if(!$userHasAccess) {
-        //         $resp = new HttpResponse();
-        //         $resp->setStatusCode(403);
-        //         $resp->setBody("Access Denied!");
-        //         return $resp;
-        //     }
-
-        //     // Otherwise user has logged in AND they have access so continue processing this request...
-        // }
 
         $module->setRequest($req);
 
@@ -227,6 +199,8 @@ class Application {
 
 
     // Should only be executed if the route needs it.
+    // This function is deprecated and is no longer needed.
+    // @DEPRECATED
     private function doAuthorization($module,$route) {
 
         // Thrown an exception if authorization is set on the route, but there is no "connectedApp" key set on the module.json file for the module.
@@ -402,8 +376,8 @@ class Application {
         l("FINISHED");
         
         if(false === $path) {
-
-            throw new PageNotFoundException("PAGE_NOT_FOUND");
+            return arry(null, null, null);
+            // throw new PageNotFoundException("PAGE_NOT_FOUND");
         }
 
 
@@ -415,11 +389,6 @@ class Application {
         
         $moduleName = $route["module"];
         l("Module is: {$moduleName}.");
-
-        // Check access here.
-        $access = $route["access"];
-        $access_args = $route["access_args"];
-
 
         l("Loading Module...");
         $loader = $this->getLoader();
@@ -602,13 +571,12 @@ class Application {
 
     public static function isHttpResponse($object){
 
-        return is_object($object) && (get_class($object) === "Http\HttpResponse" || is_subclass_of($object, "Http\HttpResponse", False));
-
+        return is_object($object) && (get_class($object) === "Http\HttpResponse" || is_subclass_of($object, "Http\HttpResponse", false));
     }
 
     public static function isMailMessage($object){
 
-        return is_object($object) && (get_class($object) === "MailMessage" || is_subclass_of($object, "MailMessage", False));
+        return is_object($object) && (get_class($object) === "MailMessage" || is_subclass_of($object, "MailMessage", false));
 
     }
 
@@ -796,7 +764,7 @@ $coreDef = array(
             "path"          => "login",
             "module"        => "core",
             "method"        => "get",
-            "access"        => "is_authenticated",
+            "access"        => true,
             "authorization" => "webserver"
         ),
         "logout"        => array(

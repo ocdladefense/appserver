@@ -6,7 +6,7 @@ function user_require_auth($connectedAppName, $route) {
 
 	if(isset($route["access"]) && $route["access"] != true && $route["access"] != false && !isset($route["authorization"])){
 
-		throw new Exception("ROUTE_AUTHORIZATION_ERROR:You must set an authoriztion key that is set to a flow, when executing a route that has an access modifier.");
+		throw new Exception("ROUTE_AUTHORIZATION_ERROR: You must set an authoriztion key that is set to a flow, when executing a route that has an access modifier.");
 	}
 
 	$authFlow = $route["authorization"];
@@ -16,6 +16,8 @@ function user_require_auth($connectedAppName, $route) {
 	// Start now takes two parameters.
 	return Salesforce\OAuth::start($config, $authFlow);
 }
+
+
 
 function refresh_user_pass_access_token(Salesforce\RestApiRequest $req){
 

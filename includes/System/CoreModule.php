@@ -56,6 +56,49 @@ class CoreModule extends Module {
 	}
 
 
+
+	public function login() {
+
+        //  This is the module flow not the route flow
+        // $connectedAppName = $module->get("connectedApp"); @jbernal
+        
+		//get the connected app config from the module
+        //if there is a default then include it on the module
+        $config = get_oauth_config("default");
+
+		// We should prevent the user from logging in a second time; 
+		// If they are already logged in.
+        // if(!is_user_authorized($module)) {
+
+
+		$flow = "webserver";
+
+		$_SESSION["login_redirect"] = $_SERVER["HTTP_REFERER"];
+		//$flow = "usernamepassword";
+		$httpMessage = OAuth::start($config, $flow);
+
+	
+		if(!\Http\Http::isHttpResponse($httpMessage)) {
+			throw new Exception("MALFORMED_RESPONSE_ERROR: An error occurred when parsing the server's response.");
+		}
+
+		return $httpMessage;
+
+		/*} else {
+
+			$oauthResp = $httpMessage->authorize();
+
+			if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
+
+			OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
+		}
+		*/
+	}
+
+
+
+
+
 	// Get the access token and save it to the session variables.
 	public function oauthFlowAccessToken(){
 
@@ -90,6 +133,7 @@ class CoreModule extends Module {
 	}
 
 
+	
 	// Don't need an actual login function, because the route has specified the webserver flow ????
 	public function userLogout(){
 
@@ -144,37 +188,7 @@ class CoreModule extends Module {
 	}
 
 
-	public function userProfile(){
 
-		$user = Session::getUser();
-
-		if($user != null){
-
-			$name = $user->getName();
-			$userId = $user->getId();
-			$username = $user->getUserName();
-			$userType = $user->isAdmin() ? "Admin" : "Customer";
-			$email = $user->getEmail();
-			$geoZone = $user->getGeoZone();
-			$country = $user->getCountry();
-			$redirect = $this->buildRedirect();
-		}
-
-		$form = "
-		<style>
-		.sidenav{display:none;}
-		</style>
-		<a href='#' onclick='history.back(); return false;'>Go Back</a>
-		<p><strong>ID:</strong>$userId</p><br />
-		<p><strong>Name:</strong>$name</p><br />
-		<p><strong>Username:</strong>$username</p><br />
-		<p><strong>Email:</strong>$email</p><br />
-		<p><strong>Geographical Zone:</strong>$geoZone</p><br />
-		<p><strong>Country:</strong>$country</p><br />
-		<p><strong>User Type:</strong>$userType</p><br />";
-
-		return $form;
-	}
 
 
 }
