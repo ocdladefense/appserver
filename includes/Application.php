@@ -126,30 +126,34 @@ class Application {
 
         // if path is not found match returns false.
         $path = $router->match($scriptUri, array_keys($this->routes));
-        $params = $path->getParams();
-
         
 
-        if($match !== false) // We found a route :)
-        {
-            $route = $this->routes[$path->__toString()];
-            $moduleName = $route["module"];
-            $module = $loader->loadObject($moduleName);
-        }
-        else // Oops, requestURI doesn't match a route :(
-        {
+        if($path == false) { // No matching route was found.
+
             $module = $loader->loadObject("core");
             $route = $this->routes["system/404"];
+
+        } else { // We found a route
+
+            $params = $path->getParams();
+
+            $route = $this->routes[$path->__toString()];
+
+            $moduleName = $route["module"];
+            $module = $loader->loadObject($moduleName);
+
         }
-        
+
+
+
         // ... But access is denied to the route.
         // Return a 403.
         // @TODO: setup appropriate response for different handlers?
-        if(CHECK_ACCESS === true && !user_has_access($module,$route))
-        {
-            $module = $loader->loadObject("core");
-            $route = $this->routes["system/403"];
-        }
+        // if(CHECK_ACCESS === true && !user_has_access($module,$route))
+        // {
+        //     $module = $loader->loadObject("core");
+        //     $route = $this->routes["system/403"];
+        // }
         
 
         $module->setRequest($req);
@@ -190,7 +194,6 @@ class Application {
 
             OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
         }
-        
 
         return $this->getOutput($module, $route, $params);
     }
@@ -211,17 +214,21 @@ class Application {
      * @param route The route to be executed.
      * @param params Any parameters to be passed in via the URL.
      */
-    public function getOutput($module, $route, $params) {
+    public function getOutput($module, $route, $params = array()) {
+
+        $params = $params != null ? $params : array();
 
         $resp = new HttpResponse();
 
+        // REMEMBER! TRY CATCH BLOCKS WON'T DISPLAY WARNINGS.
         try {
 
             if(isset($route["theme"])) {
                 \set_theme("Videos");
             }
-    
-            $out = call_user_func_array(array($module,$route["callback"]),$params);
+
+
+            $out = call_user_func_array(array($module, $route["callback"]), $params);
                 
             if(self::isHttpResponse($out) || self::isMailMessage($out)){
     
@@ -255,13 +262,6 @@ class Application {
             // We should only let these messages propagate up to the main app.php
             // if the reqested content-type is "text/html."
             if(defined("DEBUG") && DEBUG === true) {
-
-                $handlers = ob_list_handlers();
-                while (!empty($handlers)){
-    
-                    ob_end_clean();
-                    $handlers = ob_list_handlers();
-                }
     
                 // Can we use a ternary here?
                 if(get_class($e) == "Error") {
@@ -274,6 +274,14 @@ class Application {
             }
 
             else {
+
+
+                $handlers = ob_list_handlers();
+                while (!empty($handlers)){
+    
+                    ob_end_clean();
+                    $handlers = ob_list_handlers();
+                }
 
                 // Maybe hard code the content type later...as text/html
                 // $contentType = $route["content-type"] == Http\MIME_TEXT_HTML_PARTIAL ? $route["content-type"] : "text/html"; // Used to be "$route["content-type"]"
@@ -297,11 +305,6 @@ class Application {
         return $resp;
     }
 
-
-
-
-    
-    
 
 
     
@@ -359,7 +362,7 @@ class Application {
 
         $resp = get_class($message) == "MailMessage" ? $this->sendMail($message) : $this->sendHttp($message);
 
-        if(null != $resp) $this->send($resp);
+        //if(null != $resp) $this->send($resp);
     }
 
 

@@ -62,6 +62,7 @@ class CoreModule extends Module {
 
 		$page = $tpl->render(array());
 
+		$resp = new HttpResponse();
 		$resp->setBody($page);
 		$resp->setStatusCode(404);
 
