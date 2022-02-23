@@ -152,14 +152,71 @@ class Application {
         //default to en for testing
         Translate::init ($module->getRelPath(),$module->getLanguages());//path and language filenames
 
-        define("CHECK_ACCESS", true);
-
         if(CHECK_ACCESS) {
             $resp = $this->doAuthorization($module,$route);
             if(null != $resp) {
                 return $resp;
             }
         }
+
+
+        
+
+        $connectedAppName = $module->get("connectedApp");
+        // If the module requires APIs, bootstrap those.
+        // Currently, use the module's "connectedApp" key to determine which API to use.
+        if(null != $connectedAppName && api_is_bootstrapped($connectedAppName)){
+
+
+            //get the connected app config from the module
+            //if there is a default then include it on the module
+            $config = get_oauth_config($connectedAppName);
+
+            // What if we decide to set authorization at the module level?                                                     
+            $flow = "usernamepassword";
+
+            //$_SESSION["login_redirect"] = $_SERVER["HTTP_REFERER"];
+            //$flow = "usernamepassword";
+            $httpMessage = OAuth::start($config, $flow);
+
+            $oauthResp = $httpMessage->authorize();
+
+            if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
+
+            OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
+        }
+        
+        // Step 1: Check if either the module or the route requires authorization.
+        // Step 2: Check if the user is already authorized.
+        // Step 3: If the user isn't authorized, run an authorization flow.
+          // Step 3a: Depending on where we are at in the flow, do different things.
+        // Step 4: "This is the route flow no the module flow" - WHAT DOES THIS MEAN?
+        // Step 5: Assume that authorization has completed and now check ACCESS.
+
+        // $isProtected = !empty($route["access"]) && $route["access"] !== true;
+
+        // if(CHECK_ACCESS && $isProtected) {
+
+        //     // If this is true, then we say that the route requires "elevated" privileges.
+        //     // Elevated simply means something other than just being a guest.
+
+        //     // See includes/User.php for the class definition.
+        //     $userHasAccess = user_has_access($module, $route);
+
+        //     if(!is_user_authorized($module, $route)){
+        //         $resp = $this->doAuthorization($module, $route);
+        //         if($resp != null) return $resp;
+        //     }
+
+        //     if(!$userHasAccess) {
+        //         $resp = new HttpResponse();
+        //         $resp->setStatusCode(403);
+        //         $resp->setBody("Access Denied!");
+        //         return $resp;
+        //     }
+
+        //     // Otherwise user has logged in AND they have access so continue processing this request...
+        // }
 
         $module->setRequest($req);
 
@@ -169,7 +226,7 @@ class Application {
 
 
 
-
+    // Should only be executed if the route needs it.
     private function doAuthorization($module,$route) {
 
         // Thrown an exception if authorization is set on the route, but there is no "connectedApp" key set on the module.json file for the module.
@@ -220,7 +277,7 @@ class Application {
         if(!user_has_access($module, $route)){
 
             $resp = new HttpResponse();
-            $resp->setStatusCode(401);
+            $resp->setStatusCode(403);
             $resp->setBody("Access Denied!");
             return $resp;
         }

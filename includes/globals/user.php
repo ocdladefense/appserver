@@ -16,6 +16,6 @@ function get_user_info(){
 
 	$uInfo = $resp->getBody();
 
-	var_dump($uInfo);exit;
+	//var_dump($uInfo);exit;
     return $uInfo;
 }

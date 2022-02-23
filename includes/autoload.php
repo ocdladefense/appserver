@@ -12,6 +12,7 @@
 	require_once BASE_PATH.'/includes/globals/access.php';
 	require_once BASE_PATH.'/includes/globals/authorization.php';
 	require_once BASE_PATH.'/includes/globals/user.php';
+	require_once BASE_PATH.'/includes/globals/api.php';
 
 	require_once BASE_PATH.'/includes/User.php';
 
