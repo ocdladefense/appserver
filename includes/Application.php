@@ -138,7 +138,7 @@ class Application {
         }
         else // Oops, requestURI doesn't match a route :(
         {
-            $module = $loader->loadObject("CoreModule");
+            $module = $loader->loadObject("core");
             $route = $this->routes["system/404"];
         }
         
@@ -147,7 +147,7 @@ class Application {
         // @TODO: setup appropriate response for different handlers?
         if(CHECK_ACCESS === true && !user_has_access($module,$route))
         {
-            $module = $loader->loadObject("CoreModule");
+            $module = $loader->loadObject("core");
             $route = $this->routes["system/403"];
         }
         
