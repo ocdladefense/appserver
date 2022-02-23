@@ -159,16 +159,16 @@
         },
         {
             "name": "ocdladefense/appserver-car",
-            "version": "v3.3",
+            "version": "v3.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-car.git",
-                "reference": "01e34444089ac255db92b223207ca122e5e88939"
+                "reference": "7fb7b1a655c65b51503055c18ed018735a5ad67b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/01e34444089ac255db92b223207ca122e5e88939",
-                "reference": "01e34444089ac255db92b223207ca122e5e88939",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/7fb7b1a655c65b51503055c18ed018735a5ad67b",
+                "reference": "7fb7b1a655c65b51503055c18ed018735a5ad67b",
                 "shasum": ""
             },
             "require": {
@@ -188,9 +188,9 @@
             "description": "A module for viewing and managing case review data.",
             "support": {
                 "issues": "https://github.com/ocdladefense/appserver-car/issues",
-                "source": "https://github.com/ocdladefense/appserver-car/tree/v3.3"
+                "source": "https://github.com/ocdladefense/appserver-car/tree/v3.3.2"
             },
-            "time": "2022-02-19T21:20:51+00:00"
+            "time": "2022-02-21T18:39:46+00:00"
         },
         {
             "name": "ocdladefense/appserver-directory",
@@ -262,12 +262,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-sphinx-search.git",
-                "reference": "6e5fc654792cf93dd6ef629cc333daa48b0b8e88"
+                "reference": "b3ff8692fbbf631afca01d40e6cf6793c8fede8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-sphinx-search/zipball/6e5fc654792cf93dd6ef629cc333daa48b0b8e88",
-                "reference": "6e5fc654792cf93dd6ef629cc333daa48b0b8e88",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-sphinx-search/zipball/b3ff8692fbbf631afca01d40e6cf6793c8fede8f",
+                "reference": "b3ff8692fbbf631afca01d40e6cf6793c8fede8f",
                 "shasum": ""
             },
             "require": {
@@ -280,20 +280,20 @@
                 "issues": "https://github.com/ocdladefense/appserver-sphinx-search/issues",
                 "source": "https://github.com/ocdladefense/appserver-sphinx-search/tree/development"
             },
-            "time": "2022-02-18T19:34:49+00:00"
+            "time": "2022-02-22T19:12:52+00:00"
         },
         {
             "name": "ocdladefense/appserver-theme-default",
-            "version": "v1.3",
+            "version": "v1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-theme-default.git",
-                "reference": "5ae30c7dbff57b5f9cd6989194685d30bc31644d"
+                "reference": "d9632da74ba8c8d74f7f43b153d3fc58a4bab374"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/5ae30c7dbff57b5f9cd6989194685d30bc31644d",
-                "reference": "5ae30c7dbff57b5f9cd6989194685d30bc31644d",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/d9632da74ba8c8d74f7f43b153d3fc58a4bab374",
+                "reference": "d9632da74ba8c8d74f7f43b153d3fc58a4bab374",
                 "shasum": ""
             },
             "type": "wordpress-theme",
@@ -310,9 +310,9 @@
             "description": "A default theme for the OCDLA appserver.",
             "support": {
                 "issues": "https://github.com/ocdladefense/appserver-theme-default/issues",
-                "source": "https://github.com/ocdladefense/appserver-theme-default/tree/v1.3"
+                "source": "https://github.com/ocdladefense/appserver-theme-default/tree/v1.5.1"
             },
-            "time": "2022-02-19T21:16:58+00:00"
+            "time": "2022-02-21T18:53:19+00:00"
         },
         {
             "name": "ocdladefense/lib-database",
@@ -455,16 +455,16 @@
         },
         {
             "name": "ocdladefense/lib-salesforce-rest-api",
-            "version": "v3.6.1",
+            "version": "v3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/lib-salesforce-rest-api.git",
-                "reference": "630c76f78232cc3f2b34599991aefef70dfae113"
+                "reference": "bc7cf2b2ac542826114682baf0f3dd15d00513e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/lib-salesforce-rest-api/zipball/630c76f78232cc3f2b34599991aefef70dfae113",
-                "reference": "630c76f78232cc3f2b34599991aefef70dfae113",
+                "url": "https://api.github.com/repos/ocdladefense/lib-salesforce-rest-api/zipball/bc7cf2b2ac542826114682baf0f3dd15d00513e6",
+                "reference": "bc7cf2b2ac542826114682baf0f3dd15d00513e6",
                 "shasum": ""
             },
             "require": {
@@ -482,9 +482,9 @@
             "description": "OCDLA plugin accesses.",
             "support": {
                 "issues": "https://github.com/ocdladefense/lib-salesforce-rest-api/issues",
-                "source": "https://github.com/ocdladefense/lib-salesforce-rest-api/tree/v3.6.1"
+                "source": "https://github.com/ocdladefense/lib-salesforce-rest-api/tree/v3.7"
             },
-            "time": "2022-02-19T22:21:40+00:00"
+            "time": "2022-02-21T21:47:43+00:00"
         },
         {
             "name": "ocdladefense/lib-sphinx-search",
