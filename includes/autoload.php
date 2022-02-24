@@ -56,7 +56,7 @@
 	}
 	
 
-	$handlers = array("Handler","HtmlEmailHandler","ApplicationFileHandler","HttpResponseHandler","JsonHandler","HtmlDocumentHandler","JsonErrorHandler","HtmlStringHandler","HtmlErrorHandler", "XmlHandler");
+	$handlers = array("Handler","StringHandler","HtmlEmailHandler","ApplicationFileHandler","HttpResponseHandler","JsonHandler","HtmlDocumentHandler","JsonErrorHandler","HtmlStringHandler","HtmlErrorHandler", "XmlHandler");
 
 	
 	foreach($handlers as $file) {

@@ -16,7 +16,7 @@ class Theme {
 
 	protected $styles = array();
 
-	protected $secondary_links = array();
+	protected static $secondary_links = array();
 
 	protected $footerScripts = array();
 	
@@ -43,14 +43,15 @@ class Theme {
 		$this->styles []= $css;
 	}
 
-	public function addLinks(array $links) {
 
-		$this->secondary_links = array_merge($this->secondary_links, $links);
+	public static function addLinks(array $links) {
+
+		self::$secondary_links = array_merge(self::$secondary_links, $links);
 	}
 	
-	public function addLink($link) {
+	public static function addLink($link) {
 
-		$this->secondary_links[] = $link;
+		self::$secondary_links[] = $link;
 	}
 
 	

@@ -10,7 +10,7 @@ use \Http\HttpHeader as HttpHeader;
  *  document itself wouldn't necessarily need any styling information.
  *  And that the theme could "inject" its scripting and styling information?
  */
-class HtmlDocumentHandler extends Handler {
+class StringHandler extends Handler {
 
 	
 	public function __construct($output, $contentType) {
@@ -21,12 +21,14 @@ class HtmlDocumentHandler extends Handler {
 	}
 	
 	
+	
 	// Or text/html;partial
 	public function getOutput($mimeType = "text/html") {
 	
 		$params = explode(";",$mimeType);
 		$type = array_shift($params);
 
+		// Switch statement on $this->accept;
 		return $this->getTextHtml($params);
 	}
 
@@ -45,6 +47,26 @@ class HtmlDocumentHandler extends Handler {
 		// var_dump($this->output, $content);exit;
 		// Loads an HTML page with defined scripts, css.
 		return $theme->render($content);
+	}
+
+
+
+	public function getTextHtmlPartial() {
+
+		return $this->output;
+	}
+
+
+	public function getApplicationJson() {
+
+
+	}
+
+
+
+	public function getApplicationXml() {
+
+
 	}
 	
 

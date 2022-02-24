@@ -111,7 +111,7 @@ class Application {
     
 
 
-
+    // Prepare to return an HTTPResponse object.
     public function runHttp($req) {
 
         $uri = $req->getRequestUri();
@@ -149,11 +149,11 @@ class Application {
         // ... But access is denied to the route.
         // Return a 403.
         // @TODO: setup appropriate response for different handlers?
-        // if(CHECK_ACCESS === true && !user_has_access($module,$route))
-        // {
-        //     $module = $loader->loadObject("core");
-        //     $route = $this->routes["system/403"];
-        // }
+        if(CHECK_ACCESS === true && !user_has_access($module,$route))
+        {
+            $module = $loader->loadObject("core");
+            $route = $this->routes["system/403"];
+        }
         
 
         $module->setRequest($req);
@@ -195,7 +195,9 @@ class Application {
             OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
         }
 
-        return $this->getOutput($module, $route, $params);
+
+
+        return $this->getOutput($req, $module, $route, $params);
     }
 
 
@@ -214,92 +216,92 @@ class Application {
      * @param route The route to be executed.
      * @param params Any parameters to be passed in via the URL.
      */
-    public function getOutput($module, $route, $params = array()) {
+    public function getOutput($req, $module, $route, $params = array()) {
 
         $params = $params != null ? $params : array();
 
         $resp = new HttpResponse();
 
+        // Guess what the Content-Type should be to satisfy the request.
+        // For now, assume a default Accept header (from HttpRequest::newFromEnvironment).
+        // But prefer the actual Accept header as sent from the client.
+        // NOTE: q value should be between 0.1 and 1; but 1 is assumed and can be omitted.
+        $accept = "text/html, text/html;partial;q=0.1, text/plain;q=0.1, application/json, application/xml";
+        
+
+
+        if(isset($route["theme"])) {
+            \set_theme("Videos");
+        }
+
         // REMEMBER! TRY CATCH BLOCKS WON'T DISPLAY WARNINGS.
-        try {
-
-            if(isset($route["theme"])) {
-                \set_theme("Videos");
-            }
-
-
+        try
+        {
             $out = call_user_func_array(array($module, $route["callback"]), $params);
-                
-            if(self::isHttpResponse($out) || self::isMailMessage($out)){
-    
-                return $out;
-            }
+            // if(null == $out) throw new Exception("Callback function returned NULL!");
+        }
+        catch(Throwable $e)
+        {
+            $out = get_class($e) == "Error" ? new Error($e->getMessage(), 0, $e) : new Exception($e->getMessage(), 0, $e);
             
-            if(null == $out) throw new Exception("Callback function returned NULL!");
-            
-
-            $handler = Handler::fromType($out, $route);
-            
-            // If the output is being rendered with the theme, add any links specified in the composer.json files of all modules.
-            if(get_class($handler) == "HtmlDocumentHandler") {
-                $secondary_links = array();
-                foreach($this->modules->getArray() as $moduleDef) {
-
-                    if(!empty($moduleDef["links"])) $secondary_links = array_merge($secondary_links, $moduleDef["links"]);
-                }
-
-                $handler->setLinks($secondary_links); 
-            }
-
-            $resp->setBody($handler->getOutput());
-            $resp->addHeaders($handler->getHeaders());
-
-        } catch(Throwable $e) {
+            $resp->setStatusCode(500);
 
             // Unhandled Exceptions/Errors will often be returned as
             // text (i.e., error message / stack trace) by the PHP runtime or
             // XDebug.
             // We should only let these messages propagate up to the main app.php
             // if the reqested content-type is "text/html."
-            if(defined("DEBUG") && DEBUG === true) {
-    
-                // Can we use a ternary here?
-                if(get_class($e) == "Error") {
-    
-                    throw new Error($e->getMessage(), 0, $e);  // Should figure out an error code.
-                } else {
-    
-                    throw new Exception($e->getMessage(), 0, $e);
-                }
+            if(defined("DEBUG") && DEBUG === true)
+            {
+                throw $out;
             }
-
-            else {
-
-
+            else 
+            {
                 $handlers = ob_list_handlers();
-                while (!empty($handlers)){
-    
+                while(!empty($handlers)) {
                     ob_end_clean();
                     $handlers = ob_list_handlers();
                 }
-
-                // Maybe hard code the content type later...as text/html
-                // $contentType = $route["content-type"] == Http\MIME_TEXT_HTML_PARTIAL ? $route["content-type"] : "text/html"; // Used to be "$route["content-type"]"
-                
-                // Here we're passing in a string (getMessage) but we could pass in the entire Exception $e.
-                $handler = Handler::fromType($e->getMessage(), $route["contentType"]);
-                // $handler = Handler::fromType($e, $route["content-type"]);
-
-                $resp->setBody($handler->getOutput());
-                $resp->addHeaders($handler->getHeaders());
-                $resp->setStatusCode(500);
-
-                // Remove the PHP error stack if we don't wish to deliver
-                // verbose debugging info.
-                // Assuming the handler supports ->removeStack();
-                $handler->removeStack();
             }
+        } // end catch.
+
+
+
+        // Content-Negotiation.
+        $handler = Handler::getRegisteredHandler($req, $route, $out);
+        $handler->setAccept($accept);
+
+        
+        $fn = function() {
+            $links = array();
+            foreach($this->modules->getArray() as $moduleDef) {
+                if(!empty($moduleDef["links"])) $links = array_merge($links, $moduleDef["links"]);
+            }
+            return $links;
+        };
+        Theme::addLinks($fn());
+
+
+        if(self::isHttpResponse($out) || self::isMailMessage($out)) {
+
+            return $out;
         }
+
+
+
+        // Set headers on the HTTP Response.
+        $resp->addHeaders($handler->getHeaders());
+
+
+        // Set the body of the HTTP Response that will be returned to the client.
+        $resp->setBody($handler->getOutput());
+        
+        
+
+        // Remove the PHP error stack if we don't wish to deliver
+        // verbose debugging info.
+        // Assuming the handler supports ->removeStack();
+        // $handler->removeStack();
 
 
         return $resp;
@@ -362,7 +364,7 @@ class Application {
 
         $resp = get_class($message) == "MailMessage" ? $this->sendMail($message) : $this->sendHttp($message);
 
-        //if(null != $resp) $this->send($resp);
+        if(null != $resp) $this->send($resp);
     }
 
 

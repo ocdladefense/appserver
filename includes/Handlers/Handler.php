@@ -10,6 +10,13 @@ abstract class Handler {
 	protected $mimeType;
 	
 	
+
+	private $accept;
+
+
+	private $contentType;
+
+
 	/**
 	 * @method getOutput
 	 *
@@ -30,13 +37,83 @@ abstract class Handler {
 	protected abstract function getHeaders();
 
 
-	public static function fromType($output, $route) {
+	public function setAccept($accept) {
+
+		$this->accept = $accept;
+	}
+
+	public function setContentType($type) {
+
+		$this->contentType = $type;
+	}
+
+	public function getAccept() {
+
+		return $this->accept;
+	}
+	public function getContentType() {
+
+		return $this->contentType;
+	}
+	/*
+	"boolean"
+	"integer"
+	"double" (for historical reasons "double" is returned in case of a float, and not simply "float")
+	"string"
+	"array"
+	"object"
+	"resource"
+	"resource (closed)" as of PHP 7.2.0
+	"NULL"
+	"unknown type"
+	*/
+	// See also, https://www.php.net/manual/en/function.gettype.php
+	public static function getRegisteredHandler(\Http\HttpRequest $req, $route, $output) {
+
+
+		$handlers = array(
+			"MailMessage" => "HtmlEmailHandler",
+			"Http\HttpResponse" => "HttpResponseHandler",
+			"HtmlDocumentHandler" => "HtmlDocumentHandler",
+			"Exception" => "HtmlErrorHandler",
+			"File\File" => "ApplicationFileHandler",
+			"String" => "StringHandler"
+		);
+
+		$type = gettype($output);
+		$class = "object" === $type ? get_class($output) : ucfirst($type); // title case to find the appropriate handler.
+
+		// Use a combination of accept and the route's content-type to
+		// determine the most appropriate 
+		$accept = $req->getHeader("Accept");
+		$contentType = $route["content-type"];
+
+
+		// $handler = self::fromType($req, $route, $output); // old call
+		// new call
+		$mimeType = $route["content-type"];
+		$name = $handlers["String"];
+		$handler = new $name($output, $mimeType);
+		$handler->setAccept($accept);
+		$handler->setContentType($contentType);
+
+
+		return $handler;
+	}
+
+
+
+	/**
+	 * HTTP Content Negotiation.
+	 * 
+	 * For requests with multiple Accept: values, the Route has the ultimate say in
+	 * the resource representation.  But we also consult the Accept: header to see if we can 
+	 * return the client's preferred representation.
+	 */
+	public static function fromType(\Http\HttpRequest $req, $route, $output) {
 
 		$mimeType = $route["content-type"];
 
-		// For a full HTML page
-		// Render the HTML template and inject content to 
-		//  be the body of the page.
 
 		if(is_object($output) && get_class($output) == "MailMessage"){
 
@@ -79,3 +156,6 @@ abstract class Handler {
 		return $handler;
 	}
 }
+
+
+
