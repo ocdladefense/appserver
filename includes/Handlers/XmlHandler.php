@@ -22,7 +22,7 @@ class XmlHandler extends Handler {
 	
 
 	
-	public function getOutput() {
+	public function getOutput($type = "application/xml") {
 	
 			return $this->output;
 	}

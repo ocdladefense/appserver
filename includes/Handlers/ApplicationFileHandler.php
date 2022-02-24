@@ -22,7 +22,7 @@ class ApplicationFileHandler extends Handler {
 	
 
 	
-	public function getOutput() {
+	public function getOutput($contentType = "text/html") {
 
 		return $this->output;
 	}

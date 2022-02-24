@@ -15,7 +15,7 @@ class JsonErrorHandler extends Handler {
 	}
 	
 	
-	public function getOutput() {
+	public function getOutput($contentType = "application/json") {
 			// Loads an HTML page with defined scripts, css.
 			return json_encode(array(
 				

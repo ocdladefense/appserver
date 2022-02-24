@@ -6,7 +6,18 @@ abstract class Handler {
 	protected $output;
 	
 	
+	protected static $handlers = array(
+		"MailMessage" => "HtmlEmailHandler",
+		"Http\HttpResponse" => "HttpResponseHandler",
+		"HtmlDocumentHandler" => "HtmlDocumentHandler",
+		"Exception" => "HtmlErrorHandler",
+		"File\File" => "ApplicationFileHandler",
+		"String" => "StringHandler"
+	);
+
+	protected $contentTypes = array();
 	
+
 	protected $mimeType;
 	
 	
@@ -17,6 +28,7 @@ abstract class Handler {
 	private $contentType;
 
 
+	
 	/**
 	 * @method getOutput
 	 *
@@ -24,7 +36,7 @@ abstract class Handler {
 	 *   Format the output consistent with the specified handler
 	 *    instance.  Typically this will be a string data type.
 	 */
-	protected abstract function getOutput();
+	// protected abstract function getOutput();
 	
 	
 	/**
@@ -55,6 +67,18 @@ abstract class Handler {
 
 		return $this->contentType;
 	}
+
+
+	public function getRepresentations(){
+
+		return $this->contentTypes;
+	}
+
+	public static function getBestRepresentation($qValues, $contentTypes) {
+
+
+		return "text/html";
+	}
 	/*
 	"boolean"
 	"integer"
@@ -70,38 +94,25 @@ abstract class Handler {
 	// See also, https://www.php.net/manual/en/function.gettype.php
 	public static function getRegisteredHandler(\Http\HttpRequest $req, $route, $output) {
 
-
-		$handlers = array(
-			"MailMessage" => "HtmlEmailHandler",
-			"Http\HttpResponse" => "HttpResponseHandler",
-			"HtmlDocumentHandler" => "HtmlDocumentHandler",
-			"Exception" => "HtmlErrorHandler",
-			"File\File" => "ApplicationFileHandler",
-			"String" => "StringHandler"
-		);
-
 		$type = gettype($output);
-		$class = "object" === $type ? get_class($output) : ucfirst($type); // title case to find the appropriate handler.
+		$name = "object" === $type ? get_class($output) : ucfirst($type); // title case to find the appropriate handler.
 
-		// Use a combination of accept and the route's content-type to
-		// determine the most appropriate 
-		$accept = $req->getHeader("Accept");
-		$contentType = $route["content-type"];
-
-
-		// $handler = self::fromType($req, $route, $output); // old call
-		// new call
 		$mimeType = $route["content-type"];
-		$name = $handlers["String"];
-		$handler = new $name($output, $mimeType);
-		$handler->setAccept($accept);
-		$handler->setContentType($contentType);
-
+		$class = self::$handlers[$name];
+		$handler = new $class($output,$mimeType);
 
 		return $handler;
 	}
 
 
+	public function getOutput($contentType = "text/html") {
+		$type = ucfirst(str_replace(array("/","+","/"),"",$contentType));
+		$method = "get{$type}";
+
+		return $this->{$method}();
+	}
+
+	
 
 	/**
 	 * HTTP Content Negotiation.
