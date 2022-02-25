@@ -304,7 +304,7 @@ class Application {
         // $contentTypes = $handler->getRepresentations();
         // var_dump($contentTypes);
         // $handler->getPreferredRepresenation();
-        $available = Handler::getAvailableRepresentationMimeTypes($accept->getByWeight(), $handler->getRepresentations());
+        $available = Handler::getAcceptableRepresentationMimeTypes($accept->getByWeight(), $handler->getRepresentations());
         $contentType = $available[0];
         // var_dump($available);
 

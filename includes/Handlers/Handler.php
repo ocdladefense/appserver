@@ -77,13 +77,13 @@ abstract class Handler {
 		return $this->contentTypes;
 	}
 
-	public static function getAvailableRepresentationMimeTypes($ranges, $contentTypes) {
+	public static function getAcceptableRepresentationMimeTypes($ranges, $contentTypes) {
 
 		// var_dump($ranges);
 		// var_dump($contentTypes);
 		// Array of content-types that can satisfy the 
 		// given qValues; 
-		$includesMime = function($mime) use(&$available, $ranges) {
+		$includesMime = function($mime) use($ranges) {
 			foreach($ranges as $media) {
 
 				$range = new MediaRange($media);
