@@ -2,6 +2,7 @@
 
 
 use Http\MediaRange;
+use Http\MimeType;
 
 abstract class Handler {
 
@@ -79,25 +80,61 @@ abstract class Handler {
 
 	public static function getAcceptableRepresentationMimeTypes($ranges, $contentTypes) {
 
-		// var_dump($ranges);
-		// var_dump($contentTypes);
-		// Array of content-types that can satisfy the 
-		// given qValues; 
 		$includesMime = function($mime) use($ranges) {
-			foreach($ranges as $media) {
 
-				$range = new MediaRange($media);
-				$mime = new MediaRange($mime);
+			foreach($ranges as $range => $quality) {
 
-				if($range->includes($mime)) {
+				$r = new MediaRange($range);
+				$m = new MimeType($mime);
+
+				if($r->includes($m)) {
 					return true;
 				}
 			}
 			return false;
 		};
 
-		return array_filter($contentTypes, $includesMime); //array("text/html");
+		return array_filter($contentTypes, $includesMime);
 	}
+
+
+	public static function getPreferredRepresentationMimeType($ranges, $contentTypes) {
+
+		$preferred = self::getPreferredRepresentationMimeTypes($ranges, $contentTypes);
+
+		return !empty($preferred) ? $preferred[0] : null;
+	}
+
+	public static function getPreferredRepresentationMimeTypes($ranges, $contentTypes) {
+
+		$accepted = self::getAcceptableRepresentationMimeTypes($ranges, $contentTypes);
+
+		$ordered = [];
+
+		foreach($ranges as $range => $quality) {
+
+			$r = new MediaRange($range);
+
+			foreach($accepted as $type) {
+
+				$t = new MimeType($type);
+
+				if($r->includes($t)) {
+
+					$ordered[] = $type;
+
+					if(($key = array_search($type, $accepted)) !== false) {
+						unset($accepted[$key]);
+					}
+				}
+			}
+		}
+
+		return $ordered;
+	}
+
+
+
 
 	public static function isCompatible($mediaRange, $contentType) {
 		// $accept = new MediaRange($range);
@@ -140,7 +177,11 @@ abstract class Handler {
 	public function getOutput($contentType = "text/html") {
 
 		$method = $this->getOutputMethodName($contentType);
-		
+
+		// If the content type uses an "*" to indicate any subtype replace it with the word "Any"
+		// You cant name a function using "*".  (ex: function text*())
+		if(strpos($method, "*") !== false) $method = str_replace("*", "Any", $method);
+
 		return $this->{$method}();
 	}
 

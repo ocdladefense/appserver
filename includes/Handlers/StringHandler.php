@@ -25,7 +25,11 @@ class StringHandler extends Handler {
 		$this->contentType = $contentType;
 	}
 	
-	
+
+	public function getTextAny() {
+
+		return $this->getTextHtml();
+	}
 
 
 	public function getTextHtml() {
@@ -37,7 +41,7 @@ class StringHandler extends Handler {
 		
 		$theme = new $className();
 		
-		$content = Template::isTemplate($this->output) ? $theme->renderTemplate($this->output) : $this->output;
+		$content = Template::isTemplate($this->output) ? $theme->renderTemplate($this->output) : $this->output;;
 
 		// var_dump($this->output, $content);exit;
 		// Loads an HTML page with defined scripts, css.
@@ -64,6 +68,11 @@ class StringHandler extends Handler {
 
 	}
 	
+
+	public function getTextHtmlPartialHeaders(){
+
+		return new HttpHeader("Content-Type", "text/html");
+	}
 
 	public function getHeaders() {
 
