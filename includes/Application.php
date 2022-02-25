@@ -242,9 +242,7 @@ class Application {
         // first parameter, and the possible representations as the second parameter
         // and finds the most "preferred" contentType.
 
-        if(isset($route["theme"])) {
-            \set_theme("Videos");
-        }
+
 
         // REMEMBER! TRY CATCH BLOCKS WON'T DISPLAY WARNINGS.
         try
@@ -285,6 +283,10 @@ class Application {
 
 
 
+        if(isset($route["theme"])) {
+            \set_theme("Videos");
+        }
+
 
         $fn = function() {
             $links = array();
@@ -299,22 +301,28 @@ class Application {
         // var_dump($accept->parse());
         // var_dump($accept->getByWeight());
 
-        $contentTypes = $handler->getRepresentations();
+        // $contentTypes = $handler->getRepresentations();
         // var_dump($contentTypes);
         // $handler->getPreferredRepresenation();
-        $prefer = Handler::getBestRepresentation($accept->getByWeight(), $handler->getRepresentations());
-        var_dump($prefer);
+        $available = Handler::getAvailableRepresentationMimeTypes($accept->getByWeight(), $handler->getRepresentations());
+        $contentType = $available[0];
+        // var_dump($available);
 
 
+        // $method = $handler->getOutputMethodName($available[0]);
+        // var_dump($method);
+        // exit;
         
         // Resolve the Content-Type header against
-        // the Accept header
-        if(false && !$req->isSatisfiedBy($contentTypes)) {
+        // the Accept header.  We talk about this 
+        // as "could the available content-types satisfy the request?"
+        if(false && !$req->canBeSatisfiedBy($available)) {
             $resp->setStatusCode(406, "Not Acceptable");
             return $resp;
         };
 
 
+        // If the content-type is set then we make sure it can satisfy
         if(self::isHttpResponse($out) || self::isMailMessage($out)) {
 
             return $out;
@@ -325,10 +333,10 @@ class Application {
 
         // Set headers on the HTTP Response.
         $resp->addHeaders($handler->getHeaders());
-
+        $resp->addHeader(new HttpHeader("Content-Type",$contentType));
 
         // Set the body of the HTTP Response that will be returned to the client.
-        $resp->setBody($handler->getOutput($prefer));
+        $resp->setBody($handler->getOutput($contentType));
         
         
 

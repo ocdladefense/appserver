@@ -1,5 +1,8 @@
 <?php
 
+
+use Http\MediaRange;
+
 abstract class Handler {
 
 
@@ -74,11 +77,32 @@ abstract class Handler {
 		return $this->contentTypes;
 	}
 
-	public static function getBestRepresentation($qValues, $contentTypes) {
+	public static function getAvailableRepresentationMimeTypes($ranges, $contentTypes) {
 
+		// var_dump($ranges);
+		// var_dump($contentTypes);
+		// Array of content-types that can satisfy the 
+		// given qValues; 
+		$includesMime = function($mime) use(&$available, $ranges) {
+			foreach($ranges as $media) {
 
-		return "text/html";
+				$range = new MediaRange($media);
+				$mime = new MediaRange($mime);
+
+				if($range->includes($mime)) {
+					return true;
+				}
+			}
+			return false;
+		};
+
+		return array_filter($contentTypes, $includesMime); //array("text/html");
 	}
+
+	public static function isCompatible($mediaRange, $contentType) {
+		// $accept = new MediaRange($range);
+		// $content = new MediaRange
+	} 
 	/*
 	"boolean"
 	"integer"
@@ -104,11 +128,19 @@ abstract class Handler {
 		return $handler;
 	}
 
+	public function getOutputMethodName($contentType = "text/html") {
+		$tmp = preg_split("/\/|\+/",$contentType);
+		$parts = array_map(function($part) { return ucfirst($part);}, $tmp);
+		$name = implode("",$parts);
+		$method = "get{$name}";
+
+		return $method;
+	}
 
 	public function getOutput($contentType = "text/html") {
-		$type = ucfirst(str_replace(array("/","+","/"),"",$contentType));
-		$method = "get{$type}";
 
+		$method = $this->getOutputMethodName($contentType);
+		
 		return $this->{$method}();
 	}
 
@@ -120,7 +152,7 @@ abstract class Handler {
 	 * For requests with multiple Accept: values, the Route has the ultimate say in
 	 * the resource representation.  But we also consult the Accept: header to see if we can 
 	 * return the client's preferred representation.
-	 */
+	 
 	public static function fromType(\Http\HttpRequest $req, $route, $output) {
 
 		$mimeType = $route["content-type"];
@@ -166,6 +198,7 @@ abstract class Handler {
 
 		return $handler;
 	}
+	*/
 }
 
 

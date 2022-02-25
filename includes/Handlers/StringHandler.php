@@ -14,7 +14,7 @@ class StringHandler extends Handler {
 
 
 	protected $contentTypes = array(
-		"text/plain", "text/html", "application/json", "text/html+partial"
+		"text/html", "application/json", "text/html+partial","text/plain"
 	);
 
 	
@@ -28,7 +28,7 @@ class StringHandler extends Handler {
 	
 
 
-	public function getTexthtml() {
+	public function getTextHtml() {
 
 
 		// Init the theme, first.
