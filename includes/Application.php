@@ -2,6 +2,7 @@
 
 use \Http as Http;
 use \Http\HttpHeader as HttpHeader; 
+use \Http\AcceptHeader as AcceptHeader; 
 use \Http\HttpResponse as HttpResponse;
 use \Http\HttpRequest as HttpRequest;
 use Salesforce\OAuth;
@@ -222,17 +223,26 @@ class Application {
 
         $resp = new HttpResponse();
 
+        $accept = $req->getHeader("Accept");
         // Guess what the Content-Type should be to satisfy the request.
         // For now, assume a default Accept header (from HttpRequest::newFromEnvironment).
         // But prefer the actual Accept header as sent from the client.
         // NOTE: q value should be between 0.1 and 1; but 1 is assumed and can be omitted.
-        $accept = "text/html, text/html;partial;q=0.1, text/plain;q=0.1, application/json, application/xml";
+        $accept = new AcceptHeader("text/*,application/json;q=0.9,text/html+partial;q=0.1, text/plain;q=0.1, application/xml");
+
+        // Can you provide me with the resource in my preferred representation?
+            // Problem: I can express my preferred representation as a media "range"
+              // --> for example, "text/*" text/plain? NO; text/html  No IF/SWITCH will help you get to the solution.
+            // Problem 2: The server should still be able to return a representation that I don't prefer, BUT I CAN STILL ACCEPT.
+
         
 
 
-        if(isset($route["theme"])) {
-            \set_theme("Videos");
-        }
+        // Now Run an algo that takes in the weighted accepts as the
+        // first parameter, and the possible representations as the second parameter
+        // and finds the most "preferred" contentType.
+
+
 
         // REMEMBER! TRY CATCH BLOCKS WON'T DISPLAY WARNINGS.
         try
@@ -269,9 +279,15 @@ class Application {
 
         // Content-Negotiation.
         $handler = Handler::getRegisteredHandler($req, $route, $out);
-        $handler->setAccept($accept);
 
-        
+
+
+
+        if(isset($route["theme"])) {
+            \set_theme("Videos");
+        }
+
+
         $fn = function() {
             $links = array();
             foreach($this->modules->getArray() as $moduleDef) {
@@ -282,19 +298,45 @@ class Application {
         Theme::addLinks($fn());
 
 
+        // var_dump($accept->parse());
+        // var_dump($accept->getByWeight());
+
+        // $contentTypes = $handler->getRepresentations();
+        // var_dump($contentTypes);
+        // $handler->getPreferredRepresenation();
+        $available = Handler::getAvailableRepresentationMimeTypes($accept->getByWeight(), $handler->getRepresentations());
+        $contentType = $available[0];
+        // var_dump($available);
+
+
+        // $method = $handler->getOutputMethodName($available[0]);
+        // var_dump($method);
+        // exit;
+        
+        // Resolve the Content-Type header against
+        // the Accept header.  We talk about this 
+        // as "could the available content-types satisfy the request?"
+        if(false && !$req->canBeSatisfiedBy($available)) {
+            $resp->setStatusCode(406, "Not Acceptable");
+            return $resp;
+        };
+
+
+        // If the content-type is set then we make sure it can satisfy
         if(self::isHttpResponse($out) || self::isMailMessage($out)) {
 
             return $out;
         }
 
 
+        
 
         // Set headers on the HTTP Response.
         $resp->addHeaders($handler->getHeaders());
-
+        $resp->addHeader(new HttpHeader("Content-Type",$contentType));
 
         // Set the body of the HTTP Response that will be returned to the client.
-        $resp->setBody($handler->getOutput());
+        $resp->setBody($handler->getOutput($contentType));
         
         
 

@@ -11,7 +11,7 @@ class JsonHandler extends Handler {
 	}
 	
 	
-	public function getOutput() {
+	public function getOutput($contentType = "application/json") {
 			if(gettype($this->output) == "object" && in_array( "Http\IJson",class_implements($this->output))){
 					return json_encode($this->output->toJson());
 			} else {

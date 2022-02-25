@@ -21,17 +21,18 @@ class HtmlDocumentHandler extends Handler {
 	}
 	
 	
-	// Or text/html;partial
-	public function getOutput($mimeType = "text/html") {
+	// Or text/html;partial	
+	/*public function getOutput($mimeType = "text/html") {
 	
 		$params = explode(";",$mimeType);
 		$type = array_shift($params);
 
 		return $this->getTextHtml($params);
 	}
+	*/
 
 
-	public function getTextHtml($params = array()) {
+	public function getTexthtml($params = array()) {
 
 
 		// Init the theme, first.

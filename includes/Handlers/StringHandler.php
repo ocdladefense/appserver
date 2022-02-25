@@ -12,6 +12,11 @@ use \Http\HttpHeader as HttpHeader;
  */
 class StringHandler extends Handler {
 
+
+	protected $contentTypes = array(
+		"text/html", "application/json", "text/html+partial","text/plain"
+	);
+
 	
 	public function __construct($output, $contentType) {
 
@@ -21,19 +26,9 @@ class StringHandler extends Handler {
 	}
 	
 	
-	
-	// Or text/html;partial
-	public function getOutput($mimeType = "text/html") {
-	
-		$params = explode(";",$mimeType);
-		$type = array_shift($params);
-
-		// Switch statement on $this->accept;
-		return $this->getTextHtml($params);
-	}
 
 
-	public function getTextHtml($params = array()) {
+	public function getTextHtml() {
 
 
 		// Init the theme, first.

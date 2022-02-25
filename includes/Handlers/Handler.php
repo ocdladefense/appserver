@@ -1,12 +1,26 @@
 <?php
 
+
+use Http\MediaRange;
+
 abstract class Handler {
 
 
 	protected $output;
 	
 	
+	protected static $handlers = array(
+		"MailMessage" => "HtmlEmailHandler",
+		"Http\HttpResponse" => "HttpResponseHandler",
+		"HtmlDocumentHandler" => "HtmlDocumentHandler",
+		"Exception" => "HtmlErrorHandler",
+		"File\File" => "ApplicationFileHandler",
+		"String" => "StringHandler"
+	);
+
+	protected $contentTypes = array();
 	
+
 	protected $mimeType;
 	
 	
@@ -17,6 +31,7 @@ abstract class Handler {
 	private $contentType;
 
 
+	
 	/**
 	 * @method getOutput
 	 *
@@ -24,7 +39,7 @@ abstract class Handler {
 	 *   Format the output consistent with the specified handler
 	 *    instance.  Typically this will be a string data type.
 	 */
-	protected abstract function getOutput();
+	// protected abstract function getOutput();
 	
 	
 	/**
@@ -55,6 +70,39 @@ abstract class Handler {
 
 		return $this->contentType;
 	}
+
+
+	public function getRepresentations(){
+
+		return $this->contentTypes;
+	}
+
+	public static function getAvailableRepresentationMimeTypes($ranges, $contentTypes) {
+
+		// var_dump($ranges);
+		// var_dump($contentTypes);
+		// Array of content-types that can satisfy the 
+		// given qValues; 
+		$includesMime = function($mime) use(&$available, $ranges) {
+			foreach($ranges as $media) {
+
+				$range = new MediaRange($media);
+				$mime = new MediaRange($mime);
+
+				if($range->includes($mime)) {
+					return true;
+				}
+			}
+			return false;
+		};
+
+		return array_filter($contentTypes, $includesMime); //array("text/html");
+	}
+
+	public static function isCompatible($mediaRange, $contentType) {
+		// $accept = new MediaRange($range);
+		// $content = new MediaRange
+	} 
 	/*
 	"boolean"
 	"integer"
@@ -70,38 +118,33 @@ abstract class Handler {
 	// See also, https://www.php.net/manual/en/function.gettype.php
 	public static function getRegisteredHandler(\Http\HttpRequest $req, $route, $output) {
 
-
-		$handlers = array(
-			"MailMessage" => "HtmlEmailHandler",
-			"Http\HttpResponse" => "HttpResponseHandler",
-			"HtmlDocumentHandler" => "HtmlDocumentHandler",
-			"Exception" => "HtmlErrorHandler",
-			"File\File" => "ApplicationFileHandler",
-			"String" => "StringHandler"
-		);
-
 		$type = gettype($output);
-		$class = "object" === $type ? get_class($output) : ucfirst($type); // title case to find the appropriate handler.
+		$name = "object" === $type ? get_class($output) : ucfirst($type); // title case to find the appropriate handler.
 
-		// Use a combination of accept and the route's content-type to
-		// determine the most appropriate 
-		$accept = $req->getHeader("Accept");
-		$contentType = $route["content-type"];
-
-
-		// $handler = self::fromType($req, $route, $output); // old call
-		// new call
 		$mimeType = $route["content-type"];
-		$name = $handlers["String"];
-		$handler = new $name($output, $mimeType);
-		$handler->setAccept($accept);
-		$handler->setContentType($contentType);
-
+		$class = self::$handlers[$name];
+		$handler = new $class($output,$mimeType);
 
 		return $handler;
 	}
 
+	public function getOutputMethodName($contentType = "text/html") {
+		$tmp = preg_split("/\/|\+/",$contentType);
+		$parts = array_map(function($part) { return ucfirst($part);}, $tmp);
+		$name = implode("",$parts);
+		$method = "get{$name}";
 
+		return $method;
+	}
+
+	public function getOutput($contentType = "text/html") {
+
+		$method = $this->getOutputMethodName($contentType);
+		
+		return $this->{$method}();
+	}
+
+	
 
 	/**
 	 * HTTP Content Negotiation.
@@ -109,7 +152,7 @@ abstract class Handler {
 	 * For requests with multiple Accept: values, the Route has the ultimate say in
 	 * the resource representation.  But we also consult the Accept: header to see if we can 
 	 * return the client's preferred representation.
-	 */
+	 
 	public static function fromType(\Http\HttpRequest $req, $route, $output) {
 
 		$mimeType = $route["content-type"];
@@ -155,6 +198,7 @@ abstract class Handler {
 
 		return $handler;
 	}
+	*/
 }
 
 

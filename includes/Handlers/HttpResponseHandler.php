@@ -20,7 +20,7 @@ class HttpResponseHandler extends Handler {
 	
 
 	
-	public function getOutput() {
+	public function getOutput($contentType = "foobar") {
 
 		$file = new File("OCDLA Job Description");
 		$file->setContent($this->output->getBody());
