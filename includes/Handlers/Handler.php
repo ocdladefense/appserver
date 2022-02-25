@@ -79,15 +79,12 @@ abstract class Handler {
 
 	public static function getAcceptableRepresentationMimeTypes($ranges, $contentTypes) {
 
-		// var_dump($ranges);
-		// var_dump($contentTypes);
-		// Array of content-types that can satisfy the 
-		// given qValues; 
-		$includesMime = function($mime) use($ranges) {
-			foreach($ranges as $media) {
+		$includesMime = function($quality, $acceptedMime) use($contentTypes) {
 
-				$range = new MediaRange($media);
-				$mime = new MediaRange($mime);
+			foreach($contentTypes as $type) {
+
+				$range = new MediaRange($acceptedMime);
+				$mime = new MediaRange($type);
 
 				if($range->includes($mime)) {
 					return true;
@@ -96,8 +93,11 @@ abstract class Handler {
 			return false;
 		};
 
-		return array_filter($contentTypes, $includesMime); //array("text/html");
+		return array_keys(array_filter($ranges, $includesMime, ARRAY_FILTER_USE_BOTH));
 	}
+
+
+
 
 	public static function isCompatible($mediaRange, $contentType) {
 		// $accept = new MediaRange($range);
@@ -140,6 +140,10 @@ abstract class Handler {
 	public function getOutput($contentType = "text/html") {
 
 		$method = $this->getOutputMethodName($contentType);
+
+		// If the content type uses an "*" to indicate any subtype replace it with the word "Any"
+		// You cant name a function using "*".  (ex: function text*())
+		if(strpos($method, "*") !== false) $method = str_replace("*", "Any", $method);
 		
 		return $this->{$method}();
 	}
