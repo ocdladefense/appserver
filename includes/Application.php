@@ -228,7 +228,7 @@ class Application {
         // For now, assume a default Accept header (from HttpRequest::newFromEnvironment).
         // But prefer the actual Accept header as sent from the client.
         // NOTE: q value should be between 0.1 and 1; but 1 is assumed and can be omitted.
-        $accept = new AcceptHeader("text/html, text/*,application/json;q=0.9,text/html+partial;q=0.1, text/plain;q=0.1, application/xml");
+
         //$accept = new AcceptHeader($req->getHeader("Accept")->getValue());
 
         // Can you provide me with the resource in my preferred representation?
@@ -298,17 +298,16 @@ class Application {
         };
         Theme::addLinks($fn());
 
-
+        $accept = new AcceptHeader("application/json;q=0.6,text/html+partial, application/xml;q=0.6, text/*");
         // var_dump($accept->parse());
         // var_dump($accept->getByWeight());
 
         // $contentTypes = $handler->getRepresentations();
         // var_dump($contentTypes);
         // $handler->getPreferredRepresenation();
-        $available = Handler::getAcceptableRepresentationMimeTypes($accept->getByWeight(), $handler->getRepresentations());
+        $contentType = Handler::getPreferredRepresentationMimeType($accept->getByWeight(), $handler->getRepresentations());
 
-        //var_dump($available);exit;
-        $contentType = $available[0];
+        //var_dump($contentType);exit;
         // var_dump($available);
 
 

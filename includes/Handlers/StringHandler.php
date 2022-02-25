@@ -69,6 +69,11 @@ class StringHandler extends Handler {
 	}
 	
 
+	public function getTextHtmlPartialHeaders(){
+
+		return new HttpHeader("Content-Type", "text/html");
+	}
+
 	public function getHeaders() {
 
       return new HttpHeader("Content-Type", "text/html");

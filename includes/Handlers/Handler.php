@@ -2,6 +2,7 @@
 
 
 use Http\MediaRange;
+use Http\MimeType;
 
 abstract class Handler {
 
@@ -79,21 +80,57 @@ abstract class Handler {
 
 	public static function getAcceptableRepresentationMimeTypes($ranges, $contentTypes) {
 
-		$includesMime = function($quality, $acceptedMime) use($contentTypes) {
+		$includesMime = function($mime) use($ranges) {
 
-			foreach($contentTypes as $type) {
+			foreach($ranges as $range => $quality) {
 
-				$range = new MediaRange($acceptedMime);
-				$mime = new MediaRange($type);
+				$r = new MediaRange($range);
+				$m = new MimeType($mime);
 
-				if($range->includes($mime)) {
+				if($r->includes($m)) {
 					return true;
 				}
 			}
 			return false;
 		};
 
-		return array_keys(array_filter($ranges, $includesMime, ARRAY_FILTER_USE_BOTH));
+		return array_filter($contentTypes, $includesMime);
+	}
+
+
+	public static function getPreferredRepresentationMimeType($ranges, $contentTypes) {
+
+		$preferred = self::getPreferredRepresentationMimeTypes($ranges, $contentTypes);
+
+		return !empty($preferred) ? $preferred[0] : null;
+	}
+
+	public static function getPreferredRepresentationMimeTypes($ranges, $contentTypes) {
+
+		$accepted = self::getAcceptableRepresentationMimeTypes($ranges, $contentTypes);
+
+		$ordered = [];
+
+		foreach($ranges as $range => $quality) {
+
+			$r = new MediaRange($range);
+
+			foreach($accepted as $type) {
+
+				$t = new MimeType($type);
+
+				if($r->includes($t)) {
+
+					$ordered[] = $type;
+
+					if(($key = array_search($type, $accepted)) !== false) {
+						unset($accepted[$key]);
+					}
+				}
+			}
+		}
+
+		return $ordered;
 	}
 
 
@@ -144,7 +181,7 @@ abstract class Handler {
 		// If the content type uses an "*" to indicate any subtype replace it with the word "Any"
 		// You cant name a function using "*".  (ex: function text*())
 		if(strpos($method, "*") !== false) $method = str_replace("*", "Any", $method);
-		
+
 		return $this->{$method}();
 	}
 
