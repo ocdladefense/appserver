@@ -156,10 +156,12 @@ abstract class Handler {
 	public static function getRegisteredHandler(\Http\HttpRequest $req, $route, $output) {
 
 		$type = gettype($output);
+		
 		$name = "object" === $type ? get_class($output) : ucfirst($type); // title case to find the appropriate handler.
 
 		$mimeType = $route["content-type"];
 		$class = self::$handlers[$name];
+		
 		$handler = new $class($output,$mimeType);
 
 		return $handler;

@@ -259,6 +259,14 @@ class Application {
 
 
 
+
+        // If the content-type is set then we make sure it can satisfy
+        if(self::isHttpResponse($out) || self::isMailMessage($out)) {
+
+            return $out;
+        }
+
+        
         // Content-Negotiation.
         $handler = Handler::getRegisteredHandler($req, $route, $out);
 
@@ -312,11 +320,7 @@ class Application {
         };
 
 
-        // If the content-type is set then we make sure it can satisfy
-        if(self::isHttpResponse($out) || self::isMailMessage($out)) {
 
-            return $out;
-        }
 
 
         
