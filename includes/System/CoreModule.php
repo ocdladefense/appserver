@@ -27,6 +27,16 @@ class CoreModule extends Module {
     }
 
 
+	public function showStatus($message) {
+
+		
+		$req = $this->getRequest();
+		$body = $req->getBody();
+
+		return $message;
+		return $body;
+	}
+
     //List all uploaded files.  Uploads have already happened in HttpRequest.
 	public function upload(){
 
@@ -55,19 +65,23 @@ class CoreModule extends Module {
 		return $fList;
 	}
 
-	public function pageNotFound() {
+	public function pageNotFound($message) {
 
 		$tpl = new Template("404");
 		$tpl->addPath(__DIR__ . "/core-templates");
 
-		$page = $tpl->render(array());
+		$page = $tpl->render(array("message" => $message));
 
 		$resp = new HttpResponse();
 		$resp->setBody($page);
 		$resp->setStatusCode(404);
+		$resp->addHeader(new HttpHeader("X-Theme","default"));
 
 		return $resp;
 	}
+
+
+
 
 
 	public function accessDenied() {
@@ -75,6 +89,7 @@ class CoreModule extends Module {
 		$resp = new HttpResponse();
 		$resp->setStatusCode(403);
 		$resp->setBody("Access Denied! <a href='/login'>Login</a> for more info.");
+		$resp->addHeader(new HttpHeader("X-Theme","default"));
 
 		return $resp;
 	}

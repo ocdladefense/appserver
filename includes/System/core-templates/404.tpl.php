@@ -7,7 +7,7 @@
     </a>
 
     <h1>Ooops...Page not found</h1>
-
+    <h3><?php print $message; ?></h3>
     <br />
 
     <a href="/home">back to home page</>
