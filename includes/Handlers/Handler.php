@@ -177,23 +177,33 @@ abstract class Handler {
 		$name = implode("",$parts);
 		$method = "get{$name}";
 
+		// var_dump($method);exit;
+
 		return $method;
 	}
 
 	
 
 	public function getOutput($contentType = "text/html") {
-
+		if(null == $contentType) {
+			// throw new ResourceException("RESPONSE_NO_REPRESENTATION: No proper mime-type could be found for this resource.");
+			throw new Exception("RESPONSE_NO_REPRESENTATION: No proper mime-type could be found for this resource.");
+		}
+		// var_dump($contentType);exit;
 		$method = $this->getMethodName($contentType);
-
+		// var_dump($method);exit;
 		return $this->{$method}();
 	}
 
 
 	public function getHeaders($contentType = "text/html") {
-		$method = $this->getMethodName($contentType);
-
-		return $this->{$method."Headers"}();
+		$prefix = $this->getMethodName($contentType);
+		
+		$method = $prefix."Headers";
+		if(!method_exists($this,$method)) {
+			throw new Exception("HANDLER_ERROR: The handler is missing appropriate method names.");
+		}
+		return $this->{$method}();
 	}
 	
 

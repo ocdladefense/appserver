@@ -266,7 +266,6 @@ class Application {
 
         // If the content-type is set then we make sure it can satisfy
         if(self::isMailMessage($out)) {
-
             return $out;
         }
         else if(self::isHttpResponse($out) && null == $out->getHeader("X-Theme")) {
@@ -326,8 +325,9 @@ class Application {
         
 
         // Set headers on the HTTP Response.
-        $resp->addHeaders($handler->getHeaders());
-        $resp->addHeader(new HttpHeader("Content-Type",$explicit));
+        $resp->addHeader(new HttpHeader("Content-Type",$contentType));
+        $resp->addHeaders($handler->getHeaders($contentType));
+        
 
         // Set the body of the HTTP Response that will be returned to the client.
         $resp->setBody($handler->getOutput($contentType));

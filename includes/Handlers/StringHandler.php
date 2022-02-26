@@ -14,7 +14,7 @@ class StringHandler extends Handler {
 
 
 	protected $contentTypes = array(
-		"text/html", "application/json", "text/html+partial","text/plain","applicationi/xml"
+		"text/html", "application/json", "text/partial+html","text/plain","applicationi/xml"
 	);
 
 	
@@ -23,12 +23,6 @@ class StringHandler extends Handler {
 		$this->output = $output;
 		
 		$this->contentType = $contentType;
-	}
-	
-
-	public function getTextAny() {
-
-		return $this->getTextHtml();
 	}
 
 
@@ -50,7 +44,7 @@ class StringHandler extends Handler {
 
 
 
-	public function getTextHtmlPartial() {
+	public function getTextPartialHtml() {
 
 		return $this->output;
 	}
@@ -72,7 +66,7 @@ class StringHandler extends Handler {
 	}
 	
 
-	public function getTextHtmlPartialHeaders(){
+	public function getTextPartialHtmlHeaders(){
 
 		return new HttpHeader("Content-Type", "text/html");
 	}
@@ -81,4 +75,9 @@ class StringHandler extends Handler {
 
       return new HttpHeader("Content-Type", "text/html");
 	}
+
+	public function getApplicationXmlHeaders() {
+
+		return new HttpHeader("Content-Type", "application/xml");
+	  }
 }
