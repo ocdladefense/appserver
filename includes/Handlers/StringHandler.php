@@ -14,7 +14,7 @@ class StringHandler extends Handler {
 
 
 	protected $contentTypes = array(
-		"text/html", "application/json", "text/html+partial","text/plain"
+		"text/html", "application/json", "text/html+partial","text/plain","applicationi/xml"
 	);
 
 	
@@ -57,15 +57,18 @@ class StringHandler extends Handler {
 
 
 	public function getApplicationJson() {
+		$out = new stdClass();
+		$out->errors = false;
+		$out->content = $this->output;
 
-
+		return json_encode($out);
 	}
 
 
 
 	public function getApplicationXml() {
 
-
+		return $this->output;
 	}
 	
 

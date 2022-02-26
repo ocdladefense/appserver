@@ -223,27 +223,8 @@ class Application {
 
         $resp = new HttpResponse();
 
-        $accept = $req->getHeader("Accept");
-        // Guess what the Content-Type should be to satisfy the request.
-        // For now, assume a default Accept header (from HttpRequest::newFromEnvironment).
-        // But prefer the actual Accept header as sent from the client.
-        // NOTE: q value should be between 0.1 and 1; but 1 is assumed and can be omitted.
-
-        //$accept = new AcceptHeader($req->getHeader("Accept")->getValue());
-
-        // Can you provide me with the resource in my preferred representation?
-            // Problem: I can express my preferred representation as a media "range"
-              // --> for example, "text/*" text/plain? NO; text/html  No IF/SWITCH will help you get to the solution.
-            // Problem 2: The server should still be able to return a representation that I don't prefer, BUT I CAN STILL ACCEPT.
-
         
-
-
-        // Now Run an algo that takes in the weighted accepts as the
-        // first parameter, and the possible representations as the second parameter
-        // and finds the most "preferred" contentType.
-
-
+        // var_dump($accept);exit;
 
         // REMEMBER! TRY CATCH BLOCKS WON'T DISPLAY WARNINGS.
         try
@@ -298,16 +279,23 @@ class Application {
         };
         Theme::addLinks($fn());
 
-        $accept = new AcceptHeader("application/json;q=0.6,text/html+partial, application/xml;q=0.6, text/*");
-        // var_dump($accept->parse());
-        // var_dump($accept->getByWeight());
 
-        // $contentTypes = $handler->getRepresentations();
-        // var_dump($contentTypes);
-        // $handler->getPreferredRepresenation();
-        $contentType = Handler::getPreferredRepresentationMimeType($accept->getByWeight(), $handler->getRepresentations());
+        /* Detailed Information on Accept Header
+        https://httpwg.org/specs/rfc7231.html#header.accept
+        
+        All HTTP Status Code Definitions
+        https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+        
+        Details description of 406 Not Acceptable
+        https://httpwg.org/specs/rfc7231.html#status.406
+        */
+        $explicit = !empty($route["content-type"]) ? array($route["content-type"]) : null;
+        $accept = $req->getHeader("Accept");
+        //  var_dump($accept);
 
-        //var_dump($contentType);exit;
+        $contentType = Handler::getPreferredRepresentationMimeType($accept->getByWeight(), (!empty($explicit) ? $explicit : $handler->getRepresentations()));
+
+        // var_dump($contentType);exit;
         // var_dump($available);
 
 
@@ -335,7 +323,7 @@ class Application {
 
         // Set headers on the HTTP Response.
         $resp->addHeaders($handler->getHeaders());
-        $resp->addHeader(new HttpHeader("Content-Type",$contentType));
+        $resp->addHeader(new HttpHeader("Content-Type","text/html"));
 
         // Set the body of the HTTP Response that will be returned to the client.
         $resp->setBody($handler->getOutput($contentType));

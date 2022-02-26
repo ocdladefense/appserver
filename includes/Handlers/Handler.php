@@ -174,6 +174,8 @@ abstract class Handler {
 		return $method;
 	}
 
+	
+
 	public function getOutput($contentType = "text/html") {
 
 		$method = $this->getOutputMethodName($contentType);
