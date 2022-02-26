@@ -306,21 +306,14 @@ class Application {
         */
         $explicit = !empty($route["content-type"]) ? array($route["content-type"]) : null;
         $accept = $req->getHeader("Accept");
-        //  var_dump($accept);
-
+        
         $contentType = Handler::getPreferredRepresentationMimeType($accept->getByWeight(), (!empty($explicit) ? $explicit : $handler->getRepresentations()));
 
-        // var_dump($contentType);exit;
-        // var_dump($available);
-
-
-        // $method = $handler->getOutputMethodName($available[0]);
-        // var_dump($method);
-        // exit;
-        
         // Resolve the Content-Type header against
         // the Accept header.  We talk about this 
         // as "could the available content-types satisfy the request?"
+        // If the answer is no we need to return the appropriate
+        // status code, per the Spec.
         if(false && !$req->canBeSatisfiedBy($available)) {
             $resp->setStatusCode(406, "Not Acceptable");
             return $resp;
@@ -334,7 +327,7 @@ class Application {
 
         // Set headers on the HTTP Response.
         $resp->addHeaders($handler->getHeaders());
-        $resp->addHeader(new HttpHeader("Content-Type","text/html"));
+        $resp->addHeader(new HttpHeader("Content-Type",$explicit));
 
         // Set the body of the HTTP Response that will be returned to the client.
         $resp->setBody($handler->getOutput($contentType));
