@@ -12,6 +12,10 @@ use Salesforce\RestApiRequest as RestApiRequest;
 use Salesforce\OAuth as OAuth;
 use Salesforce\OAuthException;
 
+
+
+
+
 class CoreModule extends Module {
 
 
@@ -94,6 +98,9 @@ class CoreModule extends Module {
 		return $resp;
 	}
 
+
+
+	
 	public function login() {
 
         //  This is the module flow not the route flow
@@ -111,7 +118,7 @@ class CoreModule extends Module {
 		$flow = "webserver";
 
 		$_SESSION["login_redirect"] = $_SERVER["HTTP_REFERER"];
-		//$flow = "usernamepassword";
+		
 		$httpMessage = OAuth::start($config, $flow);
 
 	
@@ -120,16 +127,6 @@ class CoreModule extends Module {
 		}
 
 		return $httpMessage;
-
-		/*} else {
-
-			$oauthResp = $httpMessage->authorize();
-
-			if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
-
-			OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
-		}
-		*/
 	}
 
 

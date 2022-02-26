@@ -1,5 +1,6 @@
 <?php
-
+// Prepare an HTTP exchange.
+// An HTTP exchange consists of an HTTP Request and Response lifecycle.
 
 require '../bootstrap.php';
 

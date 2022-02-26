@@ -269,7 +269,7 @@ class Application {
 
             return $out;
         }
-        if(self::isHttpResponse($out) && null == $out->getHeader("X-Theme")) {
+        else if(self::isHttpResponse($out) && null == $out->getHeader("X-Theme")) {
             return $out;
         }
 

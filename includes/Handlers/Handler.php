@@ -157,18 +157,20 @@ abstract class Handler {
 
 		$type = gettype($output);
 		
-		$name = "object" === $type ? get_class($output) : ucfirst($type); // title case to find the appropriate handler.
+		// Title case to find the appropriate handler.
+		$name = "object" === $type ? get_class($output) : ucfirst($type); 
 
 		$mimeType = $route["content-type"];
 		
 		$class = self::$handlers[$name];
-		// var_dump($route,$name,$class,$mimeType);
 		
 		$handler = new $class($output,$mimeType);
 
 		return $handler;
 	}
 
+
+	
 	public function getMethodName($contentType = "text/html") {
 		$tmp = preg_split("/\/|\+/",$contentType);
 		$parts = array_map(function($part) { return ucfirst($part);}, $tmp);
