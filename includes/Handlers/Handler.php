@@ -50,7 +50,7 @@ abstract class Handler {
 	 *    Get any HttpHeaders consistent with the mime-type 
 	 *     of this data.
 	 */
-	protected abstract function getHeaders();
+	// protected abstract function getHeaders();
 
 
 	public function setAccept($accept) {
@@ -160,14 +160,16 @@ abstract class Handler {
 		$name = "object" === $type ? get_class($output) : ucfirst($type); // title case to find the appropriate handler.
 
 		$mimeType = $route["content-type"];
+		
 		$class = self::$handlers[$name];
+		// var_dump($route,$name,$class,$mimeType);
 		
 		$handler = new $class($output,$mimeType);
 
 		return $handler;
 	}
 
-	public function getOutputMethodName($contentType = "text/html") {
+	public function getMethodName($contentType = "text/html") {
 		$tmp = preg_split("/\/|\+/",$contentType);
 		$parts = array_map(function($part) { return ucfirst($part);}, $tmp);
 		$name = implode("",$parts);
@@ -180,15 +182,17 @@ abstract class Handler {
 
 	public function getOutput($contentType = "text/html") {
 
-		$method = $this->getOutputMethodName($contentType);
-
-		// If the content type uses an "*" to indicate any subtype replace it with the word "Any"
-		// You cant name a function using "*".  (ex: function text*())
-		if(strpos($method, "*") !== false) $method = str_replace("*", "Any", $method);
+		$method = $this->getMethodName($contentType);
 
 		return $this->{$method}();
 	}
 
+
+	public function getHeaders($contentType = "text/html") {
+		$method = $this->getMethodName($contentType);
+
+		return $this->{$method."Headers"}();
+	}
 	
 
 	/**

@@ -18,7 +18,7 @@ class HtmlStringHandler extends Handler {
 	}
 	*/
 	
-	public function getHeaders() {
+	public function getHeaders($mime = "text/html") {
 
       return new HttpHeader("Content-Type", "text/html");
 	}

@@ -16,7 +16,7 @@ class HtmlEmailHandler extends Handler {
 	}
 	
 	
-	public function getHeaders() {
+	public function getHeaders($mime = "1.0") {
 
 		return $this->output->getHeaders();
 	}

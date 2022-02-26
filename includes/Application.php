@@ -128,11 +128,14 @@ class Application {
         // if path is not found match returns false.
         $path = $router->match($scriptUri, array_keys($this->routes));
         
-
+        
         if($path == false) { // No matching route was found.
 
             $module = $loader->loadObject("core");
-            $route = $this->routes["system/404"];
+            $route = $this->routes["system/404/%msg"];
+
+            $params = array("We couldn't find ".$scriptUri);
+            // var_dump($params);exit;
 
         } else { // We found a route
 
@@ -229,6 +232,7 @@ class Application {
         // REMEMBER! TRY CATCH BLOCKS WON'T DISPLAY WARNINGS.
         try
         {
+            // var_dump($module,$route);
             $out = call_user_func_array(array($module, $route["callback"]), $params);
             // if(null == $out) throw new Exception("Callback function returned NULL!");
         }
@@ -261,8 +265,11 @@ class Application {
 
 
         // If the content-type is set then we make sure it can satisfy
-        if(self::isHttpResponse($out) || self::isMailMessage($out)) {
+        if(self::isMailMessage($out)) {
 
+            return $out;
+        }
+        if(self::isHttpResponse($out) && null == $out->getHeader("X-Theme")) {
             return $out;
         }
 
@@ -398,9 +405,17 @@ class Application {
     public function send($message) {
         if(!is_object($message)) die('Woops');
 
-        $resp = get_class($message) == "MailMessage" ? $this->sendMail($message) : $this->sendHttp($message);
 
-        if(null != $resp) $this->send($resp);
+        $next = get_class($message) == "MailMessage" ? $this->sendMail($message) : $this->sendHttp($message);
+
+        // Return a subrequest, if we want.
+        if(is_object($next) && get_class($next) == "Http\HttpRequest") {
+            // print "foodbar";exit;
+            $resp = $this->runHttp($next);
+            // var_dump($resp);
+            $this->send($resp);
+        }
+        else if(null != $next) $this->send($next);
     }
 
 
@@ -462,10 +477,16 @@ class Application {
         );
         
 
-        if($sent) {
-            $resp = new HttpResponse("Your email was sent");
-            
-        } else {
+        if($sent)
+        {
+           // $resp = new HttpResponse("Your email was sent");
+            $req = new HttpRequest("Your email was sent.");
+            $req->addHeader(new HttpHeader("Accept","text/html"));
+            $req->addHeader(new HttpHeader("Request-URI","system/status/Your email was sent."));
+            return $req;
+        }
+        else
+        {
             $resp = new HttpResponse("Your email was not sent");
             $resp->setStatusCode(500);
         }
@@ -731,7 +752,13 @@ $coreDef = array(
     "description"  => "holds routes for core functionality",
     "files"        => array(),
     "routes"       => array(
-        "system/404" => array(
+        "system/status/%msg" => array(
+            "callback"      => "showStatus",
+            "content-type"  => "text/html",
+            "module"        => "core",
+            "method"        => "get"
+        ),
+        "system/404/%msg" => array(
             "callback"      => "pageNotFound",
             "content-type"  => "text/html",
             "module"        => "core",
@@ -791,6 +818,12 @@ $coreDef = array(
             "callback"      => "userLogout",
             "content-type"  => "application/json",
             "path"          => "logout",
+            "module"        => "core",
+            "method"        => "get"
+        ),
+        "status"        => array(
+            "callback"      => "showStatus",
+            "content-type"  => "text/html",
             "module"        => "core",
             "method"        => "get"
         ),

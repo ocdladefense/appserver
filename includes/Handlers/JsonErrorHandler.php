@@ -24,7 +24,7 @@ class JsonErrorHandler extends Handler {
 			));
 	}
 	
-	public function getHeaders() {
+	public function getHeaders($mime = "application/json") {
 		return new HttpHeader("Content-Type","application/json");
 	}
 

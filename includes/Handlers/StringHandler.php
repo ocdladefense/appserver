@@ -67,7 +67,7 @@ class StringHandler extends Handler {
 
 
 	public function getApplicationXml() {
-
+		
 		return $this->output;
 	}
 	
@@ -77,7 +77,7 @@ class StringHandler extends Handler {
 		return new HttpHeader("Content-Type", "text/html");
 	}
 
-	public function getHeaders() {
+	public function getTextHtmlHeaders() {
 
       return new HttpHeader("Content-Type", "text/html");
 	}

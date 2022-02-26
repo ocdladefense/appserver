@@ -27,7 +27,7 @@ class XmlHandler extends Handler {
 			return $this->output;
 	}
 	
-	public function getHeaders() {
+	public function getHeaders($mime = "application/xml") {
 
       return new HttpHeader("Content-Type", "application/xml");
 	}
