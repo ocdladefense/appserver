@@ -6,6 +6,28 @@
 $custom_theme = null;
 
 
+function component($name, $params) {
+
+	global $theme;
+
+	
+    // Load the widget details...
+    global $presentation;
+
+    $widget = new Presentation\Component($name,$params);
+    $css = $widget->getStyles();
+    $js = $widget->getScripts();
+    
+	// If we're not in a theme context
+	// then don't add the css or scripts.
+	if(null != $theme) {
+		$theme->addScript($js);
+		$theme->addStyle($css);
+	}
+	
+    print $widget->toHtml(); 
+}
+
 function get_theme() {
 	global $custom_theme;
 	return null != $custom_theme ? $custom_theme : ACTIVE_THEME;

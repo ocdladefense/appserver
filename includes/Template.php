@@ -127,9 +127,31 @@ class Template {
 		$context = count($context) === 0 ? $this->context : $context;
 		
 		$this->output = null == $this->content ? $this->renderTemplateFile($context) : $this->renderTemplateString($context);
+		
 		return $this->output;
 	}
 	
+	public function renderTemplateFile($context = array()) {
+		// global $theme;
+
+		$theme = $context["theme"];
+		//var_dump($theme);exit;
+
+		extract($context,EXTR_REFS);
+		//var_dump($theme);exit;
+		ob_start();
+		
+		$this->log("About to include template name, {$this->name}.");
+		$file = $this->pathToTemplate($this->name);
+		$this->log("About to include template file, {$file}.");
+		require $file;
+
+		$content = ob_get_contents();
+		ob_end_clean();
+		
+		
+		return $content;
+	}
 	
 	public function isRendered() {
 		return $this->rendered;
@@ -149,21 +171,7 @@ class Template {
 		return $content;
 	}
 	
-	public function renderTemplateFile($context = array()) {
-		extract($context);
-		ob_start();
-		
-		$this->log("About to include template name, {$this->name}.");
-		$file = $this->pathToTemplate($this->name);
-		$this->log("About to include template file, {$file}.");
-		require $file;
-		
-		$content = ob_get_contents();
-		ob_end_clean();
-		
-		
-		return $content;
-	}
+
 	
 	public function __toString() {
 		return $this->render();

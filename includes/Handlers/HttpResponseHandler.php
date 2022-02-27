@@ -23,6 +23,7 @@ class HttpResponseHandler extends Handler {
 
 	public function getTextHtml($contentType = "foobar") {
 
+		global $theme;
 		// Init the theme, first.
 		$className = ucfirst(strtolower(get_theme())) . "Theme";
 		require(get_theme_path() . "/" . $className . ".php");
@@ -34,6 +35,8 @@ class HttpResponseHandler extends Handler {
 		// Loads an HTML page with defined scripts, css.
 		return $theme->render($body);
 	}
+
+
 
 
 	public function getApplicationBase64($contentType) {
