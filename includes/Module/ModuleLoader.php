@@ -4,11 +4,12 @@
 
 class ModuleLoader {
 
-
-		private $index;
+    // The list of Modules installed for this application.
+    private $index;
 
 
     public function __construct($index) {
+
     	$this->index = $index;
     }
 
@@ -28,6 +29,7 @@ class ModuleLoader {
     
     
     public function load($name) {
+        
     	if(!isset($this->index[$name])) {
     		throw new Exception("MODULE_NOT_FOUND_ERROR: {$name}.");
     	}
@@ -43,6 +45,25 @@ class ModuleLoader {
     	}
         
         return $info;
+    }
+
+
+    /**
+     * Return an array of values for the given key
+     * in all loaded module.json files.
+     */
+    public function getKey($key) {
+
+        if(null == $key) throw new Exception("MODULE_PARSE_ERROR: key not specified or null when attempting to retrieve value.");
+        // Build an index for routes.
+        $values = array();
+        foreach($this->index as $def) {
+            if(isset($def[$key])) {
+                $values = array_merge($values,$def[$key]);
+            }
+        }
+
+        return array_filter($values);
     }
     
     

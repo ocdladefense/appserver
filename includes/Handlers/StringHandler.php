@@ -10,7 +10,12 @@ use \Http\HttpHeader as HttpHeader;
  *  document itself wouldn't necessarily need any styling information.
  *  And that the theme could "inject" its scripting and styling information?
  */
-class HtmlDocumentHandler extends Handler {
+class StringHandler extends Handler {
+
+
+	protected $contentTypes = array(
+		"text/html", "application/json", "text/partial+html","text/plain","applicationi/xml"
+	);
 
 	
 	public function __construct($output, $contentType) {
@@ -19,21 +24,10 @@ class HtmlDocumentHandler extends Handler {
 		
 		$this->contentType = $contentType;
 	}
-	
-	
-	// Or text/html;partial	
-	/*public function getOutput($mimeType = "text/html") {
-	
-		$params = explode(";",$mimeType);
-		$type = array_shift($params);
-
-		return $this->getTextHtml($params);
-	}
-	*/
 
 
-	public function getTexthtml($params = array()) {
-
+	public function getTextHtml() {
+		global $theme;
 
 		// Init the theme, first.
 		$className = ucfirst(strtolower(get_theme())) . "Theme";
@@ -41,16 +35,49 @@ class HtmlDocumentHandler extends Handler {
 		
 		$theme = new $className();
 		
-		$content = Template::isTemplate($this->output) ? $theme->renderTemplate($this->output) : $this->output;
+		$content = Template::isTemplate($this->output) ? $theme->renderTemplate($this->output) : $this->output;;
 
 		// var_dump($this->output, $content);exit;
 		// Loads an HTML page with defined scripts, css.
 		return $theme->render($content);
 	}
+
+
+
+	public function getTextPartialHtml() {
+
+		return $this->output;
+	}
+
+
+	public function getApplicationJson() {
+		$out = new stdClass();
+		$out->errors = false;
+		$out->content = $this->output;
+
+		return json_encode($out);
+	}
+
+
+
+	public function getApplicationXml() {
+		
+		return $this->output;
+	}
 	
 
-	public function getHeaders($mime = "text/html") {
+	public function getTextPartialHtmlHeaders(){
+
+		return new HttpHeader("Content-Type", "text/html");
+	}
+
+	public function getTextHtmlHeaders() {
 
       return new HttpHeader("Content-Type", "text/html");
 	}
+
+	public function getApplicationXmlHeaders() {
+
+		return new HttpHeader("Content-Type", "application/xml");
+	  }
 }

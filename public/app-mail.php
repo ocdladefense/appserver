@@ -1,10 +1,7 @@
 <?php
 
-
 require '../bootstrap.php';
 
-$application = !empty($_GET["mail"]) ? "mail" : "http";
-$isCLI = false;
 
 use Http\HttpRequest as HttpRequest;
 use Http\HttpResponse as HttpResponse;
@@ -14,6 +11,12 @@ $app = new Application();
 
 $request = HttpRequest::newFromEnvironment();
 
+//$response = $app->runHttp($request);
 
-$response = $app->runHttp($request);
-$app->send($response);
+
+$response = new HttpResponse();
+$response->setBody("Here are the latest OCDLA Case Reviews");
+
+
+
+$app->sendMail($response);

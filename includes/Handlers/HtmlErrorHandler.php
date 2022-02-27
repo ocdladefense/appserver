@@ -11,13 +11,14 @@ class HtmlErrorHandler extends Handler {
 		$this->contentType = $contentType;
 	}
 	  
-	
+	/*
 	public function getOutput() {
 			// Loads an HTML page with defined scripts, css.
 			return "There was an error: ".$this->output->getMessage();
 	}
+	*/
 	
-	public function getHeaders() {
+	public function getHeaders($mime = "text/html") {
 
       return new HttpHeader("Content-Type", "text/html");
 	}

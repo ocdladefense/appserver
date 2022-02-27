@@ -5,11 +5,40 @@
 // Let modules / routes override their theme preference.
 $custom_theme = null;
 
+// Should set this at the theme engine level.
+// Should include dot prefix.
+DEFINE("TEMPLATE_EXTENSION", ".tpl.php");
+
+
+function component($name, $id, $params) {
+
+	global $theme;
+
+	
+    // Load the widget details...
+    global $presentation;
+
+    $widget = Presentation\Component::fromName($name,$id, $params);
+    $css = $widget->getStyles();
+    $js = $widget->getScripts();
+    
+	// If we're not in a theme context
+	// then don't add the css or scripts.
+	if(null != $theme) {
+		$theme->addScript($js);
+		$theme->addStyle($css);
+	}
+	
+    print $widget->toHtml(); 
+}
+
+
 
 function get_theme() {
 	global $custom_theme;
 	return null != $custom_theme ? $custom_theme : ACTIVE_THEME;
 }
+
 
 
 function set_theme($themeName) {
@@ -18,16 +47,66 @@ function set_theme($themeName) {
 }
 
 
+
 function get_theme_path() {
 	return BASE_PATH ."/content/themes/" . strtolower(get_theme());
 }
 
-function load_template($filename){
-	include(get_theme_path().DIRECTORY_SEPARATOR.$filename.".tpl.php"); 
+
+/**
+ * @function load_template
+ * 
+ * Load a template by name; optionally inject params
+ * into the template's scope.
+ * 
+ * @param $template The name of the template, not including any extensions.
+ * NOTE that load_template might look in several locations to find the specified
+ * template.
+ * 
+ * @param $vars An associative array of variables to be injected into
+ * the template's scope. 
+ */
+function load_template($template, $vars = array()) {
+
+	$path = get_identifier_path($template);
+
+	extract($vars);
+
+	$found = include($path);
+
+	if(!$found) return false;
 }
 
-function load_widget($filename){
-	include(get_theme_path().DIRECTORY_SEPARATOR.$filename.".tpl.php"); 
+
+
+
+/**
+ * @function get_identifier_path
+ * 
+ * Return the full filesystem path for the given identifier.  Locations might be specified as either "core", "vendor", "theme", "component", or "module."
+ * 
+ * @param $identifier The name of symbol for which to return a filesystem path.
+ * 
+ * @param $location The general location of where to search for identifier.
+ * 
+ * @param $options Any additional options to be used when formatting the filesystem path. 
+ */
+function get_identifier_path($identifier, $location = "theme", $options = array()) {
+
+	switch($location) {
+		case "theme":
+			$format = get_theme_path() . DIRECTORY_SEPARATOR . "%s" . TEMPLATE_EXTENSION;
+		
+		default:
+			$format = get_theme_path() . DIRECTORY_SEPARATOR . "%s" . TEMPLATE_EXTENSION;
+	}
+	
+	return sprintf($format, $identifier);
 }
 
-// function add_script($
+
+
+function html($name, $data) {
+
+	return \Html\element($name, $data);
+}

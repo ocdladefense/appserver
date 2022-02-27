@@ -22,12 +22,12 @@ class ApplicationFileHandler extends Handler {
 	
 
 	
-	public function getOutput() {
+	public function getOutput($contentType = "text/html") {
 
 		return $this->output;
 	}
 	
-	public function getHeaders() {
+	public function getHeaders($mime = "application/base64") {
 		$fileName = $this->output->getName();
 		$contentType = $this->output->getType();
 	

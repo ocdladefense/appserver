@@ -12,6 +12,10 @@ use Salesforce\RestApiRequest as RestApiRequest;
 use Salesforce\OAuth as OAuth;
 use Salesforce\OAuthException;
 
+
+
+
+
 class CoreModule extends Module {
 
 
@@ -26,6 +30,16 @@ class CoreModule extends Module {
         $this->name = "core";
     }
 
+
+	public function showStatus($message) {
+
+		
+		$req = $this->getRequest();
+		$body = $req->getBody();
+
+		return $message;
+		return $body;
+	}
 
     //List all uploaded files.  Uploads have already happened in HttpRequest.
 	public function upload(){
@@ -54,6 +68,69 @@ class CoreModule extends Module {
 
 		return $fList;
 	}
+
+	public function pageNotFound($message) {
+
+		$tpl = new Template("404");
+		$tpl->addPath(__DIR__ . "/core-templates");
+
+		$page = $tpl->render(array("message" => $message));
+
+		$resp = new HttpResponse();
+		$resp->setBody($page);
+		$resp->setStatusCode(404);
+		$resp->addHeader(new HttpHeader("X-Theme","default"));
+
+		return $resp;
+	}
+
+
+
+
+
+	public function accessDenied() {
+
+		$resp = new HttpResponse();
+		$resp->setStatusCode(403);
+		$resp->setBody("Access Denied! <a href='/login'>Login</a> for more info.");
+		$resp->addHeader(new HttpHeader("X-Theme","default"));
+
+		return $resp;
+	}
+
+
+
+	
+	public function login() {
+
+        //  This is the module flow not the route flow
+        // $connectedAppName = $module->get("connectedApp"); @jbernal
+        
+		//get the connected app config from the module
+        //if there is a default then include it on the module
+        $config = get_oauth_config("default");
+
+		// We should prevent the user from logging in a second time; 
+		// If they are already logged in.
+        // if(!is_user_authorized($module)) {
+
+
+		$flow = "webserver";
+
+		$_SESSION["login_redirect"] = $_SERVER["HTTP_REFERER"];
+		
+		$httpMessage = OAuth::start($config, $flow);
+
+	
+		if(!\Http\Http::isHttpResponse($httpMessage)) {
+			throw new Exception("MALFORMED_RESPONSE_ERROR: An error occurred when parsing the server's response.");
+		}
+
+		return $httpMessage;
+	}
+
+
+
 
 
 	// Get the access token and save it to the session variables.
@@ -90,8 +167,24 @@ class CoreModule extends Module {
 	}
 
 
+	
 	// Don't need an actual login function, because the route has specified the webserver flow ????
 	public function userLogout(){
+
+		$_COOKIE["PHPSESSID"] = array();
+		$_SESSION = array();
+
+		// We shouldn't redirect back to a page that would require authorization.
+		// In order to do this we would need to compare the current URL to 
+		// all available routes.
+		// @TODO - supply this functionality.
+		if(!USE_SALESFORCE_SLO_LOGOUT_ENDPOINT){
+			$currentPage = $_SERVER["HTTP_REFERER"];
+			$examplePage = "https://oclda.app/car/list"; // Shouldn't need to be a full URL.
+			$defaultPage = "/car/list";
+			$redirect = $this->buildRedirect($defaultPage);
+			return redirect($defaultPage);
+		}
 
 		$config = get_oauth_config();
 
@@ -109,47 +202,14 @@ class CoreModule extends Module {
 		
 		$sloEndpoint = "$instanceUrl/services/auth/idp/oidc/logout";
 
-		$_COOKIE["PHPSESSID"] = array();
-
-		$_SESSION = array();
-
 		return redirect($sloEndpoint);
 	}
 
-	public function userProfile(){
-
-		$user = Session::getUser();
-
-		if($user != null){
-
-			$name = $user->getName();
-			$username = $user->getUserName();
-			$userType = $user->isAdmin() ? "Admin" : "Customer";
-			$email = $user->getEmail();
-			$geoZone = $user->getGeoZone();
-			$country = $user->getCountry();
-			$redirect = $this->buildRedirect();
-		}
-
-		$form = "
-		<style>
-		.sidenav{display:none;}
-		</style>
-		<a href='#' onclick='history.back(); return false;'>Go Back</a>
-		<p><strong>Name:</strong>$name</p><br />
-		<p><strong>Username:</strong>$username</p><br />
-		<p><strong>Email:</strong>$email</p><br />
-		<p><strong>Geographical Zone:</strong>$geoZone</p><br />
-		<p><strong>Country:</strong>$country</p><br />
-		<p><strong>User Type:</strong>$userType</p><br />";
-
-		return $form;
-	}
 
 	public function buildRedirect($ref = null){
 
 		if(empty($ref)) $ref = $_SERVER["HTTP_REFERER"];
-
+		
 		$redirectParts = explode("/", $ref);
 
 		array_shift($redirectParts); // Remove the protocol
@@ -160,4 +220,9 @@ class CoreModule extends Module {
 
 		return $redirect;
 	}
+
+
+
+
+
 }

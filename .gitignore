@@ -4,11 +4,14 @@ log/
 .htaccess
 
 # Ignore settings
-settings.php
 settings.js
+
+#Ignore configuration files
 config.php
-TREVORS_CONFIG.php
-ex-prod-config.php
+config-dev.php
+config-staging.php
+config-production.php
+config-default-*.php
 config.js
 
 login.xml
@@ -32,8 +35,6 @@ soap-login-admin-user.xml
 modules/*
 !modules/.gitkeep
 
-# Ignore composer.lock
-composer.lock
 
 
 # Ignore node modules
@@ -63,7 +64,14 @@ phplog*
 log/*
 
 test.php
-content/themes/highscope
+
+# Ignore some themes: these are now in separate repos.
+/content/themes/default
+/content/themes/highscope
+/content/themes/videos
 
 
 /config/modules/
+
+# Ignore images.  I guess these would be the uploads.
+/content/images

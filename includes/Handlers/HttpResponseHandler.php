@@ -19,8 +19,27 @@ class HttpResponseHandler extends Handler {
 	}
 	
 
+
+
+	public function getTextHtml($contentType = "foobar") {
+
+		global $theme;
+		// Init the theme, first.
+		$className = ucfirst(strtolower(get_theme())) . "Theme";
+		require(get_theme_path() . "/" . $className . ".php");
+		
+		$theme = new $className();
+		
+		$body = $this->output->getBody();
 	
-	public function getOutput() {
+		// Loads an HTML page with defined scripts, css.
+		return $theme->render($body);
+	}
+
+
+
+
+	public function getApplicationBase64($contentType) {
 
 		$file = new File("OCDLA Job Description");
 		$file->setContent($this->output->getBody());
@@ -28,11 +47,16 @@ class HttpResponseHandler extends Handler {
 		
 		return $file;
 	}
+
+	public function getTextHtmlHeaders() {
+
+		return new HttpHeader("Content-Type","text/html");
+	}
 	
 	
 	/**
 	 * @TODO - Figure out how to name the file.
-	 */
+	 
 	public function getHeaders() {
 		$fileName = "OCDLA Job Description"; // $this->output->getName();
 
@@ -45,4 +69,5 @@ class HttpResponseHandler extends Handler {
 				new HttpHeader("Content-Type", $contentType)
 		);
 	}
+*/
 }

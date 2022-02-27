@@ -30,20 +30,34 @@ function linkContainer(link){
 }
 
 
+/*TODO
+figure out what to do when our text value is undefined. 
+For example, when JSX evaluates a variable and its value is undefined and its value is used as a text node.
 
-function vNode(name,attributes,children){
-		if(null == children || typeof children == "undefined") {
-			children = [];
-		} else if(typeof children == "string" ) {
-			children = [children];
+*/
+function vNode(name,attributes,...children){
+		let joined = [];
+		if(children.length == 0 || null == children[0] || typeof children[0] == "undefined") {
+			joined = [];
+		} else if(children.length == 1 && typeof children[0] == "string") {
+			joined = children;
 		} else {
-			children = Array.isArray(children) ? children : [children];
+			//children = Array.isArray(children) ? children : [children];
+			//console.log(children);
+			//flatten method?
+			for(var i = 0; i<children.length; i++) {
+				if(Array.isArray(children[i])) {
+					joined = joined.concat(children[i]);
+				} else {
+					joined.push(children[i]);
+				}
+			}
 		}
-		
+		  
     var vnode =  {    
 			type: name,
 			props: attributes,
-			children: children
+			children: joined
     };
     
     return vnode;
@@ -116,12 +130,19 @@ vnode = vNode;
 		if(vnode.type == "text") {
 			return document.createTextNode(vnode.children);
 		}
+		if(typeof vnode.type == "function") {
+			let temp = vnode.type(vnode.props);
+			return createElement(temp);
+		}
 	
 		var $el = document.createElement(vnode.type);
 		
 
 		for(var prop in vnode.props) {
 			var html5 = "className" == prop ? "class" : prop;
+			if (vnode.props[prop] === null) {
+				continue;
+			}
 			$el.setAttribute(html5,vnode.props[prop]);
 		}
 		
@@ -132,6 +153,89 @@ vnode = vNode;
 		
 		return $el;
 	};
+
+	/**
+	 * Method for virtual nodes
+	 *
+	 * @see-also https://medium.com/@deathmood/how-to-write-your-own-virtual-dom-ee74acc13060
+	 */
+
+	window.render = function render($container, newNode) {
+		let $containerClone = $container.cloneNode(false);
+		let $parent = $container.parentNode;
+
+		$newNode = createElement(newNode);
+		$containerClone.appendChild($newNode);
+
+		$parent.replaceChild($containerClone, $container);
+	}
+	
+	  
+	  window.updateElement = function updateElement($parent, newNode, oldNode, index = 0) {
+		if (!oldNode) {
+		  $parent.appendChild(createElement(newNode));
+		} else if (!newNode) {
+			if (!$parent.childNodes[index]) {
+				$parent.removeChild($parent.childNodes[$parent.childNodes.length-1]);
+			} else {
+				$parent.removeChild($parent.childNodes[index]);
+			}
+		} else if (changed(newNode, oldNode)) {
+		  $parent.replaceChild(
+			createElement(newNode),
+			$parent.childNodes[index]
+		  );
+		} else if (newNode.type) {
+		  const newLength = newNode.children.length;
+		  const oldLength = oldNode.children.length;
+		  for (let i = 0; i < newLength || i < oldLength; i++) {
+			
+			updateElement(
+			  $parent.childNodes[index],
+			  newNode.children[i],
+			  oldNode.children[i],
+			  i
+			);
+		  }
+		} 
+	  }
+
+	  window.changed = function changed(node1, node2) {
+		return typeof node1 !== typeof node2 ||
+			   typeof node1 === 'string' && node1 !== node2 ||
+			   node1.type !== node2.type ||
+			   propsChanged(node1, node2);
+	  }
+	
+	  window.propsChanged = function propsChanged(node1, node2) {
+			let node1Props = node1.props;
+			let node2Props = node2.props;
+
+			if (typeof node1Props != typeof node2Props) {
+				return true;
+			}
+
+			if (!node1Props && !node2Props) {
+				return false;
+			}
+
+			let aProps = Object.getOwnPropertyNames(node1Props);
+			let bProps = Object.getOwnPropertyNames(node2Props);
+		
+			
+			if (aProps.length != bProps.length) {
+				return true;
+			}
+		
+			for (let i = 0; i < aProps.length; i++) {
+				let propName = aProps[i];
+		
+				if (node1Props[propName] !== node2Props[propName]) {
+					return true;
+				}
+			}
+			return false;
+		}
 	
 	
 
