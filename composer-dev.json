@@ -1,0 +1,43 @@
+{
+    "name": "clickpdx/appserver",
+    "description": "A PHP application server.",
+    "type": "wordpress-theme",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+    	"installer-paths": {
+            "saml":["simplesamlphp/simplesamlphp"],
+            "content/libraries/file/dragDrop":["ocdladefense/lib-drag-drop-upload"],
+            "content/themes/default":["ocdladefense/appserver-theme-default"],
+            "modules/car":["ocdladefense/appserver-car"],
+            "modules/directory":["ocdladefense/appserver-directory"],
+            "modules/jobs":["ocdladefense/appserver-jobs"],
+            "modules/sphinx":["ocdladefense/appserver-sphinx-search"]
+        }
+    },
+    "config": {
+        "preferred-install": {
+            "ocdladefense/appserver-car": "source",
+            "ocdladefense/appserver-directory": "source",
+            "ocdladefense/appserver-jobs": "source",
+            "ocdladefense/lib-salesforce-rest-api": "source",
+            "ocdladefense/*": "source"
+        },
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    },
+    "require": {
+        "composer/installers":"~1.0",
+        "ocdladefense/lib-oauth-config": "~2.0",
+        "ocdladefense/lib-salesforce-rest-api":"~3.0",
+        "ocdladefense/lib-http":"~3.0",
+        "ocdladefense/lib-database":"dev-development",
+        "ocdladefense/lib-drag-drop-upload":"dev-development",
+        "ocdladefense/appserver-theme-default":"dev-development",
+        "ocdladefense/appserver-directory":"dev-development",
+        "ocdladefense/appserver-car": "~3.0",
+        "ocdladefense/appserver-jobs": "dev-development",
+        "ocdladefense/appserver-sphinx-search": "dev-development"
+    }
+}
