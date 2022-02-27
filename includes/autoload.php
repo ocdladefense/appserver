@@ -16,6 +16,8 @@
 
 	require_once BASE_PATH.'/includes/User.php';
 
+	require_once BASE_PATH.'/includes/Presentation/Component.php';
+
 
 	if(file_exists(BASE_PATH.'/config/config.php')){		
 		require_once BASE_PATH.'/config/config.php';
