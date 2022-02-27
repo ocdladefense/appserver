@@ -14,6 +14,7 @@ class Template {
 	// Template files may be suffixed with the .tpl.php extension.
 	protected $name;
 
+	
 	protected $modulePath;
 	
 	

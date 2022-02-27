@@ -83,8 +83,8 @@ class Theme {
 		$page = new Template("page");
 
 		$body = $page->render(array(
-			"content" => $content,
-			"theme" => &$theme,
+			"content" 			=> $content,
+			"theme" 			=> &$theme,
 			"secondary_links"	=> self::$secondary_links
 		));
 		
@@ -92,13 +92,11 @@ class Theme {
 
 
 		// We have to deliberately parse the body in a separate templte file away from the scripts!
-		return $template->render(array
-			(
-			"content" 			=> $body,
-			"scripts" 			=> self::pageScripts($this->scripts),
-			"styles" 			=> self::pageStyles($this->styles)
-			)
-		);
+		return $template->render(array(
+			"content" 	=> $body,
+			"scripts" 	=> self::pageScripts($this->scripts),
+			"styles" 	=> self::pageStyles($this->styles)
+		));
 	}
 
 	/**
