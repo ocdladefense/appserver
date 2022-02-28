@@ -10,6 +10,11 @@ PHP >=5.6 and the php-curl extension
 Apache config:
 sudo a2enmod headers
 
+## Composer
+For development use the following:
+env COMPOSER=composer-dev.json composer update 
+
+
 ## Updating your installation of the "appserver" so that it works with the latest version of the "lib-oauth-config" package.
 ### Steps
 1) In your terminal, checkout the development branch of the appserver repository.
