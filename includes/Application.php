@@ -459,8 +459,9 @@ class Application {
 		$template->addPath(get_theme_path());
 		$body = $template->render(array(
             "content" => $message->getBody(),
-            "title" => "OCDLA Criminal Appellate Review"
+            "title" => $message->getTitle()
         ));
+
 
         $sent = mail(
             $message->getTo(),

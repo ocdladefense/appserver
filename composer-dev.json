@@ -12,6 +12,7 @@
             "modules/car":["ocdladefense/appserver-car"],
             "modules/directory":["ocdladefense/appserver-directory"],
             "modules/jobs":["ocdladefense/appserver-jobs"],
+            "modules/bon":["ocdladefense/appserver-books-online"],
             "modules/sphinx":["ocdladefense/appserver-sphinx-search"]
         }
     },
@@ -36,7 +37,7 @@
         "ocdladefense/lib-drag-drop-upload":"dev-development",
         "ocdladefense/appserver-theme-default":"dev-development",
         "ocdladefense/appserver-directory":"dev-development",
-        "ocdladefense/appserver-car": "~3.0",
+        "ocdladefense/appserver-car": "dev-development",
         "ocdladefense/appserver-books-online": "dev-development",
         "ocdladefense/appserver-jobs": "dev-development",
         "ocdladefense/appserver-sphinx-search": "dev-development"
