@@ -145,27 +145,6 @@ class Module {
     
     protected function loadForceApi($app = null, $debug = false) {
 
-    	return $this->loadApi($app, $debug);
-    }
-
-
-    protected function loadForceApiFromFlow($flow, $connectedAppName = null) {
-
-        $config = get_oauth_config($connectedAppName);
-        
-        $accessToken = Session::get($config->getName(), $flow, "access_token");
-        $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
-
-        $req = new RestApiRequest($instanceUrl, $accessToken);
-
-        return $req;
-    }
-
-
-
-
-    protected function loadApi($connectedAppName = null, $debug = false) {
-
         if(empty($this->getInfo()["connectedApp"])){
             
             throw new Exception("CONFIGURATION_ERROR: No 'Connected App' sepecified.  Update the 'module.json' file for your module.");
@@ -189,6 +168,29 @@ class Module {
 
         return $req;
     }
+
+
+    protected function loadForceApiFromFlow($flow, $connectedAppName = null) {
+
+        $config = get_oauth_config($connectedAppName);
+        
+        $accessToken = Session::get($config->getName(), $flow, "access_token");
+        $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
+
+        $req = new RestApiRequest($instanceUrl, $accessToken);
+
+        return $req;
+    }
+
+
+
+
+    protected function loadApi($api) {
+
+
+    }
+
+
 
     protected function execute($soql, $queryType, $debug = false) {
 
@@ -251,21 +253,3 @@ class Module {
         return json_encode($this->getRoutes());
     }
 }
-
-
-// protected function loadApiOld($app = null, $debug = false) {
-
-//     $config = get_oauth_config($app);
-//     $oauth = OAuthRequest::usernamePasswordFlowAccessTokenRequest($config, "usernamepassword");
-
-//     $resp = $oauth->authorize();
-    
-//     if($debug) var_dump($config, $oauth, $resp);
-    
-    
-//     if(!$resp->success()) {
-//         throw new Exception("OAUTH_RESPONSE_ERROR: {$resp->getErrorMessage()}");
-//     }
-
-//     return new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
-// }
