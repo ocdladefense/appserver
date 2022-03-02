@@ -39,9 +39,8 @@
         "ocdladefense/appserver-theme-default":"~1.0",
         "ocdladefense/appserver-directory":"~1.0",
         "ocdladefense/appserver-car": "~3.0",
-        "ocdladefense/appserver-books-online": "~0.0",
+        "ocdladefense/appserver-books-online": "~1.0",
         "ocdladefense/appserver-jobs": "~1.0",
-        "ocdladefense/appserver-books-online":"~0.0",
         "ocdladefense/appserver-xml-products":"~1.0",
         "ocdladefense/appserver-sphinx-search": "dev-development"
     }
