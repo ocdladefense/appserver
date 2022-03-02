@@ -7,7 +7,7 @@ use \Http\HttpResponse as HttpResponse;
 use \Http\HttpRequest as HttpRequest;
 use Salesforce\OAuth;
 use Salesforce\OAuthException;
-uSE Http\HttpHeaderCollection;
+use Http\HttpHeaderCollection;
 
 
 class Application {
@@ -306,6 +306,10 @@ class Application {
         $explicit = !empty($route["content-type"]) ? array($route["content-type"]) : null;
         $accept = $req->getHeader("Accept");
         
+        if(empty($accept->getValue())) {
+            $accept = new AcceptHeader("*/*");
+        }
+
         $contentType = Handler::getPreferredRepresentationMimeType($accept->getByWeight(), (!empty($explicit) ? $explicit : $handler->getRepresentations()));
 
         // Resolve the Content-Type header against
@@ -398,8 +402,9 @@ class Application {
     public function send($message) {
         if(!is_object($message)) die('Woops');
 
+        $class = get_class($message);
 
-        $next = get_class($message) == "MailMessage" ? $this->sendMail($message) : $this->sendHttp($message);
+        $next =  in_array($class,["MailMessage","MailMessageList"]) ? $this->sendMail($message) : $this->sendHttp($message);
 
         // Return a subrequest, if we want.
         if(is_object($next) && get_class($next) == "Http\HttpRequest") {
@@ -454,22 +459,30 @@ class Application {
 
     public function sendMail($message) {
 
+        if(get_class($message) == "MailMessage") {
+            $list = new MailMessageList();
+            $list->add($message);
+        } else {
+            $list = $message;
+        }
 
-		$template = new Template("email");
-		$template->addPath(get_theme_path());
-		$body = $template->render(array(
-            "content" => $message->getBody(),
-            "title" => $message->getTitle()
-        ));
+
+        foreach($list->getMessages() as $message) {
+            $template = new Template("email");
+            $template->addPath(get_theme_path());
+            $body = $template->render(array(
+                "content" => $message->getBody(),
+                "title" => $message->getTitle()
+            ));
 
 
-        $sent = mail(
-            $message->getTo(),
-            $message->getSubject(),
-            $body,
-            $message->getHeaders()
-        );
-        
+            $sent = mail(
+                $message->getTo(),
+                $message->getSubject(),
+                $body,
+                $message->getHeaders()
+            );
+        }
 
         if($sent)
         {
@@ -599,7 +612,7 @@ class Application {
 
     public static function isMailMessage($object){
 
-        return is_object($object) && (get_class($object) === "MailMessage" || is_subclass_of($object, "MailMessage", false));
+        return is_object($object) && (get_class($object) === "MailMessage" || is_subclass_of($object, "MailMessage", false) || get_class($object) === "MailMessageList");
 
     }
 
