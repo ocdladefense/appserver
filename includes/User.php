@@ -85,7 +85,7 @@ class User {
 	
 	public function isAdmin($user = null){
 	
-		return $this->userType == "STANDARD" || $this->userId == "005j000000DSW0eAAH" || $this->userId == "0055b00000KmWbbAAF";
+		return $this->userType == "STANDARD" || $this->userId == "005j000000DSW0eAAH";
 	}
 	
 	
