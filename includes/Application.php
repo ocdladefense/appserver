@@ -486,10 +486,15 @@ class Application {
 
         if($sent)
         {
-           // $resp = new HttpResponse("Your email was sent");
             $req = new HttpRequest("Your email was sent.");
             $req->addHeader(new HttpHeader("Accept","text/html"));
             $req->addHeader(new HttpHeader("Request-URI","system/status/Your email was sent."));
+            return $req;
+        }
+        else if(count($list->getMessages()) == 0) {
+            $req = new HttpRequest("No emails to send.");
+            $req->addHeader(new HttpHeader("Accept","text/html"));
+            $req->addHeader(new HttpHeader("Request-URI","system/status/No emails to send."));
             return $req;
         }
         else
