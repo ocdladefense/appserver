@@ -21,7 +21,9 @@ class Component {
     protected $params = array();
 
 
-
+    // Set to true to throw errors 
+    // when the component can't be loaded.
+    private static $debug = false;
     /**
      * 
      * @params $name The name of this component. Note, this usually refers to the class name.
@@ -34,7 +36,7 @@ class Component {
         
         // get widget settings;
         $this->name = $name;
-        $this->instance = $id;
+        $this->instance = empty($id) ? ($name . "-component") : $id;
         $this->template = $name;
         $this->params = $params;
     }
@@ -45,9 +47,9 @@ class Component {
      * Instantiate a component using it's class name.
      */
     public static function fromName($name,$id,$params) {
-        $class = ucfirst($name)."Component";
+        $class = ucfirst($name);
         if(!class_exists($class)) {
-            throw new \Exception("PARSE_ERROR: $class cannot be resolved into a valid class name.");
+            throw new ComponentException("PARSE_ERROR: $class cannot be resolved into a valid class name.");
         }
         return new $class($name,$id,$params);
     }
@@ -65,10 +67,28 @@ class Component {
       
 
 
-    public function toHtml($params = null) {
-        $params = empty($params) ? $this->params : $params;
+    public function toHtml($params = array()) {
 
-        load_template($this->template, $params);
+        $params = empty($params) ? $this->params : $params;
+        $reflection = new \ReflectionClass($this);
+        
+        $directory = dirname($reflection->getFileName());
+
+        $path = $directory . "/templates/" . $this->template . ".tpl.php";
+        
+        if(!is_readable($path)) {
+            throw new \Exception("PATH_RESOLUTION_ERROR: The file does not exist or is not readable: {$path}.");
+        }
+
+        extract($params);
+
+        $found = include($path);
+    
+        if(!$found) return false;
     }
 
 }
+
+
+
+class ComponentException extends \Exception {}

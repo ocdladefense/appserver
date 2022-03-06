@@ -10,7 +10,7 @@ $custom_theme = null;
 DEFINE("TEMPLATE_EXTENSION", ".tpl.php");
 
 
-function component($name, $id, $params) {
+function component($name, $id = "", $params = array()) {
 
 	global $theme;
 
@@ -18,18 +18,29 @@ function component($name, $id, $params) {
     // Load the widget details...
     global $presentation;
 
-    $widget = Presentation\Component::fromName($name,$id, $params);
-    $css = $widget->getStyles();
-    $js = $widget->getScripts();
-    
-	// If we're not in a theme context
-	// then don't add the css or scripts.
-	if(null != $theme) {
-		$theme->addScript($js);
-		$theme->addStyle($css);
+	$widget = null;
+	$html = "";
+
+	try {
+    	$widget = Presentation\Component::fromName($name,$id, $params);
+
+		$css = $widget->getStyles();
+		$js = $widget->getScripts();
+		
+		// If we're not in a theme context
+		// then don't add the css or scripts.
+		if(null != $theme) {
+			$theme->addScript($js);
+			$theme->addStyle($css);
+		}
+		
+		$html = $widget->toHtml(); 
+	} catch(Presentation\ComponentException $e) {
+		
+		$html = "<!-- {$e->getMessage()} -->";
 	}
-	
-    print $widget->toHtml(); 
+
+	print $html;
 }
 
 
