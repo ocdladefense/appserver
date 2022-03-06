@@ -4,7 +4,7 @@
     "type": "wordpress-theme",
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "extra": {
+   "extra": {
     	"installer-paths": {
             "saml":["simplesamlphp/simplesamlphp"],
             "content/libraries/file/dragDrop":["ocdladefense/lib-drag-drop-upload"],
@@ -13,7 +13,8 @@
             "modules/directory":["ocdladefense/appserver-directory"],
             "modules/jobs":["ocdladefense/appserver-jobs"],
             "modules/bon":["ocdladefense/appserver-books-online"],
-            "modules/sphinx":["ocdladefense/appserver-sphinx-search"]
+            "modules/sphinx":["ocdladefense/appserver-sphinx-search"],
+            "modules/xml": ["ocdladefense/appserver-xml-products"]
         }
     },
     "config": {
@@ -31,15 +32,15 @@
     "require": {
         "composer/installers":"~1.0",
         "ocdladefense/lib-oauth-config": "~2.0",
-        "ocdladefense/lib-salesforce-rest-api":"~3.0",
+        "ocdladefense/lib-salesforce-rest-api":"dev-development",
         "ocdladefense/lib-http":"~3.0",
         "ocdladefense/lib-database":"dev-development",
         "ocdladefense/lib-drag-drop-upload":"dev-development",
         "ocdladefense/appserver-theme-default":"dev-development",
         "ocdladefense/appserver-directory":"dev-development",
         "ocdladefense/appserver-car": "dev-development",
-        "ocdladefense/appserver-books-online": "dev-development",
         "ocdladefense/appserver-jobs": "dev-development",
-        "ocdladefense/appserver-sphinx-search": "dev-development"
+        "ocdladefense/appserver-sphinx-search": "dev-development",
+        "ocdladefense/appserver-xml-products": "dev-development"
     }
 }
