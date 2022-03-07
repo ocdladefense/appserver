@@ -165,6 +165,7 @@ class Application {
         set_active_module($module);
 
 
+        Presentation\Component::setRequest($req);
 
         
         //instanciate a new translation class

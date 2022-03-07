@@ -6,6 +6,9 @@ namespace Presentation;
 
 class Component {
 
+
+    protected static $request;
+    
     // Unique name of this component.
     // Used when invoking component().
     protected $name;
@@ -42,6 +45,16 @@ class Component {
     }
 
 
+
+    public static function setRequest(\Http\HttpRequest $req) {
+
+        self::$request = $req;
+
+    }
+
+    public function getRequest() {
+        return self::$request;
+    }
 
     /**
      * Instantiate a component using it's class name.

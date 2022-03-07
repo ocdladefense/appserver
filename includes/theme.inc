@@ -14,9 +14,6 @@ function component($name, $id = "", $params = array()) {
 
 	global $theme;
 
-	
-    // Load the widget details...
-    global $presentation;
 
 	$widget = null;
 	$html = "";

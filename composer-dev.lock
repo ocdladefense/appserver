@@ -223,12 +223,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-car.git",
-                "reference": "7e6719c1c87079916c5202b1ac7a225548695b32"
+                "reference": "defb3e6f9b728ce2a3760ad7c531035797e81ea3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/7e6719c1c87079916c5202b1ac7a225548695b32",
-                "reference": "7e6719c1c87079916c5202b1ac7a225548695b32",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/defb3e6f9b728ce2a3760ad7c531035797e81ea3",
+                "reference": "defb3e6f9b728ce2a3760ad7c531035797e81ea3",
                 "shasum": ""
             },
             "require": {
@@ -238,6 +238,11 @@
             },
             "default-branch": true,
             "type": "wordpress-theme",
+            "autoload": {
+                "classmap": [
+                    "components/"
+                ]
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -253,7 +258,7 @@
                 "issues": "https://github.com/ocdladefense/appserver-car/issues",
                 "source": "https://github.com/ocdladefense/appserver-car/tree/development"
             },
-            "time": "2022-03-06T05:32:41+00:00"
+            "time": "2022-03-06T22:07:50+00:00"
         },
         {
             "name": "ocdladefense/appserver-directory",
@@ -359,12 +364,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-theme-default.git",
-                "reference": "4f85fdf052fe4c9d3f360926e56cccd3fe75497a"
+                "reference": "a3c48986e07097013f3d11e5d9310266dce26481"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/4f85fdf052fe4c9d3f360926e56cccd3fe75497a",
-                "reference": "4f85fdf052fe4c9d3f360926e56cccd3fe75497a",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/a3c48986e07097013f3d11e5d9310266dce26481",
+                "reference": "a3c48986e07097013f3d11e5d9310266dce26481",
                 "shasum": ""
             },
             "type": "wordpress-theme",
@@ -388,7 +393,7 @@
                 "issues": "https://github.com/ocdladefense/appserver-theme-default/issues",
                 "source": "https://github.com/ocdladefense/appserver-theme-default/tree/development"
             },
-            "time": "2022-03-06T05:39:21+00:00"
+            "time": "2022-03-06T22:12:28+00:00"
         },
         {
             "name": "ocdladefense/appserver-xml-products",
