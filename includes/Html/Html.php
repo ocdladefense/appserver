@@ -81,7 +81,11 @@ function attr($prop,$val = null) {
 }
 
 
-function createDataListElement($name, $values){
+
+
+
+// Needs a comprehensive comment.
+function DataList($name, $values){
 
 	$options = array_map(function($value) {
 
@@ -93,7 +97,9 @@ function createDataListElement($name, $values){
 }
 
 
-function createSelectElement($name, $values, $selected = null){
+
+// Needs a comprehensive comment.
+function Select($name, $values = array(), $selected = null){
 
 	$options = array_map(function($key, $value) use ($selected){
 
@@ -105,6 +111,9 @@ function createSelectElement($name, $values, $selected = null){
 
 	return createElement("select", array("name" => $name), $options);
 }
+
+
+function Date(){}
 
 
 function createElement($tagName, $attrs, $children = null){

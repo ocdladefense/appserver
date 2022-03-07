@@ -45,6 +45,13 @@ class Component {
     }
 
 
+	public function getInput($name) {
+
+		$req = $this->getRequest();
+		$params = $req->getBody();
+		return empty($params) ? "" : $params->{$name};
+	}
+
 
     public static function setRequest(\Http\HttpRequest $req) {
 
