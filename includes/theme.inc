@@ -87,6 +87,21 @@ function load_template($template, $vars = array()) {
 }
 
 
+function module_template($template, $record) {
+
+	$path = filesystem_path($template);
+
+	// call preprocess function on record.
+	$vars = my_preprocess($record);
+
+	extract($vars);
+
+	$found = include($path);
+
+	if(!$found) return false;
+}
+
+
 
 
 /**
@@ -105,6 +120,9 @@ function get_identifier_path($identifier, $location = "theme", $options = array(
 	switch($location) {
 		case "theme":
 			$format = get_theme_path() . DIRECTORY_SEPARATOR . "%s" . TEMPLATE_EXTENSION;
+
+		case "module":
+			$format = get_module_path() . DIRECTORY_SEPARATOR . "%s" . TEMPLATE_EXTENSION;
 		
 		default:
 			$format = get_theme_path() . DIRECTORY_SEPARATOR . "%s" . TEMPLATE_EXTENSION;
