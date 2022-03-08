@@ -118,7 +118,7 @@ function Select($name, $values = array(), $selected = null){
 
 function Autocomplete($name, $datalist, $value = null, $placeholder = "") {
 
-	return "<input autocomplete='off' type='text' name='{$name}' value='{$value}' data-datalist='{$datalist}' placeholder='{$placeholder}' onchange='submitForm();' />";
+	return "<input autocomplete='off' type='text' name='{$name}' value='{$value}' list='{$datalist}' placeholder='{$placeholder}' onchange='submitForm();' />";
 }
 
 function Input($name) {
@@ -128,7 +128,7 @@ function Input($name) {
 
 function Checkbox($name, $checked = false) {
 
-	return "<input type='checkbox' name='{$name}'>";
+	return "<input type='checkbox' id='$name' name='{$name}'>";
 }
 
 /*
@@ -145,7 +145,10 @@ function Button($name, $label) {
 	return "<button name='{$name}' id='{$name}'>{$label}</button>";
 }
 
-function Date(){}
+function Date($name, $value, $max = null){
+
+	return "<input type='date' name='$name' id='$name' value='$value' />";
+}
 
 
 function createElement($tagName, $attrs, $children = null){

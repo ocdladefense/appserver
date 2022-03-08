@@ -60,10 +60,25 @@ class Component {
 		$req = $this->getRequest();
 		$params = $req->getBody();
 
-        if(empty($name)) {
+        if(!empty($name) && empty($params->{$name})) {
+
+            return null;
+
+        } else if(!empty($name) && !empty($params->{$name})) {
+
+            return $params->{$name};
+
+        } else if(empty($name) && !empty($params)) {
+
+            return $params;
+
+        } else {
+
             return new \stdClass();
         }
-		else return empty($params) ? new \stdClass() : $params->{$name};
+
+
+		//else return empty($params) ? new \stdClass() : $params->{$name};
 	}
 
 
