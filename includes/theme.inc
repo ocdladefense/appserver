@@ -20,6 +20,7 @@ function component($name, $id = "", $params = array()) {
 
 	try {
     	$widget = Presentation\Component::fromName($name,$id, $params);
+		if(!$widget->active()) return "";
 
 		$css = $widget->getStyles();
 		$js = $widget->getScripts();

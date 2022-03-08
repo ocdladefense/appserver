@@ -7,6 +7,11 @@ namespace Presentation;
 class Component {
 
 
+    // By default let components be active.
+    // They can set themselves to inactive.
+    protected $active = true;
+
+
     protected static $request;
     
     // Unique name of this component.
@@ -45,6 +50,11 @@ class Component {
     }
 
 
+    public function active() {
+        return $this->active;
+    }
+
+    
 	public function getInput($name) {
 
 		$req = $this->getRequest();
