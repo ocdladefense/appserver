@@ -139,6 +139,10 @@ function Checkbox($name, $checked = false) {
         <input id="summarize-checkbox" class="checkbox-option filter-item" type="checkbox" <?php print $summarizeChecked; ?> name="summarize" value="1" />
 */
 
+function Button($name, $label) {
+	//<a class="filter-item" href="/car/list">Clear</a>
+	return "<button name='{$name}' id='{$name}'>{$label}</button>";
+}
 
 function Date(){}
 
