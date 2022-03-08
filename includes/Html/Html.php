@@ -101,9 +101,10 @@ function DataList($name, $values){
 // Needs a comprehensive comment.
 function Select($name, $values = array(), $selected = null){
 
+
 	$options = array_map(function($key, $value) use ($selected){
 
-		$attrs = $selected == $value ? array("value" => $key, "selected" => "") : array("value" => $key);
+		$attrs = strtolower($selected) == strtolower($value) ? array("value" => $key, "selected" => "") : array("value" => $key);
 
 		return array("name" => "option", "attrs" => $attrs, "children" => $value);
 
