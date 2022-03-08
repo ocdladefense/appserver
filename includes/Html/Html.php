@@ -98,19 +98,30 @@ function DataList($name, $values){
 
 
 
-// Needs a comprehensive comment.
-function Select($name, $values = array(), $selected = null){
+
+// This REQUIRES an associative array.
+function Select($name, $options = array(), $selected = null){
+
+	// Create our options array for this select element.
+	$children = array_map(function($optValue, $optText) use ($selected){
+
+		// Only valid if we are considering 
+		// passing in a standard array.
+		// $text = ucwords($opt); // This gets displayed to the user.
 
 
-	$options = array_map(function($key, $value) use ($selected){
+		$isSelected = strtolower($selected) == strtolower($optValue);
 
-		$attrs = strtolower($selected) == strtolower($value) ? array("value" => $key, "selected" => "") : array("value" => $key);
+		$attrs = array("value" => $optValue);
+		if($isSelected) {
+			$attrs["selected"] = "";
+		}
 
-		return array("name" => "option", "attrs" => $attrs, "children" => $value);
+		return array("name" => "option", "attrs" => $attrs, "children" => $optText);
 
-	},array_keys($values), $values);
+	},array_keys($options),$options);
 
-	return createElement("select", array("name" => $name), $options);
+	return createElement("select", array("name" => $name), $children);
 }
 
 
@@ -128,7 +139,7 @@ function Input($name) {
 
 function Checkbox($name, $checked = false) {
 
-	return "<input type='checkbox' id='$name' name='{$name}'>";
+	return "<input type='checkbox' id='$name' name='{$name}' />";
 }
 
 /*
