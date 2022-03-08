@@ -113,6 +113,33 @@ function Select($name, $values = array(), $selected = null){
 }
 
 
+
+
+function Autocomplete($name, $datalist, $value = null, $placeholder = "") {
+
+	return "<input autocomplete='off' type='text' name='{$name}' value='{$value}' data-datalist='{$datalist}' placeholder='{$placeholder}' onchange='submitForm();' />";
+}
+
+function Input($name) {
+
+
+}
+
+function Checkbox($name, $checked = false) {
+
+	return "<input type='checkbox' name='{$name}'>";
+}
+
+/*
+
+        <input autocomplete="off" type="text" name="appellate_judge" value="<?php print $appellate_judge; ?>" data-datalist="judges" placeholder="Appellate Judge" onchange="submitForm()" />
+
+        <input autocomplete="off" type="text" name="trial_judge" value="<?php print $trial_judge; ?>" data-datalist="judge" placeholder="Trial Judge" onchange="submitForm()" />
+
+        <input id="summarize-checkbox" class="checkbox-option filter-item" type="checkbox" <?php print $summarizeChecked; ?> name="summarize" value="1" />
+*/
+
+
 function Date(){}
 
 

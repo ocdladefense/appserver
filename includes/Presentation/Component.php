@@ -54,12 +54,16 @@ class Component {
         return $this->active;
     }
 
-    
-	public function getInput($name) {
+
+	public function getInput($name = null) {
 
 		$req = $this->getRequest();
 		$params = $req->getBody();
-		return empty($params) ? "" : $params->{$name};
+
+        if(empty($name)) {
+            return new \stdClass();
+        }
+		else return empty($params) ? new \stdClass() : $params->{$name};
 	}
 
 
@@ -100,14 +104,25 @@ class Component {
     public function toHtml($params = array()) {
 
         $params = empty($params) ? $this->params : $params;
-        $reflection = new \ReflectionClass($this);
+        // $props = get_object_vars($this);
         
+
+        $reflection = new \ReflectionClass($this);
+        $props = $reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
+    
+        // Add public members of this Component instance
+        // to the scope so they can be consumed by templates;
+        // especially, without `this` keyword.
+        foreach($props as $obj) {
+            $name = $obj->name;
+            $params[$name] = $this->{$name};
+        }
         $directory = dirname($reflection->getFileName());
 
         $path = $directory . "/templates/" . $this->template . ".tpl.php";
         
-        if(!is_readable($path)) {
-            throw new \Exception("PATH_RESOLUTION_ERROR: The file does not exist or is not readable: {$path}.");
+        if(self::$debug === true && !is_readable($path)) {
+            throw new \ComponentException("PATH_RESOLUTION_ERROR: The file does not exist or is not readable: {$path}.");
         }
 
         extract($params);
