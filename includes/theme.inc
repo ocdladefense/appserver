@@ -87,12 +87,12 @@ function load_template($template, $vars = array()) {
 }
 
 
-function module_template($template, $record) {
+function module_template($template, $dir, $record) {
 
-	$path = filesystem_path($template);
+	$path = $dir . "/" . $template . TEMPLATE_EXTENSION;
 
 	// call preprocess function on record.
-	$vars = my_preprocess($record);
+	$vars = recordPreprocess($record);
 
 	extract($vars);
 
