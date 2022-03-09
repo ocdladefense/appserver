@@ -25,13 +25,16 @@ function component($name, $id = "", $params = array()) {
 		$css = $widget->getStyles();
 		$js = $widget->getScripts();
 		
+		
 		// If we're not in a theme context
 		// then don't add the css or scripts.
 		if(null != $theme) {
-			$theme->addScript($js);
 			$theme->addStyle($css);
+			$theme->addScript($js);
 		}
 		
+
+
 		$html = $widget->toHtml(); 
 	} catch(Presentation\ComponentException $e) {
 		
