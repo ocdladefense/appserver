@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b79243bc32dc7e68a7f13ced861e6079",
+    "content-hash": "ff3dab71595660bf590069126bcaa801",
     "packages": [
         {
             "name": "brick/math",
@@ -223,12 +223,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-car.git",
-                "reference": "6a4a2b92e3d5b441b1da0b8c2809f8d8cee5fc22"
+                "reference": "dcf6f86e8713e959bb48717fe2e56e0e96321c7a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/6a4a2b92e3d5b441b1da0b8c2809f8d8cee5fc22",
-                "reference": "6a4a2b92e3d5b441b1da0b8c2809f8d8cee5fc22",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/dcf6f86e8713e959bb48717fe2e56e0e96321c7a",
+                "reference": "dcf6f86e8713e959bb48717fe2e56e0e96321c7a",
                 "shasum": ""
             },
             "require": {
@@ -258,7 +258,7 @@
                 "issues": "https://github.com/ocdladefense/appserver-car/issues",
                 "source": "https://github.com/ocdladefense/appserver-car/tree/development"
             },
-            "time": "2022-03-08T16:58:24+00:00"
+            "time": "2022-03-09T20:23:40+00:00"
         },
         {
             "name": "ocdladefense/appserver-directory",
@@ -364,12 +364,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-theme-default.git",
-                "reference": "db8594f19345334c7d1e7d40cf519657a7b914c9"
+                "reference": "f8e9883327a8247e2c50ceba54b154d99ddc871c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/db8594f19345334c7d1e7d40cf519657a7b914c9",
-                "reference": "db8594f19345334c7d1e7d40cf519657a7b914c9",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/f8e9883327a8247e2c50ceba54b154d99ddc871c",
+                "reference": "f8e9883327a8247e2c50ceba54b154d99ddc871c",
                 "shasum": ""
             },
             "type": "wordpress-theme",
@@ -393,7 +393,7 @@
                 "issues": "https://github.com/ocdladefense/appserver-theme-default/issues",
                 "source": "https://github.com/ocdladefense/appserver-theme-default/tree/development"
             },
-            "time": "2022-03-07T20:44:48+00:00"
+            "time": "2022-03-09T20:25:07+00:00"
         },
         {
             "name": "ocdladefense/appserver-xml-products",
@@ -429,12 +429,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/lib-database.git",
-                "reference": "dcfb32be30466ffb584a682cd6a4bd4a96345448"
+                "reference": "506c3ba52b9308cc3c82d8797bef2aaaf1496596"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/lib-database/zipball/dcfb32be30466ffb584a682cd6a4bd4a96345448",
-                "reference": "dcfb32be30466ffb584a682cd6a4bd4a96345448",
+                "url": "https://api.github.com/repos/ocdladefense/lib-database/zipball/506c3ba52b9308cc3c82d8797bef2aaaf1496596",
+                "reference": "506c3ba52b9308cc3c82d8797bef2aaaf1496596",
                 "shasum": ""
             },
             "type": "library",
@@ -457,7 +457,7 @@
                 "issues": "https://github.com/ocdladefense/lib-database/issues",
                 "source": "https://github.com/ocdladefense/lib-database/tree/development"
             },
-            "time": "2022-01-26T22:22:03+00:00"
+            "time": "2022-03-08T22:18:33+00:00"
         },
         {
             "name": "ocdladefense/lib-date",
@@ -525,12 +525,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/lib-gis.git",
-                "reference": "8babbe5ce9dbc042257758d7395ff6d632b019df"
+                "reference": "fe391a9a05886f65541a5c640f488c56a0658d05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/lib-gis/zipball/8babbe5ce9dbc042257758d7395ff6d632b019df",
-                "reference": "8babbe5ce9dbc042257758d7395ff6d632b019df",
+                "url": "https://api.github.com/repos/ocdladefense/lib-gis/zipball/fe391a9a05886f65541a5c640f488c56a0658d05",
+                "reference": "fe391a9a05886f65541a5c640f488c56a0658d05",
                 "shasum": ""
             },
             "type": "library",
@@ -545,7 +545,35 @@
                 "issues": "https://github.com/ocdladefense/lib-gis/issues",
                 "source": "https://github.com/ocdladefense/lib-gis/tree/development"
             },
-            "time": "2022-03-08T04:29:11+00:00"
+            "time": "2022-03-08T21:19:53+00:00"
+        },
+        {
+            "name": "ocdladefense/lib-html",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/lib-html.git",
+                "reference": "291676667c94cb0265fba6d7c25848d05ad810f5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/lib-html/zipball/291676667c94cb0265fba6d7c25848d05ad810f5",
+                "reference": "291676667c94cb0265fba6d7c25848d05ad810f5",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Library for representing and rendering HTML elements.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/lib-html/issues",
+                "source": "https://github.com/ocdladefense/lib-html/tree/development"
+            },
+            "time": "2022-03-09T20:21:00+00:00"
         },
         {
             "name": "ocdladefense/lib-http",
@@ -1155,6 +1183,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "ocdladefense/lib-salesforce-rest-api": 20,
+        "ocdladefense/lib-html": 20,
         "ocdladefense/lib-database": 20,
         "ocdladefense/lib-drag-drop-upload": 20,
         "ocdladefense/appserver-theme-default": 20,

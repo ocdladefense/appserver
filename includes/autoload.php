@@ -65,7 +65,6 @@
 		require_once(BASE_PATH.'/includes/Handlers/'.$file.".php");
 	}
 
-	require_once BASE_PATH.'/includes/Html/Html.php';
 		
 	require_once BASE_PATH.'/includes/Exception/PageNotFoundException.php';
 	require_once BASE_PATH.'/includes/Exception/SalesforceAccessException.php';
