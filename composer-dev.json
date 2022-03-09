@@ -34,6 +34,7 @@
         "ocdladefense/lib-oauth-config": "~2.0",
         "ocdladefense/lib-salesforce-rest-api":"dev-development",
         "ocdladefense/lib-http":"~3.0",
+        "ocdladefense/lib-html":"dev-development",
         "ocdladefense/lib-database":"dev-development",
         "ocdladefense/lib-drag-drop-upload":"dev-development",
         "ocdladefense/appserver-theme-default":"dev-development",
