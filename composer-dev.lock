@@ -553,18 +553,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/lib-html.git",
-                "reference": "291676667c94cb0265fba6d7c25848d05ad810f5"
+                "reference": "05f62cce6dd46781e01e7596b52876989bfd3c8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/lib-html/zipball/291676667c94cb0265fba6d7c25848d05ad810f5",
-                "reference": "291676667c94cb0265fba6d7c25848d05ad810f5",
+                "url": "https://api.github.com/repos/ocdladefense/lib-html/zipball/05f62cce6dd46781e01e7596b52876989bfd3c8d",
+                "reference": "05f62cce6dd46781e01e7596b52876989bfd3c8d",
                 "shasum": ""
             },
             "type": "library",
             "autoload": {
-                "classmap": [
-                    "src/"
+                "files": [
+                    "src/Html.php",
+                    "src/Form.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -573,7 +574,7 @@
                 "issues": "https://github.com/ocdladefense/lib-html/issues",
                 "source": "https://github.com/ocdladefense/lib-html/tree/development"
             },
-            "time": "2022-03-09T20:21:00+00:00"
+            "time": "2022-03-09T21:48:50+00:00"
         },
         {
             "name": "ocdladefense/lib-http",

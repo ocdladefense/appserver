@@ -6,22 +6,25 @@
 		require_once($saml_auth);
 	}
 
-	require_once BASE_PATH.'/includes/user.inc';
+	
 	
 	require_once BASE_PATH.'/includes/globals/globals.php';
+	require_once BASE_PATH.'/includes/globals/user.inc';
 	require_once BASE_PATH.'/includes/globals/access.php';
 	require_once BASE_PATH.'/includes/globals/authorization.php';
 	require_once BASE_PATH.'/includes/globals/user.php';
 	require_once BASE_PATH.'/includes/globals/api.php';
+	require_once BASE_PATH.'/includes/globals/theme.inc';
+	require_once BASE_PATH.'/includes/globals/user.inc';
 
-	require_once BASE_PATH.'/includes/User.php';
+	require_once BASE_PATH.'/includes/User/User.php';
 
 	require_once BASE_PATH.'/includes/Presentation/Component.php';
-
+	
 
 	if(file_exists(BASE_PATH.'/config/config.php')){		
 		require_once BASE_PATH.'/config/config.php';
-		require_once BASE_PATH.'/includes/theme.inc';
+		
 	}
 
 
@@ -71,10 +74,10 @@
 	require_once BASE_PATH.'/includes/Exception/SalesforceAuthException.php';
 
 
-	require_once BASE_PATH.'/includes/Template.php';
-	require_once BASE_PATH.'/includes/Theme.php';	
-	require_once BASE_PATH.'/includes/IRenderable.php';
-	require_once BASE_PATH.'/includes/Translate.php';
+	require_once BASE_PATH.'/includes/Presentation/Theme.php';	
+	require_once BASE_PATH.'/includes/Presentation/Template.php';	
+	require_once BASE_PATH.'/includes/Presentation/IRenderable.php';
+	require_once BASE_PATH.'/includes/Internationalization/Translate.php';
 
 	require_once BASE_PATH.'/includes/Routing/Path.php';	
 	require_once BASE_PATH.'/includes/Routing/Route.php';
@@ -85,48 +88,8 @@
 
 	require_once BASE_PATH.'/includes/System/CoreModule.php';
 
-	require_once BASE_PATH. "/includes/MailMessage.php";
-	require_once BASE_PATH. "/includes/MailMessageList.php";
-
-
-
-
-
-	
-	// Step 1.) Move this over to the scraper module; rename it from car-scraper to something more appropriate (e.g., "web-scraper"), since it does more than just scrape cars.
-	// require_once BASE_PATH.'/includes/DocumentParser.php';
-
-
-	// Step 2.) This should be converted to library code.
-	// require_once BASE_PATH.'/includes/Database/DbException.php';
-	// require_once BASE_PATH. '/includes/Database/QueryException.php';
-	// require_once BASE_PATH.'/includes/Database/IDbResult.php';
-	
-	// require_once BASE_PATH.'/includes/Database/mysql/DbResult.php';
-	// require_once BASE_PATH.'/includes/Database/mysql/DbSelectResult.php';
-	// require_once BASE_PATH.'/includes/Database/mysql/DbInsertResult.php';
-	// require_once BASE_PATH.'/includes/Database/mysql/DbUpdateResult.php';
-	// require_once BASE_PATH.'/includes/Database/mysql/DbDeleteResult.php';
-	// require_once BASE_PATH.'/includes/Database/mysql/QueryBuilder.php';
-	// require_once BASE_PATH. '/includes/Database/mysql/QueryStringParser.php';	
-	// require_once BASE_PATH.'/includes/Database/mysql/Database.php';
-
-	// require_once BASE_PATH.'/includes/Database/salesforce/Database.php';
-	// require_once BASE_PATH.'/includes/Database/salesforce/SObject.php';
-	// require_once BASE_PATH.'/includes/Database/salesforce/SObjectList.php';
-
-
-
-	// Step 2.) This needs to be moved to the Database library.
-
-
-
-
-
-
-
-
-
+	require_once BASE_PATH. "/includes/Mail/MailMessage.php";
+	require_once BASE_PATH. "/includes/Mail/MailMessageList.php";
 
 
 
