@@ -37,7 +37,7 @@
         "ocdladefense/lib-html":"~1.0",
         "ocdladefense/lib-date":"~1.0",
         "ocdladefense/lib-gis":"~1.0",
-        "ocdladefense/lib-database":"dev-development",
+        "ocdladefense/lib-database":"~2.0",
         "ocdladefense/lib-drag-drop-upload":"dev-development",
         "ocdladefense/appserver-theme-default":"~1.0",
         "ocdladefense/appserver-directory":"~1.0",
