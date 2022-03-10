@@ -55,10 +55,14 @@ class Template {
 		$this->name = $name;
 	}
 
+
+
 	public function getName(){
 
 		return $this->name;
 	}
+	
+
 	
 	public function setContent($content) {
 		$this->content = $content;
@@ -132,19 +136,20 @@ class Template {
 		return $this->output;
 	}
 	
+
+
+
 	public function renderTemplateFile($context = array()) {
-		// global $theme;
 
 		$theme = $context["theme"];
-		//var_dump($theme);exit;
 
 		extract($context,EXTR_REFS);
-		//var_dump($theme);exit;
+
 		ob_start();
 		
-		$this->log("About to include template name, {$this->name}.");
+	
 		$file = $this->pathToTemplate($this->name);
-		$this->log("About to include template file, {$file}.");
+		
 		require $file;
 
 		$content = ob_get_contents();
@@ -154,11 +159,16 @@ class Template {
 		return $content;
 	}
 	
+
+
+
 	public function isRendered() {
 		return $this->rendered;
 	}
 	
 	
+
+
 	public function renderTemplateString($context = array()) {
 		extract($context);
 		ob_start();
@@ -215,11 +225,17 @@ class Template {
 		return $found[0];
 	}
 	
+
+
+
 	
 	public static function exists($name){
 		return file_exists(self::pathToTemplate($name));
 	}
 	
+
+
+
 	public function bind($context, $value = null) {
 		if(!is_array($context) && !is_object($context)) {
 			$this->context += array($context => $value);
@@ -242,12 +258,18 @@ class Template {
 		return new Template($name);
 	}
 	
+
+
 	public static function fromString($string) {
 		$tpl = new Template();
 		$tpl->setContent($string);
 		
 		return $tpl;
 	}
+
+
+
+
 	// Save some log messages.
 	//  Might be of interest later.
 	protected function log($msg) {

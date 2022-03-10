@@ -1,14 +1,10 @@
 <?php
 
-use function Session\is_admin;
-use function Session\get_current_user;
-
-
 
 function user_has_access($module, $route, $user = null) {
 	
 
-	$user = $user == null ? get_current_user() : $user;
+	$user = $user == null ? current_user() : $user;
 
 	$access = $route["access"];
 	$args = $route["access_args"];

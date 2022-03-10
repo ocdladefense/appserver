@@ -10,26 +10,38 @@ $custom_theme = null;
 DEFINE("TEMPLATE_EXTENSION", ".tpl.php");
 
 
-function component($name, $id, $params) {
+function component($name, $id = "", $params = array()) {
 
 	global $theme;
 
-	
-    // Load the widget details...
-    global $presentation;
 
-    $widget = Presentation\Component::fromName($name,$id, $params);
-    $css = $widget->getStyles();
-    $js = $widget->getScripts();
-    
-	// If we're not in a theme context
-	// then don't add the css or scripts.
-	if(null != $theme) {
-		$theme->addScript($js);
-		$theme->addStyle($css);
+	$widget = null;
+	$html = "";
+
+	try {
+    	$widget = Presentation\Component::fromName($name,$id, $params);
+		if(!$widget->active()) return "";
+
+		$css = $widget->getStyles();
+		$js = $widget->getScripts();
+		
+		
+		// If we're not in a theme context
+		// then don't add the css or scripts.
+		if(null != $theme) {
+			$theme->addStyle($css);
+			$theme->addScript($js);
+		}
+		
+
+
+		$html = $widget->toHtml(); 
+	} catch(Presentation\ComponentException $e) {
+		
+		$html = "<!-- {$e->getMessage()} -->";
 	}
-	
-    print $widget->toHtml(); 
+
+	print $html;
 }
 
 
@@ -78,6 +90,21 @@ function load_template($template, $vars = array()) {
 }
 
 
+function module_template($template, $dir, $record) {
+
+	$path = $dir . "/" . $template . TEMPLATE_EXTENSION;
+
+	// call preprocess function on record.
+	$vars = recordPreprocess($record);
+
+	extract($vars);
+
+	$found = include($path);
+
+	if(!$found) return false;
+}
+
+
 
 
 /**
@@ -96,6 +123,9 @@ function get_identifier_path($identifier, $location = "theme", $options = array(
 	switch($location) {
 		case "theme":
 			$format = get_theme_path() . DIRECTORY_SEPARATOR . "%s" . TEMPLATE_EXTENSION;
+
+		case "module":
+			$format = get_module_path() . DIRECTORY_SEPARATOR . "%s" . TEMPLATE_EXTENSION;
 		
 		default:
 			$format = get_theme_path() . DIRECTORY_SEPARATOR . "%s" . TEMPLATE_EXTENSION;

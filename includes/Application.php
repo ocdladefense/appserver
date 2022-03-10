@@ -165,6 +165,7 @@ class Application {
         set_active_module($module);
 
 
+        Presentation\Component::setRequest($req);
 
         
         //instanciate a new translation class
@@ -221,12 +222,17 @@ class Application {
      * @param params Any parameters to be passed in via the URL.
      */
     public function getOutput($req, $module, $route, $params = array()) {
-
+        global $theme;
+        
         $params = $params != null ? $params : array();
 
         $resp = new HttpResponse();
 
-        
+		// Init the theme, first.
+		$className = ucfirst(strtolower(get_theme())) . "Theme";
+		require(get_theme_path() . "/" . $className . ".php");
+		
+		$theme = new $className();
         // var_dump($accept);exit;
 
         // REMEMBER! TRY CATCH BLOCKS WON'T DISPLAY WARNINGS.

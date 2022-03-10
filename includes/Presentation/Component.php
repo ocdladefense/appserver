@@ -6,6 +6,14 @@ namespace Presentation;
 
 class Component {
 
+
+    // By default let components be active.
+    // They can set themselves to inactive.
+    protected $active = true;
+
+
+    protected static $request;
+    
     // Unique name of this component.
     // Used when invoking component().
     protected $name;
@@ -21,7 +29,9 @@ class Component {
     protected $params = array();
 
 
-
+    // Set to true to throw errors 
+    // when the component can't be loaded.
+    private static $debug = false;
     /**
      * 
      * @params $name The name of this component. Note, this usually refers to the class name.
@@ -34,20 +44,61 @@ class Component {
         
         // get widget settings;
         $this->name = $name;
-        $this->instance = $id;
+        $this->instance = empty($id) ? ($name . "-component") : $id;
         $this->template = $name;
         $this->params = $params;
     }
 
 
+    public function active() {
+        return $this->active;
+    }
+
+
+	public function getInput($name = null) {
+
+		$req = $this->getRequest();
+		$params = $req->getBody();
+
+        if(!empty($name) && empty($params->{$name})) {
+
+            return null;
+
+        } else if(!empty($name) && !empty($params->{$name})) {
+
+            return $params->{$name};
+
+        } else if(empty($name) && !empty($params)) {
+
+            return $params;
+
+        } else {
+
+            return new \stdClass();
+        }
+
+
+		//else return empty($params) ? new \stdClass() : $params->{$name};
+	}
+
+
+    public static function setRequest(\Http\HttpRequest $req) {
+
+        self::$request = $req;
+
+    }
+
+    public function getRequest() {
+        return self::$request;
+    }
 
     /**
      * Instantiate a component using it's class name.
      */
     public static function fromName($name,$id,$params) {
-        $class = ucfirst($name)."Component";
+        $class = ucfirst($name);
         if(!class_exists($class)) {
-            throw new \Exception("PARSE_ERROR: $class cannot be resolved into a valid class name.");
+            throw new ComponentException("PARSE_ERROR: $class cannot be resolved into a valid class name.");
         }
         return new $class($name,$id,$params);
     }
@@ -65,10 +116,39 @@ class Component {
       
 
 
-    public function toHtml($params = null) {
-        $params = empty($params) ? $this->params : $params;
+    public function toHtml($params = array()) {
 
-        load_template($this->template, $params);
+        $params = empty($params) ? $this->params : $params;
+        // $props = get_object_vars($this);
+        
+
+        $reflection = new \ReflectionClass($this);
+        $props = $reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
+    
+        // Add public members of this Component instance
+        // to the scope so they can be consumed by templates;
+        // especially, without `this` keyword.
+        foreach($props as $obj) {
+            $name = $obj->name;
+            $params[$name] = $this->{$name};
+        }
+        $directory = dirname($reflection->getFileName());
+
+        $path = $directory . "/templates/" . $this->template . ".tpl.php";
+        
+        if(self::$debug === true && !is_readable($path)) {
+            throw new \ComponentException("PATH_RESOLUTION_ERROR: The file does not exist or is not readable: {$path}.");
+        }
+
+        extract($params);
+
+        $found = include($path);
+    
+        if(!$found) return false;
     }
 
 }
+
+
+
+class ComponentException extends \Exception {}

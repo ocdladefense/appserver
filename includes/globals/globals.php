@@ -63,6 +63,11 @@ function module_path(){
 	return $removeBackSlashes;
 }
 
+function filesystem_path($identifier) {
+	$module = $GLOBALS["active_module"];
+	$absolutePath = $module->getPath();
+}
+
 function path_to_uploads() {
     return BASE_PATH . "/content/uploads";
 }

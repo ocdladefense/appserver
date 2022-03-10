@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "872a3e8eb64be2d103656ffc413b9eb4",
+    "content-hash": "017ffcbcda4aeae1e4d2239c0b276607",
     "packages": [
         {
             "name": "composer/installers",
@@ -158,17 +158,49 @@
             "time": "2021-09-13T08:19:44+00:00"
         },
         {
-            "name": "ocdladefense/appserver-car",
-            "version": "v3.3.3",
+            "name": "ocdladefense/appserver-books-online",
+            "version": "v1.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ocdladefense/appserver-car.git",
-                "reference": "ce107ea6fd7204e73cfee669cb7bc7ca28e30169"
+                "url": "https://github.com/ocdladefense/appserver-books-online.git",
+                "reference": "f3a62397dbc7872d37a5ebf57ddc6f5701f5033a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/ce107ea6fd7204e73cfee669cb7bc7ca28e30169",
-                "reference": "ce107ea6fd7204e73cfee669cb7bc7ca28e30169",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-books-online/zipball/f3a62397dbc7872d37a5ebf57ddc6f5701f5033a",
+                "reference": "f3a62397dbc7872d37a5ebf57ddc6f5701f5033a",
+                "shasum": ""
+            },
+            "require": {
+                "ocdladefense/lib-date": "~1.0",
+                "ocdladefense/lib-php-template": "~1.0",
+                "ocdladefense/lib-salesforce": "~1.0",
+                "ocdladefense/lib-salesforce-rest-api": "~3.0"
+            },
+            "type": "wordpress-theme",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Module for Books Online-related functionality.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/appserver-books-online/issues",
+                "source": "https://github.com/ocdladefense/appserver-books-online/tree/v1.2"
+            },
+            "time": "2022-03-03T22:33:55+00:00"
+        },
+        {
+            "name": "ocdladefense/appserver-car",
+            "version": "v3.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/appserver-car.git",
+                "reference": "9b43ea083844d0dfc6850e9ec0d055805b6dfb41"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/9b43ea083844d0dfc6850e9ec0d055805b6dfb41",
+                "reference": "9b43ea083844d0dfc6850e9ec0d055805b6dfb41",
                 "shasum": ""
             },
             "require": {
@@ -188,23 +220,27 @@
             "description": "A module for viewing and managing case review data.",
             "support": {
                 "issues": "https://github.com/ocdladefense/appserver-car/issues",
-                "source": "https://github.com/ocdladefense/appserver-car/tree/v3.3.3"
+                "source": "https://github.com/ocdladefense/appserver-car/tree/v3.3.4"
             },
-            "time": "2022-02-26T06:41:44+00:00"
+            "time": "2022-02-28T19:07:25+00:00"
         },
         {
             "name": "ocdladefense/appserver-directory",
-            "version": "dev-development",
+            "version": "v1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-directory.git",
-                "reference": "ef65034f75844391112101206c599b3cb38923d0"
+                "reference": "6671d111655d0e65aece697b4b3a901af4696024"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-directory/zipball/ef65034f75844391112101206c599b3cb38923d0",
-                "reference": "ef65034f75844391112101206c599b3cb38923d0",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-directory/zipball/6671d111655d0e65aece697b4b3a901af4696024",
+                "reference": "6671d111655d0e65aece697b4b3a901af4696024",
                 "shasum": ""
+            },
+            "require": {
+                "ocdladefense/lib-salesforce": "~1.0",
+                "ocdladefense/lib-salesforce-rest-api": "~3.0"
             },
             "type": "wordpress-theme",
             "notification-url": "https://packagist.org/downloads/",
@@ -220,23 +256,27 @@
             "description": "A module for viewing member and expert witnesses within the OCDLA orginization.",
             "support": {
                 "issues": "https://github.com/ocdladefense/appserver-directory/issues",
-                "source": "https://github.com/ocdladefense/appserver-directory/tree/development"
+                "source": "https://github.com/ocdladefense/appserver-directory/tree/v1.4"
             },
-            "time": "2021-10-15T17:58:45+00:00"
+            "time": "2022-03-02T17:23:54+00:00"
         },
         {
             "name": "ocdladefense/appserver-jobs",
-            "version": "dev-development",
+            "version": "v1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-jobs.git",
-                "reference": "d09452e11bb1bf6ce5d8602e39ac2cd070874a94"
+                "reference": "85e9dffc38e3fa854de06eacc27bd883f14efb43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-jobs/zipball/d09452e11bb1bf6ce5d8602e39ac2cd070874a94",
-                "reference": "d09452e11bb1bf6ce5d8602e39ac2cd070874a94",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-jobs/zipball/85e9dffc38e3fa854de06eacc27bd883f14efb43",
+                "reference": "85e9dffc38e3fa854de06eacc27bd883f14efb43",
                 "shasum": ""
+            },
+            "require": {
+                "ocdladefense/lib-salesforce": "~1.0",
+                "ocdladefense/lib-salesforce-rest-api": "~3.0"
             },
             "type": "wordpress-theme",
             "notification-url": "https://packagist.org/downloads/",
@@ -252,9 +292,9 @@
             "description": "A module for viewing and managing OCDLA job postings.",
             "support": {
                 "issues": "https://github.com/ocdladefense/appserver-jobs/issues",
-                "source": "https://github.com/ocdladefense/appserver-jobs/tree/development"
+                "source": "https://github.com/ocdladefense/appserver-jobs/tree/v1.3"
             },
-            "time": "2021-07-29T19:58:19+00:00"
+            "time": "2022-03-02T16:47:12+00:00"
         },
         {
             "name": "ocdladefense/appserver-sphinx-search",
@@ -262,12 +302,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-sphinx-search.git",
-                "reference": "7c313e1f4424ae397c4bef098d10ed7fb6762476"
+                "reference": "2f8d3f9ae4e35f5d181205fa05071987cb496dc5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-sphinx-search/zipball/7c313e1f4424ae397c4bef098d10ed7fb6762476",
-                "reference": "7c313e1f4424ae397c4bef098d10ed7fb6762476",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-sphinx-search/zipball/2f8d3f9ae4e35f5d181205fa05071987cb496dc5",
+                "reference": "2f8d3f9ae4e35f5d181205fa05071987cb496dc5",
                 "shasum": ""
             },
             "require": {
@@ -280,20 +320,20 @@
                 "issues": "https://github.com/ocdladefense/appserver-sphinx-search/issues",
                 "source": "https://github.com/ocdladefense/appserver-sphinx-search/tree/development"
             },
-            "time": "2022-02-25T23:22:27+00:00"
+            "time": "2022-03-03T23:01:50+00:00"
         },
         {
             "name": "ocdladefense/appserver-theme-default",
-            "version": "v1.7.1",
+            "version": "v1.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-theme-default.git",
-                "reference": "5daf97733b31b634b9b5530d6cdbf36bbf7af4bf"
+                "reference": "3b048a8e08fb897b2d7c6499641d8a326011bfb3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/5daf97733b31b634b9b5530d6cdbf36bbf7af4bf",
-                "reference": "5daf97733b31b634b9b5530d6cdbf36bbf7af4bf",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/3b048a8e08fb897b2d7c6499641d8a326011bfb3",
+                "reference": "3b048a8e08fb897b2d7c6499641d8a326011bfb3",
                 "shasum": ""
             },
             "type": "wordpress-theme",
@@ -310,9 +350,34 @@
             "description": "A default theme for the OCDLA appserver.",
             "support": {
                 "issues": "https://github.com/ocdladefense/appserver-theme-default/issues",
-                "source": "https://github.com/ocdladefense/appserver-theme-default/tree/v1.7.1"
+                "source": "https://github.com/ocdladefense/appserver-theme-default/tree/v1.7.3"
             },
-            "time": "2022-02-26T19:33:55+00:00"
+            "time": "2022-02-24T18:25:27+00:00"
+        },
+        {
+            "name": "ocdladefense/appserver-xml-products",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/appserver-xml-products.git",
+                "reference": "1ecb1efc6689101f48426027e22d730a40d1fbd3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-xml-products/zipball/1ecb1efc6689101f48426027e22d730a40d1fbd3",
+                "reference": "1ecb1efc6689101f48426027e22d730a40d1fbd3",
+                "shasum": ""
+            },
+            "type": "wordpress-theme",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "support": {
+                "issues": "https://github.com/ocdladefense/appserver-xml-products/issues",
+                "source": "https://github.com/ocdladefense/appserver-xml-products/tree/v1.0"
+            },
+            "time": "2022-03-01T23:03:41+00:00"
         },
         {
             "name": "ocdladefense/lib-database",
@@ -330,16 +395,16 @@
             },
             "type": "library",
             "autoload": {
-                "classmap": [
-                    "mysql/",
-                    "salesforce/"
-                ],
                 "files": [
                     "mysql/Database.php",
                     "QueryBuilderBase.php",
                     "DbException.php",
                     "IDbResult.php",
                     "QueryException.php"
+                ],
+                "classmap": [
+                    "mysql/",
+                    "salesforce/"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -349,6 +414,34 @@
                 "source": "https://github.com/ocdladefense/lib-database/tree/development"
             },
             "time": "2022-01-26T22:22:03+00:00"
+        },
+        {
+            "name": "ocdladefense/lib-date",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/lib-date.git",
+                "reference": "fef236b627fb337f20e84c44079fb8ca67dcb967"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/lib-date/zipball/fef236b627fb337f20e84c44079fb8ca67dcb967",
+                "reference": "fef236b627fb337f20e84c44079fb8ca67dcb967",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Library for using Dates as types.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/lib-date/issues",
+                "source": "https://github.com/ocdladefense/lib-date/tree/v1.0"
+            },
+            "time": "2022-02-28T16:28:22+00:00"
         },
         {
             "name": "ocdladefense/lib-drag-drop-upload",
@@ -384,16 +477,16 @@
         },
         {
             "name": "ocdladefense/lib-http",
-            "version": "v3.6.2",
+            "version": "v3.6.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/lib-http.git",
-                "reference": "55f4dbc76477530c571da86a4e3d8f6bd2f5263b"
+                "reference": "bd7cb2cdd418a68c102985ef03b6f077d53876c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/lib-http/zipball/55f4dbc76477530c571da86a4e3d8f6bd2f5263b",
-                "reference": "55f4dbc76477530c571da86a4e3d8f6bd2f5263b",
+                "url": "https://api.github.com/repos/ocdladefense/lib-http/zipball/bd7cb2cdd418a68c102985ef03b6f077d53876c2",
+                "reference": "bd7cb2cdd418a68c102985ef03b6f077d53876c2",
                 "shasum": ""
             },
             "type": "library",
@@ -418,9 +511,9 @@
             "description": "PHP wrapper classes for curl functions.",
             "support": {
                 "issues": "https://github.com/ocdladefense/lib-http/issues",
-                "source": "https://github.com/ocdladefense/lib-http/tree/v3.6.2"
+                "source": "https://github.com/ocdladefense/lib-http/tree/v3.6.5"
             },
-            "time": "2022-02-26T20:55:18+00:00"
+            "time": "2022-03-02T02:18:13+00:00"
         },
         {
             "name": "ocdladefense/lib-oauth-config",
@@ -452,6 +545,71 @@
                 "source": "https://github.com/ocdladefense/lib-oauth-config/tree/v2.1.1"
             },
             "time": "2021-04-20T21:19:09+00:00"
+        },
+        {
+            "name": "ocdladefense/lib-php-template",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/lib-php-template.git",
+                "reference": "80892a2b287952a0065ae6f2ac87f327aca90110"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/lib-php-template/zipball/80892a2b287952a0065ae6f2ac87f327aca90110",
+                "reference": "80892a2b287952a0065ae6f2ac87f327aca90110",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Jose Bernal",
+                    "email": "jbernal.web.dev@gmail.com"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/ocdladefense/lib-php-template/issues",
+                "source": "https://github.com/ocdladefense/lib-php-template/tree/v1.0"
+            },
+            "time": "2022-02-28T16:33:09+00:00"
+        },
+        {
+            "name": "ocdladefense/lib-salesforce",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/lib-salesforce-sobject.git",
+                "reference": "41aa51ac4ac4586a5823ff0c6009e14311a1a3b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/lib-salesforce-sobject/zipball/41aa51ac4ac4586a5823ff0c6009e14311a1a3b3",
+                "reference": "41aa51ac4ac4586a5823ff0c6009e14311a1a3b3",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jose Bernal",
+                    "email": "jbernal.web.dev@gmail.com"
+                }
+            ],
+            "description": "PHP wrapper classes for SObjects functions.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/lib-salesforce-sobject/issues",
+                "source": "https://github.com/ocdladefense/lib-salesforce-sobject/tree/v1.0"
+            },
+            "time": "2022-03-02T16:27:58+00:00"
         },
         {
             "name": "ocdladefense/lib-salesforce-rest-api",
@@ -533,8 +691,6 @@
     "stability-flags": {
         "ocdladefense/lib-database": 20,
         "ocdladefense/lib-drag-drop-upload": 20,
-        "ocdladefense/appserver-directory": 20,
-        "ocdladefense/appserver-jobs": 20,
         "ocdladefense/appserver-sphinx-search": 20
     },
     "prefer-stable": true,

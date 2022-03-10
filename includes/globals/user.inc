@@ -1,11 +1,31 @@
-<?php
+<?php 
 
-function is_admin_user(){
 
-	return defined("ADMIN_USER") && ADMIN_USER === true;
+
+function current_user() {
+
+    $user = \Session::getUser();
+
+    if($user == null) $user = new \User();
+
+    return $user;
 }
 
-function get_user_info(){
+
+function is_admin() {
+
+    return defined("ADMIN_USER") && ADMIN_USER === true;
+}
+
+
+function is_admin_user() {
+
+	return is_admin();
+}
+
+
+
+function get_user_info() {
 
 	$module = new Module\Module();
 	

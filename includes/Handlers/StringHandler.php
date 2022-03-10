@@ -29,11 +29,7 @@ class StringHandler extends Handler {
 	public function getTextHtml() {
 		global $theme;
 
-		// Init the theme, first.
-		$className = ucfirst(strtolower(get_theme())) . "Theme";
-		require(get_theme_path() . "/" . $className . ".php");
-		
-		$theme = new $className();
+
 		
 		$content = Template::isTemplate($this->output) ? $theme->renderTemplate($this->output) : $this->output;;
 
