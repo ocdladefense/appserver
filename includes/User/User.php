@@ -2,20 +2,34 @@
 
 class User {
 
+
+	
 	const GUEST_USER_ID = "0";
 
 	private $userId;
+
 	private $name;
+
 	private $firstName;
+
 	private $lastName;
+
 	private $username;
+
 	private $preferredUsername;
+
 	private $email;
+
 	private $geoZone;
+
 	private $country;
+
 	private $userType;
+
 	private $organizationId;
 	
+
+
 
 	public function __construct($user = array(), $type = "salesforce") {
 
@@ -83,24 +97,24 @@ class User {
 	}
 	
 	
-	public function isAdmin($user = null){
+	public function isAdmin($user = null) {
 	
 		return $this->userType == "STANDARD" || $this->userId == "005j000000DSW0eAAH";
 	}
 	
 	
-	public function isMember($user = null){
+	public function isMember($user = null) {
 	
 		return $this->userType != "STANDARD" && $this->userId != self::GUEST_USER_ID;
 	}
 
-	public function isGuest(){
+	public function isGuest() {
 
 		return $this->userId == self::GUEST_USER_ID;
 	}
 
 
-	public function is_logged_in(){
+	public function is_logged_in() {
 
 		return $this->userId != self::GUEST_USER_ID;
 	}
