@@ -2,7 +2,7 @@
 use \Http\HttpHeader as HttpHeader;
 
 
-class HtmlErrorHandler extends Handler {
+class ErrorHandler extends Handler {
 
 	
 	public function __construct($output, $contentType) {
@@ -21,5 +21,15 @@ class HtmlErrorHandler extends Handler {
 	public function getHeaders($mime = "text/html") {
 
       return new HttpHeader("Content-Type", "text/html");
+	}
+
+
+	public function getTextHtml() {
+		global $theme;
+
+		$content = $this->output->getMessage();
+		
+		// Loads an HTML page with defined scripts, css.
+		return $theme->render($content);
 	}
 }

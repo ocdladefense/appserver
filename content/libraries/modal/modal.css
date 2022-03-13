@@ -1,8 +1,21 @@
+/**
+ Show and hide a modal based on a body CSS class.
+ When the "has-modal" class is present, the modal will
+ change from display none to display block.
+*/
 
+.has-modal #modal,
+.has-modal #modal-backdrop {
+	display: block;	
+}
+
+#modal-content {
+	color: #666;
+}
 
 #modal-backdrop {
 	display:none;
-	position:absolute;
+	position:fixed;
 	top:0;
 	left:0;
 	margin:0;
@@ -10,36 +23,33 @@
 	background-color:rgba(0,0,0,0.1);
 	width:100%;
 	height:100%;
+	z-index:10;
 }
 
 
 #modal {
-	display: none;
 	min-height: 300px;
 	width: 600px;
 	background-color: #fff;
 	position: absolute;
-	top: 0px;
-	color: white;
 	border-radius: 5px;
 	box-shadow: 1px 1px 30px 5px rgba(0,0,0,0.1);
-	z-index: 101;
+	z-index: 999;
 	left: 50%;
-	margin-left: -300px;
 	top: 50%;
+	margin-left: -300px;
 	margin-top: -150px;
-}
-
-.hasModal #modal,
-.hasModal #modal-backdrop {
-	display: block;	
+	padding:5%;
 }
 
 
-#context-menu-container{
+
+
+#context-menu-container {
 	z-index: 1;
 }
-#context-menu{
+
+#context-menu {
 	height:160px;
 	background-color:teal;
 	max-width:215px;

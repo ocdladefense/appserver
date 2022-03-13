@@ -14,7 +14,8 @@ abstract class Handler {
 		"MailMessage" => "HtmlEmailHandler",
 		"Http\HttpResponse" => "HttpResponseHandler",
 		"HtmlDocumentHandler" => "HtmlDocumentHandler",
-		"Exception" => "HtmlErrorHandler",
+		"Exception" => "ErrorHandler",
+		"Error" => "ErrorHandler",
 		"File\File" => "ApplicationFileHandler",
 		"String" => "StringHandler"
 	);
