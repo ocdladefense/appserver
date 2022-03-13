@@ -58,7 +58,7 @@ foreach($store as $file) {
 }
 
 
-$handlers = array("Handler","StringHandler","HtmlEmailHandler","ApplicationFileHandler","HttpResponseHandler","JsonHandler","HtmlDocumentHandler","JsonErrorHandler","HtmlStringHandler","HtmlErrorHandler", "XmlHandler");
+$handlers = array("Handler","StringHandler","HtmlEmailHandler","ApplicationFileHandler","HttpResponseHandler","JsonHandler","HtmlDocumentHandler","JsonErrorHandler","HtmlStringHandler","ErrorHandler", "XmlHandler");
 
 
 foreach($handlers as $file) {
