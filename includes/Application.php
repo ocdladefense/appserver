@@ -87,7 +87,9 @@ class Application {
         $this->modules->put("core", $coreDef);
 
 
-        $this->loader = new ModuleLoader($this->modules->getArray());
+        // $this->loader = new ModuleLoader($this->modules->getArray());
+        Module::catalog($this->modules->getArray());
+
 
         // Build an index for routes.
         $this->routes = $this->modules->map(function($def) {
@@ -122,7 +124,8 @@ class Application {
 
         session_start();
 
-        $loader = $this->getLoader();
+
+        // $loader = $this->getLoader(); @jbernal Module is now static
         $router = new Router();
 
         // if path is not found match returns false.
@@ -131,7 +134,7 @@ class Application {
         
         if($path == false) { // No matching route was found.
 
-            $module = $loader->loadObject("core");
+            $module = Module::loadObject("core");
             $route = $this->routes["system/404/%msg"];
 
             $params = array("We couldn't find ".$scriptUri);
@@ -144,7 +147,7 @@ class Application {
             $route = $this->routes[$path->__toString()];
 
             $moduleName = $route["module"];
-            $module = $loader->loadObject($moduleName);
+            $module = Module::loadObject($moduleName);
 
         }
 
@@ -155,7 +158,7 @@ class Application {
         // @TODO: setup appropriate response for different handlers?
         if(CHECK_ACCESS === true && !user_has_access($module,$route))
         {
-            $module = $loader->loadObject("core");
+            $module = Module::loadObject("core");
             $route = $this->routes["system/403"];
         }
         

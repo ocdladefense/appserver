@@ -79,7 +79,6 @@ require_once BASE_PATH.'/includes/Routing/Route.php';
 require_once BASE_PATH.'/includes/Routing/Router.php';
 
 require_once BASE_PATH.'/includes/Module/Module.php';
-require_once BASE_PATH.'/includes/Module/ModuleLoader.php';
 
 require_once BASE_PATH.'/includes/System/CoreModule.php';
 
