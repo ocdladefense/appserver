@@ -58,27 +58,33 @@ class Component {
 	public function getInput($name = null) {
 
 		$req = $this->getRequest();
-		$params = $req->getBody();
+		$body = $req->getBody();
 
-        if(!empty($name) && empty($params->{$name})) {
+        // Start with GET; don't let GET variables overwrite
+        // data sent up in the body of the request.
+        $tmp = !empty($_GET) ? $_GET : array();
+        $body = (array)$body;
+
+        foreach($body as $key => $value) {
+            $tmp[$key] = $value;
+        }
+
+        if(!empty($name) && empty($tmp[$key])) {
 
             return null;
 
-        } else if(!empty($name) && !empty($params->{$name})) {
+        } else if(!empty($name) && !empty($tmp[$key])) {
 
-            return $params->{$name};
+            return $tmp[$name];
 
-        } else if(empty($name) && !empty($params)) {
+        } else if(empty($name) && !empty($tmp)) {
 
-            return $params;
+            return (object)$tmp;
 
         } else {
 
             return new \stdClass();
         }
-
-
-		//else return empty($params) ? new \stdClass() : $params->{$name};
 	}
 
 
