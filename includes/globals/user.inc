@@ -19,8 +19,8 @@ function is_admin() {
 
 
 function is_admin_user() {
-
-	return is_admin();
+	$user = current_user();
+	return is_admin() || $user->isAdmin();
 }
 
 
