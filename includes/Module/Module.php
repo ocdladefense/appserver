@@ -9,6 +9,9 @@ class Module {
 
     const SESSION_ACCESS_TOKEN_EXPIRED_ERROR_CODE = "INVALID_SESSION_ID";
 
+    // The list of Modules installed for this application.
+    private static $index;
+
     protected $routes = array();
 
     protected $currentRoute;
@@ -41,6 +44,117 @@ class Module {
     	$this->className = get_class($this);
     }
     
+
+
+
+
+
+
+    public static function catalog($index) {
+
+    	self::$index = $index;
+    }
+
+
+
+    // Load one or more modules for the specified paths.
+    public static function loadModules($paths) {
+
+        $previous = getcwd();
+
+        foreach($paths as $mod)  {
+            require_once($mod."/module.php");
+        }
+        
+    }
+    
+    
+
+    // Return a list of all modules matching the query.
+    public function query($prop, $value = null) {
+
+        return self::$index;
+    }
+
+
+    
+    public static function load($name) {
+        
+    	if(!isset(self::$index[$name])) {
+    		throw new Exception("MODULE_NOT_FOUND_ERROR: {$name}.");
+    	}
+    	$info = self::$index[$name];
+    	$path = $info["path"];
+        
+        if($path == null) return;
+        
+    	require_once($path."/module.php");
+    	
+    	foreach($info["files"] as $file) {
+    		require($path . "/src/" . $file);
+    	}
+        
+        return $info;
+    }
+
+
+    /**
+     * Return an array of values for the given key
+     * in all loaded module.json files.
+     */
+    public static function getKey($key) {
+
+        if(null == $key) throw new Exception("MODULE_PARSE_ERROR: key not specified or null when attempting to retrieve value.");
+        // Build an index for routes.
+        $values = array();
+        foreach(self::$index as $def) {
+            if(isset($def[$key])) {
+                $values = array_merge($values,$def[$key]);
+            }
+        }
+
+        return array_filter($values);
+    }
+    
+    
+    
+    public static function loadObject($name) {
+    	$info = self::load($name);
+    	return self::getInstance($name, $info);
+    }
+    
+    
+    
+    // Require each of the dependencies for each module
+    public static function getInstance($moduleName, $info = null) {
+
+        if(empty($moduleName)) {
+            throw new Exception("MODULE_ERROR: Cannot instantiate empty module class.");
+        }
+    	
+        $className = ucwords($moduleName,"-\t\r\n\f\v");
+        $className = str_replace("-","",$className)."Module";
+        $moduleClass = new $className($info["path"]);
+        $moduleClass->setInfo($info);
+        $moduleClass->setName($info["name"]);
+        $moduleClass->setPath($info["path"]);
+        $moduleClass->setLanguages($info["languages"]);
+        $moduleClass->setLanguageFiles($info["language-files"]);
+        $dependencies = $moduleClass->getDependencies();
+
+        foreach($dependencies as $d){
+            $instance = self::getInstance($d);
+            $instance->loadFiles();
+        }
+        return $moduleClass;
+    }
+
+
+
+
+
+
+
 
     // Getters
     public function getPath() {
@@ -141,7 +255,8 @@ class Module {
     	$this->theme = $theme;
     }
 
-    // Other functions
+
+
     
     protected function loadForceApi($app = null, $debug = false) {
 
