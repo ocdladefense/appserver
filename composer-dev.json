@@ -10,6 +10,7 @@
             "content/libraries/file/dragDrop":["ocdladefense/lib-drag-drop-upload"],
             "content/themes/default":["ocdladefense/appserver-theme-default"],
             "modules/car":["ocdladefense/appserver-car"],
+            "modules/mail":["ocdladefense/appserver-mail-client"],
             "modules/directory":["ocdladefense/appserver-directory"],
             "modules/jobs":["ocdladefense/appserver-jobs"],
             "modules/bon":["ocdladefense/appserver-books-online"],
@@ -40,8 +41,7 @@
         "ocdladefense/appserver-theme-default":"dev-development",
         "ocdladefense/appserver-directory":"dev-development",
         "ocdladefense/appserver-car": "dev-development",
-        "ocdladefense/appserver-jobs": "dev-development",
-        "ocdladefense/appserver-sphinx-search": "dev-development",
-        "ocdladefense/appserver-xml-products": "dev-development"
+        "ocdladefense/appserver-mail-client":"dev-development",
+        "ocdladefense/appserver-jobs": "dev-development"
     }
 }
