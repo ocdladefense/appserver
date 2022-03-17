@@ -45,6 +45,6 @@
         "ocdladefense/appserver-books-online": "~1.0",
         "ocdladefense/appserver-jobs": "~1.0",
         "ocdladefense/appserver-xml-products":"~1.0",
-        "ocdladefense/appserver-sphinx-search": "dev-development"
+        "ocdladefense/appserver-sphinx-search": "v0.2-alpha"
     }
 }

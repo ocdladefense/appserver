@@ -73,7 +73,9 @@ class Module {
     // Return a list of all modules matching the query.
     public function query($prop, $value = null) {
 
-        return self::$index;
+        return array_filter(self::$index, function($module) use($prop,$value) {
+            return $module[$prop] == $value;
+        });
     }
 
 
@@ -201,6 +203,13 @@ class Module {
 
         return $this->info[$key];
     }
+
+
+
+    public function getModule($name) {
+        return self::$index[$name];
+    }
+
 
     public function getRequest(){
 

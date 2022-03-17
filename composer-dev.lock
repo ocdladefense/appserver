@@ -4,68 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ff3dab71595660bf590069126bcaa801",
+    "content-hash": "d3db4f8740962d27b9901d980ac1e989",
     "packages": [
-        {
-            "name": "brick/math",
-            "version": "0.9.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/brick/math.git",
-                "reference": "ca57d18f028f84f777b2168cd1911b0dee2343ae"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/brick/math/zipball/ca57d18f028f84f777b2168cd1911b0dee2343ae",
-                "reference": "ca57d18f028f84f777b2168cd1911b0dee2343ae",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "php": "^7.1 || ^8.0"
-            },
-            "require-dev": {
-                "php-coveralls/php-coveralls": "^2.2",
-                "phpunit/phpunit": "^7.5.15 || ^8.5 || ^9.0",
-                "vimeo/psalm": "4.9.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Brick\\Math\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Arbitrary-precision arithmetic library",
-            "keywords": [
-                "Arbitrary-precision",
-                "BigInteger",
-                "BigRational",
-                "arithmetic",
-                "bigdecimal",
-                "bignum",
-                "brick",
-                "math"
-            ],
-            "support": {
-                "issues": "https://github.com/brick/math/issues",
-                "source": "https://github.com/brick/math/tree/0.9.3"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/BenMorel",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/brick/math",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2021-08-15T20:50:18+00:00"
-        },
         {
             "name": "composer/installers",
             "version": "v1.12.0",
@@ -223,12 +163,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-car.git",
-                "reference": "dcf6f86e8713e959bb48717fe2e56e0e96321c7a"
+                "reference": "156e33287716322a6bc66df3a981ca9d883d0125"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/dcf6f86e8713e959bb48717fe2e56e0e96321c7a",
-                "reference": "dcf6f86e8713e959bb48717fe2e56e0e96321c7a",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/156e33287716322a6bc66df3a981ca9d883d0125",
+                "reference": "156e33287716322a6bc66df3a981ca9d883d0125",
                 "shasum": ""
             },
             "require": {
@@ -258,7 +198,7 @@
                 "issues": "https://github.com/ocdladefense/appserver-car/issues",
                 "source": "https://github.com/ocdladefense/appserver-car/tree/development"
             },
-            "time": "2022-03-09T20:23:40+00:00"
+            "time": "2022-03-17T00:27:00+00:00"
         },
         {
             "name": "ocdladefense/appserver-directory",
@@ -266,12 +206,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-directory.git",
-                "reference": "10040ce2eb456feee4d67e18912631cfdebd9e50"
+                "reference": "83d599e90f595832403dc820785c20c966d6d8ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-directory/zipball/10040ce2eb456feee4d67e18912631cfdebd9e50",
-                "reference": "10040ce2eb456feee4d67e18912631cfdebd9e50",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-directory/zipball/83d599e90f595832403dc820785c20c966d6d8ab",
+                "reference": "83d599e90f595832403dc820785c20c966d6d8ab",
                 "shasum": ""
             },
             "require": {
@@ -294,7 +234,7 @@
                 "issues": "https://github.com/ocdladefense/appserver-directory/issues",
                 "source": "https://github.com/ocdladefense/appserver-directory/tree/development"
             },
-            "time": "2022-03-02T16:21:36+00:00"
+            "time": "2022-03-10T22:11:50+00:00"
         },
         {
             "name": "ocdladefense/appserver-jobs",
@@ -302,12 +242,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-jobs.git",
-                "reference": "148e6a000809a062e63964a32460d52cfb8bd2f3"
+                "reference": "62625690d7e864b1eaea169cf0e480a7f21ebf7a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-jobs/zipball/148e6a000809a062e63964a32460d52cfb8bd2f3",
-                "reference": "148e6a000809a062e63964a32460d52cfb8bd2f3",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-jobs/zipball/62625690d7e864b1eaea169cf0e480a7f21ebf7a",
+                "reference": "62625690d7e864b1eaea169cf0e480a7f21ebf7a",
                 "shasum": ""
             },
             "require": {
@@ -330,33 +270,33 @@
                 "issues": "https://github.com/ocdladefense/appserver-jobs/issues",
                 "source": "https://github.com/ocdladefense/appserver-jobs/tree/development"
             },
-            "time": "2022-03-02T16:36:06+00:00"
+            "time": "2022-03-10T22:01:04+00:00"
         },
         {
-            "name": "ocdladefense/appserver-sphinx-search",
+            "name": "ocdladefense/appserver-mail-client",
             "version": "dev-development",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ocdladefense/appserver-sphinx-search.git",
-                "reference": "2f8d3f9ae4e35f5d181205fa05071987cb496dc5"
+                "url": "https://github.com/ocdladefense/appserver-mail-client.git",
+                "reference": "257b06ee5a66ba028d49b333fef34c0213a6de6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-sphinx-search/zipball/2f8d3f9ae4e35f5d181205fa05071987cb496dc5",
-                "reference": "2f8d3f9ae4e35f5d181205fa05071987cb496dc5",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-mail-client/zipball/257b06ee5a66ba028d49b333fef34c0213a6de6f",
+                "reference": "257b06ee5a66ba028d49b333fef34c0213a6de6f",
                 "shasum": ""
-            },
-            "require": {
-                "ocdladefense/lib-sphinx-search": "dev-development"
             },
             "type": "wordpress-theme",
             "notification-url": "https://packagist.org/downloads/",
-            "description": "Module to implement the Sphinx fulltext search engine.",
+            "license": [
+                "MIT"
+            ],
+            "description": "A simple mail client.",
             "support": {
-                "issues": "https://github.com/ocdladefense/appserver-sphinx-search/issues",
-                "source": "https://github.com/ocdladefense/appserver-sphinx-search/tree/development"
+                "issues": "https://github.com/ocdladefense/appserver-mail-client/issues",
+                "source": "https://github.com/ocdladefense/appserver-mail-client/tree/development"
             },
-            "time": "2022-03-03T23:01:50+00:00"
+            "time": "2022-03-17T00:25:50+00:00"
         },
         {
             "name": "ocdladefense/appserver-theme-default",
@@ -364,12 +304,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-theme-default.git",
-                "reference": "f8e9883327a8247e2c50ceba54b154d99ddc871c"
+                "reference": "9b31d8c75aba15b57d4db907c6b308b4b0ede1fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/f8e9883327a8247e2c50ceba54b154d99ddc871c",
-                "reference": "f8e9883327a8247e2c50ceba54b154d99ddc871c",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-theme-default/zipball/9b31d8c75aba15b57d4db907c6b308b4b0ede1fb",
+                "reference": "9b31d8c75aba15b57d4db907c6b308b4b0ede1fb",
                 "shasum": ""
             },
             "type": "wordpress-theme",
@@ -393,35 +333,7 @@
                 "issues": "https://github.com/ocdladefense/appserver-theme-default/issues",
                 "source": "https://github.com/ocdladefense/appserver-theme-default/tree/development"
             },
-            "time": "2022-03-09T20:25:07+00:00"
-        },
-        {
-            "name": "ocdladefense/appserver-xml-products",
-            "version": "dev-development",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ocdladefense/appserver-xml-products.git",
-                "reference": "263ddcde0a27e2b147da622cc1f5fff5a44cf938"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-xml-products/zipball/263ddcde0a27e2b147da622cc1f5fff5a44cf938",
-                "reference": "263ddcde0a27e2b147da622cc1f5fff5a44cf938",
-                "shasum": ""
-            },
-            "require": {
-                "ramsey/uuid": "^4.2"
-            },
-            "type": "wordpress-theme",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "support": {
-                "issues": "https://github.com/ocdladefense/appserver-xml-products/issues",
-                "source": "https://github.com/ocdladefense/appserver-xml-products/tree/development"
-            },
-            "time": "2022-03-06T00:13:39+00:00"
+            "time": "2022-03-11T21:50:55+00:00"
         },
         {
             "name": "ocdladefense/lib-database",
@@ -429,12 +341,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/lib-database.git",
-                "reference": "506c3ba52b9308cc3c82d8797bef2aaaf1496596"
+                "reference": "317b5b194f5fb83076954abc96d7e87b812982bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/lib-database/zipball/506c3ba52b9308cc3c82d8797bef2aaaf1496596",
-                "reference": "506c3ba52b9308cc3c82d8797bef2aaaf1496596",
+                "url": "https://api.github.com/repos/ocdladefense/lib-database/zipball/317b5b194f5fb83076954abc96d7e87b812982bd",
+                "reference": "317b5b194f5fb83076954abc96d7e87b812982bd",
                 "shasum": ""
             },
             "type": "library",
@@ -457,7 +369,7 @@
                 "issues": "https://github.com/ocdladefense/lib-database/issues",
                 "source": "https://github.com/ocdladefense/lib-database/tree/development"
             },
-            "time": "2022-03-08T22:18:33+00:00"
+            "time": "2022-03-15T21:40:14+00:00"
         },
         {
             "name": "ocdladefense/lib-date",
@@ -553,12 +465,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/lib-html.git",
-                "reference": "05f62cce6dd46781e01e7596b52876989bfd3c8d"
+                "reference": "67a1b3d28d8eac5ec1c8e8cc71b39f13461779ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/lib-html/zipball/05f62cce6dd46781e01e7596b52876989bfd3c8d",
-                "reference": "05f62cce6dd46781e01e7596b52876989bfd3c8d",
+                "url": "https://api.github.com/repos/ocdladefense/lib-html/zipball/67a1b3d28d8eac5ec1c8e8cc71b39f13461779ac",
+                "reference": "67a1b3d28d8eac5ec1c8e8cc71b39f13461779ac",
                 "shasum": ""
             },
             "type": "library",
@@ -574,7 +486,7 @@
                 "issues": "https://github.com/ocdladefense/lib-html/issues",
                 "source": "https://github.com/ocdladefense/lib-html/tree/development"
             },
-            "time": "2022-03-09T21:48:50+00:00"
+            "time": "2022-03-17T00:21:49+00:00"
         },
         {
             "name": "ocdladefense/lib-http",
@@ -716,467 +628,6 @@
                 "source": "https://github.com/ocdladefense/lib-salesforce-rest-api/tree/development"
             },
             "time": "2022-02-21T21:47:35+00:00"
-        },
-        {
-            "name": "ocdladefense/lib-sphinx-search",
-            "version": "dev-development",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ocdladefense/lib-sphinx-search.git",
-                "reference": "4b7ab22ca39ae0fcc882296d74248c0102bd4f5e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/lib-sphinx-search/zipball/4b7ab22ca39ae0fcc882296d74248c0102bd4f5e",
-                "reference": "4b7ab22ca39ae0fcc882296d74248c0102bd4f5e",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "lib/sphinxapi.php"
-                ],
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jose Bernal",
-                    "email": "jbernal.web.dev@gmail.com"
-                }
-            ],
-            "description": "PHP wrapper classes for performing Sphinx fulltext searches.",
-            "support": {
-                "issues": "https://github.com/ocdladefense/lib-sphinx-search/issues",
-                "source": "https://github.com/ocdladefense/lib-sphinx-search/tree/development"
-            },
-            "time": "2022-02-16T21:22:33+00:00"
-        },
-        {
-            "name": "ramsey/collection",
-            "version": "1.2.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ramsey/collection.git",
-                "reference": "cccc74ee5e328031b15640b51056ee8d3bb66c0a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/collection/zipball/cccc74ee5e328031b15640b51056ee8d3bb66c0a",
-                "reference": "cccc74ee5e328031b15640b51056ee8d3bb66c0a",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.3 || ^8",
-                "symfony/polyfill-php81": "^1.23"
-            },
-            "require-dev": {
-                "captainhook/captainhook": "^5.3",
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-                "ergebnis/composer-normalize": "^2.6",
-                "fakerphp/faker": "^1.5",
-                "hamcrest/hamcrest-php": "^2",
-                "jangregor/phpstan-prophecy": "^0.8",
-                "mockery/mockery": "^1.3",
-                "phpspec/prophecy-phpunit": "^2.0",
-                "phpstan/extension-installer": "^1",
-                "phpstan/phpstan": "^0.12.32",
-                "phpstan/phpstan-mockery": "^0.12.5",
-                "phpstan/phpstan-phpunit": "^0.12.11",
-                "phpunit/phpunit": "^8.5 || ^9",
-                "psy/psysh": "^0.10.4",
-                "slevomat/coding-standard": "^6.3",
-                "squizlabs/php_codesniffer": "^3.5",
-                "vimeo/psalm": "^4.4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Ramsey\\Collection\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ben Ramsey",
-                    "email": "ben@benramsey.com",
-                    "homepage": "https://benramsey.com"
-                }
-            ],
-            "description": "A PHP library for representing and manipulating collections.",
-            "keywords": [
-                "array",
-                "collection",
-                "hash",
-                "map",
-                "queue",
-                "set"
-            ],
-            "support": {
-                "issues": "https://github.com/ramsey/collection/issues",
-                "source": "https://github.com/ramsey/collection/tree/1.2.2"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/ramsey",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/ramsey/collection",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2021-10-10T03:01:02+00:00"
-        },
-        {
-            "name": "ramsey/uuid",
-            "version": "4.2.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ramsey/uuid.git",
-                "reference": "fc9bb7fb5388691fd7373cd44dcb4d63bbcf24df"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/fc9bb7fb5388691fd7373cd44dcb4d63bbcf24df",
-                "reference": "fc9bb7fb5388691fd7373cd44dcb4d63bbcf24df",
-                "shasum": ""
-            },
-            "require": {
-                "brick/math": "^0.8 || ^0.9",
-                "ext-json": "*",
-                "php": "^7.2 || ^8.0",
-                "ramsey/collection": "^1.0",
-                "symfony/polyfill-ctype": "^1.8",
-                "symfony/polyfill-php80": "^1.14"
-            },
-            "replace": {
-                "rhumsaa/uuid": "self.version"
-            },
-            "require-dev": {
-                "captainhook/captainhook": "^5.10",
-                "captainhook/plugin-composer": "^5.3",
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-                "doctrine/annotations": "^1.8",
-                "ergebnis/composer-normalize": "^2.15",
-                "mockery/mockery": "^1.3",
-                "moontoast/math": "^1.1",
-                "paragonie/random-lib": "^2",
-                "php-mock/php-mock": "^2.2",
-                "php-mock/php-mock-mockery": "^1.3",
-                "php-parallel-lint/php-parallel-lint": "^1.1",
-                "phpbench/phpbench": "^1.0",
-                "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^0.12",
-                "phpstan/phpstan-mockery": "^0.12",
-                "phpstan/phpstan-phpunit": "^0.12",
-                "phpunit/phpunit": "^8.5 || ^9",
-                "slevomat/coding-standard": "^7.0",
-                "squizlabs/php_codesniffer": "^3.5",
-                "vimeo/psalm": "^4.9"
-            },
-            "suggest": {
-                "ext-bcmath": "Enables faster math with arbitrary-precision integers using BCMath.",
-                "ext-ctype": "Enables faster processing of character classification using ctype functions.",
-                "ext-gmp": "Enables faster math with arbitrary-precision integers using GMP.",
-                "ext-uuid": "Enables the use of PeclUuidTimeGenerator and PeclUuidRandomGenerator.",
-                "paragonie/random-lib": "Provides RandomLib for use with the RandomLibAdapter",
-                "ramsey/uuid-doctrine": "Allows the use of Ramsey\\Uuid\\Uuid as Doctrine field type."
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "4.x-dev"
-                },
-                "captainhook": {
-                    "force-install": true
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/functions.php"
-                ],
-                "psr-4": {
-                    "Ramsey\\Uuid\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "A PHP library for generating and working with universally unique identifiers (UUIDs).",
-            "keywords": [
-                "guid",
-                "identifier",
-                "uuid"
-            ],
-            "support": {
-                "issues": "https://github.com/ramsey/uuid/issues",
-                "source": "https://github.com/ramsey/uuid/tree/4.2.3"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/ramsey",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/ramsey/uuid",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2021-09-25T23:10:38+00:00"
-        },
-        {
-            "name": "symfony/polyfill-ctype",
-            "version": "v1.25.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "30885182c981ab175d4d034db0f6f469898070ab"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/30885182c981ab175d4d034db0f6f469898070ab",
-                "reference": "30885182c981ab175d4d034db0f6f469898070ab",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1"
-            },
-            "provide": {
-                "ext-ctype": "*"
-            },
-            "suggest": {
-                "ext-ctype": "For best performance"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.23-dev"
-                },
-                "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ],
-                "psr-4": {
-                    "Symfony\\Polyfill\\Ctype\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill for ctype functions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "ctype",
-                "polyfill",
-                "portable"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.25.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2021-10-20T20:35:02+00:00"
-        },
-        {
-            "name": "symfony/polyfill-php80",
-            "version": "v1.25.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-php80.git",
-                "reference": "4407588e0d3f1f52efb65fbe92babe41f37fe50c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/4407588e0d3f1f52efb65fbe92babe41f37fe50c",
-                "reference": "4407588e0d3f1f52efb65fbe92babe41f37fe50c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.23-dev"
-                },
-                "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ],
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php80\\": ""
-                },
-                "classmap": [
-                    "Resources/stubs"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ion Bazan",
-                    "email": "ion.bazan@gmail.com"
-                },
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill backporting some PHP 8.0+ features to lower PHP versions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/polyfill-php80/tree/v1.25.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2022-03-04T08:16:47+00:00"
-        },
-        {
-            "name": "symfony/polyfill-php81",
-            "version": "v1.25.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-php81.git",
-                "reference": "5de4ba2d41b15f9bd0e19b2ab9674135813ec98f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php81/zipball/5de4ba2d41b15f9bd0e19b2ab9674135813ec98f",
-                "reference": "5de4ba2d41b15f9bd0e19b2ab9674135813ec98f",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.23-dev"
-                },
-                "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ],
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php81\\": ""
-                },
-                "classmap": [
-                    "Resources/stubs"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill backporting some PHP 8.1+ features to lower PHP versions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/polyfill-php81/tree/v1.25.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2021-09-13T13:58:11+00:00"
         }
     ],
     "packages-dev": [],
@@ -1190,9 +641,8 @@
         "ocdladefense/appserver-theme-default": 20,
         "ocdladefense/appserver-directory": 20,
         "ocdladefense/appserver-car": 20,
-        "ocdladefense/appserver-jobs": 20,
-        "ocdladefense/appserver-sphinx-search": 20,
-        "ocdladefense/appserver-xml-products": 20
+        "ocdladefense/appserver-mail-client": 20,
+        "ocdladefense/appserver-jobs": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
