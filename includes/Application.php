@@ -233,7 +233,7 @@ class Application {
 
 		// Init the theme, first.
 		$className = ucfirst(strtolower(get_theme())) . "Theme";
-		require(get_theme_path() . "/" . $className . ".php");
+		require_once(get_theme_path() . "/" . $className . ".php");
 		
 		$theme = new $className();
         // var_dump($accept);exit;
