@@ -89,9 +89,7 @@ class Component {
 
 
     public static function setRequest(\Http\HttpRequest $req) {
-
         self::$request = $req;
-
     }
 
     public function getRequest() {
@@ -106,6 +104,7 @@ class Component {
         if(!class_exists($class)) {
             throw new ComponentException("PARSE_ERROR: $class cannot be resolved into a valid class name.");
         }
+
         return new $class($name,$id,$params);
     }
 
