@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d3db4f8740962d27b9901d980ac1e989",
+    "content-hash": "1c0f6df3c8b2c5a6669960168f108bfa",
     "packages": [
         {
             "name": "composer/installers",
@@ -158,17 +158,54 @@
             "time": "2021-09-13T08:19:44+00:00"
         },
         {
+            "name": "ocdladefense/appserver-books-online",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/appserver-books-online.git",
+                "reference": "a0734cc8f552f3595208905bcb6318e28167fcd7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-books-online/zipball/a0734cc8f552f3595208905bcb6318e28167fcd7",
+                "reference": "a0734cc8f552f3595208905bcb6318e28167fcd7",
+                "shasum": ""
+            },
+            "require": {
+                "ocdladefense/lib-date": "dev-development",
+                "ocdladefense/lib-php-template": "dev-development",
+                "ocdladefense/lib-salesforce": "dev-development",
+                "ocdladefense/lib-salesforce-rest-api": "dev-development"
+            },
+            "type": "wordpress-theme",
+            "autoload": {
+                "classmap": [
+                    "components/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Module for Books Online-related functionality.",
+            "support": {
+                "issues": "https://github.com/ocdladefense/appserver-books-online/issues",
+                "source": "https://github.com/ocdladefense/appserver-books-online/tree/development"
+            },
+            "time": "2022-03-17T21:32:23+00:00"
+        },
+        {
             "name": "ocdladefense/appserver-car",
             "version": "dev-development",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-car.git",
-                "reference": "156e33287716322a6bc66df3a981ca9d883d0125"
+                "reference": "d2dd73d8116808cc5f29086a78cfe192d3cce2f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/156e33287716322a6bc66df3a981ca9d883d0125",
-                "reference": "156e33287716322a6bc66df3a981ca9d883d0125",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-car/zipball/d2dd73d8116808cc5f29086a78cfe192d3cce2f7",
+                "reference": "d2dd73d8116808cc5f29086a78cfe192d3cce2f7",
                 "shasum": ""
             },
             "require": {
@@ -198,7 +235,7 @@
                 "issues": "https://github.com/ocdladefense/appserver-car/issues",
                 "source": "https://github.com/ocdladefense/appserver-car/tree/development"
             },
-            "time": "2022-03-17T00:27:00+00:00"
+            "time": "2022-03-17T18:36:27+00:00"
         },
         {
             "name": "ocdladefense/appserver-directory",
@@ -278,12 +315,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ocdladefense/appserver-mail-client.git",
-                "reference": "257b06ee5a66ba028d49b333fef34c0213a6de6f"
+                "reference": "ebf9c1d1015f775c62aeecf32e08f38f12dc9125"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ocdladefense/appserver-mail-client/zipball/257b06ee5a66ba028d49b333fef34c0213a6de6f",
-                "reference": "257b06ee5a66ba028d49b333fef34c0213a6de6f",
+                "url": "https://api.github.com/repos/ocdladefense/appserver-mail-client/zipball/ebf9c1d1015f775c62aeecf32e08f38f12dc9125",
+                "reference": "ebf9c1d1015f775c62aeecf32e08f38f12dc9125",
                 "shasum": ""
             },
             "type": "wordpress-theme",
@@ -296,7 +333,7 @@
                 "issues": "https://github.com/ocdladefense/appserver-mail-client/issues",
                 "source": "https://github.com/ocdladefense/appserver-mail-client/tree/development"
             },
-            "time": "2022-03-17T00:25:50+00:00"
+            "time": "2022-03-17T18:37:13+00:00"
         },
         {
             "name": "ocdladefense/appserver-theme-default",
@@ -560,6 +597,39 @@
             "time": "2021-04-20T21:19:09+00:00"
         },
         {
+            "name": "ocdladefense/lib-php-template",
+            "version": "dev-development",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ocdladefense/lib-php-template.git",
+                "reference": "2d1f6dca2736188b88fb68586b936b0b9c67fd3c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ocdladefense/lib-php-template/zipball/2d1f6dca2736188b88fb68586b936b0b9c67fd3c",
+                "reference": "2d1f6dca2736188b88fb68586b936b0b9c67fd3c",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Jose Bernal",
+                    "email": "jbernal.web.dev@gmail.com"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/ocdladefense/lib-php-template/issues",
+                "source": "https://github.com/ocdladefense/lib-php-template/tree/development"
+            },
+            "time": "2022-02-28T16:54:18+00:00"
+        },
+        {
             "name": "ocdladefense/lib-salesforce",
             "version": "dev-development",
             "source": {
@@ -642,6 +712,7 @@
         "ocdladefense/appserver-directory": 20,
         "ocdladefense/appserver-car": 20,
         "ocdladefense/appserver-mail-client": 20,
+        "ocdladefense/appserver-books-online": 20,
         "ocdladefense/appserver-jobs": 20
     },
     "prefer-stable": true,
