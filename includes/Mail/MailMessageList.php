@@ -4,7 +4,7 @@
 
 
 
-class MailMessageList {
+class MailMessageList implements IteratorAggregate {
 
 	private $list = array();
 
@@ -21,4 +21,7 @@ class MailMessageList {
 		return $this->list;
 	}
 
+    public function getIterator() {
+        return new ArrayIterator($this->list);
+    }
 }
