@@ -25,8 +25,8 @@ const Callout = (function() {
 	// If function: construct Request from null (unused Request)
 	// If Request: use it with Fetch
 	function Callout(url, mockCallback) {
-		server.addRoute(new Route(url, callback));
-
+		// server.addRoute(new Route(url, mockCallback));
+		let requestInit = null; // @jbernal
 		this.url = url || null;
 		this.requestInit = requestInit || { method: 'POST', headers: { 'Content-Type': 'application/json' }};
 		this.method = this.requestInit.method;
@@ -51,7 +51,7 @@ const Callout = (function() {
 	 */
 	function send(params) {
 
-
+		return Promise.resolve(this.url());
 		params = typeof params === 'function' ? params() : params;
 
 		let body = params instanceof Error ? { error: params.message } : params;
@@ -94,12 +94,12 @@ const Callout = (function() {
 	function defaultCallout(formData, currentEndpoint) {
 
 			return !currentEndpoint ? Promise.reject("Endpoint not set! XmlHttpRequest not sent.") : XMLHttpRequestFetch(currentEndpoint, formData);
-	}
+	}	
 	
 
 
 	Callout.prototype = {
-	
+		send: send
 	};
 
 
