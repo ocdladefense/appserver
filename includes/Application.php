@@ -286,7 +286,7 @@ class Application {
         $handler = Handler::getRegisteredHandler($req, $route, $out);
 
 
-
+        
 
         if(isset($route["theme"])) {
             \set_theme("Videos");
@@ -321,6 +321,8 @@ class Application {
 
         $contentType = Handler::getPreferredRepresentationMimeType($accept->getByWeight(), (!empty($explicit) ? $explicit : $handler->getRepresentations()));
 
+
+        
         // Resolve the Content-Type header against
         // the Accept header.  We talk about this 
         // as "could the available content-types satisfy the request?"
@@ -345,7 +347,7 @@ class Application {
         // Set the body of the HTTP Response that will be returned to the client.
         $resp->setBody($handler->getOutput($contentType));
         
-        
+        // var_dump($explicit,$accept,$contentType);exit;
 
         // Remove the PHP error stack if we don't wish to deliver
         // verbose debugging info.
