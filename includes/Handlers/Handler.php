@@ -17,7 +17,10 @@ abstract class Handler {
 		"Exception" => "ErrorHandler",
 		"Error" => "ErrorHandler",
 		"File\File" => "ApplicationFileHandler",
-		"String" => "StringHandler"
+		"String" => "StringHandler",
+		"MapTemplate" => "TemplateHandler",
+		"Template" => "TemplateHandler",
+		"Array" => "ArrayHandler"
 	);
 
 	protected $contentTypes = array();
@@ -160,13 +163,14 @@ abstract class Handler {
 		
 		// Title case to find the appropriate handler.
 		$name = "object" === $type ? get_class($output) : ucfirst($type); 
-
+		
 		$mimeType = $route["content-type"];
 		
 		$class = self::$handlers[$name];
 		
+		
 		$handler = new $class($output,$mimeType);
-
+		// var_dump($type,$name, $class,$handler); exit;
 		return $handler;
 	}
 

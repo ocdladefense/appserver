@@ -42,6 +42,7 @@
         "ocdladefense/appserver-directory":"dev-development",
         "ocdladefense/appserver-car": "dev-development",
         "ocdladefense/appserver-mail-client":"dev-development",
+        "ocdladefense/appserver-books-online":"dev-development",
         "ocdladefense/appserver-jobs": "dev-development"
     }
 }
