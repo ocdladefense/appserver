@@ -15,7 +15,7 @@
             "modules/jobs":["ocdladefense/appserver-jobs"],
             "modules/bon":["ocdladefense/appserver-books-online"],
             "modules/sphinx":["ocdladefense/appserver-sphinx-search"],
-            "modules/xml":["ocdladefense/appserver-xml-products"]
+            "modules/xml":["ocdladefense/appserver-repositories"]
         }
     },
     "config": {
@@ -41,12 +41,12 @@
         "ocdladefense/lib-database":"~2.0",
         "ocdladefense/lib-drag-drop-upload":"dev-development",
         "ocdladefense/appserver-theme-default":"~1.0",
-        "ocdladefense/appserver-directory":"~1.0",
+        "ocdladefense/appserver-directory":"~2.0",
         "ocdladefense/appserver-car": "~4.0",
         "ocdladefense/appserver-mail-client":"~0.0",
         "ocdladefense/appserver-books-online": "~1.0",
         "ocdladefense/appserver-jobs": "~1.0",
-        "ocdladefense/appserver-xml-products":"~1.0",
+        "ocdladefense/appserver-repositories":"~1.0",
         "ocdladefense/appserver-sphinx-search": "v0.2-alpha"
     }
 }
