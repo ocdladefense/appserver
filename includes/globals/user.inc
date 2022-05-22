@@ -14,7 +14,12 @@ function current_user() {
 
 function is_admin() {
 
-    return defined("ADMIN_USER") && ADMIN_USER === true;
+    $mock = defined("ADMIN_USER") && ADMIN_USER === true;
+	if(true === $mock) return true;
+	else {
+		$user = current_user();
+		return $user->isAdmin();
+	}
 }
 
 
