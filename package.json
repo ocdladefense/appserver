@@ -1,0 +1,33 @@
+{
+  "name": "@ocdladefense/appserver",
+  "version": "1.0.0",
+  "homepage": "https://github.com/ocdladefense/appserver#readme",
+  "description": "Appserver.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ocdladefense/appserver.git"
+  },
+  "contributors": [
+    {
+      "name": "José Bernal",
+      "email": "jbernal.web.dev@gmail.com"
+    }
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.16.7",
+    "@babel/core": "^7.16.7",
+    "@babel/plugin-transform-modules-commonjs": "^7.16.7",
+    "@babel/preset-env": "^7.16.7",
+    "@babel/preset-react": "^7.16.7",
+    "babel-loader": "^8.2.3"
+  },
+  "dependencies": {
+    "@ocdladefense/query-builder": "^1.0.x",
+    "@ocdladefense/google-maps": "^1.0.x",
+    "@ocdladefense/view": "^2.0.0-alpha"
+  }
+}
