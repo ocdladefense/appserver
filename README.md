@@ -1,6 +1,27 @@
 # Appserver
 A PHP application server.  This application server can be used to demonstrate several RFCs, especially those concerned with HTTP, i.e., RFC 1945 (https://datatracker.ietf.org/doc/html/rfc1945). 
 
+## Current changes
+- OAuth::setSession - moved to CoreModule::setSession
+- OAuth::getUser - moved to CoreModule::getUser
+- OAuth::logout - moved to CoreModule::logout
+
+
+- Repository: lib-salesforce-rest-api
+ -- OAuth.php - pruned fo 3 static methods.
+ -- Push new major version of lib-salesforce-rest-api?
+    -- Probably not because modules are tied to version 2.x
+ -- Push a new *minor version of lib-salesforce-rest-api?
+    -- YES - this won't break existing modules.  Ug.
+
+
+- Repository: lib-oauth
+  -- Combine lib-oauth-config package (OAuth config classes) with OAuth.php from lib-salesforce-rest-api.
+
+  
+
+
+
 ## System Requirements
 1) Windows: Working WAMP Installation
 2) Apache2
