@@ -13,6 +13,16 @@ define("DEBUG", false);
 //Optionally set the path the appserver if the appserver is in a subdirectory
 define("APPSERVER_INSTALL_DIRECTORY", "  ");
 
+define("AUTHORIZE_DOT_NET_MERCHANT_ID","6gSVxaYj397");
+define("AUTHORIZE_DOT_NET_TRANSACTION_KEY","6FR49pDH5Jjum58g");
+define("AUTHORIZE_DOT_NET_USE_PRODUCTION_ENDPOINT", false);
+
+
+define("CACHE_DIR","/var/www/appdev/cache");
+# define("TMP_DIR","/var/www/appdev/tmp");
+
+
+
 
 // These are really connected applications
 $oauth_config = array(
