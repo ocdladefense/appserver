@@ -15,7 +15,8 @@
             "modules/jobs":["ocdladefense/appserver-jobs"],
             "modules/bon":["ocdladefense/appserver-books-online"],
             "modules/sphinx":["ocdladefense/appserver-sphinx-search"],
-            "modules/xml": ["ocdladefense/appserver-repositories"]
+            "modules/xml": ["ocdladefense/appserver-repositories"],
+            "modules/card-manager": ["ocdladefense/appserver-card-manager"]
         }
     },
     "config": {
@@ -44,6 +45,7 @@
         "ocdladefense/appserver-mail-client":"dev-development",
         "ocdladefense/appserver-books-online":"dev-development",
         "ocdladefense/appserver-jobs": "dev-development",
-        "ocdladefense/appserver-repositories": "~1.0"
+        "ocdladefense/appserver-repositories": "~1.0",
+        "ocdladefense/appserver-card-manager": "dev-development"
     }
 }
