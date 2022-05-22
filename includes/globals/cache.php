@@ -1,9 +1,6 @@
 <?php
 
 
-
-
-
 function cache_set($key, $val) {
 	$val = var_export($val, true);
 	// HHVM fails at __set_state, so just use object cast for now
