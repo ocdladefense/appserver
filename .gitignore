@@ -78,7 +78,9 @@ test.php
 
 
 # Ignore temporary files.
-/tmp
+/tmp/*
+!/tmp/.gitkeep
 
 # Ignore cached objects; application/machine cache.
-/cache
+/cache/*
+!/cache/.gitkeep
