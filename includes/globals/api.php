@@ -7,8 +7,8 @@ use Salesforce\RestApiRequest;
 function api_is_bootstrapped($connectedAppName) {
 	
 	$flow = "usernamepassword";
-
-	return !empty(\Session::get($connectedAppName, $flow, "access_token"));
+	return false !== cache_get("access_token");
+	// return !empty(\Session::get($connectedAppName, $flow, "access_token"));
 }
 
 
@@ -22,8 +22,10 @@ function loadApi() {
 	$flow = "usernamepassword";
 
 	
-	$accessToken = Session::get($config->getName(), $flow, "access_token");
-	$instanceUrl = Session::get($config->getName(), $flow, "instance_url");
+	// $accessToken = Session::get($config->getName(), $flow, "access_token");
+	// $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
+	$instanceUrl = cache_get("instance_url");
+	$accessToken = cache_get("access_token");
 
 	return new RestApiRequest($instanceUrl, $accessToken);
 }
