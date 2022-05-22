@@ -75,3 +75,10 @@ test.php
 
 # Ignore images.  I guess these would be the uploads.
 /content/images
+
+
+# Ignore temporary files.
+/tmp
+
+# Ignore cached objects; application/machine cache.
+/cache
