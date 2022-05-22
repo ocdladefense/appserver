@@ -171,10 +171,10 @@ class Application {
         Presentation\Component::setRequest($req);
 
         
-        //instanciate a new translation class
-        //check for lang and files and correct name
-        //methods are static
-        //default to en for testing
+        // Instantiate a new translation class.
+        // Check for lang and files and correct name.
+        // Methods are static
+        // Default to en for testing
         Translate::init($module->getRelPath(),$module->getLanguages());//path and language filenames
 
         
@@ -200,7 +200,7 @@ class Application {
 
             if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
 
-            OAuth::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
+            CoreModule::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
         }
 
 
@@ -273,7 +273,7 @@ class Application {
 
 
 
-        // If the content-type is set then we make sure it can satisfy
+        
         if(self::isMailMessage($out)) {
             return $out;
         }

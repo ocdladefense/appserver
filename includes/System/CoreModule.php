@@ -153,12 +153,24 @@ class CoreModule extends Module {
 			throw new OAuthException($resp->getErrorMessage());
 		}
 
+		/*
+        $api = $this->loadForceApi();
+
+        $query = "SELECT Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '{$user->getId()}'";
+
+        $result = $api->query($query)->getRecord();
+        
+        $profileId = $result["Contact"]["AuthorizeDotNetCustomerProfileId__c"];
+
+		*/
 		// Step 1: Set up the session for the connected app.
-		OAuth::setSession($connectedApp, $flow, $resp->getInstanceUrl(), $resp->getAccessToken(), $resp->getRefreshToken());
+		self::setSession($connectedApp, $flow, $resp->getInstanceUrl(), $resp->getAccessToken(), $resp->getRefreshToken());
 
 		// Step 2: Declare who the current user is.  Create a user session.
-		$userInfo = OAuth::getUser($config->getName(), "webserver");
+		$userInfo = self::getUser($config->getName(), "webserver");
+		
 		$user = new \User($userInfo);
+		
 		\Session::setUser($user);
 
 		$redirect = $this->buildRedirect($_SESSION["login_redirect"]);
@@ -167,9 +179,73 @@ class CoreModule extends Module {
 	}
 
 
+	/**
+	 * @jbernal - setSession(), getUser(), logout() copied from OAuth.php.
+	 */
+    public static function setSession($connectedApp, $flow, $instanceUrl, $accessToken, $refreshToken = null){
+
+        if($refreshToken != null) \Session::set($connectedApp, $flow, "refresh_token", $refreshToken);
+        
+
+        \Session::set($connectedApp, $flow, "instance_url", $instanceUrl);
+        \Session::set($connectedApp, $flow, "access_token", $accessToken);
+
+
+        $userInfo = self::getUser($connectedApp, $flow);
+        \Session::set($connectedApp, $flow, "userId", $userInfo["user_id"]);
+    }
+
+    public static function getUser($connectedApp, $flow){
+
+		$accessToken = \Session::get($connectedApp, $flow, "access_token");
+		$instanceUrl = \Session::get($connectedApp, $flow, "instance_url");
+
+		$url = "/services/oauth2/userinfo?access_token={$accessToken}";
+
+		$req = new RestApiRequest($instanceUrl, $accessToken);
+
+		$resp = $req->send($url);
+		
+		return $resp->getBody();
+	}
+
+    public static function logout($connectedApp, $flow, $sandbox = false){
+		$accessToken = \Session::get($connectedApp, $flow, "access_token");
+        $url = "https://login.salesforce.com/services/oauth2/revoke?token=";
+        if($sandbox){
+            $url = "https://test.salesforce.com/services/oauth2/revoke?token=";
+        }
+        
+
+        $req = new \Http\HttpRequest();
+        $req->setUrl($url.$accessToken);
+        $req->setMethod("GET");
+        $config = array(
+            "returntransfer" 		=> true,
+            "useragent" 				=> "Mozilla/5.0",
+            "followlocation" 		=> true,
+            "ssl_verifyhost" 		=> false,
+            "ssl_verifypeer" 		=> false
+        );
+
+        $http = new \Http\Http($config);
+    
+        $resp = $http->send($req, true);
+        if($resp->getStatusCode() == 200){
+            $accessToken = \Session::set($connectedApp, $flow, "access_token",null);
+            \Session::set($connectedApp, $flow, "user",null);
+            return true;
+        }
+        return false;
+    }
+	// END FUNCTIONS COPIED FROM OAUTH.PHP.
+
+
+
+
 	
 	// Don't need an actual login function, because the route has specified the webserver flow ????
-	public function userLogout(){
+	public function userLogout() {
 
 		$_COOKIE["PHPSESSID"] = array();
 		$_SESSION = array();
