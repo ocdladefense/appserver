@@ -18,8 +18,8 @@ define("AUTHORIZE_DOT_NET_TRANSACTION_KEY","6FR49pDH5Jjum58g");
 define("AUTHORIZE_DOT_NET_USE_PRODUCTION_ENDPOINT", false);
 
 
-define("CACHE_DIR","/var/www/appdev/cache");
-# define("TMP_DIR","/var/www/appdev/tmp");
+define("CACHE_DIR",BASE_PATH."/cache");
+# define("TMP_DIR",BASE_PATH."/tmp");
 
 
 
