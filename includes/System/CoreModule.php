@@ -134,7 +134,7 @@ class CoreModule extends Module {
 
 
 	// Get the access token and save it to the session variables.
-	public function oauthFlowAccessToken(){
+	public function oauthFlowAccessToken() {
 
 		$info = json_decode($_GET["state"], true);
 		$connectedApp = $info["connected_app_name"];
@@ -171,7 +171,18 @@ class CoreModule extends Module {
 		
 		$user = new \User($userInfo);
 		
+		
+
+        
+        $query = "SELECT Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '{$user->getId()}'";
+		$req = new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+		$record = $req->query($query)->getRecord();
+		
+		$profileId = $record["Contact"]["AuthorizeDotNetCustomerProfileId__c"];
+		$user->setExternalCustomerProfileId($profileId);
+
 		\Session::setUser($user);
+
 
 		$redirect = $this->buildRedirect($_SESSION["login_redirect"]);
 
