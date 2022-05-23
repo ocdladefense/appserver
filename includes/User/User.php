@@ -29,6 +29,8 @@ class User {
 	private $organizationId;
 
 	private $customerProfileId;
+
+	private $contactId;
 	
 
 
@@ -63,6 +65,14 @@ class User {
 	}
 
 	public function getExternalCustomerProfileId() {
+		return $this->customerProfileId;
+	}
+
+	public function setContactId($id) {
+		$this->contactId = $id;
+	}
+
+	public function getContactId() {
 		return $this->customerProfileId;
 	}
 
