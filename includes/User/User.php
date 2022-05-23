@@ -73,7 +73,7 @@ class User {
 	}
 
 	public function getContactId() {
-		return $this->customerProfileId;
+		return $this->contactId;
 	}
 
 	public function getName(){
