@@ -75,3 +75,12 @@ test.php
 
 # Ignore images.  I guess these would be the uploads.
 /content/images
+
+
+# Ignore temporary files.
+/tmp/*
+!/tmp/.gitkeep
+
+# Ignore cached objects; application/machine cache.
+/cache/*
+!/cache/.gitkeep

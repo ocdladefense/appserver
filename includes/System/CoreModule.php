@@ -134,7 +134,7 @@ class CoreModule extends Module {
 
 
 	// Get the access token and save it to the session variables.
-	public function oauthFlowAccessToken(){
+	public function oauthFlowAccessToken() {
 
 		$info = json_decode($_GET["state"], true);
 		$connectedApp = $info["connected_app_name"];
@@ -171,7 +171,18 @@ class CoreModule extends Module {
 		
 		$user = new \User($userInfo);
 		
+		
+
+        
+        $query = "SELECT Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '{$user->getId()}'";
+		$req = new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+		$record = $req->query($query)->getRecord();
+		
+		$profileId = $record["Contact"]["AuthorizeDotNetCustomerProfileId__c"];
+		$user->setExternalCustomerProfileId($profileId);
+
 		\Session::setUser($user);
+
 
 		$redirect = $this->buildRedirect($_SESSION["login_redirect"]);
 
@@ -295,6 +306,110 @@ class CoreModule extends Module {
 		$redirect = "/" . implode("/", $redirectParts);
 
 		return $redirect;
+	}
+
+
+	public static function getRoutes() {
+
+				
+		$coreDef = array(
+			"comment"      => "The core module",
+			"connectedApp" => "default",
+			"name"         => "core",
+			"description"  => "holds routes for core functionality",
+			"files"        => array(),
+			"routes"       => array(
+				"system/status/%msg" => array(
+					"callback"      => "showStatus",
+					"content-type"  => "text/html",
+					"module"        => "core",
+					"method"        => "get"
+				),
+				"system/404/%msg" => array(
+					"callback"      => "pageNotFound",
+					"content-type"  => "text/html",
+					"module"        => "core",
+					"method"        => "get"
+				),
+				"system/403" => array(
+					"callback"      => "accessDenied",
+					"content-type"  => "text/html",
+					"module"        => "core",
+					"method"        => "get"
+				),
+				"file/upload" => array(
+					"callback"      => "upload",
+					"content-type"  => "application/json",
+					"path"          => "upload",
+					"module"        => "core",
+					"method"        => "get"
+				),
+				"file/download/%filename" => array(
+					"callback"      => "download",
+					"content-type"  => "application/json",
+					"path"          => "download",
+					"module"        => "core",
+					"method"        => "get"
+				),
+				"file/list" => array(
+					"callback"      => "list",
+					"content-type"  => "application/json",
+					"path"          => "list/files",
+					"module"        => "core",
+					"method"        => "get"
+				),
+				"oauth/start" => array(
+					"callback"      => "oauthFlowStart",
+					"content-type"  => "application/json",
+					"path"          => "oauth/start",
+					"module"        => "core",
+					"method"        => "get"
+				),
+				"oauth/api/request" => array(
+					"callback"      => "oauthFlowAccessToken",
+					"content-type"  => "application/json",
+					"path"          => "oauth/api/request",
+					"module"        => "core",
+					"method"        => "get"
+				),
+				"login"        => array(
+					"callback"      => "login",
+					"content-type"  => "application/json",
+					"path"          => "login",
+					"module"        => "core",
+					"method"        => "get",
+					"access"        => true,
+					"authorization" => "webserver"
+				),
+				"logout"        => array(
+					"callback"      => "userLogout",
+					"content-type"  => "application/json",
+					"path"          => "logout",
+					"module"        => "core",
+					"method"        => "get"
+				),
+				"status"        => array(
+					"callback"      => "showStatus",
+					"content-type"  => "text/html",
+					"module"        => "core",
+					"method"        => "get"
+				),
+				"user/profile"        => array(
+					"callback"      => "userProfile",
+					"content-type"  => "text/html",
+					"path"          => "user/profile",
+					"module"        => "core",
+					"method"        => "get"
+				)
+
+
+			),
+			//If the path is null the module loader will not try to load the file
+			//core module is loaded in autoloader.php
+			"path"     => null
+		);
+
+		return $coreDef;
 	}
 
 

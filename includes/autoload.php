@@ -4,6 +4,7 @@
 
 
 require_once BASE_PATH.'/includes/globals/globals.php';
+require_once BASE_PATH.'/includes/globals/cache.php';
 require_once BASE_PATH.'/includes/globals/user.inc';
 require_once BASE_PATH.'/includes/globals/access.php';
 require_once BASE_PATH.'/includes/globals/authorization.php';
