@@ -174,12 +174,15 @@ class CoreModule extends Module {
 		
 
         
-        $query = "SELECT Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '{$user->getId()}'";
+        $query = "SELECT ContactId, Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '{$user->getId()}'";
 		$req = new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
 		$record = $req->query($query)->getRecord();
 		
 		$profileId = $record["Contact"]["AuthorizeDotNetCustomerProfileId__c"];
+		$contactId = $record["ContactId"];
+		
 		$user->setExternalCustomerProfileId($profileId);
+		$user->setContactId($contactId);
 
 		\Session::setUser($user);
 
