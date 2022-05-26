@@ -50,7 +50,6 @@
         "ocdladefense/appserver-jobs": "~1.0",
         "ocdladefense/appserver-repositories":"~1.0",
         "ocdladefense/appserver-sphinx-search": "v0.2-alpha",
-        "ocdladefense/appserver-card-manager": "dev-development",
         "ocdladefense/appserver-home": "dev-main"
     }
 }
