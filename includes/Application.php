@@ -122,6 +122,13 @@ class Application {
         // Might be altered depending on wheather the appserver is installed in a subdirectory.
         $scriptUri = $this->getScriptUri($uri);
 
+        // @branch session-handler.
+        // https://www.php.net/manual/en/function.session-set-save-handler.php
+        // https://www.php.net/manual/en/class.sessionhandler.php
+        // https://gist.github.com/mindplay-dk/623bdd50c1b4c0553cd3
+        // $handler = new MySessionHandler();
+        // session_set_save_handler($handler, true);
+        // session_start();
         session_start();
 
 
