@@ -1,91 +1,74 @@
-/*
-Server prototype
-
-A server should provide access to one or more services (caching, database, etc.)
-The server constructor should be able to take a configuration objects ( a definition of what the server will do.)
- */ 
+const HttpServer = (function() {
 
 
-const Server = (function(){
+	var proto = {
+	
+		// Add a route to this server instance.
+		addRoute: function(route) {
+			this.routes[route["path"]] = route;
+		},
+		
+		match: function(path) {
+			return this.routes[path];
+		},
+		
+		run: function(req) {
+			var url = req.getRequestUri();
+			var path = url.getPath();
+			
+			const route = this.match(this.url);
+			const content = process
+		},
+		
+		
+		process: function(req) {
+			const callback = route.getParams()["callback"];
+			
+			// Probably pass in req.body or req.params or req.querystring.
+			return callback(req);
+		},
+		
+		
+		// Sends an HttpResponse to the client
+		send: function(content) {
+			// Setup headers, too.
 
+			const route = this.match(this.url);
+			if (typeof this.mockResponseBody === 'function') {
 
-    // Private variables.
-    const SOFTWARE_VERSION = 0.01;
+				this.mockResponseBody = this.mockResponseBody(params);
+			}
 
+			let body = params instanceof Error ? { error: params.message } : this.mockResponseBody;
+			body = typeof body === 'object' ? JSON.stringify(body) : body;
 
+			let status = params instanceof Error ? 500 : 200;
 
-    // Instance properties
-    var server = {
-        name: null,
-
-        cache: null,
-
-        database: null,
-
-        services: {},
-
-				hasService: function(name){
-					return !!(this.services[name]);
+			return new Response(body, {
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Mock-Resp': ''
 				},
-
-        version: null,
-
-        
-        register: function(registration) {
-            console.log(this.version);
-        },
-
-				handleEvent: function(e) {
-					this.cache.handleEvent(e);
-				},
-
-        getInstaller: function() {
-            // Perform install steps
-            var fn = () => {
-            	console.log("Wait until event fired!");
-            	this.cache.init();
-            };
-            return (function(event) {
-							event.waitUntil(fn());
-						
-							// Perform database init
-							var request = this.database.init();
-            }).bind(this);
-        },
-
-        setCache: function(cache) {
-            this.cache = cache;
-        },
-
-        setDatabase: function(database) {
-            this.database = database;
-        },
-        getDatabase: function(){
-            return this.database;
-        }
-        
-
-    };
+				status: status
+			});
+		}
+	};
+	
+	
+	
+	function HttpServer(identifiers) {
+		this.identifiers = identifiers;  // Key,value store to be attached as X-headers to responses.
+		// Let's install one foobar route, by default.
+		this.routes = {
+			"foobar": {
+				callback: function() { return "Hello World!"; },
+				contentType: "application/json"
+			}
+		};
+	}
+	
+	HttpServer.prototype = proto;
 
 
-    // Constructor
-    function Server(init){
-        this.version = init.version || 0;
-
-    }
-
-    Server.prototype = server;
-
-    // Public/static 
-    Server.time = function(){
-        return Date.now();
-    };
-
-
-    
-
-
-
-    return Server;
-
+	return HttpServer;
 })();
