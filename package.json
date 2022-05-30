@@ -26,8 +26,9 @@
     "babel-loader": "^8.2.3"
   },
   "dependencies": {
-    "@ocdladefense/query-builder": "^1.0.x",
+    "@bundled-es-modules/pdfjs-dist": "^2.5.207-rc1",
     "@ocdladefense/google-maps": "^1.0.x",
+    "@ocdladefense/query-builder": "^1.0.x",
     "@ocdladefense/view": "^2.0.0-alpha"
   }
 }
