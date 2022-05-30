@@ -11,12 +11,6 @@ class ErrorHandler extends Handler {
 		$this->contentType = $contentType;
 	}
 	  
-	/*
-	public function getOutput() {
-			// Loads an HTML page with defined scripts, css.
-			return "There was an error: ".$this->output->getMessage();
-	}
-	*/
 	
 	public function getHeaders($mime = "text/html") {
 
@@ -32,4 +26,19 @@ class ErrorHandler extends Handler {
 		// Loads an HTML page with defined scripts, css.
 		return $theme->render($content);
 	}
+
+
+
+	public function getApplicationJson() {
+		return json_encode(array(
+				
+			"error" => $this->output->getMessage()
+			// "stack" => $this->stack
+		));
+	}
+
+	public function getApplicationJsonHeaders() {
+
+		return new HttpHeader("Content-Type", "application/json");
+	  }
 }
