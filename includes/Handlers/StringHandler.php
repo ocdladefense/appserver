@@ -76,4 +76,9 @@ class StringHandler extends Handler {
 
 		return new HttpHeader("Content-Type", "application/xml");
 	  }
+
+	  public function getApplicationJsonHeaders() {
+
+		return new HttpHeader("Content-Type", "application/json");
+	  }
 }
