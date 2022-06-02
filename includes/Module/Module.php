@@ -304,8 +304,13 @@ class Module {
 
         $config = get_oauth_config($connectedAppName);
         
-        $accessToken = Session::get($config->getName(), $flow, "access_token");
-        $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
+        if("usernamepassword" == $flow) {
+            $instanceUrl = cache_get("instance_url");
+            $accessToken = cache_get("access_token");
+        } else if("webserver" == $route["authorization"]) {
+            $accessToken = Session::get($config->getName(), $flow, "access_token");
+            $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
+        }
 
         $req = new RestApiRequest($instanceUrl, $accessToken);
 
