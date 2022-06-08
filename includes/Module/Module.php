@@ -58,15 +58,15 @@ class Module {
 
 
     // Load one or more modules for the specified paths.
-    public static function loadModules($paths) {
+    // public static function loadModules($paths) {
 
-        $previous = getcwd();
+    //     $previous = getcwd();
 
-        foreach($paths as $mod)  {
-            require_once($mod."/module.php");
-        }
+    //     foreach($paths as $mod)  {
+    //         require_once($mod."/module.php");
+    //     }
         
-    }
+    // }
     
     
 
@@ -80,24 +80,6 @@ class Module {
 
 
     
-    public static function load($name) {
-        
-    	if(!isset(self::$index[$name])) {
-    		throw new Exception("MODULE_NOT_FOUND_ERROR: {$name}.");
-    	}
-    	$info = self::$index[$name];
-    	$path = $info["path"];
-        
-        if($path == null) return;
-        
-    	require_once($path."/module.php");
-    	
-    	foreach($info["files"] as $file) {
-    		require($path . "/src/" . $file);
-    	}
-        
-        return $info;
-    }
 
 
     /**
@@ -124,6 +106,27 @@ class Module {
     	$info = self::load($name);
     	return self::getInstance($name, $info);
     }
+
+
+    public static function load($name) {
+        
+    	if(!isset(self::$index[$name])) {
+    		throw new Exception("MODULE_NOT_FOUND_ERROR: {$name}.");
+    	}
+    	$info = self::$index[$name];
+    	$path = $info["path"];
+        
+        if($path == null) return;
+        
+    	require_once($path."/module.php");
+    	
+    	foreach($info["files"] as $file) {
+    		require_once($path . "/src/" . $file);
+    	}
+        
+        return $info;
+    }
+
     
     
     
