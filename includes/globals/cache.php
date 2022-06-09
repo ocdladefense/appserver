@@ -14,7 +14,7 @@ function cache_set($key, $val) {
 
  function cache_get($key) {
     @include CACHE_DIR."/$key";
-    return isset($val) ? $val : false;
+    return isset($val) ? $val : null;
 }
 
 

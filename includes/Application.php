@@ -239,6 +239,8 @@ class Application {
             
             if(get_class($e) == "Salesforce\InvalidAccessTokenException") {
 
+                $result = opcache_invalidate(CACHE_DIR . "/access_token", true);
+
                 cache_delete();
 
                 return $this->runHttp($req);
