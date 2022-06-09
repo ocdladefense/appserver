@@ -49,7 +49,7 @@
         "ocdladefense/appserver-books-online": "~1.0",
         "ocdladefense/appserver-jobs": "~1.0",
         "ocdladefense/appserver-repositories":"~1.0",
-        "ocdladefense/appserver-sphinx-search": "v0.2-alpha",
+        "ocdladefense/appserver-sphinx-search": "~1.0",
         "ocdladefense/appserver-home": "dev-main"
     }
 }
