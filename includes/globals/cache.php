@@ -16,3 +16,9 @@ function cache_set($key, $val) {
     @include CACHE_DIR."/$key";
     return isset($val) ? $val : false;
 }
+
+
+function cache_delete() {
+
+	return unlink(CACHE_DIR . "/access_token");
+}
