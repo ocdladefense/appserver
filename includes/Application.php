@@ -34,6 +34,9 @@ class Application {
     private $modules;
 
 
+    public static $count = 0;
+
+
     
 	
 	
@@ -147,8 +150,8 @@ class Application {
             $route = $this->routes[$path->__toString()];
 
             $moduleName = $route["module"];
-            $module = Module::loadObject($moduleName);
 
+            $module = Module::loadObject($moduleName);
         }
 
 
@@ -188,21 +191,7 @@ class Application {
         // Currently, use the module's "connectedApp" key to determine which API to use.
         if(null != $name && !api_is_bootstrapped($name)){
 
-
-            // What if we decide to set authorization at the module level?                                                     
-            $flow = "usernamepassword";
-
-            //$_SESSION["login_redirect"] = $_SERVER["HTTP_REFERER"];
-            //$flow = "usernamepassword";
-            $httpMessage = OAuth::start($config, $flow);
-
-            $oauthResp = $httpMessage->authorize();
-
-            if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
-
-            // CoreModule::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
-            cache_set("instance_url", $oauthResp->getInstanceUrl());
-            cache_set("access_token", $oauthResp->getAccessToken());
+            $this->writeCredentialsToCache($module);
         }
 
 
@@ -238,17 +227,25 @@ class Application {
 		require_once(get_theme_path() . "/" . $className . ".php");
 		
 		$theme = new $className();
-        // var_dump($accept);exit;
 
         // REMEMBER! TRY CATCH BLOCKS WON'T DISPLAY WARNINGS.
-        try
-        {
-            // var_dump($module,$route);
+        try {
+
             $out = call_user_func_array(array($module, $route["callback"]), $params);
             // if(null == $out) throw new Exception("Callback function returned NULL!");
-        }
-        catch(Throwable $e)
-        {
+
+        } catch(Throwable $e) {
+
+            
+            if(get_class($e) == "Salesforce\InvalidAccessTokenException") {
+
+                cache_delete();
+
+                return $this->runHttp($req);
+            }
+
+
+
             $out = get_class($e) == "Error" ? new Error($e->getMessage(), 0, $e) : new Exception($e->getMessage(), 0, $e);
             
             $resp->setStatusCode(500);
@@ -258,14 +255,16 @@ class Application {
             // XDebug.
             // We should only let these messages propagate up to the main app.php
             // if the reqested content-type is "text/html."
-            if(defined("DEBUG") && DEBUG === true)
-            {
+            if(defined("DEBUG") && DEBUG === true) {
+
                 throw $out;
-            }
-            else 
-            {
+
+            } else {
+
                 $handlers = ob_list_handlers();
+
                 while(!empty($handlers)) {
+
                     ob_end_clean();
                     $handlers = ob_list_handlers();
                 }
@@ -358,6 +357,25 @@ class Application {
 
 
         return $resp;
+    }
+
+
+    public function writeCredentialsToCache($module) {
+
+        $value = $module->getInfo()["connectedApp"];
+        $config = get_oauth_config($value);
+        $flow = "usernamepassword";
+
+        $httpMessage = OAuth::start($config, $flow);
+
+        $oauthResp = $httpMessage->authorize();
+
+        if(!$oauthResp->isSuccess()) throw new OAuthException($oauthResp->getErrorMessage());
+
+        // CoreModule::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
+        cache_set("instance_url", $oauthResp->getInstanceUrl());
+        cache_set("access_token", $oauthResp->getAccessToken());
+
     }
 
 
