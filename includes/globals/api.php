@@ -7,8 +7,15 @@ use Salesforce\RestApiRequest;
 function api_is_bootstrapped($connectedAppName) {
 	
 	$flow = "usernamepassword";
-	return false !== cache_get("access_token");
-	// return !empty(\Session::get($connectedAppName, $flow, "access_token"));
+	
+	if(cache_get("access_token") == null) {
+
+		return false;
+
+	} else {
+
+		return true;
+	}
 }
 
 
