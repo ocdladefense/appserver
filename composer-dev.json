@@ -46,6 +46,7 @@
         "ocdladefense/appserver-books-online":"dev-development",
         "ocdladefense/appserver-jobs": "dev-development",
         "ocdladefense/appserver-repositories": "~1.0",
-        "ocdladefense/appserver-card-manager": "dev-development"
+        "ocdladefense/appserver-card-manager": "dev-development",
+        "ocdladefense/appserver-sphinx-search": "dev-development"
     }
 }
