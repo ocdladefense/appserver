@@ -6,6 +6,8 @@ class User {
 	
 	const GUEST_USER_ID = "0";
 
+	private $SObject;
+
 	private $userId;
 
 	private $name;
@@ -32,6 +34,42 @@ class User {
 
 	private $contactId;
 	
+
+
+
+	public function setSObject($SObject) {
+		$this->SObject = $SObject;
+	}
+
+
+	/**
+	 * @method query
+	 * 
+	 * @description Return the value stored at the given field.
+	 * 
+	 * User.Id, User.ContactId, User.Username, User.Email
+	 * 
+	 * Contact.Id, Contact.AccountId, Contact.Email
+	 * 
+	 * Account.
+	 */
+	public function query($query) {
+
+		list($object,$field) = explode(".", $query);
+		if(null == $field) throw new \Exception("PARSE_ERROR: Field is missing or null.");
+
+		if("User" == $object) {
+			return $this->SObject[$field];
+		}
+		else if("Contact" == $object) {
+			return $this->SObject[$object][$field];
+		}
+		else if("Account" == $object) {
+			return $this->SObject["Contact"][$object][$field];
+		}
+
+		return null;
+	}
 
 
 
