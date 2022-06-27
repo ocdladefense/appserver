@@ -32,8 +32,6 @@ function component($name, $id = "", $params = array()) {
 			$theme->addStyle($css);
 			$theme->addScript($js);
 		}
-		
-
 
 		$html = $widget->toHtml(); 
 	} catch(Presentation\ComponentException $e) {

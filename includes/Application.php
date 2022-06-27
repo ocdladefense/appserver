@@ -137,7 +137,7 @@ class Application {
         
         if($path == false) { // No matching route was found.
 
-            $module = Module::loadObject("core");
+            $module = Module::loadInstance("core");
             $route = $this->routes["system/404/%msg"];
 
             $params = array("We couldn't find ".$scriptUri);
@@ -151,7 +151,7 @@ class Application {
 
             $moduleName = $route["module"];
 
-            $module = Module::loadObject($moduleName);
+            $module = Module::loadInstance($moduleName);
         }
 
 
@@ -161,7 +161,7 @@ class Application {
         // @TODO: setup appropriate response for different handlers?
         if(CHECK_ACCESS === true && !user_has_access($module,$route))
         {
-            $module = Module::loadObject("core");
+            $module = Module::loadInstance("core");
             $route = $this->routes["system/403"];
         }
         

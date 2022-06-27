@@ -41,11 +41,85 @@ class CoreModule extends Module {
 		return $body;
 	}
 
-    //List all uploaded files.  Uploads have already happened in HttpRequest.
-	public function upload(){
 
-		return $this->request->getFiles();
+
+    // List all uploaded files.  Uploads have already happened in HttpRequest.
+	public function upload() { 
+		$req = $this->getRequest();
+		$fileList = $req->getFiles();
+
+		if(empty($fileList)) {
+			$result = $this->saveBinaryData();
+			$json = json_encode($result);
+		}
+
+		
+
+		if(empty($fileList) && empty($json)) {
+			throw new Exception("No files uploaded.");
+		}
+
+		$json = $json ?? $fileList->toJson();
+
+
+		$resp = new Http\HttpResponse();
+		$resp->addHeader(new Http\HttpHeader("Content-Type","application/json"));
+		$resp->setBody($json);
+
+		return $resp;
 	}
+
+
+
+	// https://babeljs.io/docs/en/#pluggable
+	public function saveBinaryData() {
+		$req = $this->getRequest();
+		
+		$headers = apache_request_headers();
+		
+		$length = $headers["Content-Length"];
+		$contentType = $headers["Content-Type"];
+		$cd = $headers["Content-Disposition"];
+
+		// Parese the content-disposition header.
+		$parts = array_map(function($p) { return trim($p); }, explode(";",$cd));
+		$d["disposition"] = array_shift($parts); // Inline or attachment.
+		foreach($parts as $p) {
+			// Remove double-quotes from filename.
+			list($field,$value) = explode("=",str_replace("\"", "", $p));
+			$d[$field] = $value;
+		}
+
+
+		$filename = $d["filename"];
+
+		$filepath = BASE_PATH. "/content/uploads/{$filename}";
+
+		if(file_exists($filepath)) {
+			// Rename the file with an index.
+		}
+
+		// var_dump($headers);exit;
+		$hSource = fopen('php://input', 'r');
+		$hDest = fopen($filepath, 'w');
+		while (!feof($hSource)) {
+			/*  
+			 *  I'm going to read in 1K chunks. You could make this 
+			 *  larger, but as a rule of thumb I'd keep it to 1/4 of 
+			 *  your php memory_limit.
+			 */
+			$chunk = fread($hSource, 1024);
+			fwrite($hDest, $chunk);
+			$chunk = null;
+			unset($chunk);
+		}
+		fclose($hSource);
+		fclose($hDest);
+
+		return array("filename" => $filename, "size" => 1024);
+	}
+
+
 
 	public function download($filename){
 
@@ -174,10 +248,14 @@ class CoreModule extends Module {
 		
 
         
-        $query = "SELECT ContactId, Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '{$user->getId()}'";
+        $query = "SELECT ContactId, Contact.AccountId, Contact.Account.Name, Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '{$user->getId()}'";
+		
 		$req = new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+		
 		$record = $req->query($query)->getRecord();
 		
+		
+		$user->setSObject($record);
 		$profileId = $record["Contact"]["AuthorizeDotNetCustomerProfileId__c"];
 		$contactId = $record["ContactId"];
 		

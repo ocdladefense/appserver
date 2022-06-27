@@ -16,8 +16,9 @@
             "modules/bon":["ocdladefense/appserver-books-online"],
             "modules/sphinx":["ocdladefense/appserver-sphinx-search"],
             "modules/xml":["ocdladefense/appserver-repositories"],
-            "modules/card-manager":["ocdladefense/appserver-card-manager"],
-            "modules/home":["ocdladefense/appserver-home"]
+            "modules/home":["ocdladefense/appserver-home"],
+            "modules/card-manager": ["ocdladefense/appserver-card-manager"],
+            "modules/file-service": ["ocdladefense/appserver-file-service"]
         }
     },
     "config": {
@@ -50,6 +51,8 @@
         "ocdladefense/appserver-jobs": "~1.0",
         "ocdladefense/appserver-repositories":"~1.0",
         "ocdladefense/appserver-sphinx-search": "~1.0",
-        "ocdladefense/appserver-home": "dev-main"
+        "ocdladefense/appserver-home": "dev-main",
+        "ocdladefense/appserver-card-manager": "dev-main",
+        "ocdladefense/appserver-file-service": "~0.2"
     }
 }
