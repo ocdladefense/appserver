@@ -102,7 +102,7 @@ class Module {
     
     
     
-    public static function loadObject($name) {
+    public static function loadInstance($name) {
     	$info = self::load($name);
     	return self::getInstance($name, $info);
     }
@@ -123,11 +123,32 @@ class Module {
     	foreach($info["files"] as $file) {
     		require_once($path . "/src/" . $file);
     	}
+
+    	foreach($info["components"] ?? [] as $component) {
+            $className = self::getIdentifier($component,"Component");
+            $file = $className . ".php";
+    		require_once($path . "/components/{$component}/" . $file);
+    	}
+
+
+        // Info is the module definition; i.e., the parsed JSON from module.json?
+        // var_dump($info); exit;
+        foreach($info["dependencies"] ?? [] as $d) {
+            self::load($d);
+            // $instance->loadFiles();
+        }
         
         return $info;
     }
 
     
+
+    public static function getIdentifier($word, $suffix = "Module") {
+        $className = ucwords($word,"-\t\r\n\f\v");
+        $className = str_replace("-","",$className).$suffix;
+
+        return $className;
+    }
     
     
     // Require each of the dependencies for each module
@@ -137,8 +158,7 @@ class Module {
             throw new Exception("MODULE_ERROR: Cannot instantiate empty module class.");
         }
     	
-        $className = ucwords($moduleName,"-\t\r\n\f\v");
-        $className = str_replace("-","",$className)."Module";
+        $className = self::getIdentifier($moduleName);
         $moduleClass = new $className($info["path"]);
         $moduleClass->setInfo($info);
         $moduleClass->setName($info["name"]);
@@ -147,10 +167,7 @@ class Module {
         $moduleClass->setLanguageFiles($info["language-files"]);
         $dependencies = $moduleClass->getDependencies();
 
-        foreach($dependencies as $d){
-            $instance = self::getInstance($d);
-            $instance->loadFiles();
-        }
+
         return $moduleClass;
     }
 
@@ -271,7 +288,7 @@ class Module {
 
     
     protected function loadForceApi($app = null, $debug = false) {
-
+        
         if(empty($this->getInfo()["connectedApp"])){
             
             throw new Exception("CONFIGURATION_ERROR: No 'Connected App' sepecified.  Update the 'module.json' file for your module.");
