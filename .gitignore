@@ -1,5 +1,8 @@
 log/
 
+/intern-starter
+
+
 # Ignore .htaccess; prefer .htaccess-example
 .htaccess
 
