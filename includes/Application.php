@@ -1,13 +1,15 @@
 <?php
 
-use \Http as Http;
-use \Http\HttpHeader as HttpHeader; 
-use \Http\AcceptHeader as AcceptHeader; 
-use \Http\HttpResponse as HttpResponse;
-use \Http\HttpRequest as HttpRequest;
+use Http as Http;
+use Http\HttpHeader as HttpHeader; 
+use Http\AcceptHeader as AcceptHeader; 
+use Http\HttpResponse as HttpResponse;
+use Http\HttpRequest as HttpRequest;
+use Http\HttpHeaderCollection;
+
 use Salesforce\OAuth;
 use Salesforce\OAuthException;
-use Http\HttpHeaderCollection;
+
 
 
 class Application {
@@ -308,11 +310,8 @@ class Application {
 
 
 
-        
-        if(self::isMailMessage($out)) {
-            return $out;
-        }
-        else if(self::isHttpResponse($out) && null == $out->getHeader("X-Theme")) {
+
+        if(self::isHttpResponse($out) && null == $out->getHeader("X-Theme")) {
             return $out;
         }
 
@@ -470,11 +469,12 @@ class Application {
     public function send($message) {
         if(!is_object($message)) die('Woops');
 
-        $class = get_class($message);
+        // $class = get_class($message);
 
-        $next =  in_array($class,["MailMessage","MailMessageList"]) ? $this->sendMail($message) : $this->sendHttp($message);
+        $next = $this->sendHttp($message);
 
         // Return a subrequest, if we want.
+        // is_subclass_of($object, "Http\HttpRequest", false)
         if(is_object($next) && get_class($next) == "Http\HttpRequest") {
             // print "foodbar";exit;
             $resp = $this->runHttp($next);
@@ -525,54 +525,6 @@ class Application {
 
 
 
-    public function sendMail($message) {
-
-        if(get_class($message) == "MailMessage") {
-            $list = new MailMessageList();
-            $list->add($message);
-        } else {
-            $list = $message;
-        }
-
-
-        foreach($list->getMessages() as $message) {
-            $template = new Template("email");
-            $template->addPath(get_theme_path());
-            $body = $template->render(array(
-                "content" => $message->getBody(),
-                "title" => $message->getTitle()
-            ));
-
-
-            $sent = mail(
-                $message->getTo(),
-                $message->getSubject(),
-                $body,
-                $message->getHeaders()
-            );
-        }
-
-        if($sent)
-        {
-            $req = new HttpRequest("Your email was sent.");
-            $req->addHeader(new HttpHeader("Accept","text/html"));
-            $req->addHeader(new HttpHeader("Request-URI","system/status/Your email was sent."));
-            return $req;
-        }
-        else if(count($list->getMessages()) == 0) {
-            $req = new HttpRequest("No emails to send.");
-            $req->addHeader(new HttpHeader("Accept","text/html"));
-            $req->addHeader(new HttpHeader("Request-URI","system/status/No emails to send."));
-            return $req;
-        }
-        else
-        {
-            $resp = new HttpResponse("Your email was not sent");
-            $resp->setStatusCode(500);
-        }
-        
-        return $resp;
-    }
 
 
 
@@ -683,11 +635,7 @@ class Application {
         return is_object($object) && (get_class($object) === "Http\HttpResponse" || is_subclass_of($object, "Http\HttpResponse", false));
     }
 
-    public static function isMailMessage($object){
 
-        return is_object($object) && (get_class($object) === "MailMessage" || is_subclass_of($object, "MailMessage", false) || get_class($object) === "MailMessageList");
-
-    }
 
 
 

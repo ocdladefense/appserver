@@ -24,4 +24,8 @@ class MailMessageList implements IteratorAggregate {
     public function getIterator() {
         return new ArrayIterator($this->list);
     }
+
+	public function getFirst() {
+		return $this->list[0] ?? null;
+	}
 }

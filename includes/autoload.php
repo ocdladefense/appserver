@@ -85,6 +85,7 @@ require_once BASE_PATH.'/includes/System/CoreModule.php';
 
 require_once BASE_PATH. "/includes/Mail/MailMessage.php";
 require_once BASE_PATH. "/includes/Mail/MailMessageList.php";
+require_once BASE_PATH. "/includes/Mail/MailClient.php";
 
 
 

@@ -40,6 +40,12 @@ class MailMessage {
 
 
 
+    public static function isMailMessage($object){
+
+        return is_object($object) && (get_class($object) === "MailMessage" || is_subclass_of($object, "MailMessage", false) || get_class($object) === "MailMessageList");
+
+    }
+
 
 	public function getTo() {
 		return !empty($this->to) ? $this->to : $this->headers->getValue("To");
@@ -79,5 +85,10 @@ class MailMessage {
 	public function setHeaders($headers){
 
 		$this->headers = $headers;
+	}
+
+
+	public function __toString() {
+		return $this->getBody();
 	}
 }
