@@ -243,27 +243,36 @@ class CoreModule extends Module {
 		// Step 2: Declare who the current user is.  Create a user session.
 		$userInfo = self::getUser($config->getName(), "webserver");
 		
+		// This is the authenticated user
 		$user = new \User($userInfo);
 		
-		
+		$req = new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+
+
+		// If the user is an admin user, we want to set the user id for the contact info query to that of the admin user's "Linked Customer User".
+		// This is the customer user
+		if($user->isAdmin()){
+
+			$query = "SELECT Id, LinkedCustomerUser__c FROM User WHERE Id = '{$user->getId()}'";
+			$userId = $req->query($query)->getRecord()["LinkedCustomerUser__c"];
+
+		} else {
+			
+			$userId = $user->getId();
+		}
 
         
-        $query = "SELECT ContactId, Contact.AccountId, Contact.Account.Name, Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '{$user->getId()}'";
-		
-		$req = new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+        $query = "SELECT ContactId, Contact.AccountId, Contact.Account.Name, Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '$userId'";
 		
 		$record = $req->query($query)->getRecord();
-		
-		
-		$user->setSObject($record);
-		$profileId = $record["Contact"]["AuthorizeDotNetCustomerProfileId__c"];
 		$contactId = $record["ContactId"];
-		
+		$profileId = $record["Contact"]["AuthorizeDotNetCustomerProfileId__c"];
+
+		$user->setSObject($record);
 		$user->setExternalCustomerProfileId($profileId);
 		$user->setContactId($contactId);
 
 		\Session::setUser($user);
-
 
 		$redirect = $this->buildRedirect($_SESSION["login_redirect"]);
 
