@@ -327,7 +327,7 @@ class Module {
         if("usernamepassword" == $flow) {
             $instanceUrl = cache_get("instance_url");
             $accessToken = cache_get("access_token");
-        } else if("webserver" == $route["authorization"]) {
+        } else if("webserver" == $route["authorization"] || $flow == "webserver") {
             $accessToken = Session::get($config->getName(), $flow, "access_token");
             $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
         }
