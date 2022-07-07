@@ -163,3 +163,23 @@ function path_to_root_vendor_directory(){
 
 	return $_SERVER["DOCUMENT_ROOT"] . "/vendor";
 }
+
+
+// Where should this function go?  globals.php?
+function calculateFileSize($bytes) {
+
+    //$bytes = 2000000;
+    $kilobytes = $bytes/1024;
+
+    if($kilobytes > 1000) {	
+
+        return round($kilobytes/1000, 1) . " mb";
+
+    } else if($kilobytes > 1){
+
+        return round($kilobytes) . " kb";
+
+    } else {
+        return $bytes;
+    }
+}
