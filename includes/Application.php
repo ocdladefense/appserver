@@ -198,7 +198,10 @@ class Application {
 
 
 
-        return $this->getOutput($req, $module, $route, $params);
+        $out = $this->getOutput($req, $module, $route, $params);
+
+        session_write_close();
+        return $out;
     }
 
 
@@ -411,7 +414,6 @@ class Application {
         // CoreModule::setSession($config->getName(), $flow, $oauthResp->getInstanceUrl(), $oauthResp->getAccessToken());
         cache_set("instance_url", $oauthResp->getInstanceUrl());
         cache_set("access_token", $oauthResp->getAccessToken());
-
     }
 
 
@@ -471,8 +473,9 @@ class Application {
 
         // $class = get_class($message);
 
-        $next = $this->sendHttp($message);
-
+        
+        $this->sendHttp($message);
+        /* 
         // Return a subrequest, if we want.
         // is_subclass_of($object, "Http\HttpRequest", false)
         if(is_object($next) && get_class($next) == "Http\HttpRequest") {
@@ -482,6 +485,7 @@ class Application {
             $this->send($resp);
         }
         else if(null != $next) $this->send($next);
+        */
     }
 
 

@@ -1,9 +1,6 @@
 <?php
-
-
 require '../bootstrap.php';
 
-$application = !empty($_GET["mail"]) ? "mail" : "http";
 $isCLI = false;
 
 use Http\HttpRequest as HttpRequest;

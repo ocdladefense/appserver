@@ -2,7 +2,8 @@
 
 class Session {
 
-    public static function set($namespace, $flow, $name, $value){
+
+    public static function set($namespace, $flow, $name, $value) {
 
         if(!isset($_SESSION[$namespace])){
 
@@ -17,11 +18,14 @@ class Session {
         $_SESSION[$namespace][$flow][$name] = $value;
     }
 
-    public static function get($namespace,$flow, $name){
+
+
+    public static function get($namespace,$flow, $name) {
 
         return $_SESSION[$namespace][$flow][$name];
-        
     }
+
+
 
     // May want to type hint this later
     public static function setUser($user) {
@@ -29,7 +33,9 @@ class Session {
         $_SESSION["user"] = $user;
     }
 
-    public static function getUser(){
+
+
+    public static function getUser() {
 
         return $_SESSION["user"];
     }

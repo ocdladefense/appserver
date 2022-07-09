@@ -21,9 +21,7 @@ require_once BASE_PATH.'/includes/Presentation/Template.php';
 require_once BASE_PATH.'/includes/Presentation/IRenderable.php';
 
 
-if(file_exists(BASE_PATH.'/config/config.php')) {		
-	require_once BASE_PATH.'/config/config.php';
-}
+
 
 
 require_once(BASE_PATH.'/includes/Module/Module.php');
