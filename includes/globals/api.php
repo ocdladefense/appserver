@@ -8,14 +8,7 @@ function api_is_bootstrapped($connectedAppName) {
 	
 	$flow = "usernamepassword";
 	
-	if(cache_get("access_token") == null) {
-
-		return false;
-
-	} else {
-
-		return true;
-	}
+	return cache_get("access_token") != null;
 }
 
 

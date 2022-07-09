@@ -208,39 +208,6 @@ class Application {
 
 
 
-
-    /**
-     * 
-     */
-    private function sendHttpRequest() {
-        if(empty($this->instanceUrl)) throw new HttpException("REST_API_ERROR:  The instance url cannot be null.");
-        if(empty($this->accessToken)) throw new RestApiException("REST_API_ERROR:  The access token cannot be null.");
-    
-        $this->setUrl($this->instanceUrl . $endpoint);
-        
-        if($this->addXHttpClientHeader){
-
-            $this->addHeader(new HttpHeader("X-HttpClient-ResponseClass","\Salesforce\RestApiResponse")); // Use a custom HttpResponse class to represent the HttpResponse.
-        }
-
-        $token = new HttpHeader("Authorization", "Bearer " . $this->accessToken);
-        $this->addHeader($token);
-        
-        $config = array(
-                "returntransfer" 		=> true,
-                "useragent" 			=> "Mozilla/5.0",
-                "followlocation" 		=> true,
-                "ssl_verifyhost" 		=> false,
-                "ssl_verifypeer" 		=> false
-        );
-
-        $http = new Http($config);
-        
-        $resp = $http->send($this, true);
-
-
-        return $resp;
-    }
     /**
      * Actually call the route's callback
      *  Retrieve the output, then decide what to do with the output
