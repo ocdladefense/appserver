@@ -9,7 +9,7 @@ function foobar() {
     $days = 30;
     $hours = 24;
     $length = $days * $hours * 60 * 60;
-
+    session_name(SESSION_NAME);
     ini_set("session.auto_start", 0);
     ini_set("session.serialize_handler", "php_serialize");
     ini_set("session.session.use_strict_mode", 1);
