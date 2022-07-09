@@ -31,9 +31,10 @@ function foobar() {
     $params = session_get_cookie_params();
     
     $params["lifetime"] = $length;
-    // $params["httponly"] = true;
-    // $params["samesite"] = "Strict";
-    // $params["domain"]   = "appdev.ocdla.org";
+    $params["httponly"] = true;
+    $params["secure"] = true;
+    $params["domain"] = SESSION_COOKIE_DOMAIN;
+    $params["samesite"] = "Lax";
 
     session_set_cookie_params($params);
 
