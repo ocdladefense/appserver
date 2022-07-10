@@ -33,7 +33,9 @@ function foobar() {
     $params["lifetime"] = $length;
     $params["httponly"] = true;
     $params["secure"] = true;
-    $params["domain"] = SESSION_COOKIE_DOMAIN;
+    if(null != SESSION_COOKIE_DOMAIN) {
+        $params["domain"] = SESSION_COOKIE_DOMAIN;
+    }
     $params["samesite"] = "Lax";
 
     session_set_cookie_params($params);
