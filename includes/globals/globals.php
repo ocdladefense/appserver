@@ -173,13 +173,13 @@ function calculateFileSize($bytes) {
 
     if($kilobytes > 1000) {	
 
-        return round($kilobytes/1000, 1) . " mb";
+        return round($kilobytes/1000, 1) . " MB";
 
     } else if($kilobytes > 1){
 
-        return round($kilobytes) . " kb";
+        return round($kilobytes) . " KB";
 
     } else {
-        return $bytes;
+        return $bytes . " B";
     }
 }
