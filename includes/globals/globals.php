@@ -180,6 +180,6 @@ function calculateFileSize($bytes) {
         return round($kilobytes) . " KB";
 
     } else {
-        return $bytes . " B";
+        return $bytes . " Bytes";
     }
 }
