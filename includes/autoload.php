@@ -1,7 +1,7 @@
 <?php
 
 
-
+require_once BASE_PATH.'/includes/Input/Identifier.php';
 
 require_once BASE_PATH.'/includes/globals/globals.php';
 require_once BASE_PATH.'/includes/globals/cache.php';
