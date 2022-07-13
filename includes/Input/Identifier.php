@@ -12,4 +12,12 @@ class Identifier {
 
         return $className;
     }
+
+    public static function toMachineName($word) {
+        $machine = strtolower($word);
+
+        $machine = str_replace(" ","-",$machine);
+
+        return $machine;
+    }
 }
