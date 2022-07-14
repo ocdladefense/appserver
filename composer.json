@@ -53,6 +53,7 @@
         "ocdladefense/appserver-sphinx-search": "~1.0",
         "ocdladefense/appserver-home": "dev-main",
         "ocdladefense/appserver-card-manager": "dev-main",
-        "ocdladefense/appserver-file-service": "~0.2"
+        "ocdladefense/appserver-file-service": "~0.2",
+        "ocdladefense/appserver-committees": "dev-main"
     }
 }
