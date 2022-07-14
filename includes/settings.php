@@ -9,11 +9,19 @@ function foobar() {
     $days = 30;
     $hours = 24;
     $length = $days * $hours * 60 * 60;
-    session_name(SESSION_NAME);
+
+    if(defined("SESSION_NAME")) {
+        session_name(SESSION_NAME);
+    }
+    
     ini_set("session.auto_start", 0);
     ini_set("session.serialize_handler", "php_serialize");
     ini_set("session.session.use_strict_mode", 1);
-    session_save_path(SESSION_DIR);
+
+    if(defined("SESSION_DIR")) {
+        session_save_path(SESSION_DIR);
+    }
+
     // Set the amount of time before a loading page times out.  We wanted to extend ours, because we have long running queries etc.
     ini_set("max_execution_time","18000");
 
@@ -32,8 +40,8 @@ function foobar() {
     
     $params["lifetime"] = $length;
     $params["httponly"] = true;
-    $params["secure"] = true;
-    if(null != SESSION_COOKIE_DOMAIN) {
+    $params["secure"] = defined("SESSION_COOKIE_SECURE") && SESSION_COOKIE_SECURE == true;
+    if(defined("SESSION_COOKIE_DOMAIN")) {
         $params["domain"] = SESSION_COOKIE_DOMAIN;
     }
     $params["samesite"] = "Lax";
