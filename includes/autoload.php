@@ -4,6 +4,7 @@
 require_once BASE_PATH.'/includes/Input/Identifier.php';
 
 require_once BASE_PATH.'/includes/globals/globals.php';
+require_once BASE_PATH.'/includes/globals/files.php';
 require_once BASE_PATH.'/includes/globals/cache.php';
 require_once BASE_PATH.'/includes/globals/user.inc';
 require_once BASE_PATH.'/includes/globals/access.php';
@@ -26,7 +27,7 @@ require_once BASE_PATH.'/includes/Presentation/IRenderable.php';
 
 require_once(BASE_PATH.'/includes/Module/Module.php');
 
-$systemFiles = array("ClassName","XList", "IJson", "DateRange", "CoreModule","Session");
+$systemFiles = array("ClassName","XList", "IJson", "DateRange", "CoreModule","Session","Cache");
 
 foreach($systemFiles as $file) {
 	require_once(BASE_PATH.'/includes/System/'.$file.".php");
