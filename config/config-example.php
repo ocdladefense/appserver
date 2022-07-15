@@ -1,61 +1,69 @@
 <?php
-// MAIN CONFIGURATIONS.
 
-// Force the current user to be a super-user.
-// Works with globals.php/user_has_access().
-define("USE_SALESFORCE_SLO_LOGOUT_ENDPOINT", true);
+# System directories.
+define("CACHE_DIR",BASE_PATH."/cache");
+define("TMP_DIR",BASE_PATH."/tmp");
 
-define("DEBUG", false);
+# Extra options.
+define("USE_SALESFORCE_SLO_LOGOUT_ENDPOINT", false);
+define("CORE_MODULE_CONNECTED_APP_NAME", "default");
 
-//Optionally set the path to the root vendor directory if the appserver is not the root directory
-//define("COMPOSER_VENDOR_PATH", "/foob");
+# Whether to display stack traces for exceptions.
+define("DEBUG", true);
 
-//Optionally set the path the appserver if the appserver is in a subdirectory
-define("APPSERVER_INSTALL_DIRECTORY", "  ");
+# Whether to check module / route access.
+define("CHECK_ACCESS", true);
 
-define("AUTHORIZE_DOT_NET_MERCHANT_ID","6gSVxaYj397");
-define("AUTHORIZE_DOT_NET_TRANSACTION_KEY","6FR49pDH5Jjum58g");
+# Masquerade as the admin user.
+define("ADMIN_USER", false);
+
+# Session options; all are optional and should default to PHP.ini values if not set.
+define("SESSION_DIR", "/var/lib/php/sessions-dev");
+define("SESSION_NAME","ocdla_dev_id");
+define("SESSION_COOKIE_SECURE", true);
+define("SESSION_COOKIE_DOMAIN", "appdev.ocdla.org");
+
+# Authorize.net module configurations.
+define("AUTHORIZE_DOT_NET_MERCHANT_ID","example-value");
+define("AUTHORIZE_DOT_NET_TRANSACTION_KEY","example-value");
 define("AUTHORIZE_DOT_NET_USE_PRODUCTION_ENDPOINT", false);
 
+# Localize URL settings.
+define("APP_URL", "https://appdev.ocdla.org");
+define("STORE_URL","https://ocdpartial-ocdla.cs198.force.com");
+define("ORG_URL","https://test.ocdla.org");
+define("LOD_URL", "https://lodtest.ocdla.org");
 
-define("CACHE_DIR",BASE_PATH."/cache");
-# define("TMP_DIR",BASE_PATH."/tmp");
 
+//OTHER STUFF
+error_reporting(E_ALL & ~E_NOTICE);
+define("ACTIVE_THEME","default");
 
 
 
 // These are really connected applications
 $oauth_config = array(
-
-	"connected-app-name" => array(
-		"default" => false,
-		"sandbox" => true,
-		"token_url" => "https://login.salesforce.com/services/oauth2/token",
-		"client_id" => "your client id",
-		"client_secret" => "your client secret",
-		"username" => "your username",
-		"password" => "our password",
-		"security_token" => "your security token"
-	),
-	"trevors-dev-hub" => array(
+	"ocdla-app" => array(
 		"default" => true,
 		"sandbox" => true, // Might be used to determine domain for urls
-		"client_id" => "",
-		"client_secret" => "",
+		"client_id" => "example-client-id",
+		"client_secret" => "example-client-secret",
 		"auth" => array(
 			"saml" => array(),
 			"oauth" => array(
 				"usernamepassword" => array(
-					"token_url" => "https://login.salesforce.com/services/oauth2/token",
-					"username" => "",
-					"password" => "",
-					"security_token" => ""
+					"token_url" => "https://test.salesforce.com/services/oauth2/token",
+					"username" => "example@example.com",
+					"password" => "example123",
+					"security_token" => "exampleabc",
+					"cache" => "application"
 				),
 				"webserver" => array(
-					"token_url" => "https://login.trevoruehlin-developer-edition.na85.force.com/services/oauth2/token",
-					"auth_url" => "https://trevoruehlin-developer-edition.na85.force.com/services/oauth2/authorize",	// Web server ouath flow has two oauth urls.
-					"redirect_url" => "http://localhost/oauth/api/request",
-					"callback_url" => "http://localhost/test/1",
+					"token_url" => "https://ocdpartial-ocdla.cs198.force.com/services/oauth2/token",
+					"auth_url" => "https://ocdpartial-ocdla.cs198.force.com/services/oauth2/authorize",
+					"redirect_url" => "https://appdev.ocdla.org/oauth/api/request",
+					"callback_url" => "https://appdev.ocdla.org/jobs",
+					"cache" => "session"
 				)
 			)
 		)
