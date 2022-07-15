@@ -26,7 +26,7 @@ class StringHandler extends Handler {
 	}
 
 
-	public function getTextHtml() {
+	public function getTextHtml($params = array()) {
 		global $theme;
 
 
@@ -67,9 +67,14 @@ class StringHandler extends Handler {
 		return new HttpHeader("Content-Type", "text/html");
 	}
 
-	public function getTextHtmlHeaders() {
+	public function getTextHtmlHeaders($params = array()) {
+		// var_dump($params);exit;
+		$type = array("text/html");
+		$parts = array_merge($type, $params);
+		// var_dump($parts);exit;
+		$value = implode(";", $parts);
 
-      return new HttpHeader("Content-Type", "text/html");
+      	return new HttpHeader("Content-Type", $value);
 	}
 
 	public function getApplicationXmlHeaders() {

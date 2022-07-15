@@ -194,21 +194,36 @@ abstract class Handler {
 			// throw new ResourceException("RESPONSE_NO_REPRESENTATION: No proper mime-type could be found for this resource.");
 			throw new Exception("RESPONSE_NO_REPRESENTATION: No proper mime-type could be found for this resource.");
 		}
+
+		$params = explode(";", $contentType);
+		$contentType = array_shift($params);
+
 		// var_dump($contentType);exit;
 		$method = $this->getMethodName($contentType);
 		// var_dump($method);exit;
-		return $this->{$method}();
+		if(!method_exists($this,$method)) {
+			throw new Exception("HANDLER_ERROR: The handler object is missing appropriate method names. Handler: {$oname}; Method: {$method}.");
+		}
+
+		return $this->{$method}($params);
 	}
 
 
 	public function getHeaders($contentType = "text/html") {
-		$prefix = $this->getMethodName($contentType);
 		
+		$params = explode(";", $contentType);
+		$contentType = array_shift($params);
+		$prefix = $this->getMethodName($contentType);
+
+
 		$method = $prefix."Headers";
+		$oname = get_class($this);
+		
 		if(!method_exists($this,$method)) {
-			throw new Exception("HANDLER_ERROR: The handler is missing appropriate method names.");
+			throw new Exception("HANDLER_ERROR: The handler object is missing appropriate method names. Handler: {$oname}; Method: {$method}.");
 		}
-		return $this->{$method}();
+
+		return $this->{$method}($params);
 	}
 	
 
