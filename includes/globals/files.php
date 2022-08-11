@@ -9,14 +9,14 @@ function calculateFileSize($bytes) {
 
     if($kilobytes > 1000) {	
 
-        return round($kilobytes/1000, 1) . " MB";
+        return round($kilobytes/1000, 1) . " Mb";
 
     } else if($kilobytes > 1){
 
-        return round($kilobytes) . " KB";
+        return round($kilobytes) . " Kb";
 
     } else {
-        return $bytes . " Bytes";
+        return $bytes . " bytes";
     }
 }
 
