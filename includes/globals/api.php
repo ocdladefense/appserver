@@ -27,7 +27,11 @@ function loadApi() {
 	$instanceUrl = cache_get("instance_url");
 	$accessToken = cache_get("access_token");
 
-	return new RestApiRequest($instanceUrl, $accessToken);
+	$req = new RestApiRequest($instanceUrl, $accessToken);
+
+	$req->setFlow($flow);
+
+	return $req;
 }
 
 
