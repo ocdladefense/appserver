@@ -18,7 +18,7 @@ function cache_set($key, $val) {
 }
 
 
-function cache_delete() {
+function cache_delete($filename) {
 
-	return unlink(CACHE_DIR . "/access_token");
+	return unlink(CACHE_DIR . "/$filename");
 }

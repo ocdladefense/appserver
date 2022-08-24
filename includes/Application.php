@@ -243,9 +243,11 @@ class Application {
 
                 if(function_exists("opcache_invalidate")) {
                     $result = opcache_invalidate(CACHE_DIR . "/access_token", true);
+                    $result = opcache_invalidate(CACHE_DIR . "/instance_url", true);
                 }
 
                 cache_delete("access_token");
+                cache_delete("instance_url");
 
                 return $this->runHttp($req);
             }
