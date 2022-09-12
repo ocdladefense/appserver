@@ -18,7 +18,8 @@
             "modules/xml":["ocdladefense/appserver-repositories"],
             "modules/home":["ocdladefense/appserver-home"],
             "modules/card-manager": ["ocdladefense/appserver-card-manager"],
-            "modules/file-service": ["ocdladefense/appserver-file-service"]
+            "modules/file-service": ["ocdladefense/appserver-file-service"],
+            "modules/committees": ["ocdladefense/appserver-committees"]
         }
     },
     "config": {
@@ -53,7 +54,7 @@
         "ocdladefense/appserver-sphinx-search": "~1.0",
         "ocdladefense/appserver-home": "dev-main",
         "ocdladefense/appserver-card-manager": "dev-main",
-        "ocdladefense/appserver-file-service": "~0.2",
-        "ocdladefense/appserver-committees": "dev-main"
+        "ocdladefense/appserver-file-service": "~1.0",
+        "ocdladefense/appserver-committees": "~0.1"
     }
 }
