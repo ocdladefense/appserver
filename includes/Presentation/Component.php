@@ -40,7 +40,9 @@ class Component {
      * 
      * @param $params Variable to be used when rendering the component.  See toHtml().
      */
-    public function __construct($name, $id = "", $params = array()) {
+    public function __construct($name, $id = null, array $params = array()) {
+
+        $id = $params["id"];
         
         // get widget settings;
         $this->name = $name;
@@ -99,13 +101,13 @@ class Component {
     /**
      * Instantiate a component using it's class name.
      */
-    public static function fromName($name,$id,$params) {
+    public static function fromName($name, $id = null, $params = array()) {
         $class = ucfirst($name);
         if(!class_exists($class)) {
             throw new ComponentException("PARSE_ERROR: $class cannot be resolved into a valid class name.");
         }
 
-        return new $class($name,$id,$params);
+        return func_num_args() > 2 ? new $class($name, $id, $params) : new $class($name, $params);
     }
 
 

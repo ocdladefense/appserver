@@ -10,7 +10,15 @@ $custom_theme = null;
 DEFINE("TEMPLATE_EXTENSION", ".tpl.php");
 
 
-function component($name, $id = "", $params = array()) {
+function component($name, $id = "", array $params = array()) {
+
+	if(func_num_args() === 3) {
+		$params["id"] = $id;
+	} else {
+		$params = is_array($id) ? $id : $params;
+	}
+
+	$id = $params["id"] ?? $id;
 
 	global $theme;
 
@@ -19,7 +27,7 @@ function component($name, $id = "", $params = array()) {
 	$html = "";
 
 	try {
-    	$widget = Presentation\Component::fromName($name,$id, $params);
+    	$widget = Presentation\Component::fromName($name, $id, $params);
 		if(!$widget->active()) return "";
 
 		$css = $widget->getStyles();
