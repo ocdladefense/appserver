@@ -57,6 +57,6 @@
         "ocdladefense/appserver-card-manager": "dev-main",
         "ocdladefense/appserver-file-service": "~1.0",
         "ocdladefense/appserver-committees": "~0.1",
-	"ocdladefense/appserver-salesforce-mysql": "~0.2"
+	"ocdladefense/appserver-salesforce-mysql": "dev-main"
     }
 }
