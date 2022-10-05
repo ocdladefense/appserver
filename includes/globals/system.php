@@ -10,6 +10,19 @@ function l($m) {
 
 
 
+function config($key = 'contact_general') {
+
+    global $config;
+
+    if(!isset($config[$key])) {
+        throw new Exception("No configuration found for key, {$key}.");
+    }
+
+    return $config[$key];
+}
+
+
+
 function dump($var) {
 	print "<pre>". print_r($var,true)."</pre>";
 }

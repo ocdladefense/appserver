@@ -77,17 +77,17 @@ class User {
 
 		if(is_array($user) && $type =="salesforce"){
 
-			$this->userId = $user["user_id"];
-			$this->name = $user["name"];
-			$this->firstName = $user["given_name"];
-			$this->lastName = $user["family_name"];
-			$this->username = $user["preferred_username"];
-			$this->preferredUsername = $user["preferred_username"];
-			$this->email = $user["email"];
-			$this->geoZone = $user["zoneinfo"];
-			$this->country = $user["address"]["country"];
-			$this->userType = $user["user_type"];
-			$this->organizationId = $user["organization_id"];
+			$this->userId = isset($user["user_id"]) ? $user["user_id"] : null;
+			$this->name = isset($user["name"]) ? $user["name"] : null;
+			$this->firstName = isset($user["given_name"]) ? $user["given_name"] : null;
+			$this->lastName = isset($user["family_name"]) ? $user["family_name"] : null;
+			$this->username = isset($user["preferred_username"]) ? $user["preferred_username"] : null;
+			$this->preferredUsername = isset($user["preferred_username"]) ? $user["preferred_username"] : null;
+			$this->email = isset($user["email"]) ? $user["email"] : null;
+			$this->geoZone = isset($user["zoneinfo"]) ? $user["zoneinfo"] : null;
+			$this->country = isset($user["address"]["country"]) ? $user["address"]["country"] : null;
+			$this->userType = isset($user["user_type"]) ? $user["user_type"] : null;
+			$this->organizationId = isset($user["organization_id"]) ? $user["organization_id"] : null;
 		}
 
 		if($this->userId == null) $this->userId = self::GUEST_USER_ID;
