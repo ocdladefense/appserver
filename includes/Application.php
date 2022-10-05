@@ -105,7 +105,7 @@ class Application {
             foreach($routes as $path => &$route) {
                 $route["path"] = $path;
                 $route["module"] = $name;
-                $route["method"] = $route["method"] ?: self::$DEFAULT_HTTP_METHOD;
+                $route["method"] = isset($route["method"]) ? $route["method"] : self::$DEFAULT_HTTP_METHOD;
                 $route["content-type"] = $route["content-type"] ?: self::$DEFAULT_CONTENT_TYPE;
             }
 
