@@ -16,10 +16,12 @@ config-staging.php
 config-production.php
 config-default-*.php
 config.js
-
+config/*.php
 login.xml
 soap-login-community-user.xml
 soap-login-admin-user.xml
+!modules/*-example.php
+
 
 .vscode/
 
