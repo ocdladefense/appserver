@@ -10,6 +10,24 @@ function l($m) {
 
 
 
+function loadModuleConfig($module, $key = null, $type="module") {
+
+    if(null == $key) {
+        $path = BASE_PATH . "/config/module.{$module}.php";
+    } else {
+        $path = BASE_PATH . "/config/module.{$module}.{$key}.php";
+    }
+    $success = include_once $path;
+
+    if(false === $success) throw new Exception("CONFIGURATION_ERROR: No configuration file for $key; searching $path.");
+
+    return $config;
+}
+
+
+
+
+
 function config($key = 'contact_general') {
 
     global $config;
