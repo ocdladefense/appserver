@@ -126,7 +126,7 @@ class File implements \JsonSerializable {
 
         if($contents === false){
 
-            throw new Exception("FILE_CONTENTS_ERROR: File path could not be opened.");
+            throw new \Exception("FILE_CONTENTS_ERROR: File path could not be opened.");
         }
         
         return $contents;
