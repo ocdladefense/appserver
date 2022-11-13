@@ -47,7 +47,7 @@
         "ocdladefense/lib-database":"~2.0",
         "ocdladefense/lib-drag-drop-upload":"dev-development",
         "ocdladefense/appserver-theme-default":"~1.0",
-        "ocdladefense/appserver-directory":"~2.0",
+        "ocdladefense/appserver-directory":"dev-main",
         "ocdladefense/appserver-car": "~4.0",
         "ocdladefense/appserver-mail-client":"~0.0",
         "ocdladefense/appserver-books-online": "~1.0",
