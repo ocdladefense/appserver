@@ -1,6 +1,17 @@
 <?php
 
 
+if(defined("COMPOSER_VENDOR_PATH")) {
+	require COMPOSER_VENDOR_PATH.'/vendor/autoload.php';
+
+} else if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
+
+	include BASE_PATH.'/vendor/autoload.php';
+}
+
+
+
+
 require_once BASE_PATH.'/includes/Input/Identifier.php';
 
 require_once BASE_PATH.'/includes/globals/system.php';
@@ -99,13 +110,7 @@ require_once BASE_PATH.'/includes/Store/Salesforce/PaymentProcessor.php';
 require_once BASE_PATH.'/includes/Store/Square/ShoppingCart.php';
 require_once BASE_PATH.'/includes/Store/Square/PaymentProcessor.php'; 
 
-if(defined("COMPOSER_VENDOR_PATH")) {
-	require COMPOSER_VENDOR_PATH.'/vendor/autoload.php';
 
-} else if(file_exists(BASE_PATH.'/vendor/autoload.php')) {
-
-	include BASE_PATH.'/vendor/autoload.php';
-}
 
 
 // end of file.

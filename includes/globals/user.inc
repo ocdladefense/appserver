@@ -1,14 +1,16 @@
 <?php 
 
 
-
+/**
+ * Return a user object from the session.
+ * If there is no session user then return a new empty User object
+ *  corresponding to the guest user.
+ */
 function current_user() {
 
     $user = \Session::getUser();
 
-    if($user == null) $user = new \User();
-
-    return $user;
+    return $user ?? new \User();
 }
 
 

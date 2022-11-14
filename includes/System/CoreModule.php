@@ -268,7 +268,7 @@ class CoreModule extends Module {
 		$contactId = $record["ContactId"];
 		$profileId = $record["Contact"]["AuthorizeDotNetCustomerProfileId__c"];
 
-		$user->setSObject($record);
+		$user->loadSObject($record);
 		$user->setExternalCustomerProfileId($profileId);
 		$user->setContactId($contactId);
 

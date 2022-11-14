@@ -1,45 +1,13 @@
 <?php
 
-class User {
+use Salesforce\SObject;
+
+
+class User extends SObject { // implements SessionUser
 
 
 	
 	const GUEST_USER_ID = "0";
-
-	private $SObject;
-
-	private $userId;
-
-	private $name;
-
-	private $firstName;
-
-	private $lastName;
-
-	private $username;
-
-	private $preferredUsername;
-
-	private $email;
-
-	private $geoZone;
-
-	private $country;
-
-	private $userType;
-
-	private $organizationId;
-
-	private $customerProfileId;
-
-	private $contactId;
-	
-
-
-
-	public function setSObject($SObject) {
-		$this->SObject = $SObject;
-	}
 
 
 	/**
@@ -55,6 +23,7 @@ class User {
 	 */
 	public function query($query) {
 
+		/*
 		list($object,$field) = explode(".", $query);
 		if(null == $field) throw new \Exception("PARSE_ERROR: Field is missing or null.");
 
@@ -69,34 +38,22 @@ class User {
 		}
 
 		return null;
-	}
+		*/
 
+		return parent::query($query);
+	}
+	
 
 
 	public function __construct($user = array(), $type = "salesforce") {
 
-		if(is_array($user) && $type =="salesforce"){
-
-			$this->userId = isset($user["user_id"]) ? $user["user_id"] : null;
-			$this->name = isset($user["name"]) ? $user["name"] : null;
-			$this->firstName = isset($user["given_name"]) ? $user["given_name"] : null;
-			$this->lastName = isset($user["family_name"]) ? $user["family_name"] : null;
-			$this->username = isset($user["preferred_username"]) ? $user["preferred_username"] : null;
-			$this->preferredUsername = isset($user["preferred_username"]) ? $user["preferred_username"] : null;
-			$this->email = isset($user["email"]) ? $user["email"] : null;
-			$this->geoZone = isset($user["zoneinfo"]) ? $user["zoneinfo"] : null;
-			$this->country = isset($user["address"]["country"]) ? $user["address"]["country"] : null;
-			$this->userType = isset($user["user_type"]) ? $user["user_type"] : null;
-			$this->organizationId = isset($user["organization_id"]) ? $user["organization_id"] : null;
-		}
-
-		if($this->userId == null) $this->userId = self::GUEST_USER_ID;
+		// var_dump($user);exit;
+		$user["Id"] = $user["user_id"] ?? self::GUEST_USER_ID;
+		parent::__construct($user);
+		parent::__construct("User");
 	}
 
-	public function getId(){
 
-		return $this->userId;
-	}
 
 	public function setExternalCustomerProfileId($id) {
 		$this->customerProfileId = $id;
@@ -131,12 +88,12 @@ class User {
 
 	public function getUserType(){
 
-		return $this->userType;
+		return $this->user_type;
 	}
 
 	public function getGeoZone(){
 
-		return $this->geoZone;
+		return $this->zoneinfo;
 	}
 
 	public function getEmail(){
@@ -151,29 +108,29 @@ class User {
 
 	public function getInitials() {
 
-		return !$this->isGuest() ? $this->firstName[0] . $this->lastName[0] : "G";
+		return !$this->isGuest() ? $this->given_name[0] . $this->family_name[0] : "G";
 	}
 	
 	
 	public function isAdmin($user = null) {
 	
-		return $this->userType == "STANDARD" || $this->userId == "005j000000DSW0eAAH";
+		return $this->user_type == "STANDARD" || $this->Id == "005j000000DSW0eAAH";
 	}
 	
 	
 	public function isMember($user = null) {
 	
-		return $this->userType != "STANDARD" && $this->userId != self::GUEST_USER_ID;
+		return $this->user_type != "STANDARD" && $this->Id != self::GUEST_USER_ID;
 	}
 
 	public function isGuest() {
 
-		return $this->userId == self::GUEST_USER_ID;
+		return $this->Id == self::GUEST_USER_ID;
 	}
 
 
 	public function is_logged_in() {
 
-		return $this->userId != self::GUEST_USER_ID;
+		return $this->Id != self::GUEST_USER_ID;
 	}
 }
