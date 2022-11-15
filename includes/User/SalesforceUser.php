@@ -116,6 +116,11 @@ class User extends SObject implements IQueryable, ISessionHandler {
 	
 		return $this->user_type == "STANDARD" || $this->Id == "005j000000DSW0eAAH";
 	}
+
+
+	public function isAdminUser() {
+		return $this->user_type == "STANDARD";
+	}
 	
 	
 	public function isMember($user = null) {

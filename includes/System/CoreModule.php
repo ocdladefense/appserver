@@ -253,7 +253,7 @@ class CoreModule extends Module {
 
 		// If the user is an admin user, we want to set the user id for the contact info query to that of the admin user's "Linked Customer User".
 		// This is the customer user
-		if($user->isAdmin()){
+		if($user->isAdminUser()){
 
 			$query = "SELECT Id, LinkedCustomerUser__c FROM User WHERE Id = '{$user->getId()}'";
 			$userId = $req->query($query)->getRecord()["LinkedCustomerUser__c"];
@@ -267,6 +267,11 @@ class CoreModule extends Module {
         $query = "SELECT ContactId, Contact.AccountId, Contact.Account.Name, Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '$userId'";
 		
 		$record = $req->query($query)->getRecord();
+
+		if(null == $record) {
+			throw new \Exception("SESSION_ERROR: No data available for related customer User.");
+		}
+
 		$contactId = $record["ContactId"];
 		$profileId = $record["Contact"]["AuthorizeDotNetCustomerProfileId__c"];
 
