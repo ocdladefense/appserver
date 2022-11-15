@@ -207,7 +207,18 @@ class CoreModule extends Module {
 
 
 
-	// Get the access token and save it to the session variables.
+	/**
+	 * @method oauthFlowAccessToken
+	 * 
+	 * @summary Set up the initial User and User's Session.
+	 * 
+	 * @description OAuth flow is redirected here upon successful user login.
+	 *  We perform a follow-up query to load User Contact, Account and User data 
+	 *  into the User object.  Then we persist that data in the current Session.
+	 * 
+	 *  Subsequent call to current_user() will load this User's data from the Session,
+	 *  or load an anonymous ("guest") User.
+	 */
 	public function oauthFlowAccessToken() {
 
 		$info = json_decode($_GET["state"], true);
@@ -227,16 +238,7 @@ class CoreModule extends Module {
 			throw new OAuthException($resp->getErrorMessage());
 		}
 
-		/*
-        $api = $this->loadForceApi();
 
-        $query = "SELECT Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '{$user->getId()}'";
-
-        $result = $api->query($query)->getRecord();
-        
-        $profileId = $result["Contact"]["AuthorizeDotNetCustomerProfileId__c"];
-
-		*/
 		// Step 1: Set up the session for the connected app.
 		self::setSession($connectedApp, $flow, $resp->getInstanceUrl(), $resp->getAccessToken(), $resp->getRefreshToken());
 
@@ -269,8 +271,9 @@ class CoreModule extends Module {
 		$profileId = $record["Contact"]["AuthorizeDotNetCustomerProfileId__c"];
 
 		$user->loadSObject($record);
-		$user->setExternalCustomerProfileId($profileId);
 		$user->setContactId($contactId);
+		$user->setExternalCustomerProfileId($profileId);
+		
 
 		\Session::setUser($user);
 
