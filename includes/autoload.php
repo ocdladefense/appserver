@@ -1,6 +1,10 @@
 <?php
 
 
+
+require_once BASE_PATH.'/includes/Interfaces/IQueryable.php';
+require_once BASE_PATH.'/includes/Interfaces/ISessionHandler.php';
+
 if(defined("COMPOSER_VENDOR_PATH")) {
 	require COMPOSER_VENDOR_PATH.'/vendor/autoload.php';
 
@@ -24,7 +28,8 @@ require_once BASE_PATH.'/includes/globals/api.php';
 require_once BASE_PATH.'/includes/globals/theme.inc';
 
 
-require_once BASE_PATH.'/includes/User/User.php';
+// require_once BASE_PATH.'/includes/User/User.php';
+require_once BASE_PATH.'/includes/User/SalesforceUser.php';
 
 
 require_once BASE_PATH.'/includes/Presentation/Component.php';
