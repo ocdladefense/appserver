@@ -266,8 +266,10 @@ class CoreModule extends Module {
         
         $query = "SELECT ContactId, Contact.AccountId, Contact.Account.Name, Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '$userId'";
 		
-		$record = $req->query($query)->getRecord();
+		$resp = $req->query($query);
 
+		
+		$record = $resp->getRecord();
 		if(null == $record) {
 			throw new \Exception("SESSION_ERROR: No data available for related customer User.");
 		}
@@ -314,6 +316,7 @@ class CoreModule extends Module {
 		$req = new RestApiRequest($instanceUrl, $accessToken);
 
 		$resp = $req->send($url);
+		// var_dump($resp);exit;
 		
 		return $resp->getBody();
 	}
