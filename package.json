@@ -5,7 +5,8 @@
   "description": "Appserver.",
   "license": "UNLICENSED",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "foobar": "webpack --entry s3/s3.js --mode development --target web --devtool false -o main.js"
   },
   "repository": {
     "type": "git",
@@ -23,12 +24,14 @@
     "@babel/plugin-transform-modules-commonjs": "^7.16.7",
     "@babel/preset-env": "^7.16.7",
     "@babel/preset-react": "^7.16.7",
-    "babel-loader": "^8.2.3"
+    "babel-loader": "^8.2.3",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
   },
   "dependencies": {
     "@bundled-es-modules/pdfjs-dist": "^2.5.207-rc1",
     "@ocdladefense/google-maps": "^1.0.3",
     "@ocdladefense/query-builder": "^1.0.7",
-    "@ocdladefense/view": "^2.0.0"
+    "@ocdladefense/view": "file:dev_modules/node-view"
   }
 }
