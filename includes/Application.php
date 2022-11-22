@@ -199,7 +199,7 @@ class Application {
 
 
         $out = $this->getOutput($req, $module, $route, $params);
-
+        
         session_write_close();
         return $out;
     }
@@ -355,7 +355,12 @@ class Application {
 
         // Set the body of the HTTP Response that will be returned to the client.
         $resp->setBody($handler->getOutput($contentType));
-        
+
+        // For HTTP Responses, check to see if the resp has already dictated
+        // what the HTTP status code should be.
+        if(method_exists($handler,"getStatusCode")) {
+            $resp->setStatusCode($handler->getStatusCode());
+        }
         // var_dump($explicit,$accept,$contentType);exit;
 
         // Remove the PHP error stack if we don't wish to deliver

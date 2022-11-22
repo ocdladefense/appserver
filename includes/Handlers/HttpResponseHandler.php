@@ -33,6 +33,10 @@ class HttpResponseHandler extends Handler {
 	}
 
 
+	public function getStatusCode() {
+		return $this->output->getStatusCode();
+	}
+
 
 
 	public function getApplicationBase64($contentType) {
