@@ -32,6 +32,7 @@
     "@bundled-es-modules/pdfjs-dist": "^2.5.207-rc1",
     "@ocdladefense/google-maps": "^1.0.3",
     "@ocdladefense/query-builder": "^1.0.7",
-    "@ocdladefense/view": "file:dev_modules/node-view"
+    "@ocdladefense/view": "file:dev_modules/node-view",
+    "@ocdladefense/web": "file:dev_modules/node-web"
   }
 }
