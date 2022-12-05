@@ -5,6 +5,15 @@
 [submodule "content/themes/default"]
 	path = content/themes/default
 	url = git@github.com:ocdladefense/appserver-theme-default.git
-[submodule "node-query-builder"]
-	path = node-query-builder
+[submodule "dev_modules/node-query-builder"]
+	path = dev_modules/node-query-builder
 	url = git@github.com:ocdladefense/node-query-builder.git
+[submodule "dev_modules/node-google-maps"]
+	path = dev_modules/node-google-maps
+	url = git@github.com:ocdladefense/node-google-maps.git
+[submodule "dev_modules/node-web"]
+	path = dev_modules/node-web
+	url = git@github.com:ocdladefense/node-web.git
+[submodule "dev_modules/node-s3"]
+	path = dev_modules/node-s3
+	url = git@github.com:ocdladefense/node-s3.git
