@@ -1,3 +1,6 @@
 [submodule "dev_modules/node-view"]
 	path = dev_modules/node-view
 	url = https://github.com/ocdladefense/node-view.git
+[submodule "content/themes/default"]
+	path = content/themes/default
+	url = git@github.com:ocdladefense/appserver-theme-default.git

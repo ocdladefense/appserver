@@ -71,7 +71,7 @@ log/*
 test.php
 
 # Ignore some themes: these are now in separate repos.
-/content/themes/default
+# /content/themes/default
 /content/themes/highscope
 /content/themes/videos
 
