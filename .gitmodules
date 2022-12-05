@@ -10,3 +10,6 @@
 [submodule "dev_modules/node-google-maps"]
 	path = dev_modules/node-google-maps
 	url = git@github.com:ocdladefense/node-google-maps.git
+[submodule "dev_modules/node-web"]
+	path = dev_modules/node-web
+	url = git@github.com:ocdladefense/node-web.git
