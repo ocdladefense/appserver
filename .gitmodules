@@ -4,3 +4,6 @@
 [submodule "content/themes/default"]
 	path = content/themes/default
 	url = git@github.com:ocdladefense/appserver-theme-default.git
+[submodule "dev_modules/node-query-builder"]
+	path = dev_modules/node-query-builder
+	url = git@github.com:ocdladefense/node-query-builder.git
