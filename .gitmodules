@@ -13,3 +13,6 @@
 [submodule "dev_modules/node-web"]
 	path = dev_modules/node-web
 	url = git@github.com:ocdladefense/node-web.git
+[submodule "dev_modules/node-s3"]
+	path = dev_modules/node-s3
+	url = git@github.com:ocdladefense/node-s3.git
