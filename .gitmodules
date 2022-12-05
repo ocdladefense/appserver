@@ -7,3 +7,6 @@
 [submodule "dev_modules/node-query-builder"]
 	path = dev_modules/node-query-builder
 	url = git@github.com:ocdladefense/node-query-builder.git
+[submodule "dev_modules/node-google-maps"]
+	path = dev_modules/node-google-maps
+	url = git@github.com:ocdladefense/node-google-maps.git
