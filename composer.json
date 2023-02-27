@@ -22,7 +22,8 @@
             "modules/committees": ["ocdladefense/appserver-committees"],
 	    "modules/salesforce": ["ocdladefense/appserver-salesforce-mysql"],
 	    "modules/s3": ["ocdladefense/appserver-amazon-s3"],
-	    "modules/maps": ["ocdladefense/appserver-maps"]
+	    "modules/maps": ["ocdladefense/appserver-maps"],
+	    "modules/sites-status": ["ocdladefense/appserver-sitestatus"]
         }
     },
     "config": {
@@ -61,6 +62,7 @@
         "ocdladefense/appserver-committees": "~0.1",
 	"ocdladefense/appserver-salesforce-mysql": ">=0.3",
 	"ocdladefense/appserver-amazon-s3": "dev-main",
-	"ocdladefense/appserver-maps": "~1.0"
+	"ocdladefense/appserver-maps": "~1.0",
+	"ocdladefense/appserver-sitestatus": "dev-main"
     }
 }
