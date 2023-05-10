@@ -15,7 +15,7 @@
             "modules/jobs":["ocdladefense/appserver-jobs"],
             "modules/bon":["ocdladefense/appserver-books-online"],
             "modules/sphinx":["ocdladefense/appserver-sphinx-search"],
-            "modules/xml":["ocdladefense/appserver-repositories"],
+            "modules/repository":["ocdladefense/appserver-repositories"],
             "modules/home":["ocdladefense/appserver-home"],
             "modules/card-manager": ["ocdladefense/appserver-card-manager"],
             "modules/file-service": ["ocdladefense/appserver-file-service"],
@@ -63,6 +63,6 @@
 	"ocdladefense/appserver-salesforce-mysql": ">=0.3",
 	"ocdladefense/appserver-amazon-s3": "dev-main",
 	"ocdladefense/appserver-maps": "~1.0",
-	"ocdladefense/appserver-site-status": "dev-main"
+	"ocdladefense/appserver-site-status": "dev-master"
     }
 }
