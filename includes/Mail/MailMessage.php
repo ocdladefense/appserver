@@ -56,6 +56,12 @@ class MailMessage {
 		return !empty($this->subject) ? $this->subject : $this->headers->getValue("Subject");
 	}
 
+	public function getHeader($name) {
+		$headers = $this->headers->getHeadersAsAssociativeArray();
+
+		return isset($headers[$name]) ? $headers[$name] : null;
+	}
+
 	public function getHeaders($format = false){
 
 		return $format === true ? implode("\r\n", $this->headers->getList()) : $this->headers->getHeadersAsAssociativeArray();

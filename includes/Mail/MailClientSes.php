@@ -69,7 +69,8 @@ class MailClientSes {
             try {
                 $result = $SesClient->sendEmail([
                     'Destination' => [
-                        'ToAddresses' => [$message->getTo()]
+                        'ToAddresses' => [$message->getTo()],
+                        'CcAddresses' => ['jroot@ocdla.org', 'info@ocdla.org']
                     ],
                     'ReplyToAddresses' => [self::$sender_email],
                     'Source' => self::$sender_email,
