@@ -64,8 +64,6 @@ class MailClient {
             }
             */
         return $statuses;
-
-
     }
 
 

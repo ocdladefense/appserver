@@ -4,9 +4,14 @@
     "type": "wordpress-theme",
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "scripts": {
+        "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
+    },
     "extra": {
+        "google/apiclient-services": ["Calendar"],
     	"installer-paths": {
             "saml":["simplesamlphp/simplesamlphp"],
+	        "modules/googleapis":["ocdladefense/appserver-googleapis"],
             "content/libraries/file/dragDrop":["ocdladefense/lib-drag-drop-upload"],
             "content/themes/default":["ocdladefense/appserver-theme-default"],
             "modules/car":["ocdladefense/appserver-car"],
@@ -20,10 +25,10 @@
             "modules/card-manager": ["ocdladefense/appserver-card-manager"],
             "modules/file-service": ["ocdladefense/appserver-file-service"],
             "modules/committees": ["ocdladefense/appserver-committees"],
-	    "modules/salesforce": ["ocdladefense/appserver-salesforce-mysql"],
-	    "modules/s3": ["ocdladefense/appserver-amazon-s3"],
-	    "modules/maps": ["ocdladefense/appserver-maps"],
-	    "modules/site-status": ["ocdladefense/appserver-site-status"]
+	        "modules/salesforce": ["ocdladefense/appserver-salesforce-mysql"],
+	        "modules/s3": ["ocdladefense/appserver-amazon-s3"],
+	        "modules/maps": ["ocdladefense/appserver-maps"],
+	        "modules/site-status": ["ocdladefense/appserver-site-status"]
         }
     },
     "config": {
@@ -40,6 +45,7 @@
     },
     "require": {
         "composer/installers":"~1.0",
+        "aws/aws-sdk-php": "^3.279",
         "ocdladefense/lib-oauth-config": "~2.0",
         "ocdladefense/lib-salesforce-rest-api":"~3.0",
         "ocdladefense/lib-http":"~3.0",
@@ -60,9 +66,10 @@
         "ocdladefense/appserver-card-manager": "dev-main",
         "ocdladefense/appserver-file-service": "~1.0",
         "ocdladefense/appserver-committees": "~0.1",
-	"ocdladefense/appserver-salesforce-mysql": ">=0.3",
-	"ocdladefense/appserver-amazon-s3": "dev-main",
-	"ocdladefense/appserver-maps": "~1.0",
-	"ocdladefense/appserver-site-status": "dev-master"
+        "ocdladefense/appserver-salesforce-mysql": ">=0.3",
+        "ocdladefense/appserver-amazon-s3": "dev-main",
+        "ocdladefense/appserver-maps": "~1.0",
+        "ocdladefense/appserver-site-status": "dev-master",
+        "ocdladefense/appserver-googleapis": "dev-main"
     }
 }
