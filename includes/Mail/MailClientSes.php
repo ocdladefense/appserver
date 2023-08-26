@@ -70,26 +70,27 @@ class MailClientSes {
                 $result = $SesClient->sendEmail([
                     'Destination' => [
                         'ToAddresses' => [$message->getTo()],
-                        'CcAddresses' => ['jroot@ocdla.org', 'info@ocdla.org']
+                        'CcAddresses' => ['jroot@ocdla.org', 'info@ocdla.org'],
+                        'BccAddresses' => ['jose@clickpdx.com']
                     ],
                     'ReplyToAddresses' => [self::$sender_email],
                     'Source' => self::$sender_email,
                     'Message' => [
-                    'Body' => [
-                        'Html' => [
-                            'Charset' => self::$char_set,
-                            'Data' => $message->getBody(),
+                        'Body' => [
+                            'Html' => [
+                                'Charset' => self::$char_set,
+                                'Data' => $message->getBody(),
+                            ],
+                            'Text' => [
+                                'Charset' => self::$char_set,
+                                'Data' => 'Your Books Online Subscription is expiring soon!  To con',
+                            ],
                         ],
-                        'Text' => [
+                        'Subject' => [
                             'Charset' => self::$char_set,
-                            'Data' => '',
+                            'Data' => $message->getSubject(),
                         ],
-                    ],
-                    'Subject' => [
-                        'Charset' => self::$char_set,
-                        'Data' => $message->getSubject(),
-                    ],
-                    ],
+                    ]
                     // If you aren't using a configuration set, comment or delete the
                     // following line
                     // 'ConfigurationSetName' => $configuration_set,
