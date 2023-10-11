@@ -1,4 +1,5 @@
 <?php
+use Ocdla\Session as Session;
 
 
 function user_has_access($module, $route, $user = null) {
@@ -46,6 +47,6 @@ function is_authenticated($module, $route) {
 	$name = $app->getName();
 	$flow = $route["authorization"];
 	
-	return !empty(\Session::get($name, $flow, "userId"));
+	return !empty(Session::get([$name, $flow, "userId"]));
 }
 

@@ -312,6 +312,8 @@ class CoreModule extends Module {
 		
 
 		Session::setUser($user);
+		Session::set([$connectedApp,$flow,"userId"], $user->getId());
+		// return !empty(Session::get($name, $flow, "userId"));
 
 		$redirect = $this->buildRedirect($_SESSION["login_redirect"]);
 
@@ -337,7 +339,7 @@ class CoreModule extends Module {
 	
 
     public static function logout($connectedApp, $flow, $sandbox = false){
-		$accessToken = Session::get($connectedApp, $flow, "access_token");
+		$accessToken = Session::get([$connectedApp, $flow, "access_token"]);
         $url = "https://login.salesforce.com/services/oauth2/revoke?token=";
         if($sandbox){
             $url = "https://test.salesforce.com/services/oauth2/revoke?token=";
@@ -359,8 +361,8 @@ class CoreModule extends Module {
     
         $resp = $http->send($req, true);
         if($resp->getStatusCode() == 200){
-            $accessToken = Session::set($connectedApp, $flow, "access_token",null);
-            Session::set($connectedApp, $flow, "user",null);
+            Session::set([$connectedApp, $flow, "access_token"],null);
+            Session::set([$connectedApp, $flow, "user"],null);
             return true;
         }
         return false;
