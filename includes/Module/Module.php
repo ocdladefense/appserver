@@ -3,6 +3,7 @@
 use Salesforce\OAuthRequest;
 use Salesforce\RestApiRequest;
 use Salesforce\OAuth;
+use Ocdla\Session as Session;
 
 
 class Module {
@@ -309,8 +310,8 @@ class Module {
             $instanceUrl = cache_get("instance_url");
             $accessToken = cache_get("access_token");
         } else if("webserver" == $route["authorization"]) {
-            $accessToken = Session::get($config->getName(), $flow, "access_token");
-            $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
+            $accessToken = Session::get([$config->getName(), $flow, "access_token"]);
+            $instanceUrl = Session::get([$config->getName(), $flow, "instance_url"]);
         }
         
         // var_dump($accessToken, $instanceUrl);exit;
@@ -328,8 +329,8 @@ class Module {
             $instanceUrl = cache_get("instance_url");
             $accessToken = cache_get("access_token");
         } else if("webserver" == $route["authorization"] || $flow == "webserver") {
-            $accessToken = Session::get($config->getName(), $flow, "access_token");
-            $instanceUrl = Session::get($config->getName(), $flow, "instance_url");
+            $accessToken = Session::get([$config->getName(), $flow, "access_token"]);
+            $instanceUrl = Session::get([$config->getName(), $flow, "instance_url"]);
         }
 
         $req = new RestApiRequest($instanceUrl, $accessToken);
@@ -365,7 +366,7 @@ class Module {
 
 			$accessToken = $oauthResp->getAccessToken();
 
-			\Session::set($config->getName(), $flow, "access_token", $accessToken);
+			Session::set([$config->getName(), $flow, "access_token"], $accessToken);
 
             $api = $this->loadForceApi();
             $resp = call_user_func(array($api, $queryType), $soql);

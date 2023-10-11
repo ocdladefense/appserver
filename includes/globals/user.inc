@@ -1,5 +1,5 @@
 <?php 
-
+use Ocdla\Session as Session;
 
 /**
  * Return a user object from the session.
@@ -8,7 +8,7 @@
  */
 function current_user() {
 
-    $user = \Session::getUser();
+    $user = Session::getUser();
 
     return $user ?? new \User();
 }

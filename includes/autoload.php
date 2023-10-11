@@ -43,7 +43,7 @@ require_once BASE_PATH.'/includes/Presentation/IRenderable.php';
 
 require_once(BASE_PATH.'/includes/Module/Module.php');
 
-$systemFiles = array("ClassName","XList", "IJson", "DateRange", "CoreModule","Session","Cache");
+$systemFiles = array("ClassName","XList", "IJson", "DateRange", "CoreModule", "SessionHandler", "Cache");
 
 foreach($systemFiles as $file) {
 	require_once(BASE_PATH.'/includes/System/'.$file.".php");

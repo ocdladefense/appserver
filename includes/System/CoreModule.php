@@ -11,7 +11,7 @@ use Salesforce\OAuthRequest as OAuthRequest;
 use Salesforce\RestApiRequest as RestApiRequest;
 use Salesforce\OAuth as OAuth;
 use Salesforce\OAuthException;
-
+use Ocdla\Session as Session;
 
 
 
@@ -229,47 +229,76 @@ class CoreModule extends Module {
 
 		$config->setAuthorizationCode($_GET["code"]);
 
-		$oauth = OAuthRequest::newAccessTokenRequest($config, "webserver");
 
+		// Get accessToken and instanceUrl.
+		$oauth = OAuthRequest::newAccessTokenRequest($config, "webserver");
 		$resp = $oauth->authorize();
+
 
 		if(!$resp->success()){
 
 			throw new OAuthException($resp->getErrorMessage());
 		}
 
+		$instanceUrl = $resp->getInstanceUrl();
+		$accessToken = $resp->getAccessToken();
+		$refreshToken = $resp->getRefreshToken();
 
-		// Step 1: Set up the session for the connected app.
-		self::setSession($connectedApp, $flow, $resp->getInstanceUrl(), $resp->getAccessToken(), $resp->getRefreshToken());
 
+		// var_dump($instanceUrl, $accessToken, $refreshToken);
+		Session::set([$connectedApp,$flow,"instance_url"], $instanceUrl);
+		Session::set([$connectedApp,$flow,"access_token"], $accessToken);
+		Session::set([$connectedApp,$flow,"refresh_token"], $refreshToken);
+
+
+		// exit;
 		// Step 2: Declare who the current user is.  Create a user session.
-		$userInfo = self::getUser($config->getName(), "webserver");
+		$resp = self::getUser($instanceUrl, $accessToken);
 		
-		// This is the authenticated user
-		$user = new \User($userInfo);
-		
-		$req = new RestApiRequest($resp->getInstanceUrl(), $resp->getAccessToken());
+		$body = $resp->getBody();
 
+
+
+
+		// $json = json_decode($body,true);
+
+		// var_dump($json);
+	
+	
+		// This is the authenticated user
+		$user = new \User($body);
+
+		$req = new RestApiRequest($instanceUrl, $accessToken);
+
+		// var_dump($req);
 
 		// If the user is an admin user, we want to set the user id for the contact info query to that of the admin user's "Linked Customer User".
 		// This is the customer user
 		if($user->isAdminUser()){
 
 			$query = "SELECT Id, LinkedCustomerUser__c FROM User WHERE Id = '{$user->getId()}'";
-			$userId = $req->query($query)->getRecord()["LinkedCustomerUser__c"];
+			$resp = $req->query($query);
+			//var_dump($resp);
+			//exit;
+			$userId = $resp->getRecord()["LinkedCustomerUser__c"];
 
 		} else {
 			
 			$userId = $user->getId();
 		}
 
+		// var_dump($userId); //exit;
         
-        $query = "SELECT ContactId, Contact.AccountId, Contact.Account.Name, Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '$userId'";
-		
-		$resp = $req->query($query);
+		$req = new RestApiRequest($instanceUrl, $accessToken);
 
+        $query = "SELECT ContactId, Contact.AccountId, Contact.Account.Name, Contact.AuthorizeDotNetCustomerProfileId__c FROM User WHERE Id = '$userId'";
+
+		$resp = $req->query($query);
+		
 		
 		$record = $resp->getRecord();
+		// var_dump($record);
+
 		if(null == $record) {
 			throw new \Exception("SESSION_ERROR: No data available for related customer User.");
 		}
@@ -290,36 +319,22 @@ class CoreModule extends Module {
 	}
 
 
-	/**
-	 * @jbernal - setSession(), getUser(), logout() copied from OAuth.php.
-	 */
-    public static function setSession($connectedApp, $flow, $instanceUrl, $accessToken, $refreshToken = null){
-
-        if($refreshToken != null) \Session::set($connectedApp, $flow, "refresh_token", $refreshToken);
-        
-
-        \Session::set($connectedApp, $flow, "instance_url", $instanceUrl);
-        \Session::set($connectedApp, $flow, "access_token", $accessToken);
 
 
-        $userInfo = self::getUser($connectedApp, $flow);
-        \Session::set($connectedApp, $flow, "userId", $userInfo["user_id"]);
-    }
+    public static function getUser($instanceUrl, $accessToken) {
 
-    public static function getUser($connectedApp, $flow){
 
-		$accessToken = \Session::get($connectedApp, $flow, "access_token");
-		$instanceUrl = \Session::get($connectedApp, $flow, "instance_url");
 
 		$url = "/services/oauth2/userinfo?access_token={$accessToken}";
 
 		$req = new RestApiRequest($instanceUrl, $accessToken);
 
-		$resp = $req->send($url);
+		return $req->send($url);
 		// var_dump($resp);exit;
-		
-		return $resp->getBody();
+
 	}
+
+	
 
     public static function logout($connectedApp, $flow, $sandbox = false){
 		$accessToken = \Session::get($connectedApp, $flow, "access_token");
