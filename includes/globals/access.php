@@ -37,7 +37,7 @@ function user_has_access($module, $route, $user = null) {
 		return null == $args ? call_user_func($access) : call_user_func_array($access, $args);
 	}
 }
-
+  
 function is_authenticated($module, $route) {
 	
 	// The connected app setting can also be "default".
