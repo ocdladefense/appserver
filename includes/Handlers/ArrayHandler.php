@@ -19,7 +19,7 @@ class ArrayHandler extends Handler {
 
 
 	public function getApplicationJson() {
-		return json_encode($this->output);
+		return json_encode($this->output, JSON_UNESCAPED_SLASHES);
 	}
 	
 
