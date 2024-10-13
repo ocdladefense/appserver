@@ -9,8 +9,13 @@ use Http\HttpResponse as HttpResponse;
 
 $app = new Application();
 
-$request = HttpRequest::newFromEnvironment();
+$req = HttpRequest::newFromEnvironment();
+$resp = null;
 
-
-$response = $app->runHttp($request);
-$app->send($response);
+try {
+    $resp = $app->runHttp($req);
+} catch (Exception $e) {
+    $resp = new HttpResponse($e->getMessage());
+    $resp->setStatusCode(500);
+}
+$app->send($resp);
