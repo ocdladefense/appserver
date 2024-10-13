@@ -44,7 +44,7 @@ function foobar() {
     if(defined("SESSION_COOKIE_DOMAIN")) {
         $params["domain"] = SESSION_COOKIE_DOMAIN;
     }
-    $params["samesite"] = "Lax";
+    $params["samesite"] = SESSION_COOKIE_SAME_SITE;
 
     session_set_cookie_params($params);
 

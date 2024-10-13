@@ -119,7 +119,7 @@ class Application {
     
 
 
-    // Prepare to return an HTTPResponse object.
+    // Prepare to return an HttpResponse object.
     public function runHttp($req) {
 
         $uri = $req->getRequestUri();
