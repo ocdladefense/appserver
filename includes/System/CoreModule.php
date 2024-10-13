@@ -42,7 +42,11 @@ class CoreModule extends Module {
 	}
 
 
+	public function getOAuthData() {
 
+		return $_SESSION;
+	}
+	
     // List all uploaded files.  Uploads have already happened in HttpRequest.
 	public function upload() { 
 		$req = $this->getRequest();
@@ -473,6 +477,13 @@ class CoreModule extends Module {
 					"callback"      => "list",
 					"content-type"  => "application/json",
 					"path"          => "list/files",
+					"module"        => "core",
+					"method"        => "get"
+				),
+				"oauth/data" => array(
+					"callback"      => "getOAuthData",
+					"content-type"  => "application/json",
+					"path"          => "oauth/data",
 					"module"        => "core",
 					"method"        => "get"
 				),
